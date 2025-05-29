@@ -39,7 +39,9 @@ const EventsMap = ({ searchQuery, selectedCategory }: EventsMapProps) => {
     });
 
     loader.load().then(() => {
-      const map = new google.maps.Map(mapRef.current!, {
+      if (!mapRef.current) return;
+      
+      const map = new window.google.maps.Map(mapRef.current, {
         center: { lat: 40.7128, lng: -74.0060 }, // Default to NYC
         zoom: 12,
         styles: [
@@ -61,7 +63,7 @@ const EventsMap = ({ searchQuery, selectedCategory }: EventsMapProps) => {
 
   // Add markers for filtered events
   useEffect(() => {
-    if (!mapInstanceRef.current || !mapLoaded) return;
+    if (!mapInstanceRef.current || !mapLoaded || !window.google) return;
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.setMap(null));
@@ -73,7 +75,7 @@ const EventsMap = ({ searchQuery, selectedCategory }: EventsMapProps) => {
       const lat = 40.7128 + (Math.random() - 0.5) * 0.1;
       const lng = -74.0060 + (Math.random() - 0.5) * 0.1;
 
-      const marker = new google.maps.Marker({
+      const marker = new window.google.maps.Marker({
         position: { lat, lng },
         map: mapInstanceRef.current,
         title: event.title,
@@ -84,8 +86,8 @@ const EventsMap = ({ searchQuery, selectedCategory }: EventsMapProps) => {
               <circle cx="16" cy="16" r="6" fill="white"/>
             </svg>
           `),
-          scaledSize: new google.maps.Size(32, 32),
-          anchor: new google.maps.Point(16, 16)
+          scaledSize: new window.google.maps.Size(32, 32),
+          anchor: new window.google.maps.Point(16, 16)
         }
       });
 
