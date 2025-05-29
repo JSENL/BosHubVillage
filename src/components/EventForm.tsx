@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, MapPin, Clock, DollarSign, Users, Repeat } from 'lucide-react';
 import { toast } from 'sonner';
+import { useEvents } from '@/hooks/useEvents';
 
 interface EventFormProps {
   onClose: () => void;
@@ -23,10 +24,12 @@ const EventForm = ({ onClose }: EventFormProps) => {
     time: '',
     location: '',
     price: '',
-    maxAttendees: '',
-    isRecurring: false,
-    recurringPattern: '',
+    max_attendees: '',
+    is_recurring: false,
+    recurring_pattern: '',
   });
+
+  const { createEvent } = useEvents();
 
   const categories = [
     { value: 'music', label: 'Music' },
@@ -39,19 +42,32 @@ const EventForm = ({ onClose }: EventFormProps) => {
     { value: 'health', label: 'Health & Wellness' },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
     if (!formData.title || !formData.category || !formData.date || !formData.location) {
       toast.error('Please fill in all required fields');
       return;
     }
 
-    // Here you would typically save to a database
-    console.log('Event data:', formData);
-    toast.success('Event created successfully!');
-    onClose();
+    try {
+      await createEvent({
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        date: formData.date,
+        time: formData.time || '00:00',
+        location: formData.location,
+        price: parseFloat(formData.price) || 0,
+        max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
+        is_recurring: formData.is_recurring,
+        recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
+      });
+      
+      onClose();
+    } catch (error) {
+      // Error handling is done in the useEvents hook
+    }
   };
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -190,8 +206,8 @@ const EventForm = ({ onClose }: EventFormProps) => {
                 id="maxAttendees"
                 type="number"
                 placeholder="Unlimited"
-                value={formData.maxAttendees}
-                onChange={(e) => handleInputChange('maxAttendees', e.target.value)}
+                value={formData.max_attendees}
+                onChange={(e) => handleInputChange('max_attendees', e.target.value)}
                 className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
               />
             </div>
@@ -202,8 +218,8 @@ const EventForm = ({ onClose }: EventFormProps) => {
             <div className="flex items-center space-x-2">
               <Switch
                 id="recurring"
-                checked={formData.isRecurring}
-                onCheckedChange={(checked) => handleInputChange('isRecurring', checked)}
+                checked={formData.is_recurring}
+                onCheckedChange={(checked) => handleInputChange('is_recurring', checked)}
               />
               <Label htmlFor="recurring" className="flex items-center text-sm font-medium text-gray-700">
                 <Repeat className="h-4 w-4 mr-1" />
@@ -211,8 +227,8 @@ const EventForm = ({ onClose }: EventFormProps) => {
               </Label>
             </div>
 
-            {formData.isRecurring && (
-              <Select value={formData.recurringPattern} onValueChange={(value) => handleInputChange('recurringPattern', value)}>
+            {formData.is_recurring && (
+              <Select value={formData.recurring_pattern} onValueChange={(value) => handleInputChange('recurring_pattern', value)}>
                 <SelectTrigger className="border-purple-200 focus:border-purple-400 focus:ring-purple-400">
                   <SelectValue placeholder="Select recurring pattern" />
                 </SelectTrigger>

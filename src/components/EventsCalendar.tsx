@@ -5,19 +5,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { mockEvents } from '@/data/mockEvents';
+import { Event } from '@/hooks/useEvents';
 
 interface EventsCalendarProps {
   searchQuery: string;
   selectedCategory: string;
+  events: Event[];
 }
 
-const EventsCalendar = ({ searchQuery, selectedCategory }: EventsCalendarProps) => {
+const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalendarProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // Filter events based on search and category
-  const filteredEvents = mockEvents.filter(event => {
+  const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
@@ -136,7 +137,7 @@ const EventsCalendar = ({ searchQuery, selectedCategory }: EventsCalendarProps) 
                       className="w-full mt-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                       size="sm"
                     >
-                      View Details
+                      Register
                     </Button>
                   </CardContent>
                 </Card>

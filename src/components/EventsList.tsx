@@ -3,16 +3,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Users, Star } from 'lucide-react';
-import { mockEvents } from '@/data/mockEvents';
+import { Event } from '@/hooks/useEvents';
 
 interface EventsListProps {
   searchQuery: string;
   selectedCategory: string;
+  events: Event[];
 }
 
-const EventsList = ({ searchQuery, selectedCategory }: EventsListProps) => {
+const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) => {
   // Filter events based on search and category
-  const filteredEvents = mockEvents.filter(event => {
+  const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
@@ -51,10 +52,6 @@ const EventsList = ({ searchQuery, selectedCategory }: EventsListProps) => {
                       {event.category}
                     </Badge>
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center">
-                        <Star className="h-4 w-4 text-yellow-400 mr-1" />
-                        <span className="text-sm font-medium">{event.rating}</span>
-                      </div>
                       <span className="text-lg font-bold text-purple-600">${event.price}</span>
                     </div>
                   </div>
@@ -79,7 +76,7 @@ const EventsList = ({ searchQuery, selectedCategory }: EventsListProps) => {
                     </div>
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-2 text-purple-500" />
-                      <div>{event.attendees} attending</div>
+                      <div>{event.attendees_count || 0} attending</div>
                     </div>
                   </div>
 
@@ -88,7 +85,7 @@ const EventsList = ({ searchQuery, selectedCategory }: EventsListProps) => {
                       View Details
                     </Button>
                     <Button variant="outline" className="border-purple-200 text-purple-600 hover:bg-purple-50">
-                      Save Event
+                      Register
                     </Button>
                   </div>
                 </CardContent>

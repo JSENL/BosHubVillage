@@ -1,18 +1,18 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { MapPin, Clock, Users } from 'lucide-react';
-import { mockEvents } from '@/data/mockEvents';
+import { Event } from '@/hooks/useEvents';
 
 interface EventsMapProps {
   searchQuery: string;
   selectedCategory: string;
+  events: Event[];
 }
 
-const EventsMap = ({ searchQuery, selectedCategory }: EventsMapProps) => {
+const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -21,7 +21,7 @@ const EventsMap = ({ searchQuery, selectedCategory }: EventsMapProps) => {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   // Filter events based on search and category
-  const filteredEvents = mockEvents.filter(event => {
+  const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
@@ -183,7 +183,7 @@ const EventsMap = ({ searchQuery, selectedCategory }: EventsMapProps) => {
                 </div>
                 <div className="flex items-center">
                   <Users className="h-4 w-4 mr-2" />
-                  {event.attendees} attending
+                  {event.attendees_count || 0} attending
                 </div>
               </div>
             </CardContent>

@@ -1,19 +1,54 @@
 
-import { useState } from 'react';
-import { Calendar, List, Map, Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Calendar, List, Map, Plus, LogOut, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import EventsMap from '@/components/EventsMap';
 import EventsList from '@/components/EventsList';
 import EventsCalendar from '@/components/EventsCalendar';
 import EventForm from '@/components/EventForm';
 import SearchBar from '@/components/SearchBar';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { useAuth } from '@/hooks/useAuth';
+import { useEvents } from '@/hooks/useEvents';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const { user, loading, isAdmin, signOut } = useAuth();
+  const { events } = useEvents();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <Map className="h-5 w-5 text-white" />
+          </div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null; // Will redirect to auth
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
@@ -30,17 +65,36 @@ const Index = () => {
               </h1>
             </div>
             
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Event
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <EventForm onClose={() => setIsCreateDialogOpen(false)} />
-              </DialogContent>
-            </Dialog>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <User className="h-4 w-4 text-gray-600" />
+                <span className="text-sm text-gray-600">{user.email}</span>
+                {isAdmin && (
+                  <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+                    Admin
+                  </Badge>
+                )}
+              </div>
+
+              {isAdmin && (
+                <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create Event
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <EventForm onClose={() => setIsCreateDialogOpen(false)} />
+                  </DialogContent>
+                </Dialog>
+              )}
+
+              <Button variant="outline" onClick={handleSignOut}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -75,15 +129,15 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="map" className="mt-6">
-            <EventsMap searchQuery={searchQuery} selectedCategory={selectedCategory} />
+            <EventsMap searchQuery={searchQuery} selectedCategory={selectedCategory} events={events} />
           </TabsContent>
 
           <TabsContent value="calendar" className="mt-6">
-            <EventsCalendar searchQuery={searchQuery} selectedCategory={selectedCategory} />
+            <EventsCalendar searchQuery={searchQuery} selectedCategory={selectedCategory} events={events} />
           </TabsContent>
 
           <TabsContent value="list" className="mt-6">
-            <EventsList searchQuery={searchQuery} selectedCategory={selectedCategory} />
+            <EventsList searchQuery={searchQuery} selectedCategory={selectedCategory} events={events} />
           </TabsContent>
         </Tabs>
       </main>
