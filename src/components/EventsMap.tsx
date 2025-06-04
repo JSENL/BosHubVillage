@@ -1,10 +1,12 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { MapPin, Clock, Users } from 'lucide-react';
 import { Event } from '@/hooks/useEvents';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface EventsMapProps {
   searchQuery: string;
@@ -19,6 +21,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [apiKey, setApiKey] = useState('');
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [isLoadingApiKey, setIsLoadingApiKey] = useState(true);
 
   // Filter events based on search and category
   const filteredEvents = events.filter(event => {
@@ -27,6 +30,35 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
     const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  // Fetch Google Maps API key from edge function
+  useEffect(() => {
+    const fetchApiKey = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('get-maps-key');
+        
+        if (error) {
+          console.error('Error fetching API key:', error);
+          toast.error('Failed to load Google Maps API key');
+          return;
+        }
+
+        if (data?.apiKey) {
+          setApiKey(data.apiKey);
+        } else {
+          console.error('No API key returned from edge function');
+          toast.error('Google Maps API key not configured');
+        }
+      } catch (error) {
+        console.error('Error calling edge function:', error);
+        toast.error('Failed to fetch Google Maps configuration');
+      } finally {
+        setIsLoadingApiKey(false);
+      }
+    };
+
+    fetchApiKey();
+  }, []);
 
   // Initialize Google Maps
   useEffect(() => {
@@ -42,7 +74,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
       if (!mapRef.current) return;
       
       const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat: 40.7128, lng: -74.0060 }, // Default to NYC
+        center: { lat: 42.3152, lng: -71.0685 }, // Dorchester, Boston area
         zoom: 12,
         styles: [
           {
@@ -58,6 +90,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
       console.log('Google Maps loaded successfully');
     }).catch((error) => {
       console.error('Error loading Google Maps:', error);
+      toast.error('Failed to load Google Maps');
     });
   }, [apiKey]);
 
@@ -71,9 +104,9 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
 
     // Add new markers for filtered events
     filteredEvents.forEach((event, index) => {
-      // Generate coordinates around NYC area for demo purposes
-      const lat = 40.7128 + (Math.random() - 0.5) * 0.1;
-      const lng = -74.0060 + (Math.random() - 0.5) * 0.1;
+      // Generate coordinates around Dorchester/Boston area for demo purposes
+      const lat = 42.3152 + (Math.random() - 0.5) * 0.1;
+      const lng = -71.0685 + (Math.random() - 0.5) * 0.1;
 
       const marker = new window.google.maps.Marker({
         position: { lat, lng },
@@ -100,36 +133,30 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
     });
   }, [filteredEvents, mapLoaded]);
 
-  if (!apiKey) {
+  if (isLoadingApiKey) {
     return (
       <div className="grid grid-cols-1 gap-6 h-[600px]">
         <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl border border-purple-200 flex items-center justify-center p-8">
-          <div className="text-center max-w-md">
-            <MapPin className="h-16 w-16 text-purple-400 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-700 mb-4">Google Maps Integration</h3>
-            <p className="text-gray-600 mb-4">
-              Enter your Google Maps API key to display events on an interactive map
+          <div className="text-center">
+            <MapPin className="h-16 w-16 text-purple-400 mx-auto mb-4 animate-pulse" />
+            <h3 className="text-2xl font-bold text-gray-700 mb-4">Loading Google Maps</h3>
+            <p className="text-gray-600">Fetching configuration...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!apiKey) {
+    return (
+      <div className="grid grid-cols-1 gap-6 h-[600px]">
+        <div className="bg-gradient-to-br from-red-100 to-orange-100 rounded-2xl border border-red-200 flex items-center justify-center p-8">
+          <div className="text-center">
+            <MapPin className="h-16 w-16 text-red-400 mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-gray-700 mb-4">Google Maps Unavailable</h3>
+            <p className="text-gray-600">
+              Google Maps API key is not configured. Please contact the administrator.
             </p>
-            <div className="space-y-4">
-              <Input
-                type="text"
-                placeholder="Enter Google Maps API Key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="border-purple-200 focus:border-purple-400"
-              />
-              <p className="text-sm text-gray-500">
-                Get your API key from the{' '}
-                <a 
-                  href="https://console.cloud.google.com/google/maps-apis" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-purple-600 hover:underline"
-                >
-                  Google Cloud Console
-                </a>
-              </p>
-            </div>
           </div>
         </div>
       </div>
