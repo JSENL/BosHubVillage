@@ -52,9 +52,18 @@ export const useEvents = () => {
 
   const createEvent = async (eventData: Omit<Event, 'id' | 'created_by' | 'attendees_count'>) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
       const { data, error } = await supabase
         .from('events')
-        .insert([eventData])
+        .insert({
+          ...eventData,
+          created_by: user.id
+        })
         .select()
         .single();
 
