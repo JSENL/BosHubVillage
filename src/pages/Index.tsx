@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import EventsMap from '@/components/EventsMap';
 import EventsList from '@/components/EventsList';
 import EventsCalendar from '@/components/EventsCalendar';
@@ -13,6 +14,7 @@ import EventForm from '@/components/EventForm';
 import SearchBar from '@/components/SearchBar';
 import { useAuth } from '@/hooks/useAuth';
 import { useEvents } from '@/hooks/useEvents';
+import { createSampleEvents } from '@/utils/sampleEvents';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,6 +33,15 @@ const Index = () => {
   const handleSignOut = async () => {
     await signOut();
     navigate('/auth');
+  };
+
+  const handleCreateSampleEvents = async () => {
+    try {
+      await createSampleEvents();
+      toast.success('Sample events created successfully!');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create sample events');
+    }
   };
 
   if (loading) {
@@ -77,17 +88,27 @@ const Index = () => {
               </div>
 
               {isAdmin && (
-                <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create Event
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                    <EventForm onClose={() => setIsCreateDialogOpen(false)} />
-                  </DialogContent>
-                </Dialog>
+                <div className="flex space-x-2">
+                  <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Event
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                      <EventForm onClose={() => setIsCreateDialogOpen(false)} />
+                    </DialogContent>
+                  </Dialog>
+
+                  <Button 
+                    variant="outline" 
+                    onClick={handleCreateSampleEvents}
+                    className="border-purple-200 text-purple-600 hover:bg-purple-50"
+                  >
+                    Add Sample Events
+                  </Button>
+                </div>
               )}
 
               <Button variant="outline" onClick={handleSignOut}>
