@@ -161,3 +161,90 @@ export const createSampleEvents = async () => {
     throw error;
   }
 };
+
+export const createSampleComments = async () => {
+  try {
+    // Get the current authenticated user
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User must be authenticated to create sample comments');
+    }
+
+    // Get all events
+    const { data: events, error: eventsError } = await supabase
+      .from('events')
+      .select('id, category');
+
+    if (eventsError) throw eventsError;
+
+    if (!events || events.length === 0) {
+      throw new Error('No events found');
+    }
+
+    const sampleComments = [
+      'Great family-friendly event! My kids loved it.',
+      'Amazing performance, the acoustics were perfect.',
+      'Delicious local vendors and great atmosphere.',
+      'Well organized race, loved the scenic route.',
+      'Very informative and engaging presentation.',
+      'Beautiful cultural celebration with authentic performances.',
+      'Inspiring pitches and great networking opportunities.',
+      'Peaceful yoga session with stunning harbor views.',
+      'Perfect community event, well organized.',
+      'Outstanding orchestra, worth every penny.',
+      'Fresh produce and friendly vendors.',
+      'Challenging but rewarding run along the river.',
+      'Learned so much about local history.',
+      'Rich cultural experience, loved the traditional dances.',
+      'Great ideas presented, excellent venue.',
+      'Relaxing session, instructor was very helpful.',
+      'Fun for all ages, lots of activities for kids.',
+      'Magical evening under the stars.',
+      'Great variety of local produce and crafts.',
+      'Good organization, medal was a nice touch.'
+    ];
+
+    // Create sample comments for each event
+    const commentsToInsert = [];
+    
+    for (const event of events) {
+      // Add 5-8 random comments per event
+      const numComments = Math.floor(Math.random() * 4) + 5; // 5-8 comments
+      
+      for (let i = 0; i < numComments; i++) {
+        const comment = sampleComments[Math.floor(Math.random() * sampleComments.length)];
+        
+        // Generate a random rating (weighted towards higher ratings)
+        const random = Math.random();
+        let rating;
+        if (random < 0.05) rating = 1;
+        else if (random < 0.1) rating = 2;
+        else if (random < 0.25) rating = 3;
+        else if (random < 0.6) rating = 4;
+        else rating = 5;
+        
+        commentsToInsert.push({
+          event_id: event.id,
+          user_id: user.id, // Use the current user's ID for all sample comments
+          comment: comment,
+          rating: rating
+        });
+      }
+    }
+
+    // Insert all comments
+    const { data, error } = await supabase
+      .from('event_comments')
+      .insert(commentsToInsert)
+      .select();
+
+    if (error) throw error;
+
+    console.log(`Successfully created ${data.length} sample comments`);
+    return data;
+  } catch (error) {
+    console.error('Error creating sample comments:', error);
+    throw error;
+  }
+};

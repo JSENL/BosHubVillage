@@ -19,6 +19,24 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
   const { user } = useAuth();
   const { comments, loading, addComment, deleteComment } = useEventComments(eventId);
 
+  // Sample names for demo purposes
+  const sampleNames = [
+    'Alice Johnson', 'Bob Smith', 'Carol Williams', 'David Brown', 'Emma Davis',
+    'Frank Miller', 'Grace Wilson', 'Henry Moore', 'Ivy Taylor', 'Jack Anderson'
+  ];
+
+  const getDisplayName = (comment: EventComment, index: number) => {
+    // Use actual profile name if available, otherwise use sample names
+    if (comment.profiles?.full_name) {
+      return comment.profiles.full_name;
+    }
+    if (comment.profiles?.email) {
+      return comment.profiles.email;
+    }
+    // Use a sample name based on the comment index for demo
+    return sampleNames[index % sampleNames.length] || 'Anonymous User';
+  };
+
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim() || isSubmitting) return;
@@ -124,7 +142,7 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
             </CardContent>
           </Card>
         ) : (
-          comments.map((comment: EventComment) => (
+          comments.map((comment: EventComment, index: number) => (
             <Card key={comment.id} className="border-purple-100">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start">
@@ -135,7 +153,7 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-1">
                         <span className="font-medium text-gray-800">
-                          {comment.profiles?.full_name || comment.profiles?.email || 'Anonymous User'}
+                          {getDisplayName(comment, index)}
                         </span>
                         <span className="text-sm text-gray-500">
                           {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
