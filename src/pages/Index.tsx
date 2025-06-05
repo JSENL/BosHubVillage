@@ -1,4 +1,3 @@
-
 import { useState, useMemo, useCallback } from 'react';
 import { MapPin, Calendar, DollarSign, Users, Search, Filter, Grid, List, Map, User, Send } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,7 +57,7 @@ const Index = () => {
 
     return events.filter(event => {
       const searchMatch = event.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const categoryMatch = categoryFilter ? event.category === categoryFilter : true;
+      const categoryMatch = categoryFilter && categoryFilter !== 'all' ? event.category === categoryFilter : true;
       const priceMatch = isFree ? event.price === 0 : (event.price >= priceRange[0] && event.price <= priceRange[1]);
 
       return searchMatch && categoryMatch && priceMatch;
@@ -154,7 +153,7 @@ const Index = () => {
                         <SelectValue placeholder="All Categories" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Categories</SelectItem>
+                        <SelectItem value="all">All Categories</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category.value} value={category.value}>
                             {category.label}
