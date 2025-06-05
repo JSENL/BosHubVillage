@@ -8,6 +8,7 @@ export interface EventComment {
   event_id: string;
   user_id: string;
   comment: string;
+  rating: number;
   created_at: string;
   updated_at: string;
   profiles?: {
@@ -29,7 +30,7 @@ export const useEventComments = (eventId: string | null) => {
         .from('event_comments')
         .select(`
           *,
-          profiles:user_id (
+          profiles!inner (
             full_name,
             email
           )
@@ -47,7 +48,7 @@ export const useEventComments = (eventId: string | null) => {
     }
   };
 
-  const addComment = async (commentText: string) => {
+  const addComment = async (commentText: string, rating: number) => {
     if (!eventId) return;
 
     try {
@@ -62,11 +63,12 @@ export const useEventComments = (eventId: string | null) => {
         .insert({
           event_id: eventId,
           user_id: user.id,
-          comment: commentText
+          comment: commentText,
+          rating: rating
         })
         .select(`
           *,
-          profiles:user_id (
+          profiles!inner (
             full_name,
             email
           )

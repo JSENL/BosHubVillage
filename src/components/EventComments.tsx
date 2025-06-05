@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { MessageCircle, Trash2, User } from 'lucide-react';
+import { MessageCircle, Trash2, User, Star } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useEventComments, EventComment } from '@/hooks/useEventComments';
 import { formatDistanceToNow } from 'date-fns';
@@ -14,6 +14,7 @@ interface EventCommentsProps {
 
 const EventComments = ({ eventId }: EventCommentsProps) => {
   const [newComment, setNewComment] = useState('');
+  const [selectedRating, setSelectedRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
   const { comments, loading, addComment, deleteComment } = useEventComments(eventId);
@@ -24,8 +25,9 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
 
     setIsSubmitting(true);
     try {
-      await addComment(newComment.trim());
+      await addComment(newComment.trim(), selectedRating);
       setNewComment('');
+      setSelectedRating(5);
     } catch (error) {
       // Error is handled in the hook
     } finally {
@@ -39,16 +41,52 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
     }
   };
 
+  const renderStars = (rating: number, interactive: boolean = false, onRatingChange?: (rating: number) => void) => {
+    return (
+      <div className="flex space-x-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`h-4 w-4 ${
+              star <= rating 
+                ? 'fill-yellow-400 text-yellow-400' 
+                : 'text-gray-300'
+            } ${interactive ? 'cursor-pointer hover:text-yellow-400' : ''}`}
+            onClick={interactive && onRatingChange ? () => onRatingChange(star) : undefined}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  const averageRating = comments.length > 0 
+    ? comments.reduce((sum, comment) => sum + comment.rating, 0) / comments.length 
+    : 0;
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center space-x-2 mb-4">
-        <MessageCircle className="h-5 w-5 text-purple-600" />
-        <h3 className="text-lg font-semibold">Comments ({comments.length})</h3>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <MessageCircle className="h-5 w-5 text-purple-600" />
+          <h3 className="text-lg font-semibold">Comments ({comments.length})</h3>
+        </div>
+        {comments.length > 0 && (
+          <div className="flex items-center space-x-2">
+            {renderStars(Math.round(averageRating))}
+            <span className="text-sm text-gray-600">
+              ({averageRating.toFixed(1)} avg)
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Add Comment Form */}
       {user ? (
         <form onSubmit={handleSubmitComment} className="space-y-3">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Your Rating</label>
+            {renderStars(selectedRating, true, setSelectedRating)}
+          </div>
           <Textarea
             placeholder="Share your thoughts about this event..."
             value={newComment}
@@ -102,6 +140,9 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
                         <span className="text-sm text-gray-500">
                           {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                         </span>
+                      </div>
+                      <div className="mb-2">
+                        {renderStars(comment.rating)}
                       </div>
                       <p className="text-gray-700">{comment.comment}</p>
                     </div>
