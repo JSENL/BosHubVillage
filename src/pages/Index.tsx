@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { MapPin, Calendar, DollarSign, Users, Search, Filter, Grid, List, Map, User, Send } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,9 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "@/components/EventCard";
-import { useQuery } from "@tanstack/react-query";
+import { useEvents } from "@/hooks/useEvents";
+import { createSampleEvents } from "@/utils/sampleEvents";
+import { toast } from 'sonner';
 
 interface Event {
   id: string;
@@ -30,6 +32,8 @@ const Index = () => {
   const [isFree, setIsFree] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
 
+  const { events, loading: isLoading, fetchEvents } = useEvents();
+
   const categories = [
     { value: 'music', label: 'Music' },
     { value: 'sports', label: 'Sports' },
@@ -41,16 +45,23 @@ const Index = () => {
     { value: 'health', label: 'Health & Wellness' },
   ];
 
-  const { data: events, isLoading, isError } = useQuery({
-    queryKey: ['events'],
-    queryFn: async (): Promise<Event[]> => {
-      const res = await fetch('/api/events');
-      if (!res.ok) {
-        throw new Error('Failed to fetch events');
+  // Load sample events if no events exist
+  useEffect(() => {
+    const loadSampleData = async () => {
+      if (!isLoading && events.length === 0) {
+        try {
+          await createSampleEvents();
+          fetchEvents();
+          toast.success('Sample events loaded!');
+        } catch (error) {
+          console.error('Error loading sample events:', error);
+          // Don't show error toast for non-admin users
+        }
       }
-      return res.json();
-    },
-  });
+    };
+
+    loadSampleData();
+  }, [events, isLoading, fetchEvents]);
 
   const filteredEvents = useMemo(() => {
     if (!events) return [];
@@ -219,10 +230,6 @@ const Index = () => {
                   </CardContent>
                 </Card>
               ))}
-            </div>
-          ) : isError ? (
-            <div className="text-center text-red-500">
-              Failed to load events. Please try again later.
             </div>
           ) : filteredEvents.length === 0 ? (
             <div className="text-center text-gray-500">
