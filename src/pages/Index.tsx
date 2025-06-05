@@ -1,119 +1,94 @@
-
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Calendar, List, Map, Plus, LogOut, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
-import EventsMap from '@/components/EventsMap';
-import EventsList from '@/components/EventsList';
-import EventsCalendar from '@/components/EventsCalendar';
-import EventForm from '@/components/EventForm';
-import SearchBar from '@/components/SearchBar';
-import { useAuth } from '@/hooks/useAuth';
-import { useEvents } from '@/hooks/useEvents';
-import { createSampleEvents } from '@/utils/sampleEvents';
+import { useState, useMemo, useCallback } from 'react';
+import { MapPin, Calendar, DollarSign, Users, Search, Filter, Grid, List, Map, User, Send } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EventCard } from "@/components/EventCard";
+import { useQuery } from "@tanstack/react-query";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const { user, loading, isAdmin, signOut } = useAuth();
-  const { events } = useEvents();
-  const navigate = useNavigate();
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [priceRange, setPriceRange] = useState<number[]>([0, 100]);
+  const [isFree, setIsFree] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/auth');
+  const categories = [
+    { value: 'music', label: 'Music' },
+    { value: 'sports', label: 'Sports' },
+    { value: 'food', label: 'Food & Drink' },
+    { value: 'art', label: 'Arts & Culture' },
+    { value: 'business', label: 'Business' },
+    { value: 'education', label: 'Education' },
+    { value: 'family', label: 'Family' },
+    { value: 'health', label: 'Health & Wellness' },
+  ];
+
+  const { data: events, isLoading, isError } = useQuery('events', async () => {
+    const res = await fetch('/api/events');
+    if (!res.ok) {
+      throw new Error('Failed to fetch events');
     }
-  }, [user, loading, navigate]);
+    return res.json();
+  });
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/auth');
-  };
+  const filteredEvents = useMemo(() => {
+    if (!events) return [];
 
-  const handleCreateSampleEvents = async () => {
-    try {
-      await createSampleEvents();
-      toast.success('Sample events created successfully!');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to create sample events');
-    }
-  };
+    return events.filter(event => {
+      const searchMatch = event.title.toLowerCase().includes(searchQuery.toLowerCase());
+      const categoryMatch = categoryFilter ? event.category === categoryFilter : true;
+      const priceMatch = isFree ? event.price === 0 : (event.price >= priceRange[0] && event.price <= priceRange[1]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-            <Map className="h-5 w-5 text-white" />
-          </div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+      return searchMatch && categoryMatch && priceMatch;
+    });
+  }, [events, searchQuery, categoryFilter, priceRange, isFree]);
 
-  if (!user) {
-    return null; // Will redirect to auth
-  }
+  const handleCategoryChange = useCallback((value: string) => {
+    setCategoryFilter(value);
+  }, []);
+
+  const handlePriceRangeChange = useCallback((value: number[]) => {
+    setPriceRange(value);
+  }, []);
+
+  const handleIsFreeChange = useCallback((checked: boolean) => {
+    setIsFree(checked);
+  }, []);
+
+  const handleViewModeChange = useCallback((mode: 'grid' | 'list' | 'map') => {
+    setViewMode(mode);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <Map className="h-5 w-5 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                LocalEvents
-              </h1>
-            </div>
-            
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Event Discovery
+            </h1>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <User className="h-4 w-4 text-gray-600" />
-                <span className="text-sm text-gray-600">{user.email}</span>
-                {isAdmin && (
-                  <Badge variant="secondary" className="bg-purple-100 text-purple-700">
-                    Admin
-                  </Badge>
-                )}
-              </div>
-
-              {isAdmin && (
-                <div className="flex space-x-2">
-                  <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create Event
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                      <EventForm onClose={() => setIsCreateDialogOpen(false)} />
-                    </DialogContent>
-                  </Dialog>
-
-                  <Button 
-                    variant="outline" 
-                    onClick={handleCreateSampleEvents}
-                    className="border-purple-200 text-purple-600 hover:bg-purple-50"
-                  >
-                    Add Sample Events
-                  </Button>
-                </div>
-              )}
-
-              <Button variant="outline" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
+              <Button
+                onClick={() => window.location.href = '/submit-event'}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Submit Event
+              </Button>
+              <Button
+                onClick={() => window.location.href = '/auth'}
+                variant="outline"
+                className="border-purple-200 text-purple-600 hover:bg-purple-50"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Sign In
               </Button>
             </div>
           </div>
@@ -121,46 +96,138 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {/* Search and Filters */}
-        <div className="mb-8">
-          <SearchBar 
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
+      <main className="py-12">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+          {/* Search and Filters */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Search */}
+            <div className="md:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Find Events</CardTitle>
+                  <CardDescription>Search for events by title</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Search events..."
+                      className="pl-10"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Filters */}
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Filters</CardTitle>
+                  <CardDescription>Filter events by category and price</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Category Filter */}
+                  <div>
+                    <div className="text-sm font-medium text-gray-700">Category</div>
+                    <Select onValueChange={handleCategoryChange}>
+                      <SelectTrigger className="w-full mt-1">
+                        <SelectValue placeholder="All Categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Categories</SelectItem>
+                        {categories.map((category) => (
+                          <SelectItem key={category.value} value={category.value}>
+                            {category.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Price Filter */}
+                  <div>
+                    <div className="text-sm font-medium text-gray-700">Price Range</div>
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <span>${priceRange[0]}</span>
+                      <span>${priceRange[1]}</span>
+                    </div>
+                    <Slider
+                      defaultValue={priceRange}
+                      max={1000}
+                      step={10}
+                      onValueChange={handlePriceRangeChange}
+                    />
+                    <div className="mt-2 flex items-center space-x-2">
+                      <Switch id="isFree" checked={isFree} onCheckedChange={handleIsFreeChange} />
+                      <label htmlFor="isFree" className="text-sm font-medium text-gray-700">
+                        Free Only
+                      </label>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* View Mode */}
+          <div className="flex justify-end space-x-2">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              onClick={() => handleViewModeChange('grid')}
+            >
+              <Grid className="h-4 w-4 mr-2" />
+              Grid
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              onClick={() => handleViewModeChange('list')}
+            >
+              <List className="h-4 w-4 mr-2" />
+              List
+            </Button>
+            {/* <Button
+              variant={viewMode === 'map' ? 'default' : 'outline'}
+              onClick={() => handleViewModeChange('map')}
+            >
+              <Map className="h-4 w-4 mr-2" />
+              Map
+            </Button> */}
+          </div>
+
+          {/* Event Display */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i}>
+                  <CardContent className="p-6">
+                    <Skeleton className="h-40 w-full rounded-md mb-4" />
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-1/2 mb-2" />
+                    <Skeleton className="h-4 w-1/4" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : isError ? (
+            <div className="text-center text-red-500">
+              Failed to load events. Please try again later.
+            </div>
+          ) : filteredEvents.length === 0 ? (
+            <div className="text-center text-gray-500">
+              No events found matching your criteria.
+            </div>
+          ) : (
+            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${viewMode === 'list' ? 'list-view' : ''}`}>
+              {filteredEvents.map((event) => (
+                <EventCard key={event.id} event={event} viewMode={viewMode} />
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* View Tabs */}
-        <Tabs defaultValue="map" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white/50 backdrop-blur-sm">
-            <TabsTrigger value="map" className="flex items-center space-x-2">
-              <Map className="h-4 w-4" />
-              <span>Map</span>
-            </TabsTrigger>
-            <TabsTrigger value="calendar" className="flex items-center space-x-2">
-              <Calendar className="h-4 w-4" />
-              <span>Calendar</span>
-            </TabsTrigger>
-            <TabsTrigger value="list" className="flex items-center space-x-2">
-              <List className="h-4 w-4" />
-              <span>List</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="map" className="mt-6">
-            <EventsMap searchQuery={searchQuery} selectedCategory={selectedCategory} events={events} />
-          </TabsContent>
-
-          <TabsContent value="calendar" className="mt-6">
-            <EventsCalendar searchQuery={searchQuery} selectedCategory={selectedCategory} events={events} />
-          </TabsContent>
-
-          <TabsContent value="list" className="mt-6">
-            <EventsList searchQuery={searchQuery} selectedCategory={selectedCategory} events={events} />
-          </TabsContent>
-        </Tabs>
       </main>
     </div>
   );
