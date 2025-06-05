@@ -51,6 +51,7 @@ export type Database = {
           created_at: string
           event_id: string
           id: string
+          rating: number
           updated_at: string
           user_id: string
         }
@@ -59,6 +60,7 @@ export type Database = {
           created_at?: string
           event_id: string
           id?: string
+          rating?: number
           updated_at?: string
           user_id: string
         }
@@ -67,6 +69,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          rating?: number
           updated_at?: string
           user_id?: string
         }
