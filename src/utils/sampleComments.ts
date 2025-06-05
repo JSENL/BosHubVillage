@@ -131,6 +131,19 @@ const sampleComments = [
       'Peaceful morning session, beautiful location.',
     ],
     name: 'Jack Anderson'
+  },
+  {
+    comments: [
+      'Best community gathering of the year, love the vibe.',
+      'Phenomenal musical talent, such a treat.',
+      'The best tomatoes I\'ve had all season! These local farmers really know what they\'re doing.',
+      'Great run, perfect weather for it.',
+      'Learned so much about our neighborhood history.',
+      'Wonderful cultural experience, very authentic.',
+      'Impressive business presentations, inspiring.',
+      'Very relaxing, great way to start the weekend.',
+    ],
+    name: 'Clyde Everyman'
   }
 ];
 

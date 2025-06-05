@@ -22,7 +22,8 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
   // Sample names for demo purposes
   const sampleNames = [
     'Alice Johnson', 'Bob Smith', 'Carol Williams', 'David Brown', 'Emma Davis',
-    'Frank Miller', 'Grace Wilson', 'Henry Moore', 'Ivy Taylor', 'Jack Anderson'
+    'Frank Miller', 'Grace Wilson', 'Henry Moore', 'Ivy Taylor', 'Jack Anderson',
+    'Clyde Everyman'
   ];
 
   const getDisplayName = (comment: EventComment, index: number) => {
