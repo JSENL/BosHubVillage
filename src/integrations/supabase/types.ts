@@ -90,6 +90,69 @@ export type Database = {
           },
         ]
       }
+      event_submissions: {
+        Row: {
+          admin_notes: string | null
+          category: string
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          is_recurring: boolean | null
+          location: string
+          max_attendees: number | null
+          price: number | null
+          recurring_pattern: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_by: string
+          time: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          category: string
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          location: string
+          max_attendees?: number | null
+          price?: number | null
+          recurring_pattern?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by: string
+          time?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          category?: string
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          location?: string
+          max_attendees?: number | null
+          price?: number | null
+          recurring_pattern?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by?: string
+          time?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           category: string

@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import SubmitEvent from "./pages/SubmitEvent";
 import EventDetails from "./pages/EventDetails";
 import NotFound from "./pages/NotFound";
 
