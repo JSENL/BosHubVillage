@@ -1,3 +1,4 @@
+
 import { useState, useMemo, useCallback } from 'react';
 import { MapPin, Calendar, DollarSign, Users, Search, Filter, Grid, List, Map, User, Send } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,18 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "@/components/EventCard";
 import { useQuery } from "@tanstack/react-query";
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  date: string;
+  time: string;
+  location: string;
+  price: number;
+  max_attendees?: number;
+}
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,12 +42,15 @@ const Index = () => {
     { value: 'health', label: 'Health & Wellness' },
   ];
 
-  const { data: events, isLoading, isError } = useQuery('events', async () => {
-    const res = await fetch('/api/events');
-    if (!res.ok) {
-      throw new Error('Failed to fetch events');
-    }
-    return res.json();
+  const { data: events, isLoading, isError } = useQuery({
+    queryKey: ['events'],
+    queryFn: async (): Promise<Event[]> => {
+      const res = await fetch('/api/events');
+      if (!res.ok) {
+        throw new Error('Failed to fetch events');
+      }
+      return res.json();
+    },
   });
 
   const filteredEvents = useMemo(() => {
@@ -189,13 +205,6 @@ const Index = () => {
               <List className="h-4 w-4 mr-2" />
               List
             </Button>
-            {/* <Button
-              variant={viewMode === 'map' ? 'default' : 'outline'}
-              onClick={() => handleViewModeChange('map')}
-            >
-              <Map className="h-4 w-4 mr-2" />
-              Map
-            </Button> */}
           </div>
 
           {/* Event Display */}
