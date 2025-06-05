@@ -30,7 +30,7 @@ export const useEventComments = (eventId: string | null) => {
         .from('event_comments')
         .select(`
           *,
-          profiles!inner (
+          profiles (
             full_name,
             email
           )
@@ -68,7 +68,7 @@ export const useEventComments = (eventId: string | null) => {
         })
         .select(`
           *,
-          profiles!inner (
+          profiles (
             full_name,
             email
           )
