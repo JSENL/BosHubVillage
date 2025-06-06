@@ -12,9 +12,10 @@ interface EventsMapProps {
   searchQuery: string;
   selectedCategory: string;
   events: Event[];
+  onEventSelect?: (eventId: string) => void;
 }
 
-const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) => {
+const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: EventsMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -22,12 +23,13 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
   const navigate = useNavigate();
   const { apiKey, mapLoaded, isLoadingApiKey, loadMap } = useMapLoader();
 
-  // Filter events based on search and category
+  // Filter events based on search and category, only include events with coordinates
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const hasCoordinates = event.latitude !== null && event.longitude !== null;
+    return matchesSearch && matchesCategory && hasCoordinates;
   });
 
   // Initialize Google Maps
@@ -51,24 +53,30 @@ const EventsMap = ({ searchQuery, selectedCategory, events }: EventsMapProps) =>
 
     // Add new markers for filtered events
     filteredEvents.forEach((event) => {
-      const marker = createEventMarker({
-        event,
-        map: mapInstanceRef.current!,
-        onMarkerClick: (event, position) => {
-          // Close any open info windows
-          closeAllInfoWindows(markersRef.current);
-          setSelectedEvent(event);
-        }
-      });
+      if (event.latitude && event.longitude) {
+        const marker = createEventMarker({
+          event,
+          map: mapInstanceRef.current!,
+          position: { lat: event.latitude, lng: event.longitude },
+          onMarkerClick: (event, position) => {
+            // Close any open info windows
+            closeAllInfoWindows(markersRef.current);
+            setSelectedEvent(event);
+            if (onEventSelect) {
+              onEventSelect(event.id);
+            }
+          }
+        });
 
-      markersRef.current.push(marker);
+        markersRef.current.push(marker);
+      }
     });
 
     // Fit map to show all markers if there are any
     if (filteredEvents.length > 0 && markersRef.current.length > 0) {
       fitMapToBounds(mapInstanceRef.current, markersRef.current);
     }
-  }, [filteredEvents, mapLoaded]);
+  }, [filteredEvents, mapLoaded, onEventSelect]);
 
   const handleEventClick = (event: Event) => {
     navigate(`/event/${event.id}`);

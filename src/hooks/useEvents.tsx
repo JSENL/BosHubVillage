@@ -16,6 +16,8 @@ export interface Event {
   is_recurring: boolean;
   recurring_pattern: string | null;
   created_by: string;
+  latitude: number | null;
+  longitude: number | null;
   attendees_count?: number;
 }
 

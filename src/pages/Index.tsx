@@ -1,3 +1,4 @@
+
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { MapPin, Calendar, DollarSign, Users, Search, Filter, Grid, List, Map, User, Send } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,8 +11,10 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EventCard } from "@/components/EventCard";
 import { useEvents } from "@/hooks/useEvents";
+import { useEventHighlight } from "@/hooks/useEventHighlight";
 import { createSampleEvents } from "@/utils/sampleEvents";
 import { toast } from 'sonner';
+import EventsMap from "@/components/EventsMap";
 
 interface Event {
   id: string;
@@ -33,6 +36,7 @@ const Index = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
 
   const { events, loading: isLoading, fetchEvents } = useEvents();
+  const { highlightedEventId, highlightEvent } = useEventHighlight();
 
   const categories = [
     { value: 'music', label: 'Music' },
@@ -90,6 +94,10 @@ const Index = () => {
   const handleViewModeChange = useCallback((mode: 'grid' | 'list' | 'map') => {
     setViewMode(mode);
   }, []);
+
+  const handleEventSelect = useCallback((eventId: string) => {
+    highlightEvent(eventId);
+  }, [highlightEvent]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
@@ -215,6 +223,13 @@ const Index = () => {
               <List className="h-4 w-4 mr-2" />
               List
             </Button>
+            <Button
+              variant={viewMode === 'map' ? 'default' : 'outline'}
+              onClick={() => handleViewModeChange('map')}
+            >
+              <Map className="h-4 w-4 mr-2" />
+              Map
+            </Button>
           </div>
 
           {/* Event Display */}
@@ -231,6 +246,13 @@ const Index = () => {
                 </Card>
               ))}
             </div>
+          ) : viewMode === 'map' ? (
+            <EventsMap
+              searchQuery={searchQuery}
+              selectedCategory={categoryFilter || 'all'}
+              events={filteredEvents}
+              onEventSelect={handleEventSelect}
+            />
           ) : filteredEvents.length === 0 ? (
             <div className="text-center text-gray-500">
               No events found matching your criteria.
@@ -238,7 +260,12 @@ const Index = () => {
           ) : (
             <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${viewMode === 'list' ? 'list-view' : ''}`}>
               {filteredEvents.map((event) => (
-                <EventCard key={event.id} event={event} viewMode={viewMode} />
+                <EventCard 
+                  key={event.id} 
+                  event={event} 
+                  viewMode={viewMode}
+                  isHighlighted={highlightedEventId === event.id}
+                />
               ))}
             </div>
           )}

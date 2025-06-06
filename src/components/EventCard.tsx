@@ -20,16 +20,25 @@ interface Event {
 interface EventCardProps {
   event: Event;
   viewMode: 'grid' | 'list' | 'map';
+  isHighlighted?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event, viewMode }) => {
+export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
   const handleViewDetails = () => {
     window.location.href = `/event/${event.id}`;
   };
 
+  const cardClassName = `
+    ${isHighlighted ? 'ring-4 ring-purple-400 ring-opacity-75' : ''}
+    transition-all duration-300
+  `;
+
   if (viewMode === 'list') {
     return (
-      <Card className="w-full">
+      <Card 
+        id={`event-${event.id}`}
+        className={`w-full ${cardClassName}`}
+      >
         <CardContent className="p-6">
           <div className="flex items-start justify-between">
             <div className="flex-1 space-y-2">
@@ -69,7 +78,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode }) => {
   }
 
   return (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleViewDetails}>
+    <Card 
+      id={`event-${event.id}`}
+      className={`hover:shadow-lg transition-shadow cursor-pointer ${cardClassName}`} 
+      onClick={handleViewDetails}
+    >
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="space-y-1">
