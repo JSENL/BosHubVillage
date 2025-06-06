@@ -42,6 +42,25 @@ const EventForm = ({ onClose }: EventFormProps) => {
     { value: 'health', label: 'Health & Wellness' },
   ];
 
+  // Simple geocoding function to get coordinates from location
+  const getCoordinatesFromLocation = async (location: string): Promise<{ latitude: number; longitude: number } | null> => {
+    try {
+      // For demo purposes, return random coordinates around Boston area
+      // In a real app, you'd use Google Geocoding API or similar
+      const baseLatitude = 42.3601;
+      const baseLongitude = -71.0589;
+      const randomOffset = 0.05;
+      
+      return {
+        latitude: baseLatitude + (Math.random() - 0.5) * randomOffset,
+        longitude: baseLongitude + (Math.random() - 0.5) * randomOffset
+      };
+    } catch (error) {
+      console.error('Error geocoding location:', error);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -51,6 +70,9 @@ const EventForm = ({ onClose }: EventFormProps) => {
     }
 
     try {
+      // Get coordinates for the location
+      const coordinates = await getCoordinatesFromLocation(formData.location);
+      
       await createEvent({
         title: formData.title,
         description: formData.description,
@@ -62,6 +84,8 @@ const EventForm = ({ onClose }: EventFormProps) => {
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
+        latitude: coordinates?.latitude || null,
+        longitude: coordinates?.longitude || null,
       });
       
       onClose();
