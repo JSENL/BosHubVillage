@@ -4,24 +4,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
 import EventSubmissionForm from '@/components/EventSubmissionForm';
 import AdminEventApproval from '@/components/AdminEventApproval';
+import { SubmissionsTable } from '@/components/SubmissionsTable';
 import { 
   Send, 
   Clock, 
-  CheckCircle, 
-  XCircle, 
-  Calendar, 
-  MapPin,
   Shield
 } from 'lucide-react';
 
@@ -32,19 +20,6 @@ const SubmitEvent = () => {
   
   // Filter user's own submissions
   const userSubmissions = submissions.filter(s => s.submitted_by === user?.id);
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge variant="outline" className="text-yelp-orange border-yelp-orange"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
-      case 'approved':
-        return <Badge variant="outline" className="text-green-600 border-green-600"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
-      case 'rejected':
-        return <Badge variant="outline" className="text-yelp-red border-yelp-red"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
 
   if (authLoading) {
     return (
@@ -145,49 +120,7 @@ const SubmitEvent = () => {
                     <p className="text-gray-600">Submit your first event using the form above.</p>
                   </div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Event</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Submitted</TableHead>
-                        <TableHead>Notes</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {userSubmissions.map((submission) => (
-                        <TableRow key={submission.id}>
-                          <TableCell>
-                            <div>
-                              <div className="font-medium">{submission.title}</div>
-                              <div className="text-sm text-gray-500 flex items-center mt-1">
-                                <MapPin className="h-3 w-3 mr-1" />
-                                {submission.location}
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {getStatusBadge(submission.status)}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center text-sm">
-                              <Calendar className="h-4 w-4 mr-1" />
-                              {new Date(submission.date).toLocaleDateString()}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {new Date(submission.created_at).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <div className="max-w-xs truncate text-sm text-gray-600">
-                              {submission.admin_notes || '-'}
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <SubmissionsTable submissions={userSubmissions} />
                 )}
               </CardContent>
             </Card>
