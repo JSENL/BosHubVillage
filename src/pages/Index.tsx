@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useEvents } from '@/hooks/useEvents';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,7 +8,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { EventCard } from '@/components/EventCard';
 import EventsMap from '@/components/EventsMap';
 import EventsCalendar from '@/components/EventsCalendar';
-import { sampleEvents } from '@/utils/sampleEvents';
+import { allSampleEvents } from '@/utils/sampleEvents';
 import { 
   Search, 
   Filter, 
@@ -33,7 +32,7 @@ const Index = () => {
 
   // Combine API events with sample events
   const allEvents = useMemo(() => {
-    return [...events, ...sampleEvents];
+    return [...events, ...allSampleEvents];
   }, [events]);
 
   const categories = [
@@ -220,9 +219,17 @@ const Index = () => {
             </div>
           </div>
         ) : viewMode === 'map' ? (
-          <EventsMap events={filteredEvents} />
+          <EventsMap 
+            events={filteredEvents} 
+            searchQuery={searchTerm}
+            selectedCategory={selectedCategory}
+          />
         ) : viewMode === 'calendar' ? (
-          <EventsCalendar events={filteredEvents} />
+          <EventsCalendar 
+            events={filteredEvents}
+            searchQuery={searchTerm}
+            selectedCategory={selectedCategory}
+          />
         ) : (
           <div className={`grid gap-6 ${
             viewMode === 'grid' 
