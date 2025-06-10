@@ -7,6 +7,7 @@ import { createEventMarker } from './map/MapMarker';
 import { EventsSidebar } from './map/EventsSidebar';
 import { MapLoadingState, MapErrorState } from './map/MapLoadingState';
 import { fitMapToBounds, clearMarkers, closeAllInfoWindows } from '@/utils/mapUtils';
+import { useEventHighlight } from '@/hooks/useEventHighlight';
 
 interface EventsMapProps {
   searchQuery: string;
@@ -22,6 +23,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const navigate = useNavigate();
   const { apiKey, mapLoaded, isLoadingApiKey, loadMap } = useMapLoader();
+  const { highlightedEventId, highlightEvent } = useEventHighlight();
 
   console.log('EventsMap rendered with events:', events.length);
   console.log('Map loaded state:', mapLoaded);
@@ -59,6 +61,30 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     initializeMap();
   }, [apiKey, loadMap]);
 
+  // Handle marker click to highlight event card
+  const handleMarkerClick = (event: Event, position: { lat: number; lng: number }) => {
+    console.log('Marker clicked for event:', event.title);
+    
+    // Close any open info windows
+    closeAllInfoWindows(markersRef.current);
+    
+    // Set selected event
+    setSelectedEvent(event);
+    
+    // Highlight and scroll to the event card
+    highlightEvent(event.id);
+    
+    // Call optional event select callback
+    if (onEventSelect) {
+      onEventSelect(event.id);
+    }
+    
+    // Pan map to marker position
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.panTo(position);
+    }
+  };
+
   // Add markers for filtered events
   useEffect(() => {
     if (!mapInstanceRef.current || !mapLoaded || !window.google) {
@@ -83,15 +109,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
           event,
           map: mapInstanceRef.current!,
           position: { lat: event.latitude, lng: event.longitude },
-          onMarkerClick: (event, position) => {
-            console.log('Marker clicked:', event.title);
-            // Close any open info windows
-            closeAllInfoWindows(markersRef.current);
-            setSelectedEvent(event);
-            if (onEventSelect) {
-              onEventSelect(event.id);
-            }
-          }
+          onMarkerClick: handleMarkerClick
         });
 
         markersRef.current.push(marker);
@@ -103,7 +121,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
       console.log('Fitting map bounds to show all markers');
       fitMapToBounds(mapInstanceRef.current, markersRef.current);
     }
-  }, [filteredEvents, mapLoaded, onEventSelect]);
+  }, [filteredEvents, mapLoaded]);
 
   const handleEventClick = (event: Event) => {
     navigate(`/event/${event.id}`);
@@ -120,7 +138,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
       {/* Map Container */}
-      <div className="lg:col-span-2 bg-white rounded-2xl border border-red-200 overflow-hidden shadow-lg">
+      <div className="lg:col-span-2 bg-white rounded-2xl border border-red-200 overflow-hidden shadow-lg relative">
         <div 
           ref={mapRef} 
           className="w-full h-full rounded-2xl" 
@@ -141,6 +159,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
         filteredEvents={filteredEvents}
         selectedEvent={selectedEvent}
         onEventClick={handleEventClick}
+        highlightedEventId={highlightedEventId}
       />
     </div>
   );

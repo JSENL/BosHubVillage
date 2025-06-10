@@ -8,9 +8,15 @@ interface EventsSidebarProps {
   filteredEvents: Event[];
   selectedEvent: Event | null;
   onEventClick: (event: Event) => void;
+  highlightedEventId?: string | null;
 }
 
-export const EventsSidebar = ({ filteredEvents, selectedEvent, onEventClick }: EventsSidebarProps) => (
+export const EventsSidebar = ({ 
+  filteredEvents, 
+  selectedEvent, 
+  onEventClick, 
+  highlightedEventId 
+}: EventsSidebarProps) => (
   <div className="space-y-4 overflow-y-auto">
     <h3 className="text-lg font-semibold text-gray-800">
       {filteredEvents.length} Events Found
@@ -18,10 +24,13 @@ export const EventsSidebar = ({ filteredEvents, selectedEvent, onEventClick }: E
     
     {filteredEvents.map((event) => (
       <Card 
-        key={event.id} 
+        key={event.id}
+        id={`event-${event.id}`}
         className={`cursor-pointer transition-all duration-200 hover:shadow-lg border-2 ${
           selectedEvent?.id === event.id 
             ? 'border-purple-400 bg-purple-50' 
+            : highlightedEventId === event.id
+            ? 'border-red-400 bg-red-50 ring-2 ring-red-300'
             : 'border-purple-100 hover:border-purple-200'
         }`}
         onClick={() => onEventClick(event)}
@@ -31,7 +40,9 @@ export const EventsSidebar = ({ filteredEvents, selectedEvent, onEventClick }: E
             <Badge variant="secondary" className="bg-purple-100 text-purple-700">
               {event.category}
             </Badge>
-            <span className="text-sm font-bold text-purple-600">${event.price}</span>
+            <span className="text-sm font-bold text-purple-600">
+              {event.price === 0 ? 'FREE' : `$${event.price}`}
+            </span>
           </div>
           <CardTitle className="text-lg">{event.title}</CardTitle>
           <CardDescription className="line-clamp-2">
