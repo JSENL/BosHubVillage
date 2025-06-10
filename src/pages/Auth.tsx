@@ -88,14 +88,14 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-yelp-light-gray flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 yelp-gradient rounded-lg flex items-center justify-center">
               <Calendar className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-yelp-gray">
               LocalEvents
             </h1>
           </div>
@@ -153,7 +153,7 @@ const Auth = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  className="w-full yelp-gradient hover:opacity-90 text-white"
                   disabled={loading}
                 >
                   {loading ? 'Signing in...' : 'Sign In'}
@@ -221,7 +221,7 @@ const Auth = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  className="w-full yelp-gradient hover:opacity-90 text-white"
                   disabled={loading}
                 >
                   {loading ? 'Creating account...' : 'Create Account'}

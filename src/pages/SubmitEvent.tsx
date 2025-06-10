@@ -36,11 +36,11 @@ const SubmitEvent = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="text-yellow-600 border-yellow-600"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge variant="outline" className="text-yelp-orange border-yelp-orange"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
       case 'approved':
         return <Badge variant="outline" className="text-green-600 border-green-600"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
       case 'rejected':
-        return <Badge variant="outline" className="text-red-600 border-red-600"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
+        return <Badge variant="outline" className="text-yelp-red border-yelp-red"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -50,7 +50,7 @@ const SubmitEvent = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <Clock className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-600" />
+          <Clock className="h-8 w-8 animate-spin mx-auto mb-4 text-yelp-red" />
           <p>Loading...</p>
         </div>
       </div>
@@ -59,18 +59,18 @@ const SubmitEvent = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
+      <div className="min-h-screen bg-yelp-light-gray py-8">
         <div className="max-w-4xl mx-auto px-4">
           <Card>
             <CardContent className="p-8 text-center">
-              <div className="text-purple-500 mb-4">
+              <div className="text-yelp-red mb-4">
                 <Send className="h-16 w-16 mx-auto" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Authentication Required</h3>
+              <h3 className="text-xl font-semibold text-yelp-gray mb-2">Authentication Required</h3>
               <p className="text-gray-600 mb-4">You need to sign in to submit events for approval.</p>
               <Button 
                 onClick={() => window.location.href = '/auth'}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                className="yelp-gradient hover:opacity-90 text-white"
               >
                 Sign In
               </Button>
@@ -88,10 +88,10 @@ const SubmitEvent = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-yelp-light-gray py-8">
       <div className="max-w-6xl mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold text-yelp-gray mb-2">
             Event Management
           </h1>
           <p className="text-gray-600">Submit events for approval and manage submissions</p>
@@ -99,7 +99,7 @@ const SubmitEvent = () => {
 
         {/* Custom Tab Navigation */}
         <div className="mb-6">
-          <div className="flex space-x-1 bg-white rounded-lg p-1 shadow-sm">
+          <div className="flex space-x-1 bg-white rounded-lg p-1 yelp-shadow">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -108,8 +108,8 @@ const SubmitEvent = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      ? 'yelp-gradient text-white yelp-shadow'
+                      : 'text-yelp-gray hover:text-yelp-red hover:bg-gray-100'
                   }`}
                 >
                   <Icon className="h-4 w-4 mr-2" />
@@ -127,7 +127,7 @@ const SubmitEvent = () => {
           {activeTab === 'submissions' && (
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
+                <CardTitle className="flex items-center text-yelp-gray">
                   <Clock className="h-5 w-5 mr-2" />
                   My Event Submissions
                 </CardTitle>
@@ -140,8 +140,8 @@ const SubmitEvent = () => {
                   </div>
                 ) : userSubmissions.length === 0 ? (
                   <div className="text-center p-8">
-                    <Send className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Submissions Yet</h3>
+                    <Send className="h-16 w-16 mx-auto mb-4 text-yelp-light-gray" />
+                    <h3 className="text-lg font-semibold text-yelp-gray mb-2">No Submissions Yet</h3>
                     <p className="text-gray-600">Submit your first event using the form above.</p>
                   </div>
                 ) : (
