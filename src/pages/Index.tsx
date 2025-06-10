@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useEvents } from '@/hooks/useEvents';
+import { useEvents, Event } from '@/hooks/useEvents';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,10 +30,31 @@ const Index = () => {
   const [priceRange, setPriceRange] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'calendar'>('grid');
 
-  // Combine API events with sample events
+  // Transform sample events to match Event interface
+  const transformedSampleEvents: Event[] = useMemo(() => {
+    return allSampleEvents.map((sampleEvent, index) => ({
+      id: `sample-${index}`,
+      title: sampleEvent.title,
+      description: sampleEvent.description,
+      category: sampleEvent.category,
+      date: sampleEvent.date,
+      time: sampleEvent.time,
+      location: sampleEvent.location,
+      price: sampleEvent.price,
+      max_attendees: sampleEvent.max_attendees,
+      is_recurring: sampleEvent.is_recurring,
+      recurring_pattern: sampleEvent.recurring_pattern,
+      created_by: 'sample-user',
+      latitude: sampleEvent.latitude,
+      longitude: sampleEvent.longitude,
+      attendees_count: 0
+    }));
+  }, []);
+
+  // Combine API events with transformed sample events
   const allEvents = useMemo(() => {
-    return [...events, ...allSampleEvents];
-  }, [events]);
+    return [...events, ...transformedSampleEvents];
+  }, [events, transformedSampleEvents]);
 
   const categories = [
     { value: 'all', label: 'All Categories' },
