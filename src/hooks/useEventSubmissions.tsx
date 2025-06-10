@@ -184,6 +184,14 @@ export const useEventSubmissions = () => {
     }
   };
 
+  const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', adminNotes?: string) => {
+    if (status === 'approved') {
+      await approveSubmission(submissionId, adminNotes);
+    } else {
+      await rejectSubmission(submissionId, adminNotes || '');
+    }
+  };
+
   useEffect(() => {
     fetchSubmissions();
   }, []);
@@ -194,6 +202,7 @@ export const useEventSubmissions = () => {
     fetchSubmissions,
     submitEvent,
     approveSubmission,
-    rejectSubmission
+    rejectSubmission,
+    updateSubmissionStatus
   };
 };

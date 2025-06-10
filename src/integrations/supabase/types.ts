@@ -99,7 +99,9 @@ export type Database = {
           description: string | null
           id: string
           is_recurring: boolean | null
+          latitude: number | null
           location: string
+          longitude: number | null
           max_attendees: number | null
           price: number | null
           recurring_pattern: string | null
@@ -119,7 +121,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_recurring?: boolean | null
+          latitude?: number | null
           location: string
+          longitude?: number | null
           max_attendees?: number | null
           price?: number | null
           recurring_pattern?: string | null
@@ -139,7 +143,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_recurring?: boolean | null
+          latitude?: number | null
           location?: string
+          longitude?: number | null
           max_attendees?: number | null
           price?: number | null
           recurring_pattern?: string | null
