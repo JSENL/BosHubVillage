@@ -56,7 +56,13 @@ export const useEventSubmissions = () => {
 
       if (error) throw error;
 
-      setSubmissions(data || []);
+      // Type cast the data to ensure status field is properly typed
+      const typedData = (data || []).map(submission => ({
+        ...submission,
+        status: submission.status as 'pending' | 'approved' | 'rejected'
+      }));
+
+      setSubmissions(typedData);
     } catch (error: any) {
       console.error('Error fetching event submissions:', error);
       toast.error('Failed to load event submissions');
