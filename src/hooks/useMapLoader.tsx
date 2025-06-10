@@ -13,6 +13,7 @@ export const useMapLoader = () => {
   useEffect(() => {
     const fetchApiKey = async () => {
       try {
+        console.log('Fetching Google Maps API key...');
         const { data, error } = await supabase.functions.invoke('get-maps-key');
         
         if (error) {
@@ -22,6 +23,7 @@ export const useMapLoader = () => {
         }
 
         if (data?.apiKey) {
+          console.log('Google Maps API key fetched successfully');
           setApiKey(data.apiKey);
         } else {
           console.error('No API key returned from edge function');
@@ -39,7 +41,12 @@ export const useMapLoader = () => {
   }, []);
 
   const loadMap = async (mapRef: React.RefObject<HTMLDivElement>) => {
-    if (!apiKey || !mapRef.current) return null;
+    if (!apiKey || !mapRef.current) {
+      console.log('Cannot load map:', { apiKey: !!apiKey, mapElement: !!mapRef.current });
+      return null;
+    }
+
+    console.log('Loading Google Maps with API key...');
 
     const loader = new Loader({
       apiKey: apiKey,
@@ -50,11 +57,15 @@ export const useMapLoader = () => {
     try {
       await loader.load();
       
-      if (!mapRef.current) return null;
+      if (!mapRef.current) {
+        console.error('Map container element not found');
+        return null;
+      }
       
+      console.log('Creating map instance...');
       const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat: 42.3152, lng: -71.0685 }, // Dorchester, Boston area
-        zoom: 13,
+        center: { lat: 42.3601, lng: -71.0589 }, // Boston center
+        zoom: 12,
         styles: [
           {
             featureType: 'poi',
