@@ -7,9 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Send } from 'lucide-react';
+import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Send, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
+import { useGeocoding } from '@/hooks/useGeocoding';
 
 interface EventSubmissionFormProps {
   onClose?: () => void;
@@ -30,6 +31,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
   });
 
   const { submitEvent } = useEventSubmissions();
+  const { geocode, isGeocoding, isReady } = useGeocoding();
 
   const categories = [
     { value: 'music', label: 'Music' },
@@ -50,7 +52,23 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
       return;
     }
 
+    if (!isReady) {
+      toast.error('Google Maps API not ready. Please try again.');
+      return;
+    }
+
     try {
+      // Geocode the location to get coordinates
+      console.log('Starting geocoding for submission location:', formData.location);
+      const coordinates = await geocode(formData.location);
+      
+      // Note: For submissions, we'll still allow submission even if geocoding fails
+      // The admin can review and fix the location later
+      if (!coordinates) {
+        console.warn('Geocoding failed for submission, proceeding without coordinates');
+        toast.warning('Could not find exact coordinates for the address, but your submission will be reviewed by our team.');
+      }
+
       await submitEvent({
         title: formData.title,
         description: formData.description,
@@ -62,6 +80,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
+        latitude: coordinates?.latitude || null,
+        longitude: coordinates?.longitude || null,
       });
       
       // Reset form
@@ -99,6 +119,9 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
           Submit Event for Approval
         </CardTitle>
         <p className="text-gray-600">Your event will be reviewed by our admin team before being published.</p>
+        {!isReady && (
+          <p className="text-sm text-amber-600">Loading Google Maps API for address validation...</p>
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -186,14 +209,19 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
             <Label htmlFor="location" className="text-sm font-medium text-gray-700 flex items-center">
               <MapPin className="h-4 w-4 mr-1" />
               Location *
+              {isGeocoding && <Loader2 className="h-3 w-3 ml-2 animate-spin" />}
             </Label>
             <Input
               id="location"
-              placeholder="Enter event location"
+              placeholder="Enter full address (e.g., 123 Main St, Boston, MA)"
               value={formData.location}
               onChange={(e) => handleInputChange('location', e.target.value)}
               className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+              disabled={isGeocoding}
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Address will be automatically converted to map coordinates
+            </p>
           </div>
 
           {/* Price and Capacity */}
@@ -262,10 +290,20 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
           <div className="pt-4">
             <Button
               type="submit"
+              disabled={isGeocoding || !isReady}
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
             >
-              <Send className="h-4 w-4 mr-2" />
-              Submit for Approval
+              {isGeocoding ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4 mr-2" />
+                  Submit for Approval
+                </>
+              )}
             </Button>
           </div>
         </form>

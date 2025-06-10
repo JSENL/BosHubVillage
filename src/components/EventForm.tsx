@@ -7,9 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Clock, DollarSign, Users, Repeat } from 'lucide-react';
+import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEvents } from '@/hooks/useEvents';
+import { useGeocoding } from '@/hooks/useGeocoding';
 
 interface EventFormProps {
   onClose: () => void;
@@ -30,6 +31,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
   });
 
   const { createEvent } = useEvents();
+  const { geocode, isGeocoding, isReady } = useGeocoding();
 
   const categories = [
     { value: 'music', label: 'Music' },
@@ -42,25 +44,6 @@ const EventForm = ({ onClose }: EventFormProps) => {
     { value: 'health', label: 'Health & Wellness' },
   ];
 
-  // Simple geocoding function to get coordinates from location
-  const getCoordinatesFromLocation = async (location: string): Promise<{ latitude: number; longitude: number } | null> => {
-    try {
-      // For demo purposes, return random coordinates around Boston area
-      // In a real app, you'd use Google Geocoding API or similar
-      const baseLatitude = 42.3601;
-      const baseLongitude = -71.0589;
-      const randomOffset = 0.05;
-      
-      return {
-        latitude: baseLatitude + (Math.random() - 0.5) * randomOffset,
-        longitude: baseLongitude + (Math.random() - 0.5) * randomOffset
-      };
-    } catch (error) {
-      console.error('Error geocoding location:', error);
-      return null;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -69,9 +52,22 @@ const EventForm = ({ onClose }: EventFormProps) => {
       return;
     }
 
+    if (!isReady) {
+      toast.error('Google Maps API not ready. Please try again.');
+      return;
+    }
+
     try {
-      // Get coordinates for the location
-      const coordinates = await getCoordinatesFromLocation(formData.location);
+      // Geocode the location to get coordinates
+      console.log('Starting geocoding for location:', formData.location);
+      const coordinates = await geocode(formData.location);
+      
+      if (!coordinates) {
+        toast.error('Could not find coordinates for the provided address. Please check the location and try again.');
+        return;
+      }
+
+      console.log('Geocoded coordinates:', coordinates);
       
       await createEvent({
         title: formData.title,
@@ -84,8 +80,8 @@ const EventForm = ({ onClose }: EventFormProps) => {
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
-        latitude: coordinates?.latitude || null,
-        longitude: coordinates?.longitude || null,
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
       });
       
       onClose();
@@ -107,6 +103,9 @@ const EventForm = ({ onClose }: EventFormProps) => {
         <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
           Create New Event
         </CardTitle>
+        {!isReady && (
+          <p className="text-sm text-amber-600">Loading Google Maps API for address validation...</p>
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -193,15 +192,20 @@ const EventForm = ({ onClose }: EventFormProps) => {
           <div>
             <Label htmlFor="location" className="text-sm font-medium text-gray-700 flex items-center">
               <MapPin className="h-4 w-4 mr-1" />
-              Location *
+              Location * 
+              {isGeocoding && <Loader2 className="h-3 w-3 ml-2 animate-spin" />}
             </Label>
             <Input
               id="location"
-              placeholder="Enter event location"
+              placeholder="Enter full address (e.g., 123 Main St, Boston, MA)"
               value={formData.location}
               onChange={(e) => handleInputChange('location', e.target.value)}
               className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+              disabled={isGeocoding}
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Address will be automatically converted to map coordinates
+            </p>
           </div>
 
           {/* Price and Capacity */}
@@ -270,14 +274,23 @@ const EventForm = ({ onClose }: EventFormProps) => {
           <div className="flex space-x-3 pt-4">
             <Button
               type="submit"
+              disabled={isGeocoding || !isReady}
               className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
             >
-              Create Event
+              {isGeocoding ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating Event...
+                </>
+              ) : (
+                'Create Event'
+              )}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
+              disabled={isGeocoding}
               className="border-purple-200 text-purple-600 hover:bg-purple-50"
             >
               Cancel
