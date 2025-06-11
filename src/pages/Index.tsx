@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,7 +8,6 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { EventCard } from '@/components/EventCard';
 import EventsMap from '@/components/EventsMap';
 import EventsCalendar from '@/components/EventsCalendar';
-import { AdminSampleDataPanel } from '@/components/AdminSampleDataPanel';
 import { allSampleEvents } from '@/utils/sampleEvents';
 import { 
   Search, 
@@ -21,8 +19,7 @@ import {
   Star,
   Plus,
   User,
-  LogOut,
-  Settings
+  LogOut
 } from 'lucide-react';
 
 const Index = () => {
