@@ -571,12 +571,157 @@ export const sampleMattapanEvents = [
   }
 ];
 
+// Jamaica Plain events
+export const sampleJamaicaPlainEvents = [
+  {
+    title: 'JP Porchfest',
+    description: 'Annual neighborhood music festival featuring local musicians performing on porches throughout Jamaica Plain.',
+    category: 'music',
+    date: '2024-07-27',
+    time: '14:00',
+    location: 'Various Porches, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: null,
+    is_recurring: true,
+    recurring_pattern: 'yearly',
+    latitude: 42.3126,
+    longitude: -71.1042
+  },
+  {
+    title: 'Centre Street Farmers Market',
+    description: 'Weekly farmers market featuring local produce, artisanal foods, and handmade crafts in the heart of JP.',
+    category: 'food',
+    date: '2024-06-22',
+    time: '10:00',
+    location: 'Centre Street, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: null,
+    is_recurring: true,
+    recurring_pattern: 'weekly',
+    latitude: 42.3095,
+    longitude: -71.1061
+  },
+  {
+    title: 'JP Brewery Walking Tour',
+    description: 'Guided tour of Jamaica Plain\'s craft breweries with tastings and behind-the-scenes access.',
+    category: 'food',
+    date: '2024-06-29',
+    time: '16:00',
+    location: 'Samuel Adams Brewery, Jamaica Plain, MA',
+    price: 35,
+    max_attendees: 20,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3118,
+    longitude: -71.1026
+  },
+  {
+    title: 'Arnold Arboretum Nature Walk',
+    description: 'Educational nature walk through the beautiful Arnold Arboretum with expert botanist guides.',
+    category: 'education',
+    date: '2024-07-06',
+    time: '09:00',
+    location: 'Arnold Arboretum, Jamaica Plain, MA',
+    price: 12,
+    max_attendees: 30,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3004,
+    longitude: -71.1204
+  },
+  {
+    title: 'JP Community Art Market',
+    description: 'Monthly art market showcasing local artists, painters, sculptors, and craftspeople.',
+    category: 'art',
+    date: '2024-07-13',
+    time: '11:00',
+    location: 'Blessed Sacrament Church, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: 200,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3089,
+    longitude: -71.1087
+  },
+  {
+    title: 'Latino Cultural Festival',
+    description: 'Celebration of Latino culture with traditional music, dance, food, and cultural performances.',
+    category: 'family',
+    date: '2024-08-17',
+    time: '12:00',
+    location: 'Franklin Park, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: 600,
+    is_recurring: true,
+    recurring_pattern: 'yearly',
+    latitude: 42.3017,
+    longitude: -71.0944
+  },
+  {
+    title: 'JP Startup Meetup',
+    description: 'Monthly networking event for entrepreneurs, developers, and startup enthusiasts in Jamaica Plain.',
+    category: 'business',
+    date: '2024-06-26',
+    time: '18:30',
+    location: 'Bella Luna Restaurant, Jamaica Plain, MA',
+    price: 10,
+    max_attendees: 40,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3123,
+    longitude: -71.1134
+  },
+  {
+    title: 'Community Bike Repair Workshop',
+    description: 'Learn basic bike maintenance and repair skills. Tools and parts provided for common repairs.',
+    category: 'education',
+    date: '2024-07-09',
+    time: '14:00',
+    location: 'Bikes Not Bombs, Jamaica Plain, MA',
+    price: 15,
+    max_attendees: 15,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3067,
+    longitude: -71.1089
+  },
+  {
+    title: 'JP Pride Community Celebration',
+    description: 'Annual Pride celebration with live performances, vendor booths, and community activities.',
+    category: 'family',
+    date: '2024-06-15',
+    time: '13:00',
+    location: 'Loring Greenough House, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: 400,
+    is_recurring: true,
+    recurring_pattern: 'yearly',
+    latitude: 42.3098,
+    longitude: -71.1156
+  },
+  {
+    title: 'Salsa Dancing Classes',
+    description: 'Beginner-friendly salsa dancing classes in a welcoming community environment.',
+    category: 'health',
+    date: '2024-06-24',
+    time: '19:00',
+    location: 'Spontaneous Celebrations, Jamaica Plain, MA',
+    price: 18,
+    max_attendees: 25,
+    is_recurring: true,
+    recurring_pattern: 'weekly',
+    latitude: 42.3101,
+    longitude: -71.1078
+  }
+];
+
 // Combine all sample events
 export const allSampleEvents = [
   ...sampleDorchesterEvents,
   ...sampleHydeParkEvents,
   ...sampleRoxburyEvents,
-  ...sampleMattapanEvents
+  ...sampleMattapanEvents,
+  ...sampleJamaicaPlainEvents
 ];
 
 export const createSampleEvents = async () => {
