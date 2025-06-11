@@ -30,11 +30,21 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
   // Get events for selected date
   const eventsForSelectedDate = filteredEvents.filter(event => {
     const eventDate = new Date(event.date);
-    return eventDate.toDateString() === selectedDate?.toDateString();
+    const selectedDateStr = selectedDate?.toDateString();
+    const eventDateStr = eventDate.toDateString();
+    return selectedDateStr === eventDateStr;
   });
 
-  // Get dates that have events
-  const eventDates = filteredEvents.map(event => new Date(event.date));
+  // Get dates that have events - ensure proper date formatting
+  const eventDates = filteredEvents.map(event => {
+    const eventDate = new Date(event.date);
+    // Ensure the date is valid
+    if (isNaN(eventDate.getTime())) {
+      console.warn('Invalid date found in event:', event.title, event.date);
+      return null;
+    }
+    return eventDate;
+  }).filter(date => date !== null) as Date[];
 
   const handleEventClick = (event: Event) => {
     navigate(`/event/${event.id}`);
@@ -74,20 +84,28 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
             onMonthChange={setCurrentMonth}
             className="rounded-md border-0"
             modifiers={{
-              hasEvent: eventDates,
+              hasEvent: (date) => {
+                return eventDates.some(eventDate => {
+                  return eventDate.toDateString() === date.toDateString();
+                });
+              }
             }}
             modifiersStyles={{
               hasEvent: {
                 backgroundColor: '#e879f9',
                 color: 'white',
                 fontWeight: 'bold',
+                borderRadius: '50%'
               }
+            }}
+            modifiersClassNames={{
+              hasEvent: 'bg-purple-400 text-white font-bold rounded-full hover:bg-purple-500'
             }}
           />
           <div className="mt-4 text-sm text-gray-600 text-center">
             <div className="flex items-center justify-center space-x-2">
-              <div className="w-3 h-3 bg-purple-400 rounded"></div>
-              <span>Days with events</span>
+              <div className="w-3 h-3 bg-purple-400 rounded-full"></div>
+              <span>Days with events ({eventDates.length} total)</span>
             </div>
           </div>
         </CardContent>
@@ -110,6 +128,7 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
             <div className="text-center py-8 text-gray-500">
               <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p>No events scheduled for this date</p>
+              <p className="text-sm mt-2">Try selecting a highlighted date or browse all events</p>
             </div>
           ) : (
             <div className="space-y-4 max-h-96 overflow-y-auto">
@@ -120,7 +139,9 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
                       <Badge variant="secondary" className="bg-purple-100 text-purple-700">
                         {event.category}
                       </Badge>
-                      <span className="font-bold text-purple-600">${event.price}</span>
+                      <span className="font-bold text-purple-600">
+                        {event.price === 0 ? 'FREE' : `$${event.price}`}
+                      </span>
                     </div>
                     
                     <h3 className="font-semibold text-lg mb-2">{event.title}</h3>
