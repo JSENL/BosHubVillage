@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useAuth } from '@/hooks/useAuth';
@@ -8,6 +9,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { EventCard } from '@/components/EventCard';
 import EventsMap from '@/components/EventsMap';
 import EventsCalendar from '@/components/EventsCalendar';
+import { Navigation } from '@/components/Navigation';
 import { allSampleEvents } from '@/utils/sampleEvents';
 import { 
   Search, 
@@ -16,15 +18,10 @@ import {
   List, 
   MapPin, 
   Calendar as CalendarIcon,
-  Star,
-  Plus,
-  User,
-  LogOut
 } from 'lucide-react';
 
 const Index = () => {
   const { events, loading } = useEvents();
-  const { user, signOut } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
@@ -82,60 +79,10 @@ const Index = () => {
     return matchesSearch && matchesCategory && matchesPrice;
   });
 
-  const handleSignOut = async () => {
-    await signOut();
-  };
-
   return (
     <div className="min-h-screen bg-yelp-light-gray">
-      {/* Yelp-style Header */}
-      <header className="bg-white yelp-shadow border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 yelp-gradient rounded-lg flex items-center justify-center">
-                <Star className="h-5 w-5 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-yelp-gray">LocalEvents</h1>
-            </div>
-
-            {/* Navigation */}
-            <div className="flex items-center space-x-4">
-              {user ? (
-                <>
-                  <Button
-                    onClick={() => window.location.href = '/submit-event'}
-                    className="yelp-gradient hover:opacity-90 text-white"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Submit Event
-                  </Button>
-                  <div className="flex items-center space-x-2 text-sm text-yelp-gray">
-                    <User className="h-4 w-4" />
-                    <span>Welcome, {user.email}</span>
-                  </div>
-                  <Button
-                    onClick={handleSignOut}
-                    variant="outline"
-                    size="sm"
-                    className="text-yelp-gray border-yelp-gray hover:bg-yelp-red hover:text-white hover:border-yelp-red"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  onClick={() => window.location.href = '/auth'}
-                  className="yelp-gradient hover:opacity-90 text-white"
-                >
-                  Sign In
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation */}
+      <Navigation />
 
       {/* Search Section */}
       <div className="bg-yelp-red py-12">
