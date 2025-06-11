@@ -29,6 +29,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'calendar'>('grid');
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
 
   // Transform sample events to match Event interface
   const transformedSampleEvents: Event[] = useMemo(() => {
@@ -87,7 +88,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-yelp-light-gray">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50">
       {/* Yelp-style Header */}
       <header className="bg-white yelp-shadow border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -231,7 +232,28 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8">
+        {/* Admin Panel Toggle - only show for authenticated users */}
+        {user && (
+          <div className="mb-6 flex justify-center">
+            <Button
+              onClick={() => setIsAdminPanelOpen(!isAdminPanelOpen)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              {isAdminPanelOpen ? 'Hide' : 'Show'} Admin Panel
+            </Button>
+          </div>
+        )}
+
+        {/* Admin Sample Data Panel */}
+        {user && isAdminPanelOpen && (
+          <div className="mb-8">
+            <AdminSampleDataPanel />
+          </div>
+        )}
+
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
@@ -280,3 +302,5 @@ const Index = () => {
 };
 
 export default Index;
+
+</edits_to_apply>

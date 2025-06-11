@@ -571,12 +571,157 @@ export const sampleMattapanEvents = [
   }
 ];
 
+// Jamaica Plain events
+export const sampleJamaicaPlainEvents = [
+  {
+    title: 'JP Music Festival',
+    description: 'Annual music festival featuring local bands and artists at Pinebank Field. Food trucks and craft vendors.',
+    category: 'music',
+    date: '2024-07-27',
+    time: '15:00',
+    location: 'Pinebank Field, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: 1000,
+    is_recurring: true,
+    recurring_pattern: 'yearly',
+    latitude: 42.3139,
+    longitude: -71.1097
+  },
+  {
+    title: 'Centre Street Open Market',
+    description: 'Weekly street market with local vendors, artisans, and food trucks along Centre Street.',
+    category: 'food',
+    date: '2024-06-23',
+    time: '10:00',
+    location: 'Centre Street, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: null,
+    is_recurring: true,
+    recurring_pattern: 'weekly',
+    latitude: 42.3098,
+    longitude: -71.1133
+  },
+  {
+    title: 'Forest Hills Cemetery Walking Tour',
+    description: 'Historical walking tour through the beautiful Forest Hills Cemetery with knowledgeable guides.',
+    category: 'education',
+    date: '2024-07-08',
+    time: '11:00',
+    location: 'Forest Hills Cemetery, Jamaica Plain, MA',
+    price: 15,
+    max_attendees: 25,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3017,
+    longitude: -71.1131
+  },
+  {
+    title: 'JP Pride Community Celebration',
+    description: 'Annual pride celebration with performances, vendors, and community organizations.',
+    category: 'family',
+    date: '2024-06-30',
+    time: '12:00',
+    location: 'Jamaica Pond, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: 800,
+    is_recurring: true,
+    recurring_pattern: 'yearly',
+    latitude: 42.3114,
+    longitude: -71.1197
+  },
+  {
+    title: 'Arnold Arboretum Nature Photography Workshop',
+    description: 'Learn nature photography techniques in the beautiful Arnold Arboretum with professional photographers.',
+    category: 'education',
+    date: '2024-07-14',
+    time: '09:00',
+    location: 'Arnold Arboretum, Jamaica Plain, MA',
+    price: 35,
+    max_attendees: 15,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3012,
+    longitude: -71.1256
+  },
+  {
+    title: 'Brewery Tour and Tasting',
+    description: 'Guided tour of local JP breweries with tastings and behind-the-scenes access.',
+    category: 'food',
+    date: '2024-06-29',
+    time: '16:00',
+    location: 'Various Breweries, Jamaica Plain, MA',
+    price: 45,
+    max_attendees: 20,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3089,
+    longitude: -71.1156
+  },
+  {
+    title: 'JP Community Basketball Tournament',
+    description: 'Annual street basketball tournament for all ages with prizes and refreshments.',
+    category: 'sports',
+    date: '2024-08-17',
+    time: '10:00',
+    location: 'Blessed Sacrament Courts, Jamaica Plain, MA',
+    price: 10,
+    max_attendees: 64,
+    is_recurring: true,
+    recurring_pattern: 'yearly',
+    latitude: 42.3076,
+    longitude: -71.1089
+  },
+  {
+    title: 'Latin Dance Night',
+    description: 'Weekly salsa, bachata, and merengue dance night with live DJ and dance lessons.',
+    category: 'art',
+    date: '2024-06-27',
+    time: '20:00',
+    location: 'Bella Luna Restaurant, Jamaica Plain, MA',
+    price: 12,
+    max_attendees: 80,
+    is_recurring: true,
+    recurring_pattern: 'weekly',
+    latitude: 42.3101,
+    longitude: -71.1142
+  },
+  {
+    title: 'Small Business Spotlight Event',
+    description: 'Networking event highlighting local JP businesses and entrepreneurs.',
+    category: 'business',
+    date: '2024-07-18',
+    time: '18:00',
+    location: 'Spontaneous Celebrations, Jamaica Plain, MA',
+    price: 8,
+    max_attendees: 50,
+    is_recurring: true,
+    recurring_pattern: 'monthly',
+    latitude: 42.3087,
+    longitude: -71.1145
+  },
+  {
+    title: 'Community Wellness Fair',
+    description: 'Free health screenings, wellness workshops, and information about local health resources.',
+    category: 'health',
+    date: '2024-07-13',
+    time: '10:00',
+    location: 'JP Community Center, Jamaica Plain, MA',
+    price: 0,
+    max_attendees: 200,
+    is_recurring: true,
+    recurring_pattern: 'yearly',
+    latitude: 42.3095,
+    longitude: -71.1167
+  }
+];
+
 // Combine all sample events
 export const allSampleEvents = [
   ...sampleDorchesterEvents,
   ...sampleHydeParkEvents,
   ...sampleRoxburyEvents,
-  ...sampleMattapanEvents
+  ...sampleMattapanEvents,
+  ...sampleJamaicaPlainEvents
 ];
 
 export const createSampleEvents = async () => {
