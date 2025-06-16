@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/hooks/useAuth';
 import { useEventComments } from '@/hooks/useEventComments';
 import { CommentsHeader } from './comments/CommentsHeader';
@@ -26,10 +25,8 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
   };
 
   const handleReplyToComment = async (commentId: string, replyText: string) => {
-    // For now, we'll add the reply as a regular comment with a mention
-    // TODO: Implement proper nested replies in the database
-    const replyComment = `@reply: ${replyText}`;
-    await addComment(replyComment, 5);
+    // Add the reply as a child comment with parent_comment_id
+    await addComment(replyText, 5, undefined, commentId);
   };
 
   return (

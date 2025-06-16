@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -19,6 +18,7 @@ export interface EventComment {
   rating: number;
   created_at: string;
   updated_at: string;
+  parent_comment_id?: string | null;
   profiles?: {
     full_name: string | null;
     email: string;
@@ -27,11 +27,38 @@ export interface EventComment {
     }[];
   };
   comment_media?: CommentMedia[];
+  replies?: EventComment[];
 }
 
 export const useEventComments = (eventId: string | null) => {
   const [comments, setComments] = useState<EventComment[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const organizeComments = (flatComments: EventComment[]): EventComment[] => {
+    const commentMap = new Map<string, EventComment>();
+    const rootComments: EventComment[] = [];
+
+    // First pass: create map and initialize replies array
+    flatComments.forEach(comment => {
+      commentMap.set(comment.id, { ...comment, replies: [] });
+    });
+
+    // Second pass: organize into tree structure
+    flatComments.forEach(comment => {
+      const mappedComment = commentMap.get(comment.id)!;
+      
+      if (comment.parent_comment_id) {
+        const parent = commentMap.get(comment.parent_comment_id);
+        if (parent) {
+          parent.replies!.push(mappedComment);
+        }
+      } else {
+        rootComments.push(mappedComment);
+      }
+    });
+
+    return rootComments;
+  };
 
   const fetchComments = async () => {
     if (!eventId) return;
@@ -58,10 +85,12 @@ export const useEventComments = (eventId: string | null) => {
           )
         `)
         .eq('event_id', eventId)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setComments(data || []);
+      
+      const organizedComments = organizeComments(data || []);
+      setComments(organizedComments);
     } catch (error: any) {
       console.error('Error fetching comments:', error);
       toast.error('Failed to load comments');
@@ -94,7 +123,7 @@ export const useEventComments = (eventId: string | null) => {
     return uploadedFiles;
   };
 
-  const addComment = async (commentText: string, rating: number, mediaFiles?: File[]) => {
+  const addComment = async (commentText: string, rating: number, mediaFiles?: File[], parentCommentId?: string) => {
     if (!eventId) return;
 
     try {
@@ -111,7 +140,8 @@ export const useEventComments = (eventId: string | null) => {
           event_id: eventId,
           user_id: user.id,
           comment: commentText,
-          rating: rating
+          rating: rating,
+          parent_comment_id: parentCommentId
         })
         .select(`
           *,
@@ -155,7 +185,8 @@ export const useEventComments = (eventId: string | null) => {
         comment_media: mediaData
       };
 
-      setComments(prev => [newComment, ...prev]);
+      // Refresh comments to get the updated tree structure
+      await fetchComments();
       toast.success('Comment added successfully!');
       return newComment;
     } catch (error: any) {

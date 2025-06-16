@@ -16,6 +16,7 @@ interface CommentItemProps {
   onDeleteComment: (commentId: string, isOwnComment: boolean) => Promise<void>;
   onReplyToComment?: (commentId: string, replyText: string) => Promise<void>;
   userIsAdmin?: boolean;
+  depth?: number;
 }
 
 const sampleNames = [
@@ -48,11 +49,13 @@ export const CommentItem = ({
   isAdmin, 
   onDeleteComment,
   onReplyToComment,
-  userIsAdmin = false
+  userIsAdmin = false,
+  depth = 0
 }: CommentItemProps) => {
   const isOwnComment = user?.id === comment.user_id;
   const canDeleteComment = isOwnComment || isAdmin;
   const commentByAdmin = isCommentByAdmin(comment);
+  const isReply = depth > 0;
 
   const handleDeleteComment = async () => {
     const confirmMessage = isOwnComment 
@@ -72,72 +75,95 @@ export const CommentItem = ({
   };
 
   return (
-    <Card className="border-purple-100">
-      <CardContent className="p-4">
-        <div className="flex justify-between items-start">
-          <div className="flex items-start space-x-3 flex-1">
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-              <User className="h-4 w-4 text-purple-600" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="font-medium text-gray-800">
-                  {getDisplayName(comment, index)}
-                </span>
-                {commentByAdmin && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                    <Shield className="h-3 w-3 mr-1" />
-                    Admin
+    <div className={`${isReply ? 'ml-8' : ''}`}>
+      <Card className={`border-purple-100 ${isReply ? 'border-l-4 border-l-purple-200' : ''}`}>
+        <CardContent className="p-4">
+          <div className="flex justify-between items-start">
+            <div className="flex items-start space-x-3 flex-1">
+              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                <User className="h-4 w-4 text-purple-600" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="font-medium text-gray-800">
+                    {getDisplayName(comment, index)}
                   </span>
-                )}
-                <span className="text-sm text-gray-500">
-                  {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
-                </span>
-                {isAdmin && !isOwnComment && (
-                  <div className="relative group">
-                    <Shield className="h-3 w-3 text-amber-500" />
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      Admin can delete this comment
+                  {commentByAdmin && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                      <Shield className="h-3 w-3 mr-1" />
+                      Admin
+                    </span>
+                  )}
+                  <span className="text-sm text-gray-500">
+                    {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
+                  </span>
+                  {isAdmin && !isOwnComment && (
+                    <div className="relative group">
+                      <Shield className="h-3 w-3 text-amber-500" />
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        Admin can delete this comment
+                      </div>
                     </div>
+                  )}
+                </div>
+                {!isReply && (
+                  <div className="mb-2">
+                    <StarRating rating={comment.rating} />
                   </div>
                 )}
-              </div>
-              <div className="mb-2">
-                <StarRating rating={comment.rating} />
-              </div>
-              <p className="text-gray-700 mb-2">{comment.comment}</p>
-              
-              {/* Display media attachments */}
-              <CommentMediaDisplay media={comment.comment_media || []} />
+                <p className="text-gray-700 mb-2">{comment.comment}</p>
+                
+                {/* Display media attachments */}
+                <CommentMediaDisplay media={comment.comment_media || []} />
 
-              {/* Action buttons */}
-              <div className="flex items-center space-x-2 mt-3">
-                {user && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleReply}
-                    className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                  >
-                    <Reply className="h-3 w-3 mr-1" />
-                    Reply
-                  </Button>
-                )}
+                {/* Action buttons */}
+                <div className="flex items-center space-x-2 mt-3">
+                  {user && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleReply}
+                      className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                    >
+                      <Reply className="h-3 w-3 mr-1" />
+                      Reply
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
+            {canDeleteComment && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDeleteComment}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
-          {canDeleteComment && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDeleteComment}
-              className="text-red-500 hover:text-red-700 hover:bg-red-50"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
+        </CardContent>
+      </Card>
+
+      {/* Render replies */}
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="mt-2 space-y-2">
+          {comment.replies.map((reply, replyIndex) => (
+            <CommentItem
+              key={reply.id}
+              comment={reply}
+              index={replyIndex}
+              user={user}
+              isAdmin={isAdmin}
+              onDeleteComment={onDeleteComment}
+              onReplyToComment={onReplyToComment}
+              userIsAdmin={userIsAdmin}
+              depth={depth + 1}
+            />
+          ))}
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 };
