@@ -85,28 +85,28 @@ const Index = () => {
       <Navigation />
 
       {/* Search Section */}
-      <div className="bg-yelp-red py-12">
+      <div className="bg-yelp-red py-8 sm:py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-4xl font-bold text-white mb-2 sm:mb-4">
             Find Local Events in Boston
           </h2>
-          <p className="text-xl text-white/90 mb-8">
+          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8">
             Discover amazing events happening in your neighborhood
           </p>
           
           {/* Search Bar */}
-          <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto">
+          <div className="flex flex-col gap-3 sm:gap-4 max-w-2xl mx-auto">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
               <Input
                 placeholder="Search events, venues, or activities..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12 bg-white border-0 yelp-shadow"
+                className="pl-10 sm:pl-12 h-10 sm:h-12 bg-white border-0 yelp-shadow text-sm sm:text-base"
               />
             </div>
-            <Button className="h-12 px-8 bg-yelp-orange hover:bg-yelp-yellow text-white font-semibold">
-              <Search className="h-5 w-5 mr-2" />
+            <Button className="h-10 sm:h-12 px-6 sm:px-8 bg-yelp-orange hover:bg-yelp-yellow text-white font-semibold text-sm sm:text-base">
+              <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               Search
             </Button>
           </div>
@@ -114,18 +114,18 @@ const Index = () => {
       </div>
 
       {/* Filters and View Toggle */}
-      <div className="bg-white border-b border-gray-200 yelp-shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="bg-white border-b border-gray-200 yelp-shadow-lg sticky top-14 sm:top-16 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
+          <div className="flex flex-col gap-4">
             {/* Filters */}
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <div className="flex items-center space-x-2">
-                <Filter className="h-5 w-5 text-yelp-gray" />
-                <span className="text-sm font-medium text-yelp-gray">Filters:</span>
+                <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-yelp-gray" />
+                <span className="text-xs sm:text-sm font-medium text-yelp-gray">Filters:</span>
               </div>
               
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -138,7 +138,7 @@ const Index = () => {
               </Select>
 
               <Select value={priceRange} onValueChange={setPriceRange}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-24 sm:w-32 h-8 sm:h-10 text-xs sm:text-sm">
                   <SelectValue placeholder="Price" />
                 </SelectTrigger>
                 <SelectContent>
@@ -148,42 +148,60 @@ const Index = () => {
                 </SelectContent>
               </Select>
 
-              <div className="text-sm text-yelp-gray">
+              <div className="text-xs sm:text-sm text-yelp-gray">
                 {filteredEvents.length} events found
               </div>
             </div>
 
             {/* View Toggle */}
-            <ToggleGroup
-              type="single"
-              value={viewMode}
-              onValueChange={(value) => value && setViewMode(value as any)}
-              className="bg-gray-100 p-1 rounded-lg"
-            >
-              <ToggleGroupItem value="grid" aria-label="Grid view" className="data-[state=on]:bg-white data-[state=on]:yelp-shadow">
-                <Grid3X3 className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="list" aria-label="List view" className="data-[state=on]:bg-white data-[state=on]:yelp-shadow">
-                <List className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="map" aria-label="Map view" className="data-[state=on]:bg-white data-[state=on]:yelp-shadow">
-                <MapPin className="h-4 w-4" />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="calendar" aria-label="Calendar view" className="data-[state=on]:bg-white data-[state=on]:yelp-shadow">
-                <CalendarIcon className="h-4 w-4" />
-              </ToggleGroupItem>
-            </ToggleGroup>
+            <div className="flex justify-center sm:justify-end">
+              <ToggleGroup
+                type="single"
+                value={viewMode}
+                onValueChange={(value) => value && setViewMode(value as any)}
+                className="bg-gray-100 p-1 rounded-lg"
+              >
+                <ToggleGroupItem 
+                  value="grid" 
+                  aria-label="Grid view" 
+                  className="data-[state=on]:bg-white data-[state=on]:yelp-shadow h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <Grid3X3 className="h-3 w-3 sm:h-4 sm:w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem 
+                  value="list" 
+                  aria-label="List view" 
+                  className="data-[state=on]:bg-white data-[state=on]:yelp-shadow h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <List className="h-3 w-3 sm:h-4 sm:w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem 
+                  value="map" 
+                  aria-label="Map view" 
+                  className="data-[state=on]:bg-white data-[state=on]:yelp-shadow h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem 
+                  value="calendar" 
+                  aria-label="Calendar view" 
+                  className="data-[state=on]:bg-white data-[state=on]:yelp-shadow h-8 w-8 sm:h-10 sm:w-10"
+                >
+                  <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 py-4 sm:py-8">
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yelp-red mx-auto mb-4"></div>
-              <p className="text-yelp-gray">Loading amazing events...</p>
+              <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-yelp-red mx-auto mb-4"></div>
+              <p className="text-yelp-gray text-sm sm:text-base">Loading amazing events...</p>
             </div>
           </div>
         ) : viewMode === 'map' ? (
@@ -199,9 +217,9 @@ const Index = () => {
             selectedCategory={selectedCategory}
           />
         ) : (
-          <div className={`grid gap-6 ${
+          <div className={`grid gap-4 sm:gap-6 ${
             viewMode === 'grid' 
-              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
+              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
               : 'grid-cols-1'
           }`}>
             {filteredEvents.map((event) => (
@@ -216,9 +234,9 @@ const Index = () => {
 
         {filteredEvents.length === 0 && !loading && (
           <div className="text-center py-12">
-            <Search className="h-16 w-16 mx-auto mb-4 text-yelp-light-gray" />
-            <h3 className="text-xl font-semibold text-yelp-gray mb-2">No events found</h3>
-            <p className="text-gray-600">Try adjusting your search criteria or browse all events.</p>
+            <Search className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-yelp-light-gray" />
+            <h3 className="text-lg sm:text-xl font-semibold text-yelp-gray mb-2">No events found</h3>
+            <p className="text-gray-600 text-sm sm:text-base">Try adjusting your search criteria or browse all events.</p>
           </div>
         )}
       </main>
