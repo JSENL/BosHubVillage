@@ -173,7 +173,12 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
                             {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                           </span>
                           {isAdmin && !isOwnComment && (
-                            <Shield className="h-3 w-3 text-amber-500" title="Admin can delete this comment" />
+                            <div className="relative group">
+                              <Shield className="h-3 w-3 text-amber-500" />
+                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                Admin can delete this comment
+                              </div>
+                            </div>
                           )}
                         </div>
                         <div className="mb-2">
