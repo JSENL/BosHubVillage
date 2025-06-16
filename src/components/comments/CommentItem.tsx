@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Trash2, User, Shield, Reply, Image, Video } from 'lucide-react';
@@ -35,9 +34,9 @@ const getDisplayName = (comment: EventComment, index: number) => {
   return sampleNames[index % sampleNames.length] || 'Anonymous User';
 };
 
-const isCommentByAdmin = (comment: EventComment, index: number) => {
-  // Simple logic: every 3rd comment is by an admin for demo purposes
-  return index % 3 === 0;
+const isCommentByAdmin = (comment: EventComment) => {
+  // Check if the user has admin role from the actual user_roles data
+  return comment.user_roles?.some(role => role.role === 'admin') || false;
 };
 
 export const CommentItem = ({ 
@@ -51,7 +50,7 @@ export const CommentItem = ({
 }: CommentItemProps) => {
   const isOwnComment = user?.id === comment.user_id;
   const canDeleteComment = isOwnComment || isAdmin;
-  const commentByAdmin = isCommentByAdmin(comment, index);
+  const commentByAdmin = isCommentByAdmin(comment);
 
   const handleDeleteComment = async () => {
     const confirmMessage = isOwnComment 

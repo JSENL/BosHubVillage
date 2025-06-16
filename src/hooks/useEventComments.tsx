@@ -15,6 +15,9 @@ export interface EventComment {
     full_name: string | null;
     email: string;
   };
+  user_roles?: {
+    role: string;
+  }[];
 }
 
 export const useEventComments = (eventId: string | null) => {
@@ -33,6 +36,9 @@ export const useEventComments = (eventId: string | null) => {
           profiles (
             full_name,
             email
+          ),
+          user_roles!inner (
+            role
           )
         `)
         .eq('event_id', eventId)
@@ -71,6 +77,9 @@ export const useEventComments = (eventId: string | null) => {
           profiles (
             full_name,
             email
+          ),
+          user_roles!inner (
+            role
           )
         `)
         .single();
