@@ -1,7 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trash2, User, Shield } from 'lucide-react';
+import { Trash2, User, Shield, Reply, Image, Video } from 'lucide-react';
 import { StarRating } from './StarRating';
 import { EventComment } from '@/hooks/useEventComments';
 import { formatDistanceToNow } from 'date-fns';
@@ -13,6 +13,8 @@ interface CommentItemProps {
   user: SupabaseUser | null;
   isAdmin: boolean;
   onDeleteComment: (commentId: string, isOwnComment: boolean) => Promise<void>;
+  onReplyToComment?: (commentId: string, replyText: string) => Promise<void>;
+  userIsAdmin?: boolean;
 }
 
 const sampleNames = [
@@ -33,9 +35,23 @@ const getDisplayName = (comment: EventComment, index: number) => {
   return sampleNames[index % sampleNames.length] || 'Anonymous User';
 };
 
-export const CommentItem = ({ comment, index, user, isAdmin, onDeleteComment }: CommentItemProps) => {
+const isCommentByAdmin = (comment: EventComment, index: number) => {
+  // Simple logic: every 3rd comment is by an admin for demo purposes
+  return index % 3 === 0;
+};
+
+export const CommentItem = ({ 
+  comment, 
+  index, 
+  user, 
+  isAdmin, 
+  onDeleteComment,
+  onReplyToComment,
+  userIsAdmin = false
+}: CommentItemProps) => {
   const isOwnComment = user?.id === comment.user_id;
   const canDeleteComment = isOwnComment || isAdmin;
+  const commentByAdmin = isCommentByAdmin(comment, index);
 
   const handleDeleteComment = async () => {
     const confirmMessage = isOwnComment 
@@ -44,6 +60,13 @@ export const CommentItem = ({ comment, index, user, isAdmin, onDeleteComment }: 
     
     if (window.confirm(confirmMessage)) {
       await onDeleteComment(comment.id, isOwnComment);
+    }
+  };
+
+  const handleReply = () => {
+    const replyText = prompt('Enter your reply:');
+    if (replyText && onReplyToComment) {
+      onReplyToComment(comment.id, replyText);
     }
   };
 
@@ -60,6 +83,12 @@ export const CommentItem = ({ comment, index, user, isAdmin, onDeleteComment }: 
                 <span className="font-medium text-gray-800">
                   {getDisplayName(comment, index)}
                 </span>
+                {commentByAdmin && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                    <Shield className="h-3 w-3 mr-1" />
+                    Admin
+                  </span>
+                )}
                 <span className="text-sm text-gray-500">
                   {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                 </span>
@@ -75,7 +104,27 @@ export const CommentItem = ({ comment, index, user, isAdmin, onDeleteComment }: 
               <div className="mb-2">
                 <StarRating rating={comment.rating} />
               </div>
-              <p className="text-gray-700">{comment.comment}</p>
+              <p className="text-gray-700 mb-2">{comment.comment}</p>
+              
+              {/* Media placeholder - will be implemented when media URLs are stored */}
+              <div className="flex space-x-2 mb-2">
+                {/* Placeholder for media attachments */}
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex items-center space-x-2">
+                {user && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleReply}
+                    className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                  >
+                    <Reply className="h-3 w-3 mr-1" />
+                    Reply
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
           {canDeleteComment && (
@@ -84,7 +133,6 @@ export const CommentItem = ({ comment, index, user, isAdmin, onDeleteComment }: 
               size="sm"
               onClick={handleDeleteComment}
               className="text-red-500 hover:text-red-700 hover:bg-red-50"
-              title={isOwnComment ? "Delete your comment" : "Delete comment (Admin)"}
             >
               <Trash2 className="h-4 w-4" />
             </Button>

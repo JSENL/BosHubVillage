@@ -11,6 +11,7 @@ interface CommentsListProps {
   user: User | null;
   isAdmin: boolean;
   onDeleteComment: (commentId: string, isOwnComment: boolean) => Promise<void>;
+  onReplyToComment?: (commentId: string, replyText: string) => Promise<void>;
 }
 
 export const CommentsList = ({ 
@@ -18,7 +19,8 @@ export const CommentsList = ({
   loading, 
   user, 
   isAdmin, 
-  onDeleteComment 
+  onDeleteComment,
+  onReplyToComment
 }: CommentsListProps) => {
   if (loading) {
     return (
@@ -49,6 +51,8 @@ export const CommentsList = ({
           user={user}
           isAdmin={isAdmin}
           onDeleteComment={onDeleteComment}
+          onReplyToComment={onReplyToComment}
+          userIsAdmin={isAdmin}
         />
       ))}
     </div>
