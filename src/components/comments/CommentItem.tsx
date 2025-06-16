@@ -35,8 +35,8 @@ const getDisplayName = (comment: EventComment, index: number) => {
 };
 
 const isCommentByAdmin = (comment: EventComment) => {
-  // Check if the user has admin role from the actual user_roles data
-  return comment.user_roles?.some(role => role.role === 'admin') || false;
+  // Check if the user has admin role from the actual user_roles data nested in profiles
+  return comment.profiles?.user_roles?.some(role => role.role === 'admin') || false;
 };
 
 export const CommentItem = ({ 
