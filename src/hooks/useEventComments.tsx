@@ -1,64 +1,14 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-
-export interface CommentMedia {
-  id: string;
-  file_path: string;
-  file_name: string;
-  file_type: string;
-  file_size: number;
-}
-
-export interface EventComment {
-  id: string;
-  event_id: string;
-  user_id: string;
-  comment: string;
-  rating: number;
-  created_at: string;
-  updated_at: string;
-  parent_comment_id?: string | null;
-  profiles?: {
-    full_name: string | null;
-    email: string;
-    user_roles?: {
-      role: string;
-    }[];
-  };
-  comment_media?: CommentMedia[];
-  replies?: EventComment[];
-}
+import { EventComment, CommentMedia } from '@/types/comments';
+import { organizeComments } from '@/utils/commentUtils';
+import { uploadMediaFiles } from '@/services/mediaUploadService';
 
 export const useEventComments = (eventId: string | null) => {
   const [comments, setComments] = useState<EventComment[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const organizeComments = (flatComments: EventComment[]): EventComment[] => {
-    const commentMap = new Map<string, EventComment>();
-    const rootComments: EventComment[] = [];
-
-    // First pass: create map and initialize replies array
-    flatComments.forEach(comment => {
-      commentMap.set(comment.id, { ...comment, replies: [] });
-    });
-
-    // Second pass: organize into tree structure
-    flatComments.forEach(comment => {
-      const mappedComment = commentMap.get(comment.id)!;
-      
-      if (comment.parent_comment_id) {
-        const parent = commentMap.get(comment.parent_comment_id);
-        if (parent) {
-          parent.replies!.push(mappedComment);
-        }
-      } else {
-        rootComments.push(mappedComment);
-      }
-    });
-
-    return rootComments;
-  };
 
   const fetchComments = async () => {
     if (!eventId) return;
@@ -97,30 +47,6 @@ export const useEventComments = (eventId: string | null) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const uploadMediaFiles = async (files: File[], userId: string) => {
-    const uploadedFiles: { path: string; name: string; type: string; size: number }[] = [];
-    
-    for (const file of files) {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      
-      const { data, error } = await supabase.storage
-        .from('comment-media')
-        .upload(fileName, file);
-
-      if (error) throw error;
-      
-      uploadedFiles.push({
-        path: data.path,
-        name: file.name,
-        type: file.type,
-        size: file.size
-      });
-    }
-    
-    return uploadedFiles;
   };
 
   const addComment = async (commentText: string, rating: number, mediaFiles?: File[], parentCommentId?: string) => {

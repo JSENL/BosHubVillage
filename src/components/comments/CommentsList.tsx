@@ -2,7 +2,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { MessageCircle } from 'lucide-react';
 import { CommentItem } from './CommentItem';
-import { EventComment } from '@/hooks/useEventComments';
+import { EventComment } from '@/types/comments';
 import { User } from '@supabase/supabase-js';
 
 interface CommentsListProps {

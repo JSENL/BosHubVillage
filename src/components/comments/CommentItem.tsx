@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Trash2, User, Shield, Reply } from 'lucide-react';
 import { StarRating } from './StarRating';
 import { CommentMediaDisplay } from './CommentMedia';
-import { EventComment } from '@/hooks/useEventComments';
+import { EventComment } from '@/types/comments';
 import { formatDistanceToNow } from 'date-fns';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 

@@ -1,3 +1,4 @@
+
 import { useAuth } from '@/hooks/useAuth';
 import { useEventComments } from '@/hooks/useEventComments';
 import { CommentsHeader } from './comments/CommentsHeader';
