@@ -4,7 +4,6 @@ import { useEventComments } from '@/hooks/useEventComments';
 import { CommentsHeader } from './comments/CommentsHeader';
 import { CommentForm } from './comments/CommentForm';
 import { CommentsList } from './comments/CommentsList';
-import { toast } from 'sonner';
 
 interface EventCommentsProps {
   eventId: string;
@@ -19,12 +18,7 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
     : 0;
 
   const handleSubmitComment = async (commentText: string, rating: number, mediaFiles?: File[]) => {
-    // For now, we'll ignore media files until storage is set up
-    // TODO: Implement media file upload to Supabase storage
-    if (mediaFiles && mediaFiles.length > 0) {
-      toast.info('Media upload will be available soon!');
-    }
-    await addComment(commentText, rating);
+    await addComment(commentText, rating, mediaFiles);
   };
 
   const handleDeleteComment = async (commentId: string, isOwnComment: boolean) => {
@@ -36,7 +30,6 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
     // TODO: Implement proper nested replies in the database
     const replyComment = `@reply: ${replyText}`;
     await addComment(replyComment, 5);
-    toast.success('Reply added!');
   };
 
   return (

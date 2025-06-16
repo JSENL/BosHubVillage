@@ -1,7 +1,9 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trash2, User, Shield, Reply, Image, Video } from 'lucide-react';
+import { Trash2, User, Shield, Reply } from 'lucide-react';
 import { StarRating } from './StarRating';
+import { CommentMediaDisplay } from './CommentMedia';
 import { EventComment } from '@/hooks/useEventComments';
 import { formatDistanceToNow } from 'date-fns';
 import { User as SupabaseUser } from '@supabase/supabase-js';
@@ -105,13 +107,11 @@ export const CommentItem = ({
               </div>
               <p className="text-gray-700 mb-2">{comment.comment}</p>
               
-              {/* Media placeholder - will be implemented when media URLs are stored */}
-              <div className="flex space-x-2 mb-2">
-                {/* Placeholder for media attachments */}
-              </div>
+              {/* Display media attachments */}
+              <CommentMediaDisplay media={comment.comment_media || []} />
 
               {/* Action buttons */}
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 mt-3">
                 {user && (
                   <Button
                     variant="ghost"

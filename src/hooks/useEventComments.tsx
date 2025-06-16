@@ -3,6 +3,14 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+export interface CommentMedia {
+  id: string;
+  file_path: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+}
+
 export interface EventComment {
   id: string;
   event_id: string;
@@ -18,6 +26,7 @@ export interface EventComment {
       role: string;
     }[];
   };
+  comment_media?: CommentMedia[];
 }
 
 export const useEventComments = (eventId: string | null) => {
@@ -39,6 +48,13 @@ export const useEventComments = (eventId: string | null) => {
             user_roles (
               role
             )
+          ),
+          comment_media (
+            id,
+            file_path,
+            file_name,
+            file_type,
+            file_size
           )
         `)
         .eq('event_id', eventId)
@@ -54,7 +70,31 @@ export const useEventComments = (eventId: string | null) => {
     }
   };
 
-  const addComment = async (commentText: string, rating: number) => {
+  const uploadMediaFiles = async (files: File[], userId: string) => {
+    const uploadedFiles: { path: string; name: string; type: string; size: number }[] = [];
+    
+    for (const file of files) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('comment-media')
+        .upload(fileName, file);
+
+      if (error) throw error;
+      
+      uploadedFiles.push({
+        path: data.path,
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
+    }
+    
+    return uploadedFiles;
+  };
+
+  const addComment = async (commentText: string, rating: number, mediaFiles?: File[]) => {
     if (!eventId) return;
 
     try {
@@ -64,7 +104,8 @@ export const useEventComments = (eventId: string | null) => {
         throw new Error('User not authenticated');
       }
 
-      const { data, error } = await supabase
+      // Insert the comment first
+      const { data: commentData, error: commentError } = await supabase
         .from('event_comments')
         .insert({
           event_id: eventId,
@@ -84,11 +125,39 @@ export const useEventComments = (eventId: string | null) => {
         `)
         .single();
 
-      if (error) throw error;
+      if (commentError) throw commentError;
 
-      setComments(prev => [data, ...prev]);
+      // Upload media files if any
+      let mediaData: CommentMedia[] = [];
+      if (mediaFiles && mediaFiles.length > 0) {
+        const uploadedFiles = await uploadMediaFiles(mediaFiles, user.id);
+        
+        // Insert media records
+        const mediaInserts = uploadedFiles.map(file => ({
+          comment_id: commentData.id,
+          file_path: file.path,
+          file_name: file.name,
+          file_type: file.type,
+          file_size: file.size
+        }));
+
+        const { data: insertedMedia, error: mediaError } = await supabase
+          .from('comment_media')
+          .insert(mediaInserts)
+          .select();
+
+        if (mediaError) throw mediaError;
+        mediaData = insertedMedia || [];
+      }
+
+      const newComment = {
+        ...commentData,
+        comment_media: mediaData
+      };
+
+      setComments(prev => [newComment, ...prev]);
       toast.success('Comment added successfully!');
-      return data;
+      return newComment;
     } catch (error: any) {
       console.error('Error adding comment:', error);
       toast.error('Failed to add comment');
@@ -98,6 +167,20 @@ export const useEventComments = (eventId: string | null) => {
 
   const deleteComment = async (commentId: string) => {
     try {
+      // Delete associated media files from storage
+      const { data: mediaFiles } = await supabase
+        .from('comment_media')
+        .select('file_path')
+        .eq('comment_id', commentId);
+
+      if (mediaFiles && mediaFiles.length > 0) {
+        const filePaths = mediaFiles.map(media => media.file_path);
+        await supabase.storage
+          .from('comment-media')
+          .remove(filePaths);
+      }
+
+      // Delete the comment (media records will be deleted by CASCADE)
       const { error } = await supabase
         .from('event_comments')
         .delete()
