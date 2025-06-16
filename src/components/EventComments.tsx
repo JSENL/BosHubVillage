@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { MessageCircle, Trash2, User, Star } from 'lucide-react';
+import { MessageCircle, Trash2, User, Star, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useEventComments, EventComment } from '@/hooks/useEventComments';
 import { formatDistanceToNow } from 'date-fns';
@@ -16,7 +16,7 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
   const [newComment, setNewComment] = useState('');
   const [selectedRating, setSelectedRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { comments, loading, addComment, deleteComment } = useEventComments(eventId);
 
   // Sample names for demo purposes
@@ -54,10 +54,19 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    if (window.confirm('Are you sure you want to delete this comment?')) {
+  const handleDeleteComment = async (commentId: string, isOwnComment: boolean) => {
+    const confirmMessage = isOwnComment 
+      ? 'Are you sure you want to delete this comment?' 
+      : 'Are you sure you want to delete this user\'s comment? (Admin action)';
+    
+    if (window.confirm(confirmMessage)) {
       await deleteComment(commentId);
     }
+  };
+
+  const canDeleteComment = (comment: EventComment) => {
+    // User can delete their own comments, or admin can delete any comment
+    return user?.id === comment.user_id || isAdmin;
   };
 
   const renderStars = (rating: number, interactive: boolean = false, onRatingChange?: (rating: number) => void) => {
@@ -143,43 +152,52 @@ const EventComments = ({ eventId }: EventCommentsProps) => {
             </CardContent>
           </Card>
         ) : (
-          comments.map((comment: EventComment, index: number) => (
-            <Card key={comment.id} className="border-purple-100">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-start space-x-3 flex-1">
-                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className="font-medium text-gray-800">
-                          {getDisplayName(comment, index)}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
-                        </span>
+          comments.map((comment: EventComment, index: number) => {
+            const isOwnComment = user?.id === comment.user_id;
+            const showDeleteButton = canDeleteComment(comment);
+            
+            return (
+              <Card key={comment.id} className="border-purple-100">
+                <CardContent className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-start space-x-3 flex-1">
+                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <User className="h-4 w-4 text-purple-600" />
                       </div>
-                      <div className="mb-2">
-                        {renderStars(comment.rating)}
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <span className="font-medium text-gray-800">
+                            {getDisplayName(comment, index)}
+                          </span>
+                          <span className="text-sm text-gray-500">
+                            {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
+                          </span>
+                          {isAdmin && !isOwnComment && (
+                            <Shield className="h-3 w-3 text-amber-500" title="Admin can delete this comment" />
+                          )}
+                        </div>
+                        <div className="mb-2">
+                          {renderStars(comment.rating)}
+                        </div>
+                        <p className="text-gray-700">{comment.comment}</p>
                       </div>
-                      <p className="text-gray-700">{comment.comment}</p>
                     </div>
+                    {showDeleteButton && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteComment(comment.id, isOwnComment)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        title={isOwnComment ? "Delete your comment" : "Delete comment (Admin)"}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
-                  {user?.id === comment.user_id && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteComment(comment.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </div>
     </div>
