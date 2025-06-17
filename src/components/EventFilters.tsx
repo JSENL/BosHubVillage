@@ -9,6 +9,10 @@ interface EventFiltersProps {
   onPriceRangeChange: (range: string) => void;
   selectedLocation: string;
   onLocationChange: (location: string) => void;
+  selectedEventType: string;
+  onEventTypeChange: (eventType: string) => void;
+  selectedNeighborhood: string;
+  onNeighborhoodChange: (neighborhood: string) => void;
   filteredEventsCount: number;
 }
 
@@ -19,6 +23,10 @@ export const EventFilters = ({
   onPriceRangeChange,
   selectedLocation,
   onLocationChange,
+  selectedEventType,
+  onEventTypeChange,
+  selectedNeighborhood,
+  onNeighborhoodChange,
   filteredEventsCount
 }: EventFiltersProps) => {
   const categories = [
@@ -26,6 +34,13 @@ export const EventFilters = ({
     { value: 'business', label: 'Business' },
     { value: 'events', label: 'Events' },
     { value: 'news', label: 'News' },
+  ];
+
+  const eventTypes = [
+    { value: 'all', label: 'All Types' },
+    { value: 'business', label: 'Business' },
+    { value: 'news', label: 'News' },
+    { value: 'event', label: 'Event' },
   ];
 
   const locations = [
@@ -36,6 +51,20 @@ export const EventFilters = ({
     { value: 'back-bay', label: 'Back Bay' },
     { value: 'north-end', label: 'North End' },
     { value: 'south-end', label: 'South End' },
+  ];
+
+  const neighborhoods = [
+    { value: 'all', label: 'All Neighborhoods' },
+    { value: 'beacon-hill', label: 'Beacon Hill' },
+    { value: 'back-bay', label: 'Back Bay' },
+    { value: 'north-end', label: 'North End' },
+    { value: 'south-end', label: 'South End' },
+    { value: 'chinatown', label: 'Chinatown' },
+    { value: 'financial-district', label: 'Financial District' },
+    { value: 'fenway', label: 'Fenway' },
+    { value: 'cambridge', label: 'Cambridge' },
+    { value: 'somerville', label: 'Somerville' },
+    { value: 'charlestown', label: 'Charlestown' },
   ];
 
   return (
@@ -58,6 +87,19 @@ export const EventFilters = ({
         </SelectContent>
       </Select>
 
+      <Select value={selectedEventType} onValueChange={onEventTypeChange}>
+        <SelectTrigger className="w-32 sm:w-40 h-8 sm:h-10 text-xs sm:text-sm">
+          <SelectValue placeholder="Type" />
+        </SelectTrigger>
+        <SelectContent>
+          {eventTypes.map((type) => (
+            <SelectItem key={type.value} value={type.value}>
+              {type.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       <Select value={selectedLocation} onValueChange={onLocationChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
           <SelectValue placeholder="Location" />
@@ -66,6 +108,19 @@ export const EventFilters = ({
           {locations.map((location) => (
             <SelectItem key={location.value} value={location.value}>
               {location.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={selectedNeighborhood} onValueChange={onNeighborhoodChange}>
+        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
+          <SelectValue placeholder="Neighborhood" />
+        </SelectTrigger>
+        <SelectContent>
+          {neighborhoods.map((neighborhood) => (
+            <SelectItem key={neighborhood.value} value={neighborhood.value}>
+              {neighborhood.label}
             </SelectItem>
           ))}
         </SelectContent>

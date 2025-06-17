@@ -8,6 +8,7 @@ export interface Event {
   title: string;
   description: string;
   category: string;
+  event_type: string;
   date: string;
   time: string;
   location: string;
@@ -18,6 +19,7 @@ export interface Event {
   created_by: string;
   latitude: number | null;
   longitude: number | null;
+  neighborhoods: string[] | null;
   attendees_count?: number;
 }
 

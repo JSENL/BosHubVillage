@@ -7,6 +7,7 @@ interface CreateEventSubmissionData {
   title: string;
   description: string;
   category: string;
+  event_type: string;
   date: string;
   time: string;
   location: string;
@@ -14,6 +15,7 @@ interface CreateEventSubmissionData {
   max_attendees: number | null;
   is_recurring: boolean;
   recurring_pattern: string | null;
+  neighborhoods: string[] | null;
   latitude: number | null;
   longitude: number | null;
 }
@@ -27,9 +29,11 @@ export const useEventSubmissionCreation = () => {
         throw new Error('User not authenticated');
       }
 
-      console.log('Submitting event with coordinates:', {
+      console.log('Submitting event with coordinates and new fields:', {
         title: eventData.title,
         location: eventData.location,
+        event_type: eventData.event_type,
+        neighborhoods: eventData.neighborhoods,
         latitude: eventData.latitude,
         longitude: eventData.longitude
       });

@@ -21,6 +21,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     title: '',
     description: '',
     category: '',
+    event_type: 'event',
     date: '',
     time: '',
     location: '',
@@ -28,6 +29,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     max_attendees: '',
     is_recurring: false,
     recurring_pattern: '',
+    neighborhoods: [] as string[],
   });
 
   const { submitEvent } = useEventSubmissions();
@@ -42,6 +44,25 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     { value: 'education', label: 'Education' },
     { value: 'family', label: 'Family' },
     { value: 'health', label: 'Health & Wellness' },
+  ];
+
+  const eventTypes = [
+    { value: 'event', label: 'Event' },
+    { value: 'business', label: 'Business' },
+    { value: 'news', label: 'News' },
+  ];
+
+  const neighborhoods = [
+    { value: 'beacon-hill', label: 'Beacon Hill' },
+    { value: 'back-bay', label: 'Back Bay' },
+    { value: 'north-end', label: 'North End' },
+    { value: 'south-end', label: 'South End' },
+    { value: 'chinatown', label: 'Chinatown' },
+    { value: 'financial-district', label: 'Financial District' },
+    { value: 'fenway', label: 'Fenway' },
+    { value: 'cambridge', label: 'Cambridge' },
+    { value: 'somerville', label: 'Somerville' },
+    { value: 'charlestown', label: 'Charlestown' },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,6 +94,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         title: formData.title,
         description: formData.description,
         category: formData.category,
+        event_type: formData.event_type,
         date: formData.date,
         time: formData.time || '00:00',
         location: formData.location,
@@ -80,6 +102,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
+        neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods : null,
         latitude: coordinates?.latitude || null,
         longitude: coordinates?.longitude || null,
       });
@@ -89,6 +112,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         title: '',
         description: '',
         category: '',
+        event_type: 'event',
         date: '',
         time: '',
         location: '',
@@ -96,6 +120,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         max_attendees: '',
         is_recurring: false,
         recurring_pattern: '',
+        neighborhoods: [],
       });
       
       if (onClose) onClose();
@@ -104,7 +129,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     }
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string | boolean | string[]) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -154,22 +179,67 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               />
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="category" className="text-sm font-medium text-gray-700">
+                  Category *
+                </Label>
+                <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                  <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="event_type" className="text-sm font-medium text-gray-700">
+                  Event Type *
+                </Label>
+                <Select value={formData.event_type} onValueChange={(value) => handleInputChange('event_type', value)}>
+                  <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
+                    <SelectValue placeholder="Select event type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {eventTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div>
-              <Label htmlFor="category" className="text-sm font-medium text-gray-700">
-                Category *
+              <Label htmlFor="neighborhoods" className="text-sm font-medium text-gray-700">
+                Neighborhoods (Select all that apply)
               </Label>
-              <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="mt-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-32 overflow-y-auto border border-purple-200 rounded-md p-3">
+                {neighborhoods.map((neighborhood) => (
+                  <label key={neighborhood.value} className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={formData.neighborhoods.includes(neighborhood.value)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          handleInputChange('neighborhoods', [...formData.neighborhoods, neighborhood.value]);
+                        } else {
+                          handleInputChange('neighborhoods', formData.neighborhoods.filter(n => n !== neighborhood.value));
+                        }
+                      }}
+                      className="rounded border-purple-300 text-purple-600 focus:ring-purple-500"
+                    />
+                    <span>{neighborhood.label}</span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
 

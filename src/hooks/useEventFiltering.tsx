@@ -8,6 +8,8 @@ interface UseEventFilteringProps {
   selectedCategory: string;
   priceRange: string;
   selectedLocation: string;
+  selectedEventType?: string;
+  selectedNeighborhood?: string;
 }
 
 export const useEventFiltering = ({
@@ -15,7 +17,9 @@ export const useEventFiltering = ({
   searchTerm,
   selectedCategory,
   priceRange,
-  selectedLocation
+  selectedLocation,
+  selectedEventType = 'all',
+  selectedNeighborhood = 'all'
 }: UseEventFilteringProps) => {
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
@@ -31,10 +35,15 @@ export const useEventFiltering = ({
 
       const matchesLocation = selectedLocation === 'all' || 
                              event.location.toLowerCase().includes(selectedLocation.replace('-', ' ').toLowerCase());
+
+      const matchesEventType = selectedEventType === 'all' || event.event_type === selectedEventType;
+
+      const matchesNeighborhood = selectedNeighborhood === 'all' || 
+                                 (event.neighborhoods && event.neighborhoods.includes(selectedNeighborhood));
       
-      return matchesSearch && matchesCategory && matchesPrice && matchesLocation;
+      return matchesSearch && matchesCategory && matchesPrice && matchesLocation && matchesEventType && matchesNeighborhood;
     });
-  }, [events, searchTerm, selectedCategory, priceRange, selectedLocation]);
+  }, [events, searchTerm, selectedCategory, priceRange, selectedLocation, selectedEventType, selectedNeighborhood]);
 
   return { filteredEvents };
 };

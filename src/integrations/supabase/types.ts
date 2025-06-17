@@ -135,12 +135,14 @@ export type Database = {
           created_at: string
           date: string
           description: string | null
+          event_type: string | null
           id: string
           is_recurring: boolean | null
           latitude: number | null
           location: string
           longitude: number | null
           max_attendees: number | null
+          neighborhoods: string[] | null
           price: number | null
           recurring_pattern: string | null
           reviewed_at: string | null
@@ -157,12 +159,14 @@ export type Database = {
           created_at?: string
           date: string
           description?: string | null
+          event_type?: string | null
           id?: string
           is_recurring?: boolean | null
           latitude?: number | null
           location: string
           longitude?: number | null
           max_attendees?: number | null
+          neighborhoods?: string[] | null
           price?: number | null
           recurring_pattern?: string | null
           reviewed_at?: string | null
@@ -179,12 +183,14 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string | null
+          event_type?: string | null
           id?: string
           is_recurring?: boolean | null
           latitude?: number | null
           location?: string
           longitude?: number | null
           max_attendees?: number | null
+          neighborhoods?: string[] | null
           price?: number | null
           recurring_pattern?: string | null
           reviewed_at?: string | null
@@ -204,12 +210,14 @@ export type Database = {
           created_by: string
           date: string
           description: string | null
+          event_type: string | null
           id: string
           is_recurring: boolean | null
           latitude: number | null
           location: string
           longitude: number | null
           max_attendees: number | null
+          neighborhoods: string[] | null
           price: number | null
           recurring_pattern: string | null
           time: string | null
@@ -222,12 +230,14 @@ export type Database = {
           created_by: string
           date: string
           description?: string | null
+          event_type?: string | null
           id?: string
           is_recurring?: boolean | null
           latitude?: number | null
           location: string
           longitude?: number | null
           max_attendees?: number | null
+          neighborhoods?: string[] | null
           price?: number | null
           recurring_pattern?: string | null
           time?: string | null
@@ -240,12 +250,14 @@ export type Database = {
           created_by?: string
           date?: string
           description?: string | null
+          event_type?: string | null
           id?: string
           is_recurring?: boolean | null
           latitude?: number | null
           location?: string
           longitude?: number | null
           max_attendees?: number | null
+          neighborhoods?: string[] | null
           price?: number | null
           recurring_pattern?: string | null
           time?: string | null
