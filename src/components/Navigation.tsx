@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/menubar";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { 
   Home, 
   Calendar, 
@@ -16,10 +17,16 @@ import {
   Plus, 
   User, 
   LogOut,
-  Menu
+  Menu,
+  Search
 } from "lucide-react";
 
-export const Navigation = () => {
+interface NavigationProps {
+  searchTerm?: string;
+  onSearchChange?: (term: string) => void;
+}
+
+export const Navigation = ({ searchTerm = '', onSearchChange }: NavigationProps) => {
   const { user, signOut } = useAuth();
 
   const handleSignOut = async () => {
@@ -44,6 +51,21 @@ export const Navigation = () => {
             </div>
             <h1 className="text-lg sm:text-2xl font-bold text-yelp-gray">LocalEvents</h1>
           </div>
+
+          {/* Search Bar - Desktop */}
+          {onSearchChange && (
+            <div className="hidden md:flex flex-1 max-w-md mx-8">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search events..."
+                  value={searchTerm}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="pl-10 h-9 bg-gray-50 border-gray-200 focus:bg-white text-sm"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
@@ -121,6 +143,22 @@ export const Navigation = () => {
                   <Menu className="h-5 w-5" />
                 </MenubarTrigger>
                 <MenubarContent align="end" className="w-56 bg-white">
+                  {onSearchChange && (
+                    <>
+                      <div className="p-2">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input
+                            placeholder="Search events..."
+                            value={searchTerm}
+                            onChange={(e) => onSearchChange(e.target.value)}
+                            className="pl-10 h-8 bg-gray-50 border-gray-200 text-sm"
+                          />
+                        </div>
+                      </div>
+                      <MenubarSeparator />
+                    </>
+                  )}
                   <MenubarItem onClick={() => handleNavigation('/')}>
                     <Home className="h-4 w-4 mr-2" />
                     All Events
