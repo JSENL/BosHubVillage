@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Loader2, Building, FileText, Calendar as CalendarIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useEvents } from '@/hooks/useEvents';
 import { useGeocoding } from '@/hooks/useGeocoding';
@@ -21,6 +21,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
     title: '',
     description: '',
     category: '',
+    event_type: 'event',
     date: '',
     time: '',
     location: '',
@@ -28,6 +29,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
     max_attendees: '',
     is_recurring: false,
     recurring_pattern: '',
+    neighborhoods: [] as string[],
   });
 
   const { createEvent } = useEvents();
@@ -42,6 +44,23 @@ const EventForm = ({ onClose }: EventFormProps) => {
     { value: 'education', label: 'Education' },
     { value: 'family', label: 'Family' },
     { value: 'health', label: 'Health & Wellness' },
+  ];
+
+  const eventTypes = [
+    { value: 'event', label: 'Event', icon: CalendarIcon },
+    { value: 'business', label: 'Business', icon: Building },
+    { value: 'news', label: 'News', icon: FileText },
+  ];
+
+  const neighborhoods = [
+    { value: 'downtown', label: 'Downtown' },
+    { value: 'back-bay', label: 'Back Bay' },
+    { value: 'north-end', label: 'North End' },
+    { value: 'cambridge', label: 'Cambridge' },
+    { value: 'somerville', label: 'Somerville' },
+    { value: 'beacon-hill', label: 'Beacon Hill' },
+    { value: 'south-end', label: 'South End' },
+    { value: 'fenway', label: 'Fenway' },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,6 +92,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         title: formData.title,
         description: formData.description,
         category: formData.category,
+        event_type: formData.event_type,
         date: formData.date,
         time: formData.time || '00:00',
         location: formData.location,
@@ -82,6 +102,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
+        neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods : null,
       });
       
       onClose();
@@ -90,10 +111,19 @@ const EventForm = ({ onClose }: EventFormProps) => {
     }
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string | boolean | string[]) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
+    }));
+  };
+
+  const handleNeighborhoodToggle = (neighborhood: string) => {
+    setFormData(prev => ({
+      ...prev,
+      neighborhoods: prev.neighborhoods.includes(neighborhood)
+        ? prev.neighborhoods.filter(n => n !== neighborhood)
+        : [...prev.neighborhoods, neighborhood]
     }));
   };
 
@@ -138,22 +168,48 @@ const EventForm = ({ onClose }: EventFormProps) => {
               />
             </div>
 
-            <div>
-              <Label htmlFor="category" className="text-sm font-medium text-gray-700">
-                Category *
-              </Label>
-              <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
-                      {category.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="category" className="text-sm font-medium text-gray-700">
+                  Category *
+                </Label>
+                <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                  <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="event_type" className="text-sm font-medium text-gray-700">
+                  Type *
+                </Label>
+                <Select value={formData.event_type} onValueChange={(value) => handleInputChange('event_type', value)}>
+                  <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
+                    <SelectValue placeholder="Select event type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {eventTypes.map((type) => {
+                      const Icon = type.icon;
+                      return (
+                        <SelectItem key={type.value} value={type.value}>
+                          <div className="flex items-center">
+                            <Icon className="h-4 w-4 mr-2" />
+                            {type.label}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -205,6 +261,35 @@ const EventForm = ({ onClose }: EventFormProps) => {
             />
             <p className="text-xs text-gray-500 mt-1">
               Address will be automatically converted to map coordinates
+            </p>
+          </div>
+
+          {/* Neighborhoods */}
+          <div>
+            <Label className="text-sm font-medium text-gray-700 mb-3 block">
+              Neighborhoods
+            </Label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {neighborhoods.map((neighborhood) => (
+                <div key={neighborhood.value} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id={neighborhood.value}
+                    checked={formData.neighborhoods.includes(neighborhood.value)}
+                    onChange={() => handleNeighborhoodToggle(neighborhood.value)}
+                    className="rounded border-purple-200 text-purple-600 focus:ring-purple-500"
+                  />
+                  <Label 
+                    htmlFor={neighborhood.value} 
+                    className="text-sm text-gray-600 cursor-pointer"
+                  >
+                    {neighborhood.label}
+                  </Label>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Select neighborhoods where this event is relevant
             </p>
           </div>
 
