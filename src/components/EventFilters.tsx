@@ -19,14 +19,9 @@ export const EventFilters = ({
 }: EventFiltersProps) => {
   const categories = [
     { value: 'all', label: 'All Categories' },
-    { value: 'music', label: 'Music' },
-    { value: 'sports', label: 'Sports' },
-    { value: 'food', label: 'Food & Drink' },
-    { value: 'art', label: 'Arts & Culture' },
     { value: 'business', label: 'Business' },
-    { value: 'education', label: 'Education' },
-    { value: 'family', label: 'Family' },
-    { value: 'health', label: 'Health & Wellness' },
+    { value: 'events', label: 'Events' },
+    { value: 'news', label: 'News' },
   ];
 
   return (
