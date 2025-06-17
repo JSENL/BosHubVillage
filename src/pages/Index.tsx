@@ -15,6 +15,7 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'calendar'>('grid');
 
   // Combine API events with transformed sample events
@@ -26,7 +27,8 @@ const Index = () => {
     events: allEvents,
     searchTerm,
     selectedCategory,
-    priceRange
+    priceRange,
+    selectedLocation
   });
 
   return (
@@ -53,6 +55,8 @@ const Index = () => {
               onCategoryChange={setSelectedCategory}
               priceRange={priceRange}
               onPriceRangeChange={setPriceRange}
+              selectedLocation={selectedLocation}
+              onLocationChange={setSelectedLocation}
               filteredEventsCount={filteredEvents.length}
             />
 

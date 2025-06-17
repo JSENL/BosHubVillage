@@ -7,13 +7,15 @@ interface UseEventFilteringProps {
   searchTerm: string;
   selectedCategory: string;
   priceRange: string;
+  selectedLocation: string;
 }
 
 export const useEventFiltering = ({
   events,
   searchTerm,
   selectedCategory,
-  priceRange
+  priceRange,
+  selectedLocation
 }: UseEventFilteringProps) => {
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
@@ -26,10 +28,13 @@ export const useEventFiltering = ({
       const matchesPrice = priceRange === 'all' || 
                           (priceRange === 'free' && event.price === 0) ||
                           (priceRange === 'paid' && event.price > 0);
+
+      const matchesLocation = selectedLocation === 'all' || 
+                             event.location.toLowerCase().includes(selectedLocation.replace('-', ' ').toLowerCase());
       
-      return matchesSearch && matchesCategory && matchesPrice;
+      return matchesSearch && matchesCategory && matchesPrice && matchesLocation;
     });
-  }, [events, searchTerm, selectedCategory, priceRange]);
+  }, [events, searchTerm, selectedCategory, priceRange, selectedLocation]);
 
   return { filteredEvents };
 };

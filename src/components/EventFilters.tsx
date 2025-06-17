@@ -7,6 +7,8 @@ interface EventFiltersProps {
   onCategoryChange: (category: string) => void;
   priceRange: string;
   onPriceRangeChange: (range: string) => void;
+  selectedLocation: string;
+  onLocationChange: (location: string) => void;
   filteredEventsCount: number;
 }
 
@@ -15,6 +17,8 @@ export const EventFilters = ({
   onCategoryChange,
   priceRange,
   onPriceRangeChange,
+  selectedLocation,
+  onLocationChange,
   filteredEventsCount
 }: EventFiltersProps) => {
   const categories = [
@@ -22,6 +26,16 @@ export const EventFilters = ({
     { value: 'business', label: 'Business' },
     { value: 'events', label: 'Events' },
     { value: 'news', label: 'News' },
+  ];
+
+  const locations = [
+    { value: 'all', label: 'All Locations' },
+    { value: 'downtown', label: 'Downtown Boston' },
+    { value: 'cambridge', label: 'Cambridge' },
+    { value: 'somerville', label: 'Somerville' },
+    { value: 'back-bay', label: 'Back Bay' },
+    { value: 'north-end', label: 'North End' },
+    { value: 'south-end', label: 'South End' },
   ];
 
   return (
@@ -39,6 +53,19 @@ export const EventFilters = ({
           {categories.map((category) => (
             <SelectItem key={category.value} value={category.value}>
               {category.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={selectedLocation} onValueChange={onLocationChange}>
+        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
+          <SelectValue placeholder="Location" />
+        </SelectTrigger>
+        <SelectContent>
+          {locations.map((location) => (
+            <SelectItem key={location.value} value={location.value}>
+              {location.label}
             </SelectItem>
           ))}
         </SelectContent>
