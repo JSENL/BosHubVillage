@@ -84,31 +84,33 @@ const Index = () => {
       {/* Navigation */}
       <Navigation />
 
-      {/* Search Section */}
-      <div className="bg-yelp-red py-8 sm:py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-2xl sm:text-4xl font-bold text-white mb-2 sm:mb-4">
-            Find Local Events in Boston
-          </h2>
-          <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8">
-            Discover amazing events happening in your neighborhood
-          </p>
-          
-          {/* Search Bar */}
-          <div className="flex flex-col gap-3 sm:gap-4 max-w-2xl mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
-              <Input
-                placeholder="Search events, venues, or activities..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 sm:pl-12 h-10 sm:h-12 bg-white border-0 yelp-shadow text-sm sm:text-base"
-              />
+      {/* Search Section - Aligned with Navigation */}
+      <div className="bg-yelp-red">
+        <div className="max-w-7xl mx-auto px-4 py-8 sm:py-12">
+          <div className="text-center">
+            <h2 className="text-2xl sm:text-4xl font-bold text-white mb-2 sm:mb-4">
+              Find Local Events in Boston
+            </h2>
+            <p className="text-lg sm:text-xl text-white/90 mb-6 sm:mb-8">
+              Discover amazing events happening in your neighborhood
+            </p>
+            
+            {/* Search Bar */}
+            <div className="flex flex-col gap-3 sm:gap-4 max-w-2xl mx-auto">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4 sm:h-5 sm:w-5" />
+                <Input
+                  placeholder="Search events, venues, or activities..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 sm:pl-12 h-10 sm:h-12 bg-white border-0 yelp-shadow text-sm sm:text-base"
+                />
+              </div>
+              <Button className="h-10 sm:h-12 px-6 sm:px-8 bg-yelp-orange hover:bg-yelp-yellow text-white font-semibold text-sm sm:text-base">
+                <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                Search
+              </Button>
             </div>
-            <Button className="h-10 sm:h-12 px-6 sm:px-8 bg-yelp-orange hover:bg-yelp-yellow text-white font-semibold text-sm sm:text-base">
-              <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-              Search
-            </Button>
           </div>
         </div>
       </div>
