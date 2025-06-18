@@ -12,6 +12,9 @@ import { useBusiness } from "@/hooks/useBusiness";
 import { useNews } from "@/hooks/useNews";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
 import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
+import { Business } from "@/types/business";
+import { News } from "@/types/news";
+import { BusinessSubmission, NewsSubmission } from "@/types/submissions";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("events");
@@ -21,19 +24,28 @@ const Index = () => {
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
 
   // Combine approved businesses with approved business submissions
-  const allBusinesses = [
+  const allBusinesses: (Business | BusinessSubmission)[] = [
     ...(businesses || []),
     ...(businessSubmissions || [])
   ];
 
   // Combine approved news with approved news submissions
-  const allNews = [
+  const allNews: (News | NewsSubmission)[] = [
     ...(news || []),
     ...(newsSubmissions || [])
   ];
 
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
   const isNewsLoading = newsLoading || newsSubmissionsLoading;
+
+  // Type guard functions
+  const isBusinessSubmission = (item: Business | BusinessSubmission): item is BusinessSubmission => {
+    return 'status' in item;
+  };
+
+  const isNewsSubmission = (item: News | NewsSubmission): item is NewsSubmission => {
+    return 'status' in item;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
@@ -66,10 +78,10 @@ const Index = () => {
               ) : allBusinesses && allBusinesses.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {allBusinesses.map((business) => (
-                    'business_type' in business ? (
-                      <BusinessCard key={business.id} business={business} />
-                    ) : (
+                    isBusinessSubmission(business) ? (
                       <BusinessSubmissionCard key={business.id} submission={business} />
+                    ) : (
+                      <BusinessCard key={business.id} business={business} />
                     )
                   ))}
                 </div>
@@ -89,10 +101,10 @@ const Index = () => {
               ) : allNews && allNews.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {allNews.map((article) => (
-                    'content' in article ? (
-                      <NewsCard key={article.id} news={article} />
-                    ) : (
+                    isNewsSubmission(article) ? (
                       <NewsSubmissionCard key={article.id} submission={article} />
+                    ) : (
+                      <NewsCard key={article.id} news={article} />
                     )
                   ))}
                 </div>
