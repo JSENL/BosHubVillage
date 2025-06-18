@@ -18,7 +18,9 @@ import {
   User, 
   LogOut,
   Menu,
-  Search
+  Search,
+  Building,
+  Newspaper
 } from "lucide-react";
 
 interface NavigationProps {
@@ -99,8 +101,16 @@ export const Navigation = ({ searchTerm = '', onSearchChange }: NavigationProps)
                   </MenubarTrigger>
                   <MenubarContent>
                     <MenubarItem onClick={() => handleNavigation('/submit-event')}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Calendar className="h-4 w-4 mr-2" />
                       Submit Event
+                    </MenubarItem>
+                    <MenubarItem onClick={() => handleNavigation('/submit-business')}>
+                      <Building className="h-4 w-4 mr-2" />
+                      Submit Business
+                    </MenubarItem>
+                    <MenubarItem onClick={() => handleNavigation('/submit-news')}>
+                      <Newspaper className="h-4 w-4 mr-2" />
+                      Submit News
                     </MenubarItem>
                   </MenubarContent>
                 </MenubarMenu>
@@ -175,8 +185,16 @@ export const Navigation = ({ searchTerm = '', onSearchChange }: NavigationProps)
                   {user ? (
                     <>
                       <MenubarItem onClick={() => handleNavigation('/submit-event')}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Calendar className="h-4 w-4 mr-2" />
                         Submit Event
+                      </MenubarItem>
+                      <MenubarItem onClick={() => handleNavigation('/submit-business')}>
+                        <Building className="h-4 w-4 mr-2" />
+                        Submit Business
+                      </MenubarItem>
+                      <MenubarItem onClick={() => handleNavigation('/submit-news')}>
+                        <Newspaper className="h-4 w-4 mr-2" />
+                        Submit News
                       </MenubarItem>
                       <MenubarSeparator />
                       <MenubarItem disabled className="opacity-60">
