@@ -1,8 +1,8 @@
 
 import { useState } from "react";
-import HeroSection from "@/components/HeroSection";
-import Navigation from "@/components/Navigation";
-import EventsContent from "@/components/EventsContent";
+import { HeroSection } from "@/components/HeroSection";
+import { Navigation } from "@/components/Navigation";
+import { EventsContent } from "@/components/EventsContent";
 import BusinessCard from "@/components/BusinessCard";
 import NewsCard from "@/components/NewsCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,7 +17,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
-      <HeroSection />
+      <HeroSection title="Welcome to LocalEvents" subtitle="Discover amazing events, businesses, and news in your area" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -28,7 +28,13 @@ const Index = () => {
           </TabsList>
           
           <TabsContent value="events">
-            <EventsContent />
+            <EventsContent 
+              viewMode="grid"
+              filteredEvents={[]}
+              searchTerm=""
+              selectedCategory="all"
+              loading={false}
+            />
           </TabsContent>
           
           <TabsContent value="business">
