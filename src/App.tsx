@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import SubmitEvent from "./pages/SubmitEvent";
 import EventDetails from "./pages/EventDetails";
+import BusinessDetails from "./pages/BusinessDetails";
+import NewsDetails from "./pages/NewsDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +27,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/submit-event" element={<SubmitEvent />} />
             <Route path="/event/:eventId" element={<EventDetails />} />
+            <Route path="/business/:businessId" element={<BusinessDetails />} />
+            <Route path="/news/:newsId" element={<NewsDetails />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

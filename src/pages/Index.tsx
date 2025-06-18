@@ -1,92 +1,75 @@
 
-import { useState, useMemo } from 'react';
-import { useEvents } from '@/hooks/useEvents';
-import { Navigation } from '@/components/Navigation';
-import { HeroSection } from '@/components/HeroSection';
-import { EventFilters } from '@/components/EventFilters';
-import { ViewToggle } from '@/components/ViewToggle';
-import { EventsContent } from '@/components/EventsContent';
-import { useEventFiltering } from '@/hooks/useEventFiltering';
-import { useSampleEvents } from '@/hooks/useSampleEvents';
+import { useState } from "react";
+import HeroSection from "@/components/HeroSection";
+import Navigation from "@/components/Navigation";
+import EventsContent from "@/components/EventsContent";
+import BusinessCard from "@/components/BusinessCard";
+import NewsCard from "@/components/NewsCard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useBusiness } from "@/hooks/useBusiness";
+import { useNews } from "@/hooks/useNews";
 
 const Index = () => {
-  const { events, loading } = useEvents();
-  const { transformedSampleEvents } = useSampleEvents();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState('all');
-  const [selectedLocation, setSelectedLocation] = useState('all');
-  const [selectedEventType, setSelectedEventType] = useState('all');
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'calendar'>('grid');
-
-  // Combine API events with transformed sample events
-  const allEvents = useMemo(() => {
-    return [...events, ...transformedSampleEvents];
-  }, [events, transformedSampleEvents]);
-
-  const { filteredEvents } = useEventFiltering({
-    events: allEvents,
-    searchTerm,
-    selectedCategory,
-    priceRange,
-    selectedLocation,
-    selectedEventType,
-    selectedNeighborhood
-  });
+  const [activeTab, setActiveTab] = useState("events");
+  const { data: businesses, isLoading: businessLoading } = useBusiness();
+  const { data: news, isLoading: newsLoading } = useNews();
 
   return (
-    <div className="min-h-screen bg-yelp-light-gray">
-      {/* Navigation with Search */}
-      <Navigation 
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-      />
-
-      {/* Hero Section */}
-      <HeroSection 
-        title="Find Local Events in Boston"
-        subtitle="Discover amazing events happening in your neighborhood"
-      />
-
-      {/* Filters and View Toggle */}
-      <div className="bg-white border-b border-gray-200 yelp-shadow-lg sticky top-14 sm:top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
-          <div className="flex flex-col gap-4">
-            {/* Filters */}
-            <EventFilters
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-              priceRange={priceRange}
-              onPriceRangeChange={setPriceRange}
-              selectedLocation={selectedLocation}
-              onLocationChange={setSelectedLocation}
-              selectedEventType={selectedEventType}
-              onEventTypeChange={setSelectedEventType}
-              selectedNeighborhood={selectedNeighborhood}
-              onNeighborhoodChange={setSelectedNeighborhood}
-              filteredEventsCount={filteredEvents.length}
-            />
-
-            {/* View Toggle */}
-            <ViewToggle
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
-            />
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+      <Navigation />
+      <HeroSection />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="events">Events</TabsTrigger>
+            <TabsTrigger value="business">Business</TabsTrigger>
+            <TabsTrigger value="news">News</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="events">
+            <EventsContent />
+          </TabsContent>
+          
+          <TabsContent value="business">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">Local Businesses</h2>
+              {businessLoading ? (
+                <div className="text-center py-8">Loading businesses...</div>
+              ) : businesses && businesses.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {businesses.map((business) => (
+                    <BusinessCard key={business.id} business={business} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No businesses found. Be the first to add one!
+                </div>
+              )}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="news">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">Local News</h2>
+              {newsLoading ? (
+                <div className="text-center py-8">Loading news...</div>
+              ) : news && news.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {news.map((article) => (
+                    <NewsCard key={article.id} news={article} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No news articles found. Be the first to add one!
+                </div>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-4 sm:py-8">
-        <EventsContent
-          viewMode={viewMode}
-          filteredEvents={filteredEvents}
-          searchTerm={searchTerm}
-          selectedCategory={selectedCategory}
-          loading={loading}
-        />
-      </main>
     </div>
   );
 };

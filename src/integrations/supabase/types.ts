@@ -9,6 +9,108 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      business: {
+        Row: {
+          address: string
+          business_type: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          neighborhood: string
+          short_description: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          business_type: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          neighborhood: string
+          short_description?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          business_type?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          neighborhood?: string
+          short_description?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_comments: {
+        Row: {
+          business_id: string
+          comment: string
+          created_at: string
+          id: string
+          parent_comment_id: string | null
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          business_id: string
+          comment: string
+          created_at?: string
+          id?: string
+          parent_comment_id?: string | null
+          rating?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          business_id?: string
+          comment?: string
+          created_at?: string
+          id?: string
+          parent_comment_id?: string | null
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_comments_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "business_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comment_media: {
         Row: {
           comment_id: string
@@ -268,6 +370,105 @@ export type Database = {
           {
             foreignKeyName: "events_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          date_posted: string
+          id: string
+          location: string
+          source: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          date_posted?: string
+          id?: string
+          location: string
+          source: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          date_posted?: string
+          id?: string
+          location?: string
+          source?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_comments: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          news_id: string
+          parent_comment_id: string | null
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          id?: string
+          news_id: string
+          parent_comment_id?: string | null
+          rating?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          news_id?: string
+          parent_comment_id?: string | null
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_comments_news_id_fkey"
+            columns: ["news_id"]
+            isOneToOne: false
+            referencedRelation: "news"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "news_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_comments_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
