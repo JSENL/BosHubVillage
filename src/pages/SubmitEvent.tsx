@@ -10,7 +10,8 @@ import { SubmissionsTable } from '@/components/SubmissionsTable';
 import { 
   Send, 
   Clock, 
-  Shield
+  Shield,
+  ArrowLeft
 } from 'lucide-react';
 
 const SubmitEvent = () => {
@@ -66,6 +67,14 @@ const SubmitEvent = () => {
     <div className="min-h-screen bg-yelp-light-gray py-8">
       <div className="max-w-6xl mx-auto px-4">
         <div className="mb-8">
+          <Button
+            variant="ghost"
+            onClick={() => window.location.href = '/'}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
           <h1 className="text-4xl font-bold text-yelp-gray mb-2">
             Event Management
           </h1>
