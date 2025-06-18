@@ -111,6 +111,72 @@ export type Database = {
           },
         ]
       }
+      business_submissions: {
+        Row: {
+          address: string
+          admin_notes: string | null
+          business_type: string
+          created_at: string
+          description: string
+          id: string
+          neighborhood: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          short_description: string | null
+          status: string
+          submitted_by: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          admin_notes?: string | null
+          business_type: string
+          created_at?: string
+          description: string
+          id?: string
+          neighborhood: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          short_description?: string | null
+          status?: string
+          submitted_by: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          admin_notes?: string | null
+          business_type?: string
+          created_at?: string
+          description?: string
+          id?: string
+          neighborhood?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          short_description?: string | null
+          status?: string
+          submitted_by?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_submissions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_submissions_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comment_media: {
         Row: {
           comment_id: string
@@ -469,6 +535,69 @@ export type Database = {
           {
             foreignKeyName: "news_comments_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      news_submissions: {
+        Row: {
+          admin_notes: string | null
+          content: string
+          created_at: string
+          date_posted: string
+          id: string
+          location: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source: string
+          status: string
+          submitted_by: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          content: string
+          created_at?: string
+          date_posted?: string
+          id?: string
+          location: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source: string
+          status?: string
+          submitted_by: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          content?: string
+          created_at?: string
+          date_posted?: string
+          id?: string
+          location?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source?: string
+          status?: string
+          submitted_by?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "news_submissions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "news_submissions_submitted_by_fkey"
+            columns: ["submitted_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

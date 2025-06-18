@@ -5,14 +5,35 @@ import { Navigation } from "@/components/Navigation";
 import { EventsContent } from "@/components/EventsContent";
 import BusinessCard from "@/components/BusinessCard";
 import NewsCard from "@/components/NewsCard";
+import BusinessSubmissionCard from "@/components/BusinessSubmissionCard";
+import NewsSubmissionCard from "@/components/NewsSubmissionCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useNews } from "@/hooks/useNews";
+import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
+import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("events");
   const { data: businesses, isLoading: businessLoading } = useBusiness();
   const { data: news, isLoading: newsLoading } = useNews();
+  const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
+  const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
+
+  // Combine approved businesses with approved business submissions
+  const allBusinesses = [
+    ...(businesses || []),
+    ...(businessSubmissions || [])
+  ];
+
+  // Combine approved news with approved news submissions
+  const allNews = [
+    ...(news || []),
+    ...(newsSubmissions || [])
+  ];
+
+  const isBusinessLoading = businessLoading || businessSubmissionsLoading;
+  const isNewsLoading = newsLoading || newsSubmissionsLoading;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
@@ -40,12 +61,16 @@ const Index = () => {
           <TabsContent value="business">
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900">Local Businesses</h2>
-              {businessLoading ? (
+              {isBusinessLoading ? (
                 <div className="text-center py-8">Loading businesses...</div>
-              ) : businesses && businesses.length > 0 ? (
+              ) : allBusinesses && allBusinesses.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {businesses.map((business) => (
-                    <BusinessCard key={business.id} business={business} />
+                  {allBusinesses.map((business) => (
+                    'business_type' in business ? (
+                      <BusinessCard key={business.id} business={business} />
+                    ) : (
+                      <BusinessSubmissionCard key={business.id} submission={business} />
+                    )
                   ))}
                 </div>
               ) : (
@@ -59,12 +84,16 @@ const Index = () => {
           <TabsContent value="news">
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900">Local News</h2>
-              {newsLoading ? (
+              {isNewsLoading ? (
                 <div className="text-center py-8">Loading news...</div>
-              ) : news && news.length > 0 ? (
+              ) : allNews && allNews.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {news.map((article) => (
-                    <NewsCard key={article.id} news={article} />
+                  {allNews.map((article) => (
+                    'content' in article ? (
+                      <NewsCard key={article.id} news={article} />
+                    ) : (
+                      <NewsSubmissionCard key={article.id} submission={article} />
+                    )
                   ))}
                 </div>
               ) : (
