@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
@@ -22,10 +23,10 @@ import { BusinessSubmission, NewsSubmission } from "@/types/submissions";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("events");
-  const { data: businesses, isLoading: businessLoading } = useBusiness();
-  const { data: news, isLoading: newsLoading } = useNews();
-  const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
-  const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
+  const { data: businesses, isLoading: businessLoading, refetch: refetchBusinesses } = useBusiness();
+  const { data: news, isLoading: newsLoading, refetch: refetchNews } = useNews();
+  const { data: businessSubmissions, isLoading: businessSubmissionsLoading, refetch: refetchBusinessSubmissions } = useBusinessSubmissions();
+  const { data: newsSubmissions, isLoading: newsSubmissionsLoading, refetch: refetchNewsSubmissions } = useNewsSubmissions();
   
   // Use the new events hook with filtering
   const {
@@ -65,6 +66,17 @@ const Index = () => {
 
   const isNewsSubmission = (item: News | NewsSubmission): item is NewsSubmission => {
     return 'status' in item;
+  };
+
+  // Update handlers for submissions
+  const handleBusinessUpdate = () => {
+    refetchBusinesses();
+    refetchBusinessSubmissions();
+  };
+
+  const handleNewsUpdate = () => {
+    refetchNews();
+    refetchNewsSubmissions();
   };
 
   return (
@@ -135,7 +147,7 @@ const Index = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {allBusinesses.map((business) => (
                     isBusinessSubmission(business) ? (
-                      <BusinessSubmissionCard key={business.id} submission={business} />
+                      <BusinessSubmissionCard key={business.id} submission={business} onUpdate={handleBusinessUpdate} />
                     ) : (
                       <BusinessCard key={business.id} business={business} />
                     )
@@ -158,7 +170,7 @@ const Index = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {allNews.map((article) => (
                     isNewsSubmission(article) ? (
-                      <NewsSubmissionCard key={article.id} submission={article} />
+                      <NewsSubmissionCard key={article.id} submission={article} onUpdate={handleNewsUpdate} />
                     ) : (
                       <NewsCard key={article.id} news={article} />
                     )
@@ -178,3 +190,4 @@ const Index = () => {
 };
 
 export default Index;
+
