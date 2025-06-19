@@ -19,7 +19,7 @@ export interface Event {
   created_by: string;
   latitude: number | null;
   longitude: number | null;
-  neighborhoods: string[] | null;
+  neighborhoods: string | null; // Changed from string[] to string to match database
   attendees_count?: number;
 }
 
@@ -42,7 +42,11 @@ export const useEvents = () => {
       const eventsWithAttendees = data?.map(event => ({
         ...event,
         attendees_count: event.event_attendees?.[0]?.count || 0,
-        price: Number(event.price)
+        price: Number(event.price || 0),
+        time: event.time || '00:00:00',
+        description: event.description || '',
+        event_type: event.event_type || 'event',
+        is_recurring: event.is_recurring || false
       })) || [];
 
       setEvents(eventsWithAttendees);
@@ -62,12 +66,28 @@ export const useEvents = () => {
         throw new Error('User not authenticated');
       }
 
+      // Prepare data for insertion, matching database schema
+      const insertData = {
+        title: eventData.title,
+        description: eventData.description,
+        category: eventData.category,
+        event_type: eventData.event_type,
+        date: eventData.date,
+        time: eventData.time,
+        location: eventData.location,
+        price: eventData.price,
+        max_attendees: eventData.max_attendees,
+        is_recurring: eventData.is_recurring,
+        recurring_pattern: eventData.recurring_pattern,
+        latitude: eventData.latitude,
+        longitude: eventData.longitude,
+        neighborhoods: eventData.neighborhoods, // This should be a string, not array
+        created_by: user.id
+      };
+
       const { data, error } = await supabase
         .from('events')
-        .insert({
-          ...eventData,
-          created_by: user.id
-        })
+        .insert(insertData)
         .select()
         .single();
 
