@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,7 @@ import Auth from "./pages/Auth";
 import SubmitEvent from "./pages/SubmitEvent";
 import SubmitBusiness from "./pages/SubmitBusiness";
 import SubmitNews from "./pages/SubmitNews";
+import AdminDashboard from "./pages/AdminDashboard";
 import EventDetails from "./pages/EventDetails";
 import BusinessDetails from "./pages/BusinessDetails";
 import NewsDetails from "./pages/NewsDetails";
@@ -30,6 +30,7 @@ const App = () => (
             <Route path="/submit-event" element={<SubmitEvent />} />
             <Route path="/submit-business" element={<SubmitBusiness />} />
             <Route path="/submit-news" element={<SubmitNews />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/business/:businessId" element={<BusinessDetails />} />
             <Route path="/news/:newsId" element={<NewsDetails />} />
