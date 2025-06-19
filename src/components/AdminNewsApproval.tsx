@@ -197,37 +197,6 @@ const AdminNewsApproval = () => {
       </CardContent>
     </Card>
   );
-
-  async function updateSubmissionStatus(submissionId: string, status: 'approved' | 'rejected') {
-    setActionLoading(true);
-    try {
-      const { error } = await supabase
-        .from('news_submissions')
-        .update({
-          status,
-          reviewed_by: user?.id,
-          reviewed_at: new Date().toISOString(),
-          admin_notes: adminNotes
-        })
-        .eq('id', submissionId);
-
-      if (error) throw error;
-
-      toast.success(`News ${status} successfully!`);
-      setSelectedSubmission(null);
-      setAdminNotes('');
-      fetchSubmissions();
-    } catch (error: any) {
-      console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} news:`, error);
-      toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} news`);
-    } finally {
-      setActionLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    fetchSubmissions();
-  }, [isAdmin]);
 };
 
 export default AdminNewsApproval;

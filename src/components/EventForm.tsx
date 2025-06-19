@@ -73,7 +73,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
-        neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods : null,
+        neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods.join(',') : null,
       });
       
       onClose();

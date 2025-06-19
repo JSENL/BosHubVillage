@@ -21,7 +21,7 @@ export const useSampleEvents = () => {
       created_by: 'sample-user',
       latitude: sampleEvent.latitude,
       longitude: sampleEvent.longitude,
-      neighborhoods: ['downtown', 'back-bay'], // Add some default neighborhoods for sample events
+      neighborhoods: 'downtown,back-bay', // Convert array to string format
       attendees_count: 0
     }));
   }, []);
