@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
@@ -6,8 +7,8 @@ import { EventFiltersEnhanced } from "@/components/EventFiltersEnhanced";
 import { useEventsWithFilters } from "@/hooks/useEventsWithFilters";
 import BusinessCard from "@/components/BusinessCard";
 import NewsCard from "@/components/NewsCard";
-import BusinessSubmissionCard from "@/components/BusinessSubmissionCard";
-import NewsSubmissionCard from "@/components/NewsSubmissionCard";
+import { BusinessSubmissionCard } from "@/components/BusinessSubmissionCard";
+import { NewsSubmissionCard } from "@/components/NewsSubmissionCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
