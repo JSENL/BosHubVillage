@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { BusinessSubmission } from '@/types/submissions';
 
 export const useBusinessSubmissionOperations = () => {
   const { user } = useAuth();
@@ -12,11 +11,42 @@ export const useBusinessSubmissionOperations = () => {
   const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', adminNotes: string) => {
     setActionLoading(true);
     try {
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      if (status === 'approved') {
+        // Get the submission data
+        const { data: submission, error: fetchError } = await supabase
+          .from('business_submissions')
+          .select('*')
+          .eq('id', submissionId)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        // Create the business in the businesses table
+        const { error: createError } = await supabase
+          .from('business')
+          .insert({
+            title: submission.title,
+            business_type: submission.business_type,
+            address: submission.address,
+            neighborhood: submission.neighborhood,
+            description: submission.description,
+            short_description: submission.short_description,
+            created_by: submission.submitted_by
+          });
+
+        if (createError) throw createError;
+      }
+
+      // Update the submission status
       const { error } = await supabase
         .from('business_submissions')
         .update({
           status,
-          reviewed_by: user?.id,
+          reviewed_by: user.id,
           reviewed_at: new Date().toISOString(),
           admin_notes: adminNotes
         })

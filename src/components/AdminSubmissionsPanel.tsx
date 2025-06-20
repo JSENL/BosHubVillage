@@ -31,6 +31,8 @@ const AdminSubmissionsPanel = () => {
     try {
       setLoading(true);
       
+      console.log('Fetching all submissions...');
+      
       // Fetch business submissions
       const { data: businessData, error: businessError } = await supabase
         .from('business_submissions')
@@ -38,7 +40,10 @@ const AdminSubmissionsPanel = () => {
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
-      if (businessError) throw businessError;
+      if (businessError) {
+        console.error('Business submissions error:', businessError);
+        throw businessError;
+      }
 
       // Fetch news submissions
       const { data: newsData, error: newsError } = await supabase
@@ -47,7 +52,10 @@ const AdminSubmissionsPanel = () => {
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
-      if (newsError) throw newsError;
+      if (newsError) {
+        console.error('News submissions error:', newsError);
+        throw newsError;
+      }
 
       // Fetch event submissions
       const { data: eventData, error: eventError } = await supabase
@@ -56,7 +64,10 @@ const AdminSubmissionsPanel = () => {
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
-      if (eventError) throw eventError;
+      if (eventError) {
+        console.error('Event submissions error:', eventError);
+        throw eventError;
+      }
 
       // Type cast the data to ensure status field is properly typed
       const typedBusinessData = (businessData || []).map(submission => ({
@@ -73,6 +84,12 @@ const AdminSubmissionsPanel = () => {
         ...submission,
         status: submission.status as 'pending' | 'approved' | 'rejected'
       }));
+
+      console.log('Fetched submissions:', {
+        business: typedBusinessData.length,
+        news: typedNewsData.length,
+        events: typedEventData.length
+      });
 
       setBusinessSubmissions(typedBusinessData);
       setNewsSubmissions(typedNewsData);
