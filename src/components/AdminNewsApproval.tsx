@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNews } from '@/hooks/useNews';
@@ -23,8 +22,10 @@ import {
   Newspaper,
   Trash2,
   MapPin,
-  Calendar
+  Calendar,
+  Edit
 } from 'lucide-react';
+import { EditNewsDialog } from '@/components/admin/EditNewsDialog';
 
 const AdminNewsApproval = () => {
   const { isAdmin } = useAuth();
@@ -32,6 +33,7 @@ const AdminNewsApproval = () => {
   const [submissions, setSubmissions] = useState<NewsSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [editingNews, setEditingNews] = useState<any>(null);
 
   const fetchSubmissions = async () => {
     if (!isAdmin) return;
@@ -223,15 +225,25 @@ const AdminNewsApproval = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => handleDeleteNews(article.id)}
-                        disabled={actionLoading}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </Button>
+                      <div className="flex space-x-2">
+                        <Button
+                          onClick={() => setEditingNews(article)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteNews(article.id)}
+                          disabled={actionLoading}
+                          variant="destructive"
+                          size="sm"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -240,6 +252,16 @@ const AdminNewsApproval = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit News Dialog */}
+      {editingNews && (
+        <EditNewsDialog
+          news={editingNews}
+          open={!!editingNews}
+          onOpenChange={(open) => !open && setEditingNews(null)}
+          onUpdate={refetchNews}
+        />
+      )}
     </div>
   );
 };

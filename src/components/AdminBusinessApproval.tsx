@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useBusiness } from '@/hooks/useBusiness';
@@ -23,8 +22,10 @@ import {
   Clock,
   Building,
   Trash2,
-  MapPin
+  MapPin,
+  Edit
 } from 'lucide-react';
+import { EditBusinessDialog } from '@/components/admin/EditBusinessDialog';
 
 const AdminBusinessApproval = () => {
   const { isAdmin } = useAuth();
@@ -32,6 +33,7 @@ const AdminBusinessApproval = () => {
   const [submissions, setSubmissions] = useState<BusinessSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [editingBusiness, setEditingBusiness] = useState<any>(null);
 
   const fetchSubmissions = async () => {
     if (!isAdmin) return;
@@ -218,15 +220,25 @@ const AdminBusinessApproval = () => {
                       <Badge variant="outline">{business.neighborhood}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => handleDeleteBusiness(business.id)}
-                        disabled={actionLoading}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </Button>
+                      <div className="flex space-x-2">
+                        <Button
+                          onClick={() => setEditingBusiness(business)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteBusiness(business.id)}
+                          disabled={actionLoading}
+                          variant="destructive"
+                          size="sm"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -235,6 +247,16 @@ const AdminBusinessApproval = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Business Dialog */}
+      {editingBusiness && (
+        <EditBusinessDialog
+          business={editingBusiness}
+          open={!!editingBusiness}
+          onOpenChange={(open) => !open && setEditingBusiness(null)}
+          onUpdate={refetchBusinesses}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { useEvents } from '@/hooks/useEvents';
@@ -23,10 +22,12 @@ import {
   DollarSign,
   Users,
   MessageSquare,
-  Trash2
+  Trash2,
+  Edit
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { EditEventDialog } from '@/components/admin/EditEventDialog';
 
 const AdminEventApproval = () => {
   const { submissions, loading, updateSubmissionStatus } = useEventSubmissions();
@@ -34,6 +35,7 @@ const AdminEventApproval = () => {
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<any>(null);
 
   const pendingSubmissions = submissions.filter(s => s.status === 'pending');
   const reviewedSubmissions = submissions.filter(s => s.status !== 'pending');
@@ -308,15 +310,25 @@ const AdminEventApproval = () => {
                       {event.price === 0 ? 'Free' : `$${event.price}`}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => handleDeleteEvent(event.id)}
-                        disabled={actionLoading}
-                        variant="destructive"
-                        size="sm"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </Button>
+                      <div className="flex space-x-2">
+                        <Button
+                          onClick={() => setEditingEvent(event)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteEvent(event.id)}
+                          disabled={actionLoading}
+                          variant="destructive"
+                          size="sm"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -399,6 +411,16 @@ const AdminEventApproval = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Event Dialog */}
+      {editingEvent && (
+        <EditEventDialog
+          event={editingEvent}
+          open={!!editingEvent}
+          onOpenChange={(open) => !open && setEditingEvent(null)}
+          onUpdate={fetchEvents}
+        />
+      )}
     </div>
   );
 };

@@ -1,0 +1,192 @@
+
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { Event } from '@/hooks/useEvents';
+
+interface EditEventDialogProps {
+  event: Event;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onUpdate: () => void;
+}
+
+export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEventDialogProps) => {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    title: event.title,
+    description: event.description || '',
+    category: event.category,
+    location: event.location,
+    date: event.date,
+    start_time: event.start_time || '',
+    end_time: event.end_time || '',
+    price: event.price || 0,
+    max_attendees: event.max_attendees || null,
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('events')
+        .update({
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          location: formData.location,
+          date: formData.date,
+          start_time: formData.start_time,
+          end_time: formData.end_time,
+          price: formData.price,
+          max_attendees: formData.max_attendees,
+        })
+        .eq('id', event.id);
+
+      if (error) throw error;
+
+      toast.success('Event updated successfully');
+      onUpdate();
+      onOpenChange(false);
+    } catch (error: any) {
+      console.error('Error updating event:', error);
+      toast.error('Failed to update event');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Edit Event</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              required
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="category">Category</Label>
+            <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Community">Community</SelectItem>
+                <SelectItem value="Sports">Sports</SelectItem>
+                <SelectItem value="Arts">Arts</SelectItem>
+                <SelectItem value="Education">Education</SelectItem>
+                <SelectItem value="Food">Food</SelectItem>
+                <SelectItem value="Entertainment">Entertainment</SelectItem>
+                <SelectItem value="Business">Business</SelectItem>
+                <SelectItem value="Health">Health</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="location">Location</Label>
+            <Input
+              id="location"
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="date">Date</Label>
+              <Input
+                id="date"
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="start_time">Start Time</Label>
+              <Input
+                id="start_time"
+                type="time"
+                value={formData.start_time}
+                onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="end_time">End Time</Label>
+              <Input
+                id="end_time"
+                type="time"
+                value={formData.end_time}
+                onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="price">Price ($)</Label>
+              <Input
+                id="price"
+                type="number"
+                min="0"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+              />
+            </div>
+            <div>
+              <Label htmlFor="max_attendees">Max Attendees</Label>
+              <Input
+                id="max_attendees"
+                type="number"
+                min="1"
+                value={formData.max_attendees || ''}
+                onChange={(e) => setFormData({ ...formData, max_attendees: e.target.value ? parseInt(e.target.value) : null })}
+                placeholder="No limit"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? 'Updating...' : 'Update Event'}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
