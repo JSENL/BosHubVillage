@@ -50,6 +50,14 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
     navigate(`/event/${event.id}`);
   };
 
+  const formatTimeRange = (startTime: string, endTime: string) => {
+    if (!startTime && !endTime) return 'Time TBD';
+    if (startTime && endTime) {
+      return `${startTime} - ${endTime}`;
+    }
+    return startTime || endTime;
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Calendar */}
@@ -152,7 +160,7 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
                     <div className="space-y-1 text-sm text-gray-600 mb-3">
                       <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-2 text-purple-500" />
-                        {event.time}
+                        {formatTimeRange(event.start_time, event.end_time)}
                       </div>
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-2 text-purple-500" />

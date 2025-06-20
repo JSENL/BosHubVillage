@@ -12,7 +12,8 @@ export const useSampleEvents = () => {
       category: sampleEvent.category,
       event_type: 'event', // Default to 'event' for sample events
       date: sampleEvent.date,
-      time: sampleEvent.time,
+      start_time: sampleEvent.time, // Use time as start_time
+      end_time: '', // No end time for sample events
       location: sampleEvent.location,
       price: sampleEvent.price,
       max_attendees: sampleEvent.max_attendees,

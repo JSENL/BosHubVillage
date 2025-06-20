@@ -40,6 +40,14 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
     }
   };
 
+  const formatTimeRange = (startTime: string | null, endTime: string | null) => {
+    if (!startTime && !endTime) return '';
+    if (startTime && endTime) {
+      return ` from ${startTime} to ${endTime}`;
+    }
+    return startTime ? ` at ${startTime}` : endTime ? ` until ${endTime}` : '';
+  };
+
   return (
     <div className="border border-gray-200 rounded-lg p-4 shadow-sm">
       <div className="flex justify-between items-start mb-3">
@@ -50,7 +58,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-1" />
               {new Date(submission.date).toLocaleDateString()}
-              {submission.time && ` at ${submission.time}`}
+              {formatTimeRange(submission.start_time, submission.end_time)}
             </div>
           </div>
           <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">

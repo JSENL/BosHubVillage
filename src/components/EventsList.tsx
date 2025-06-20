@@ -27,6 +27,14 @@ const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) 
     navigate(`/event/${event.id}`);
   };
 
+  const formatTimeRange = (startTime: string, endTime: string) => {
+    if (!startTime && !endTime) return 'Time TBD';
+    if (startTime && endTime) {
+      return `${startTime} - ${endTime}`;
+    }
+    return startTime || endTime;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -74,7 +82,7 @@ const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) 
                       <Clock className="h-4 w-4 mr-2 text-purple-500" />
                       <div>
                         <div>{new Date(event.date).toLocaleDateString()}</div>
-                        <div>{event.time}</div>
+                        <div>{formatTimeRange(event.start_time, event.end_time)}</div>
                       </div>
                     </div>
                     <div className="flex items-center">
