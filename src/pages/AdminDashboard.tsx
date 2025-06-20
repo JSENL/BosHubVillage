@@ -7,11 +7,13 @@ import { Navigation } from '@/components/Navigation';
 import AdminEventApproval from '@/components/AdminEventApproval';
 import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminBusinessApproval from '@/components/AdminBusinessApproval';
+import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import { 
   Shield, 
   Calendar, 
   Building, 
   Newspaper,
+  FileText,
   ArrowLeft
 } from 'lucide-react';
 
@@ -77,7 +79,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -89,6 +91,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="news" className="flex items-center">
                 <Newspaper className="h-4 w-4 mr-2" />
                 News
+              </TabsTrigger>
+              <TabsTrigger value="submissions" className="flex items-center">
+                <FileText className="h-4 w-4 mr-2" />
+                All Submissions
               </TabsTrigger>
             </TabsList>
             
@@ -102,6 +108,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="news">
               <AdminNewsApproval />
+            </TabsContent>
+            
+            <TabsContent value="submissions">
+              <AdminSubmissionsPanel />
             </TabsContent>
           </Tabs>
         </div>
