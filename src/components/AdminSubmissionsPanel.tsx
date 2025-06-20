@@ -15,23 +15,29 @@ import {
   Clock,
   Building,
   Newspaper,
-  Calendar
+  Calendar,
+  AlertCircle
 } from 'lucide-react';
 
 const AdminSubmissionsPanel = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const [businessSubmissions, setBusinessSubmissions] = useState<BusinessSubmission[]>([]);
   const [newsSubmissions, setNewsSubmissions] = useState<NewsSubmission[]>([]);
   const [eventSubmissions, setEventSubmissions] = useState<EventSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAllSubmissions = async () => {
-    if (!isAdmin) return;
+    if (!isAdmin || !user) {
+      console.log('User is not admin or not authenticated');
+      return;
+    }
     
     try {
       setLoading(true);
+      setError(null);
       
-      console.log('Fetching all submissions...');
+      console.log('Fetching all submissions for admin user:', user.id);
       
       // Fetch business submissions
       const { data: businessData, error: businessError } = await supabase
@@ -42,7 +48,7 @@ const AdminSubmissionsPanel = () => {
 
       if (businessError) {
         console.error('Business submissions error:', businessError);
-        throw businessError;
+        throw new Error(`Business submissions: ${businessError.message}`);
       }
 
       // Fetch news submissions
@@ -54,7 +60,7 @@ const AdminSubmissionsPanel = () => {
 
       if (newsError) {
         console.error('News submissions error:', newsError);
-        throw newsError;
+        throw new Error(`News submissions: ${newsError.message}`);
       }
 
       // Fetch event submissions
@@ -66,7 +72,7 @@ const AdminSubmissionsPanel = () => {
 
       if (eventError) {
         console.error('Event submissions error:', eventError);
-        throw eventError;
+        throw new Error(`Event submissions: ${eventError.message}`);
       }
 
       // Type cast the data to ensure status field is properly typed
@@ -85,7 +91,7 @@ const AdminSubmissionsPanel = () => {
         status: submission.status as 'pending' | 'approved' | 'rejected'
       }));
 
-      console.log('Fetched submissions:', {
+      console.log('Successfully fetched submissions:', {
         business: typedBusinessData.length,
         news: typedNewsData.length,
         events: typedEventData.length
@@ -96,15 +102,22 @@ const AdminSubmissionsPanel = () => {
       setEventSubmissions(typedEventData);
     } catch (error: any) {
       console.error('Error fetching submissions:', error);
-      toast.error('Failed to load submissions');
+      setError(error.message || 'Failed to load submissions');
+      toast.error('Failed to load submissions: ' + (error.message || 'Unknown error'));
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAllSubmissions();
-  }, [isAdmin]);
+    if (isAdmin && user) {
+      console.log('Admin user detected, fetching submissions...');
+      fetchAllSubmissions();
+    } else {
+      console.log('Not admin or no user, skipping fetch');
+      setLoading(false);
+    }
+  }, [isAdmin, user]);
 
   if (!isAdmin) {
     return null;
@@ -116,6 +129,24 @@ const AdminSubmissionsPanel = () => {
         <CardContent className="p-8 text-center">
           <Clock className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-600" />
           <p>Loading submissions...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center">
+          <AlertCircle className="h-8 w-8 mx-auto mb-4 text-red-500" />
+          <h3 className="text-lg font-semibold text-red-700 mb-2">Error Loading Submissions</h3>
+          <p className="text-red-600 mb-4">{error}</p>
+          <button 
+            onClick={fetchAllSubmissions}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+          >
+            Retry
+          </button>
         </CardContent>
       </Card>
     );
