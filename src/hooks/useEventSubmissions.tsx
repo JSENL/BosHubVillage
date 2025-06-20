@@ -11,7 +11,8 @@ export interface EventSubmission {
   description: string | null;
   category: string;
   date: string;
-  time: string | null;
+  start_time: string | null;
+  end_time: string | null;
   location: string;
   price: number;
   max_attendees: number | null;

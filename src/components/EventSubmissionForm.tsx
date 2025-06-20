@@ -23,7 +23,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     category: '',
     event_type: 'event',
     date: '',
-    time: '',
+    start_time: '',
+    end_time: '',
     location: '',
     price: '',
     max_attendees: '',
@@ -96,7 +97,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         category: formData.category,
         event_type: formData.event_type,
         date: formData.date,
-        time: formData.time || '00:00',
+        start_time: formData.start_time || '00:00',
+        end_time: formData.end_time || '00:00',
         location: formData.location,
         price: parseFloat(formData.price) || 0,
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
@@ -114,7 +116,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         category: '',
         event_type: 'event',
         date: '',
-        time: '',
+        start_time: '',
+        end_time: '',
         location: '',
         price: '',
         max_attendees: '',
@@ -244,7 +247,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
           </div>
 
           {/* Date and Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div>
               <Label htmlFor="date" className="text-sm font-medium text-gray-700 flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
@@ -259,18 +262,34 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               />
             </div>
 
-            <div>
-              <Label htmlFor="time" className="text-sm font-medium text-gray-700 flex items-center">
-                <Clock className="h-4 w-4 mr-1" />
-                Time
-              </Label>
-              <Input
-                id="time"
-                type="time"
-                value={formData.time}
-                onChange={(e) => handleInputChange('time', e.target.value)}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="start_time" className="text-sm font-medium text-gray-700 flex items-center">
+                  <Clock className="h-4 w-4 mr-1" />
+                  Start Time
+                </Label>
+                <Input
+                  id="start_time"
+                  type="time"
+                  value={formData.start_time}
+                  onChange={(e) => handleInputChange('start_time', e.target.value)}
+                  className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="end_time" className="text-sm font-medium text-gray-700 flex items-center">
+                  <Clock className="h-4 w-4 mr-1" />
+                  End Time
+                </Label>
+                <Input
+                  id="end_time"
+                  type="time"
+                  value={formData.end_time}
+                  onChange={(e) => handleInputChange('end_time', e.target.value)}
+                  className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                />
+              </div>
             </div>
           </div>
 

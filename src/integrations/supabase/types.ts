@@ -303,6 +303,7 @@ export type Database = {
           created_at: string
           date: string
           description: string | null
+          end_time: string | null
           event_type: string | null
           id: string
           is_recurring: boolean | null
@@ -315,9 +316,9 @@ export type Database = {
           recurring_pattern: string | null
           reviewed_at: string | null
           reviewed_by: string | null
+          start_time: string | null
           status: string
           submitted_by: string
-          time: string | null
           title: string
           updated_at: string
         }
@@ -327,6 +328,7 @@ export type Database = {
           created_at?: string
           date: string
           description?: string | null
+          end_time?: string | null
           event_type?: string | null
           id?: string
           is_recurring?: boolean | null
@@ -339,9 +341,9 @@ export type Database = {
           recurring_pattern?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          start_time?: string | null
           status?: string
           submitted_by: string
-          time?: string | null
           title: string
           updated_at?: string
         }
@@ -351,6 +353,7 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string | null
+          end_time?: string | null
           event_type?: string | null
           id?: string
           is_recurring?: boolean | null
@@ -363,9 +366,9 @@ export type Database = {
           recurring_pattern?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
+          start_time?: string | null
           status?: string
           submitted_by?: string
-          time?: string | null
           title?: string
           updated_at?: string
         }
@@ -378,6 +381,7 @@ export type Database = {
           created_by: string
           date: string
           description: string | null
+          end_time: string | null
           event_type: string | null
           id: string
           is_recurring: boolean | null
@@ -388,7 +392,7 @@ export type Database = {
           neighborhoods: string | null
           price: number | null
           recurring_pattern: string | null
-          time: string | null
+          start_time: string | null
           title: string
           updated_at: string
         }
@@ -398,6 +402,7 @@ export type Database = {
           created_by: string
           date: string
           description?: string | null
+          end_time?: string | null
           event_type?: string | null
           id?: string
           is_recurring?: boolean | null
@@ -408,7 +413,7 @@ export type Database = {
           neighborhoods?: string | null
           price?: number | null
           recurring_pattern?: string | null
-          time?: string | null
+          start_time?: string | null
           title: string
           updated_at?: string
         }
@@ -418,6 +423,7 @@ export type Database = {
           created_by?: string
           date?: string
           description?: string | null
+          end_time?: string | null
           event_type?: string | null
           id?: string
           is_recurring?: boolean | null
@@ -428,7 +434,7 @@ export type Database = {
           neighborhoods?: string | null
           price?: number | null
           recurring_pattern?: string | null
-          time?: string | null
+          start_time?: string | null
           title?: string
           updated_at?: string
         }

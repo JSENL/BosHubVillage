@@ -39,6 +39,14 @@ const EventDetails = () => {
     );
   }
 
+  const formatTimeRange = (startTime: string, endTime: string) => {
+    if (!startTime && !endTime) return 'Time TBD';
+    if (startTime && endTime) {
+      return `${startTime} - ${endTime}`;
+    }
+    return startTime || endTime;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Header */}
@@ -87,7 +95,7 @@ const EventDetails = () => {
                         day: 'numeric' 
                       })}
                     </div>
-                    <div className="text-gray-600">{event.time}</div>
+                    <div className="text-gray-600">{formatTimeRange(event.start_time, event.end_time)}</div>
                   </div>
                 </div>
 

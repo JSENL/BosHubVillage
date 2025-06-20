@@ -9,7 +9,8 @@ interface CreateEventSubmissionData {
   category: string;
   event_type: string;
   date: string;
-  time: string;
+  start_time: string;
+  end_time: string;
   location: string;
   price: number;
   max_attendees: number | null;
