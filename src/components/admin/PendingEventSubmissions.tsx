@@ -1,0 +1,244 @@
+
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import { 
+  CheckCircle, 
+  XCircle, 
+  Clock, 
+  Calendar, 
+  MapPin,
+  DollarSign,
+  Trash2
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+
+interface PendingEventSubmissionsProps {
+  submissions: any[];
+  onUpdate: () => void;
+}
+
+export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventSubmissionsProps) => {
+  const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
+  const [adminNotes, setAdminNotes] = useState('');
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const pendingSubmissions = submissions.filter(s => s.status === 'pending');
+
+  const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', notes: string) => {
+    const { error } = await supabase
+      .from('event_submissions')
+      .update({
+        status,
+        admin_notes: notes,
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq('id', submissionId);
+
+    if (error) throw error;
+
+    if (status === 'approved') {
+      const submission = submissions.find(s => s.id === submissionId);
+      if (submission) {
+        const { error: insertError } = await supabase
+          .from('events')
+          .insert({
+            title: submission.title,
+            description: submission.description,
+            category: submission.category,
+            location: submission.location,
+            date: submission.date,
+            start_time: submission.start_time,
+            end_time: submission.end_time,
+            price: submission.price || 0,
+            max_attendees: submission.max_attendees,
+            created_by: submission.submitted_by,
+            latitude: submission.latitude,
+            longitude: submission.longitude,
+            neighborhoods: submission.neighborhoods?.[0] || null,
+            is_recurring: submission.is_recurring || false,
+            recurring_pattern: submission.recurring_pattern,
+            event_type: submission.event_type || 'event'
+          });
+
+        if (insertError) throw insertError;
+      }
+    }
+
+    toast.success(`Event submission ${status === 'approved' ? 'approved' : 'rejected'} successfully`);
+    onUpdate();
+  };
+
+  const handleApprove = async (submissionId: string) => {
+    setActionLoading(true);
+    try {
+      await updateSubmissionStatus(submissionId, 'approved', adminNotes);
+      setSelectedSubmission(null);
+      setAdminNotes('');
+    } catch (error) {
+      toast.error('Failed to approve event');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleReject = async (submissionId: string) => {
+    setActionLoading(true);
+    try {
+      await updateSubmissionStatus(submissionId, 'rejected', adminNotes);
+      setSelectedSubmission(null);
+      setAdminNotes('');
+    } catch (error) {
+      toast.error('Failed to reject event');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteSubmission = async (submissionId: string) => {
+    if (!confirm('Are you sure you want to delete this submission? This action cannot be undone.')) {
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      const { error } = await supabase
+        .from('event_submissions')
+        .delete()
+        .eq('id', submissionId);
+
+      if (error) throw error;
+
+      toast.success('Submission deleted successfully');
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error deleting submission:', error);
+      toast.error('Failed to delete submission');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center text-gray-900">
+          <Clock className="h-5 w-5 mr-2 text-orange-600" />
+          Pending Approvals ({pendingSubmissions.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {pendingSubmissions.length === 0 ? (
+          <div className="text-center p-8">
+            <CheckCircle className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">All Caught Up!</h3>
+            <p className="text-gray-600">No pending submissions to review.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {pendingSubmissions.map((submission) => (
+              <div key={submission.id} className="border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">{submission.title}</h3>
+                    <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-1" />
+                        {new Date(submission.date).toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {submission.location}
+                      </div>
+                      <div className="flex items-center">
+                        <DollarSign className="h-4 w-4 mr-1" />
+                        {submission.price === 0 ? 'Free' : `$${submission.price}`}
+                      </div>
+                    </div>
+                  </div>
+                  <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                    {submission.category}
+                  </Badge>
+                </div>
+                
+                <p className="text-gray-600 mb-4">{submission.description}</p>
+                
+                {selectedSubmission === submission.id ? (
+                  <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Admin Notes (Optional)
+                      </label>
+                      <Textarea
+                        value={adminNotes}
+                        onChange={(e) => setAdminNotes(e.target.value)}
+                        placeholder="Add any notes for the submitter..."
+                        rows={3}
+                      />
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        onClick={() => handleApprove(submission.id)}
+                        disabled={actionLoading}
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Approve
+                      </Button>
+                      <Button
+                        onClick={() => handleReject(submission.id)}
+                        disabled={actionLoading}
+                        variant="destructive"
+                      >
+                        <XCircle className="h-4 w-4 mr-2" />
+                        Reject
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteSubmission(submission.id)}
+                        disabled={actionLoading}
+                        variant="destructive"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setSelectedSubmission(null);
+                          setAdminNotes('');
+                        }}
+                        variant="outline"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex space-x-2">
+                    <Button
+                      onClick={() => setSelectedSubmission(submission.id)}
+                      className="bg-purple-600 hover:bg-purple-700 text-white"
+                    >
+                      Review
+                    </Button>
+                    <Button
+                      onClick={() => handleDeleteSubmission(submission.id)}
+                      disabled={actionLoading}
+                      variant="destructive"
+                      size="sm"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
