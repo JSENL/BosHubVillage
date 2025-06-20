@@ -11,7 +11,8 @@ interface Event {
   description: string;
   category: string;
   date: string;
-  time: string;
+  start_time: string;
+  end_time: string;
   location: string;
   price: number;
   max_attendees?: number;
@@ -36,6 +37,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   // Generate random rating for Yelp-like appearance
   const rating = Math.floor(Math.random() * 2) + 4; // 4-5 stars
   const reviewCount = Math.floor(Math.random() * 500) + 50;
+
+  const formatTimeRange = (startTime: string, endTime: string) => {
+    if (!startTime && !endTime) return '';
+    if (!endTime) return startTime;
+    return `${startTime} - ${endTime}`;
+  };
 
   if (viewMode === 'list') {
     return (
@@ -88,7 +95,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 <div className="flex items-center">
                   <Calendar className="h-4 w-4 mr-2 text-yelp-red" />
-                  <span>{event.date} at {event.time}</span>
+                  <span>{event.date} {formatTimeRange(event.start_time, event.end_time)}</span>
                 </div>
                 <div className="flex items-center">
                   <MapPin className="h-4 w-4 mr-2 text-yelp-red" />
@@ -154,7 +161,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
         <div className="space-y-2 text-sm">
           <div className="flex items-center text-gray-600">
             <Calendar className="h-4 w-4 mr-2 text-yelp-red" />
-            <span>{event.date} at {event.time}</span>
+            <span>{event.date} {formatTimeRange(event.start_time, event.end_time)}</span>
           </div>
           <div className="flex items-center text-gray-600">
             <MapPin className="h-4 w-4 mr-2 text-yelp-red" />
