@@ -6,12 +6,6 @@ interface MapInfoWindowProps {
 }
 
 export const createInfoWindowContent = (event: Event): string => {
-  const formatTimeRange = (startTime: string, endTime: string) => {
-    if (!startTime && !endTime) return '';
-    if (!endTime) return startTime;
-    return `${startTime} - ${endTime}`;
-  };
-
   return `
     <div style="padding: 10px; max-width: 200px;">
       <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${event.title}</h3>
@@ -20,7 +14,7 @@ export const createInfoWindowContent = (event: Event): string => {
         <strong>📅 ${new Date(event.date).toLocaleDateString()}</strong>
       </div>
       <div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;">
-        <strong>🕒 ${formatTimeRange(event.start_time, event.end_time)}</strong>
+        <strong>🕒 ${event.time}</strong>
       </div>
       <div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;">
         <strong>📍 ${event.location}</strong>

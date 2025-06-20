@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useMemo } from 'react';
-import { supabase } from '@/integ rations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export interface EventWithFilters {
@@ -10,8 +10,7 @@ export interface EventWithFilters {
   category: string;
   event_type: string;
   date: string;
-  start_time: string;
-  end_time: string;
+  time: string;
   location: string;
   price: number;
   max_attendees: number | null;
@@ -49,8 +48,7 @@ export const useEventsWithFilters = () => {
         ...event,
         attendees_count: event.event_attendees?.[0]?.count || 0,
         price: Number(event.price || 0),
-        start_time: event.start_time || '00:00:00',
-        end_time: event.end_time || '23:59:00'
+        time: event.time || '00:00:00'
       })) || [];
 
       setEvents(eventsWithAttendees);
@@ -83,9 +81,9 @@ export const useEventsWithFilters = () => {
 
       // Time filter
       const matchesTime = timeFilter === 'all' || (() => {
-        if (!event.start_time) return timeFilter === 'all';
+        if (!event.time) return timeFilter === 'all';
         
-        const eventHour = parseInt(event.start_time.split(':')[0]);
+        const eventHour = parseInt(event.time.split(':')[0]);
         
         switch (timeFilter) {
           case 'morning':

@@ -10,8 +10,7 @@ export interface Event {
   category: string;
   event_type: string;
   date: string;
-  start_time: string;
-  end_time: string;
+  time: string;
   location: string;
   price: number;
   max_attendees: number | null;
@@ -44,8 +43,7 @@ export const useEvents = () => {
         ...event,
         attendees_count: event.event_attendees?.[0]?.count || 0,
         price: Number(event.price || 0),
-        start_time: event.start_time || '00:00:00',
-        end_time: event.end_time || '23:59:00',
+        time: event.time || '00:00:00',
         description: event.description || '',
         event_type: event.event_type || 'event',
         is_recurring: event.is_recurring || false
@@ -75,8 +73,7 @@ export const useEvents = () => {
         category: eventData.category,
         event_type: eventData.event_type,
         date: eventData.date,
-        start_time: eventData.start_time,
-        end_time: eventData.end_time,
+        time: eventData.time,
         location: eventData.location,
         price: eventData.price,
         max_attendees: eventData.max_attendees,

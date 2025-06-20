@@ -23,8 +23,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
     category: '',
     event_type: 'event',
     date: '',
-    start_time: '',
-    end_time: '',
+    time: '',
     location: '',
     price: '',
     max_attendees: '',
@@ -39,7 +38,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.category || !formData.date || !formData.location || !formData.start_time) {
+    if (!formData.title || !formData.category || !formData.date || !formData.location) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -66,8 +65,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         category: formData.category,
         event_type: formData.event_type,
         date: formData.date,
-        start_time: formData.start_time || '00:00',
-        end_time: formData.end_time || '23:59',
+        time: formData.time || '00:00',
         location: formData.location,
         price: parseFloat(formData.price) || 0,
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,

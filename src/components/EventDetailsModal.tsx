@@ -15,12 +15,6 @@ interface EventDetailsModalProps {
 const EventDetailsModal = ({ event, isOpen, onClose }: EventDetailsModalProps) => {
   if (!event) return null;
 
-  const formatTimeRange = (startTime: string, endTime: string) => {
-    if (!startTime && !endTime) return '';
-    if (!endTime) return startTime;
-    return `${startTime} - ${endTime}`;
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -47,7 +41,7 @@ const EventDetailsModal = ({ event, isOpen, onClose }: EventDetailsModalProps) =
                 <Clock className="h-4 w-4 mr-2 text-purple-500" />
                 <div>
                   <div className="font-medium">{new Date(event.date).toLocaleDateString()}</div>
-                  <div className="text-gray-600">{formatTimeRange(event.start_time, event.end_time)}</div>
+                  <div className="text-gray-600">{event.time}</div>
                 </div>
               </div>
               <div className="flex items-center">

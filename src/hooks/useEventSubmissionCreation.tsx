@@ -9,8 +9,7 @@ interface CreateEventSubmissionData {
   category: string;
   event_type: string;
   date: string;
-  start_time: string;
-  end_time: string;
+  time: string;
   location: string;
   price: number;
   max_attendees: number | null;
@@ -36,9 +35,7 @@ export const useEventSubmissionCreation = () => {
         event_type: eventData.event_type,
         neighborhoods: eventData.neighborhoods,
         latitude: eventData.latitude,
-        longitude: eventData.longitude,
-        start_time: eventData.start_time,
-        end_time: eventData.end_time
+        longitude: eventData.longitude
       });
 
       const { data, error } = await supabase
