@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -25,7 +24,14 @@ const NewsDetails = () => {
         .single();
 
       if (error) throw error;
-      return data as News;
+      
+      // Parse villages JSON string to array
+      const newsWithParsedVillages = {
+        ...data,
+        villages: data.villages ? (typeof data.villages === 'string' ? JSON.parse(data.villages) : data.villages) : null
+      };
+      
+      return newsWithParsedVillages as News;
     },
     enabled: !!newsId,
   });

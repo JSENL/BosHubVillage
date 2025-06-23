@@ -13,7 +13,14 @@ export const useNews = () => {
         .order('date_posted', { ascending: false });
 
       if (error) throw error;
-      return data as News[];
+      
+      // Parse villages JSON string to array
+      const newsWithParsedVillages = data?.map(news => ({
+        ...news,
+        villages: news.villages ? (typeof news.villages === 'string' ? JSON.parse(news.villages) : news.villages) : null
+      })) || [];
+      
+      return newsWithParsedVillages as News[];
     },
   });
 };

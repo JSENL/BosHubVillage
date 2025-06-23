@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -24,7 +23,14 @@ const BusinessDetails = () => {
         .single();
 
       if (error) throw error;
-      return data as Business;
+      
+      // Parse villages JSON string to array
+      const businessWithParsedVillages = {
+        ...data,
+        villages: data.villages ? (typeof data.villages === 'string' ? JSON.parse(data.villages) : data.villages) : null
+      };
+      
+      return businessWithParsedVillages as Business;
     },
     enabled: !!businessId,
   });
