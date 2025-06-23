@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -34,6 +35,34 @@ export const useEventsWithFilters = () => {
   const [timeFilter, setTimeFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Helper function to safely parse villages data
+  const parseVillages = (villagesData: any) => {
+    if (!villagesData) return [];
+    
+    // If it's already an array, return it
+    if (Array.isArray(villagesData)) {
+      return villagesData;
+    }
+    
+    // If it's a string, try to parse as JSON first
+    if (typeof villagesData === 'string') {
+      // Check if it looks like a JSON array (starts with [ and ends with ])
+      if (villagesData.trim().startsWith('[') && villagesData.trim().endsWith(']')) {
+        try {
+          return JSON.parse(villagesData);
+        } catch (error) {
+          console.warn('Failed to parse villages as JSON:', villagesData, error);
+          return [];
+        }
+      } else {
+        // If it's a plain string, treat it as a single village
+        return [villagesData.trim()];
+      }
+    }
+    
+    return [];
+  };
+
   const fetchEvents = async () => {
     try {
       const { data, error } = await supabase
@@ -52,7 +81,7 @@ export const useEventsWithFilters = () => {
         price: Number(event.price || 0),
         start_time: event.start_time || '00:00:00',
         end_time: event.end_time || '00:00:00',
-        villages: event.villages ? (typeof event.villages === 'string' ? JSON.parse(event.villages) : event.villages) : null
+        villages: parseVillages(event.villages)
       })) || [];
 
       setEvents(eventsWithAttendees);
@@ -80,9 +109,13 @@ export const useEventsWithFilters = () => {
         (event.neighborhoods && event.neighborhoods.includes(selectedNeighborhood.replace('-', ' '))) ||
         event.location.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase());
 
-      // Village filter - now using the villages array from database
+      // Village filter - now properly handles parsed villages array
       const matchesVillage = selectedVillage === 'all' || 
-        (event.villages && Array.isArray(event.villages) && event.villages.includes(selectedVillage.replace('-', ' ')));
+        (event.villages && Array.isArray(event.villages) && 
+         event.villages.some(village => 
+           village.toLowerCase().replace(/\s+/g, '-') === selectedVillage ||
+           village.toLowerCase() === selectedVillage.replace('-', ' ').toLowerCase()
+         ));
 
       // Date filter
       const matchesDate = dateFilter === '' || event.date === dateFilter;
@@ -108,6 +141,10 @@ export const useEventsWithFilters = () => {
       return matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
     });
   }, [events, selectedCategory, selectedNeighborhood, selectedVillage, dateFilter, timeFilter, searchTerm]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   return {
     events: filteredEvents,
