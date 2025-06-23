@@ -1,7 +1,7 @@
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Filter, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Filter, Calendar, X } from 'lucide-react';
 import { useDynamicFilterOptions } from '@/hooks/useDynamicFilterOptions';
 import { EventWithFilters } from '@/hooks/useEventsWithFilters';
 
@@ -46,6 +46,20 @@ export const EventFiltersEnhanced = ({
     timeFilter,
     searchTerm
   });
+
+  const handleClearAll = () => {
+    onCategoryChange('all');
+    onNeighborhoodChange('all');
+    onVillageChange('all');
+    onDateFilterChange('');
+    onTimeFilterChange('all');
+  };
+
+  const hasActiveFilters = selectedCategory !== 'all' || 
+                          selectedNeighborhood !== 'all' || 
+                          selectedVillage !== 'all' || 
+                          dateFilter !== '' || 
+                          timeFilter !== 'all';
 
   const allCategories = [
     { value: 'all', label: 'All Categories' },
@@ -178,6 +192,18 @@ export const EventFiltersEnhanced = ({
           ))}
         </SelectContent>
       </Select>
+
+      {hasActiveFilters && (
+        <Button
+          onClick={handleClearAll}
+          variant="outline"
+          size="sm"
+          className="h-8 sm:h-10 text-xs sm:text-sm gap-1"
+        >
+          <X className="h-3 w-3 sm:h-4 sm:w-4" />
+          Clear All
+        </Button>
+      )}
 
       <div className="text-xs sm:text-sm text-yelp-gray">
         {filteredEventsCount} events found
