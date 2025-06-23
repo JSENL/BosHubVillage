@@ -2,9 +2,11 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Filter, Calendar } from 'lucide-react';
-import { useVillages } from '@/hooks/useVillages';
+import { useDynamicFilterOptions } from '@/hooks/useDynamicFilterOptions';
+import { EventWithFilters } from '@/hooks/useEventsWithFilters';
 
 interface EventFiltersEnhancedProps {
+  events: EventWithFilters[];
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
   selectedNeighborhood: string;
@@ -15,10 +17,12 @@ interface EventFiltersEnhancedProps {
   onDateFilterChange: (date: string) => void;
   timeFilter: string;
   onTimeFilterChange: (time: string) => void;
+  searchTerm: string;
   filteredEventsCount: number;
 }
 
 export const EventFiltersEnhanced = ({
+  events,
   selectedCategory,
   onCategoryChange,
   selectedNeighborhood,
@@ -29,11 +33,21 @@ export const EventFiltersEnhanced = ({
   onDateFilterChange,
   timeFilter,
   onTimeFilterChange,
+  searchTerm,
   filteredEventsCount
 }: EventFiltersEnhancedProps) => {
-  const { villages } = useVillages();
+  
+  const { availableCategories, availableNeighborhoods, availableVillages } = useDynamicFilterOptions({
+    events,
+    selectedCategory,
+    selectedNeighborhood,
+    selectedVillage,
+    dateFilter,
+    timeFilter,
+    searchTerm
+  });
 
-  const categories = [
+  const allCategories = [
     { value: 'all', label: 'All Categories' },
     { value: 'music', label: 'Music' },
     { value: 'sports', label: 'Sports' },
@@ -47,7 +61,7 @@ export const EventFiltersEnhanced = ({
     { value: 'technology', label: 'Technology' },
   ];
 
-  const neighborhoods = [
+  const allNeighborhoods = [
     { value: 'all', label: 'All Neighborhoods' },
     { value: 'beacon-hill', label: 'Beacon Hill' },
     { value: 'back-bay', label: 'Back Bay' },
@@ -63,10 +77,26 @@ export const EventFiltersEnhanced = ({
     { value: 'dorchester', label: 'Dorchester' },
   ];
 
-  // Dynamic villages from database
+  // Filter categories to show only available ones
+  const filteredCategories = allCategories.filter(category => 
+    category.value === 'all' || availableCategories.includes(category.value)
+  );
+
+  // Filter neighborhoods to show only available ones
+  const filteredNeighborhoodOptions = allNeighborhoods.filter(neighborhood => {
+    if (neighborhood.value === 'all') return true;
+  
+    const neighborhoodName = neighborhood.label.toLowerCase();
+    return availableNeighborhoods.some(available => 
+      available.toLowerCase() === neighborhoodName ||
+      available.toLowerCase().replace(/\s+/g, '-') === neighborhood.value
+    );
+  });
+
+  // Dynamic villages from available data
   const villageOptions = [
     { value: 'all', label: 'All Villages' },
-    ...villages.map(village => ({
+    ...availableVillages.map(village => ({
       value: village.toLowerCase().replace(/\s+/g, '-'),
       label: village
     }))
@@ -91,7 +121,7 @@ export const EventFiltersEnhanced = ({
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent>
-          {categories.map((category) => (
+          {filteredCategories.map((category) => (
             <SelectItem key={category.value} value={category.value}>
               {category.label}
             </SelectItem>
@@ -104,7 +134,7 @@ export const EventFiltersEnhanced = ({
           <SelectValue placeholder="Neighborhood" />
         </SelectTrigger>
         <SelectContent>
-          {neighborhoods.map((neighborhood) => (
+          {filteredNeighborhoodOptions.map((neighborhood) => (
             <SelectItem key={neighborhood.value} value={neighborhood.value}>
               {neighborhood.label}
             </SelectItem>

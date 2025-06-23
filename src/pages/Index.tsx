@@ -1,5 +1,4 @@
 
-
 import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
@@ -43,7 +42,8 @@ const Index = () => {
     timeFilter,
     setTimeFilter,
     searchTerm,
-    setSearchTerm
+    setSearchTerm,
+    events: allEvents
   } = useEventsWithFilters();
 
   // Combine approved businesses with approved business submissions
@@ -110,8 +110,9 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Enhanced Filters */}
+                {/* Enhanced Filters with Dynamic Options */}
                 <EventFiltersEnhanced
+                  events={allEvents}
                   selectedCategory={selectedCategory}
                   onCategoryChange={setSelectedCategory}
                   selectedNeighborhood={selectedNeighborhood}
@@ -122,6 +123,7 @@ const Index = () => {
                   onDateFilterChange={setDateFilter}
                   timeFilter={timeFilter}
                   onTimeFilterChange={setTimeFilter}
+                  searchTerm={searchTerm}
                   filteredEventsCount={filteredEvents.length}
                 />
               </div>
