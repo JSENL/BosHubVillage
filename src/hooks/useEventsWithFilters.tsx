@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -52,7 +51,8 @@ export const useEventsWithFilters = () => {
         attendees_count: event.event_attendees?.[0]?.count || 0,
         price: Number(event.price || 0),
         start_time: event.start_time || '00:00:00',
-        end_time: event.end_time || '00:00:00'
+        end_time: event.end_time || '00:00:00',
+        villages: event.villages ? (typeof event.villages === 'string' ? JSON.parse(event.villages) : event.villages) : null
       })) || [];
 
       setEvents(eventsWithAttendees);
@@ -80,9 +80,9 @@ export const useEventsWithFilters = () => {
         (event.neighborhoods && event.neighborhoods.includes(selectedNeighborhood.replace('-', ' '))) ||
         event.location.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase());
 
-      // Village filter - now using the villages column from database
+      // Village filter - now using the villages array from database
       const matchesVillage = selectedVillage === 'all' || 
-        (event.villages && event.villages.includes(selectedVillage.replace('-', ' ')));
+        (event.villages && Array.isArray(event.villages) && event.villages.includes(selectedVillage.replace('-', ' ')));
 
       // Date filter
       const matchesDate = dateFilter === '' || event.date === dateFilter;

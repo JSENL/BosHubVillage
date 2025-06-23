@@ -112,7 +112,7 @@ export const EventFiltersEnhanced = ({
         </SelectContent>
       </Select>
 
-      <Select value={selectedVillage} onVillageChange={onVillageChange}>
+      <Select value={selectedVillage} onValueChange={onVillageChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
           <SelectValue placeholder="Village" />
         </SelectTrigger>

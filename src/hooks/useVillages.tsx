@@ -21,21 +21,42 @@ export const useVillages = () => {
       // Extract villages from events
       eventsData.data?.forEach(item => {
         if (item.villages) {
-          item.villages.forEach((village: string) => allVillages.add(village));
+          // Parse villages if it's a JSON string, or use directly if it's already an array
+          const villagesArray = typeof item.villages === 'string' 
+            ? JSON.parse(item.villages) 
+            : item.villages;
+          
+          if (Array.isArray(villagesArray)) {
+            villagesArray.forEach((village: string) => allVillages.add(village));
+          }
         }
       });
 
       // Extract villages from news
       newsData.data?.forEach(item => {
         if (item.villages) {
-          item.villages.forEach((village: string) => allVillages.add(village));
+          // Parse villages if it's a JSON string, or use directly if it's already an array
+          const villagesArray = typeof item.villages === 'string' 
+            ? JSON.parse(item.villages) 
+            : item.villages;
+          
+          if (Array.isArray(villagesArray)) {
+            villagesArray.forEach((village: string) => allVillages.add(village));
+          }
         }
       });
 
       // Extract villages from business
       businessData.data?.forEach(item => {
         if (item.villages) {
-          item.villages.forEach((village: string) => allVillages.add(village));
+          // Parse villages if it's a JSON string, or use directly if it's already an array
+          const villagesArray = typeof item.villages === 'string' 
+            ? JSON.parse(item.villages) 
+            : item.villages;
+          
+          if (Array.isArray(villagesArray)) {
+            villagesArray.forEach((village: string) => allVillages.add(village));
+          }
         }
       });
 
