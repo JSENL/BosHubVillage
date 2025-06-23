@@ -6,6 +6,7 @@ export interface News {
   location: string;
   date_posted: string;
   source: string;
+  villages?: string[];
   created_at: string;
   updated_at: string;
   created_by?: string;

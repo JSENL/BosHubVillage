@@ -7,6 +7,7 @@ export interface Business {
   neighborhood: string;
   description: string;
   short_description?: string;
+  villages?: string[];
   created_at: string;
   updated_at: string;
   created_by?: string;

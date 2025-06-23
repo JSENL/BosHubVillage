@@ -35,6 +35,7 @@ export const useBusinessSubmissionOperations = () => {
             neighborhood: submission.neighborhood,
             description: submission.description,
             short_description: submission.short_description,
+            villages: null,
             created_by: submission.submitted_by
           });
 

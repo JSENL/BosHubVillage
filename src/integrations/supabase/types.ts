@@ -21,6 +21,7 @@ export type Database = {
           short_description: string | null
           title: string
           updated_at: string
+          villages: string[] | null
         }
         Insert: {
           address: string
@@ -33,6 +34,7 @@ export type Database = {
           short_description?: string | null
           title: string
           updated_at?: string
+          villages?: string[] | null
         }
         Update: {
           address?: string
@@ -45,6 +47,7 @@ export type Database = {
           short_description?: string | null
           title?: string
           updated_at?: string
+          villages?: string[] | null
         }
         Relationships: [
           {
@@ -395,6 +398,7 @@ export type Database = {
           start_time: string | null
           title: string
           updated_at: string
+          villages: string[] | null
         }
         Insert: {
           category: string
@@ -416,6 +420,7 @@ export type Database = {
           start_time?: string | null
           title: string
           updated_at?: string
+          villages?: string[] | null
         }
         Update: {
           category?: string
@@ -437,6 +442,7 @@ export type Database = {
           start_time?: string | null
           title?: string
           updated_at?: string
+          villages?: string[] | null
         }
         Relationships: [
           {
@@ -459,6 +465,7 @@ export type Database = {
           source: string
           title: string
           updated_at: string
+          villages: string[] | null
         }
         Insert: {
           content: string
@@ -470,6 +477,7 @@ export type Database = {
           source: string
           title: string
           updated_at?: string
+          villages?: string[] | null
         }
         Update: {
           content?: string
@@ -481,6 +489,7 @@ export type Database = {
           source?: string
           title?: string
           updated_at?: string
+          villages?: string[] | null
         }
         Relationships: [
           {
@@ -554,6 +563,7 @@ export type Database = {
           created_at: string
           date_posted: string
           id: string
+          link: string | null
           location: string
           reviewed_at: string | null
           reviewed_by: string | null
@@ -569,6 +579,7 @@ export type Database = {
           created_at?: string
           date_posted?: string
           id?: string
+          link?: string | null
           location: string
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -584,6 +595,7 @@ export type Database = {
           created_at?: string
           date_posted?: string
           id?: string
+          link?: string | null
           location?: string
           reviewed_at?: string | null
           reviewed_by?: string | null

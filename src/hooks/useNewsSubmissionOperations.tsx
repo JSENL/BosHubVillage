@@ -34,6 +34,7 @@ export const useNewsSubmissionOperations = () => {
             location: submission.location,
             date_posted: submission.date_posted,
             source: submission.source,
+            villages: null,
             created_by: submission.submitted_by
           });
 

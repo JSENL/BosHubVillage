@@ -23,6 +23,7 @@ export interface NewsSubmission {
   location: string;
   date_posted: string;
   source: string;
+  link?: string;
   status: 'pending' | 'approved' | 'rejected';
   submitted_by: string;
   reviewed_by?: string;
