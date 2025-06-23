@@ -21,6 +21,7 @@ export interface EventWithFilters {
   latitude: number | null;
   longitude: number | null;
   neighborhoods: string | null;
+  villages: string[] | null;
   attendees_count?: number;
 }
 
@@ -29,6 +30,7 @@ export const useEventsWithFilters = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('all');
+  const [selectedVillage, setSelectedVillage] = useState('all');
   const [dateFilter, setDateFilter] = useState('');
   const [timeFilter, setTimeFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -78,6 +80,10 @@ export const useEventsWithFilters = () => {
         (event.neighborhoods && event.neighborhoods.includes(selectedNeighborhood.replace('-', ' '))) ||
         event.location.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase());
 
+      // Village filter
+      const matchesVillage = selectedVillage === 'all' || 
+        (event.villages && event.villages.includes(selectedVillage.replace('-', ' ')));
+
       // Date filter
       const matchesDate = dateFilter === '' || event.date === dateFilter;
 
@@ -99,9 +105,9 @@ export const useEventsWithFilters = () => {
         }
       })();
 
-      return matchesSearch && matchesCategory && matchesNeighborhood && matchesDate && matchesTime;
+      return matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
     });
-  }, [events, selectedCategory, selectedNeighborhood, dateFilter, timeFilter, searchTerm]);
+  }, [events, selectedCategory, selectedNeighborhood, selectedVillage, dateFilter, timeFilter, searchTerm]);
 
   useEffect(() => {
     fetchEvents();
@@ -114,6 +120,8 @@ export const useEventsWithFilters = () => {
     setSelectedCategory,
     selectedNeighborhood,
     setSelectedNeighborhood,
+    selectedVillage,
+    setSelectedVillage,
     dateFilter,
     setDateFilter,
     timeFilter,

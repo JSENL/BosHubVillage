@@ -398,7 +398,7 @@ export type Database = {
           start_time: string | null
           title: string
           updated_at: string
-          villages: string[] | null
+          villages: string | null
         }
         Insert: {
           category: string
@@ -420,7 +420,7 @@ export type Database = {
           start_time?: string | null
           title: string
           updated_at?: string
-          villages?: string[] | null
+          villages?: string | null
         }
         Update: {
           category?: string
@@ -442,7 +442,7 @@ export type Database = {
           start_time?: string | null
           title?: string
           updated_at?: string
-          villages?: string[] | null
+          villages?: string | null
         }
         Relationships: [
           {

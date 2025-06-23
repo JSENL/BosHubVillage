@@ -36,6 +36,8 @@ const Index = () => {
     setSelectedCategory,
     selectedNeighborhood,
     setSelectedNeighborhood,
+    selectedVillage,
+    setSelectedVillage,
     dateFilter,
     setDateFilter,
     timeFilter,
@@ -114,6 +116,8 @@ const Index = () => {
                   onCategoryChange={setSelectedCategory}
                   selectedNeighborhood={selectedNeighborhood}
                   onNeighborhoodChange={setSelectedNeighborhood}
+                  selectedVillage={selectedVillage}
+                  onVillageChange={setSelectedVillage}
                   dateFilter={dateFilter}
                   onDateFilterChange={setDateFilter}
                   timeFilter={timeFilter}
@@ -190,4 +194,3 @@ const Index = () => {
 };
 
 export default Index;
-
