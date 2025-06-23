@@ -1,3 +1,4 @@
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -61,53 +62,25 @@ export const EventFiltersEnhanced = ({
                           dateFilter !== '' || 
                           timeFilter !== 'all';
 
-  const allCategories = [
+  // Dynamic categories from database
+  const categoryOptions = [
     { value: 'all', label: 'All Categories' },
-    { value: 'music', label: 'Music' },
-    { value: 'sports', label: 'Sports' },
-    { value: 'food', label: 'Food & Drink' },
-    { value: 'art', label: 'Arts & Culture' },
-    { value: 'business', label: 'Business' },
-    { value: 'education', label: 'Education' },
-    { value: 'family', label: 'Family' },
-    { value: 'health', label: 'Health & Wellness' },
-    { value: 'community', label: 'Community' },
-    { value: 'technology', label: 'Technology' },
+    ...availableCategories.map(category => ({
+      value: category,
+      label: category.charAt(0).toUpperCase() + category.slice(1)
+    }))
   ];
 
-  const allNeighborhoods = [
+  // Dynamic neighborhoods from database
+  const neighborhoodOptions = [
     { value: 'all', label: 'All Neighborhoods' },
-    { value: 'beacon-hill', label: 'Beacon Hill' },
-    { value: 'back-bay', label: 'Back Bay' },
-    { value: 'north-end', label: 'North End' },
-    { value: 'south-end', label: 'South End' },
-    { value: 'chinatown', label: 'Chinatown' },
-    { value: 'financial-district', label: 'Financial District' },
-    { value: 'fenway', label: 'Fenway' },
-    { value: 'cambridge', label: 'Cambridge' },
-    { value: 'somerville', label: 'Somerville' },
-    { value: 'charlestown', label: 'Charlestown' },
-    { value: 'roxbury', label: 'Roxbury' },
-    { value: 'dorchester', label: 'Dorchester' },
+    ...availableNeighborhoods.map(neighborhood => ({
+      value: neighborhood.toLowerCase().replace(/\s+/g, '-'),
+      label: neighborhood
+    }))
   ];
 
-  // Filter categories to show only available ones
-  const filteredCategories = allCategories.filter(category => 
-    category.value === 'all' || availableCategories.includes(category.value)
-  );
-
-  // Filter neighborhoods to show only available ones
-  const filteredNeighborhoodOptions = allNeighborhoods.filter(neighborhood => {
-    if (neighborhood.value === 'all') return true;
-  
-    const neighborhoodName = neighborhood.label.toLowerCase();
-    return availableNeighborhoods.some(available => 
-      available.toLowerCase() === neighborhoodName ||
-      available.toLowerCase().replace(/\s+/g, '-') === neighborhood.value
-    );
-  });
-
-  // Dynamic villages from available data
+  // Dynamic villages from database
   const villageOptions = [
     { value: 'all', label: 'All Villages' },
     ...availableVillages.map(village => ({
@@ -135,7 +108,7 @@ export const EventFiltersEnhanced = ({
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent>
-          {filteredCategories.map((category) => (
+          {categoryOptions.map((category) => (
             <SelectItem key={category.value} value={category.value}>
               {category.label}
             </SelectItem>
@@ -148,7 +121,7 @@ export const EventFiltersEnhanced = ({
           <SelectValue placeholder="Neighborhood" />
         </SelectTrigger>
         <SelectContent>
-          {filteredNeighborhoodOptions.map((neighborhood) => (
+          {neighborhoodOptions.map((neighborhood) => (
             <SelectItem key={neighborhood.value} value={neighborhood.value}>
               {neighborhood.label}
             </SelectItem>

@@ -142,19 +142,23 @@ export const useDynamicFilterOptions = ({
         });
       }
       
-      // Also extract from location field
+      // Also extract from location field as fallback
       const location = event.location.toLowerCase();
-      const neighborhoodOptions = [
-        'beacon hill', 'back bay', 'north end', 'south end', 'chinatown', 
-        'financial district', 'fenway', 'cambridge', 'somerville', 'charlestown', 
-        'roxbury', 'dorchester'
-      ];
-      
-      neighborhoodOptions.forEach(neighborhood => {
-        if (location.includes(neighborhood)) {
-          neighborhoods.add(neighborhood);
-        }
-      });
+      // Extract neighborhood names from location if they contain common neighborhood keywords
+      if (location.includes('dorchester')) neighborhoods.add('Dorchester');
+      if (location.includes('jamaica plain')) neighborhoods.add('Jamaica Plain');
+      if (location.includes('cambridge')) neighborhoods.add('Cambridge');
+      if (location.includes('somerville')) neighborhoods.add('Somerville');
+      if (location.includes('beacon hill')) neighborhoods.add('Beacon Hill');
+      if (location.includes('back bay')) neighborhoods.add('Back Bay');
+      if (location.includes('north end')) neighborhoods.add('North End');
+      if (location.includes('south end')) neighborhoods.add('South End');
+      if (location.includes('chinatown')) neighborhoods.add('Chinatown');
+      if (location.includes('financial district')) neighborhoods.add('Financial District');
+      if (location.includes('fenway')) neighborhoods.add('Fenway');
+      if (location.includes('charlestown')) neighborhoods.add('Charlestown');
+      if (location.includes('roxbury')) neighborhoods.add('Roxbury');
+      if (location.includes('hyde park')) neighborhoods.add('Hyde Park');
     });
 
     return Array.from(neighborhoods).sort();
