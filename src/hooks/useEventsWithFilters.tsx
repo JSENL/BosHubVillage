@@ -80,7 +80,7 @@ export const useEventsWithFilters = () => {
         (event.neighborhoods && event.neighborhoods.includes(selectedNeighborhood.replace('-', ' '))) ||
         event.location.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase());
 
-      // Village filter
+      // Village filter - now using the villages column from database
       const matchesVillage = selectedVillage === 'all' || 
         (event.villages && event.villages.includes(selectedVillage.replace('-', ' ')));
 
@@ -108,10 +108,6 @@ export const useEventsWithFilters = () => {
       return matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
     });
   }, [events, selectedCategory, selectedNeighborhood, selectedVillage, dateFilter, timeFilter, searchTerm]);
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
 
   return {
     events: filteredEvents,

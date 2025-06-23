@@ -1,6 +1,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Filter } from 'lucide-react';
+import { useVillages } from '@/hooks/useVillages';
 
 interface UniversalFiltersProps {
   selectedCategory: string;
@@ -23,6 +24,8 @@ export const UniversalFilters = ({
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
+  const { villages } = useVillages();
+
   const getCategories = () => {
     switch (itemType) {
       case 'events':
@@ -79,16 +82,13 @@ export const UniversalFilters = ({
     { value: 'dorchester', label: 'Dorchester' },
   ];
 
-  const villages = [
+  // Dynamic villages from database
+  const villageOptions = [
     { value: 'all', label: 'All Villages' },
-    { value: 'downtown', label: 'Downtown' },
-    { value: 'waterfront', label: 'Waterfront' },
-    { value: 'historic-district', label: 'Historic District' },
-    { value: 'arts-quarter', label: 'Arts Quarter' },
-    { value: 'business-district', label: 'Business District' },
-    { value: 'university-area', label: 'University Area' },
-    { value: 'riverside', label: 'Riverside' },
-    { value: 'market-square', label: 'Market Square' },
+    ...villages.map(village => ({
+      value: village.toLowerCase().replace(/\s+/g, '-'),
+      label: village
+    }))
   ];
 
   const categories = getCategories();
@@ -131,7 +131,7 @@ export const UniversalFilters = ({
           <SelectValue placeholder="Village" />
         </SelectTrigger>
         <SelectContent>
-          {villages.map((village) => (
+          {villageOptions.map((village) => (
             <SelectItem key={village.value} value={village.value}>
               {village.label}
             </SelectItem>
