@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
 import { EventCard } from "@/components/EventCard";
 import { EventFiltersEnhanced } from "@/components/EventFiltersEnhanced";
+import { SectionMap } from "@/components/SectionMap";
 import { useEventsWithFilters } from "@/hooks/useEventsWithFilters";
 import BusinessCard from "@/components/BusinessCard";
 import NewsCard from "@/components/NewsCard";
@@ -22,12 +22,12 @@ import { BusinessSubmission, NewsSubmission } from "@/types/submissions";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("events");
+  
   const { data: businesses, isLoading: businessLoading, refetch: refetchBusinesses } = useBusiness();
   const { data: news, isLoading: newsLoading, refetch: refetchNews } = useNews();
   const { data: businessSubmissions, isLoading: businessSubmissionsLoading, refetch: refetchBusinessSubmissions } = useBusinessSubmissions();
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading, refetch: refetchNewsSubmissions } = useNewsSubmissions();
   
-  // Use the new events hook with filtering
   const {
     events: filteredEvents,
     loading: eventsLoading,
@@ -46,13 +46,11 @@ const Index = () => {
     events: allEvents
   } = useEventsWithFilters();
 
-  // Combine approved businesses with approved business submissions
   const allBusinesses: (Business | BusinessSubmission)[] = [
     ...(businesses || []),
     ...(businessSubmissions || [])
   ];
 
-  // Combine approved news with approved news submissions
   const allNews: (News | NewsSubmission)[] = [
     ...(news || []),
     ...(newsSubmissions || [])
@@ -61,7 +59,6 @@ const Index = () => {
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
   const isNewsLoading = newsLoading || newsSubmissionsLoading;
 
-  // Type guard functions
   const isBusinessSubmission = (item: Business | BusinessSubmission): item is BusinessSubmission => {
     return 'status' in item;
   };
@@ -70,7 +67,6 @@ const Index = () => {
     return 'status' in item;
   };
 
-  // Update handlers for submissions
   const handleBusinessUpdate = () => {
     refetchBusinesses();
     refetchBusinessSubmissions();
@@ -99,7 +95,9 @@ const Index = () => {
               <div className="space-y-4">
                 <h2 className="text-2xl font-bold text-gray-900">Local Events</h2>
                 
-                {/* Search Bar */}
+                {/* Google Map below title */}
+                <SectionMap height="400px" />
+                
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
@@ -110,7 +108,6 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Enhanced Filters with Dynamic Options */}
                 <EventFiltersEnhanced
                   events={allEvents}
                   selectedCategory={selectedCategory}
@@ -147,6 +144,10 @@ const Index = () => {
           <TabsContent value="business">
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900">Local Businesses</h2>
+              
+              {/* Google Map below title */}
+              <SectionMap height="400px" />
+              
               {isBusinessLoading ? (
                 <div className="text-center py-8">Loading businesses...</div>
               ) : allBusinesses && allBusinesses.length > 0 ? (
@@ -170,6 +171,10 @@ const Index = () => {
           <TabsContent value="news">
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-900">Local News</h2>
+              
+              {/* Google Map below title */}
+              <SectionMap height="400px" />
+              
               {isNewsLoading ? (
                 <div className="text-center py-8">Loading news...</div>
               ) : allNews && allNews.length > 0 ? (
