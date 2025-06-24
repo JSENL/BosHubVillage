@@ -496,6 +496,133 @@ export type Database = {
         }
         Relationships: []
       }
+      local_services_nonprofits_comments: {
+        Row: {
+          comment: string
+          created_at: string
+          id: string
+          local_service_nonprofit_id: string
+          parent_comment_id: string | null
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          id?: string
+          local_service_nonprofit_id: string
+          parent_comment_id?: string | null
+          rating?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          id?: string
+          local_service_nonprofit_id?: string
+          parent_comment_id?: string | null
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "local_services_nonprofits_comme_local_service_nonprofit_id_fkey"
+            columns: ["local_service_nonprofit_id"]
+            isOneToOne: false
+            referencedRelation: "local_services_nonprofits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "local_services_nonprofits_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "local_services_nonprofits_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "local_services_nonprofits_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      local_services_nonprofits_submissions: {
+        Row: {
+          address: string
+          admin_notes: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          neighborhood: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_by: string
+          updated_at: string
+          village: string | null
+        }
+        Insert: {
+          address: string
+          admin_notes?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          neighborhood: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by: string
+          updated_at?: string
+          village?: string | null
+        }
+        Update: {
+          address?: string
+          admin_notes?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          neighborhood?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_by?: string
+          updated_at?: string
+          village?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "local_services_nonprofits_submissions_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "local_services_nonprofits_submissions_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       news: {
         Row: {
           content: string

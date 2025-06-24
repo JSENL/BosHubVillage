@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import SubmitEvent from "./pages/SubmitEvent";
 import SubmitBusiness from "./pages/SubmitBusiness";
+import SubmitLocalService from "./pages/SubmitLocalService";
 import SubmitNews from "./pages/SubmitNews";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminApproval from "./pages/AdminApproval";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/submit-event" element={<SubmitEvent />} />
             <Route path="/submit-business" element={<SubmitBusiness />} />
+            <Route path="/submit-local-service" element={<SubmitLocalService />} />
             <Route path="/submit-news" element={<SubmitNews />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/approval" element={<AdminApproval />} />

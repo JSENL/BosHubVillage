@@ -7,17 +7,22 @@ import { SectionMap } from "@/components/SectionMap";
 import { useEventsWithFilters } from "@/hooks/useEventsWithFilters";
 import BusinessCard from "@/components/BusinessCard";
 import NewsCard from "@/components/NewsCard";
+import LocalServiceCard from "@/components/LocalServiceCard";
 import { BusinessSubmissionCard } from "@/components/BusinessSubmissionCard";
 import { NewsSubmissionCard } from "@/components/NewsSubmissionCard";
+import LocalServiceSubmissionCard from "@/components/LocalServiceSubmissionCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 import { useBusiness } from "@/hooks/useBusiness";
 import { useNews } from "@/hooks/useNews";
+import { useLocalServices } from "@/hooks/useLocalServices";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
 import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
+import { useLocalServiceSubmissions } from "@/hooks/useLocalServiceSubmissions";
 import { Business } from "@/types/business";
 import { News } from "@/types/news";
+import { LocalService, LocalServiceSubmission } from "@/types/localServices";
 import { BusinessSubmission, NewsSubmission } from "@/types/submissions";
 
 const Index = () => {
@@ -25,8 +30,10 @@ const Index = () => {
   
   const { data: businesses, isLoading: businessLoading, refetch: refetchBusinesses } = useBusiness();
   const { data: news, isLoading: newsLoading, refetch: refetchNews } = useNews();
+  const { data: localServices, isLoading: localServicesLoading, refetch: refetchLocalServices } = useLocalServices();
   const { data: businessSubmissions, isLoading: businessSubmissionsLoading, refetch: refetchBusinessSubmissions } = useBusinessSubmissions();
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading, refetch: refetchNewsSubmissions } = useNewsSubmissions();
+  const { data: localServiceSubmissions, isLoading: localServiceSubmissionsLoading, refetch: refetchLocalServiceSubmissions } = useLocalServiceSubmissions();
   
   const {
     events: filteredEvents,
@@ -56,14 +63,24 @@ const Index = () => {
     ...(newsSubmissions || [])
   ];
 
+  const allLocalServices: (LocalService | LocalServiceSubmission)[] = [
+    ...(localServices || []),
+    ...(localServiceSubmissions || [])
+  ];
+
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
   const isNewsLoading = newsLoading || newsSubmissionsLoading;
+  const isLocalServicesLoading = localServicesLoading || localServiceSubmissionsLoading;
 
   const isBusinessSubmission = (item: Business | BusinessSubmission): item is BusinessSubmission => {
     return 'status' in item;
   };
 
   const isNewsSubmission = (item: News | NewsSubmission): item is NewsSubmission => {
+    return 'status' in item;
+  };
+
+  const isLocalServiceSubmission = (item: LocalService | LocalServiceSubmission): item is LocalServiceSubmission => {
     return 'status' in item;
   };
 
@@ -77,6 +94,11 @@ const Index = () => {
     refetchNewsSubmissions();
   };
 
+  const handleLocalServicesUpdate = () => {
+    refetchLocalServices();
+    refetchLocalServiceSubmissions();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
@@ -84,9 +106,10 @@ const Index = () => {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="business">Business</TabsTrigger>
+            <TabsTrigger value="local-services">Local Services</TabsTrigger>
             <TabsTrigger value="news">News</TabsTrigger>
           </TabsList>
           
@@ -163,6 +186,33 @@ const Index = () => {
               ) : (
                 <div className="text-center py-8 text-gray-500">
                   No businesses found. Be the first to add one!
+                </div>
+              )}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="local-services">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-900">Local Services & Nonprofits</h2>
+              
+              {/* Google Map below title */}
+              <SectionMap height="400px" />
+              
+              {isLocalServicesLoading ? (
+                <div className="text-center py-8">Loading local services...</div>
+              ) : allLocalServices && allLocalServices.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {allLocalServices.map((service) => (
+                    isLocalServiceSubmission(service) ? (
+                      <LocalServiceSubmissionCard key={service.id} submission={service} onUpdate={handleLocalServicesUpdate} />
+                    ) : (
+                      <LocalServiceCard key={service.id} localService={service} />
+                    )
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  No local services found. Be the first to add one!
                 </div>
               )}
             </div>
