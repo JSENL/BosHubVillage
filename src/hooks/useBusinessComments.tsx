@@ -29,6 +29,8 @@ export const useBusinessComments = (businessId: string) => {
 
   const fetchComments = async () => {
     try {
+      console.log('Fetching comments for business:', businessId);
+      
       const { data, error } = await supabase
         .from('business_comments')
         .select(`
@@ -42,9 +44,14 @@ export const useBusinessComments = (businessId: string) => {
         .eq('business_id', businessId)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching business comments:', error);
+        throw error;
+      }
 
+      console.log('Raw business comments data:', data);
       const organizedComments = organizeComments(data || []);
+      console.log('Organized business comments:', organizedComments);
       setComments(organizedComments);
     } catch (error: any) {
       console.error('Error fetching business comments:', error);
@@ -56,6 +63,8 @@ export const useBusinessComments = (businessId: string) => {
 
   const addComment = async (commentText: string, rating: number, mediaFiles?: File[], parentCommentId?: string) => {
     try {
+      console.log('Adding comment:', { commentText, rating, businessId, parentCommentId });
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -74,8 +83,12 @@ export const useBusinessComments = (businessId: string) => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error adding business comment:', error);
+        throw error;
+      }
 
+      console.log('Comment added successfully:', data);
       toast.success(parentCommentId ? 'Reply added successfully!' : 'Comment added successfully!');
       fetchComments();
       return data;
@@ -88,13 +101,19 @@ export const useBusinessComments = (businessId: string) => {
 
   const deleteComment = async (commentId: string) => {
     try {
+      console.log('Deleting comment:', commentId);
+      
       const { error } = await supabase
         .from('business_comments')
         .delete()
         .eq('id', commentId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error deleting business comment:', error);
+        throw error;
+      }
 
+      console.log('Comment deleted successfully');
       toast.success('Comment deleted successfully!');
       fetchComments();
     } catch (error: any) {
@@ -106,6 +125,7 @@ export const useBusinessComments = (businessId: string) => {
 
   useEffect(() => {
     if (businessId) {
+      console.log('Business ID changed, fetching comments for:', businessId);
       fetchComments();
     }
   }, [businessId]);

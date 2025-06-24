@@ -8,6 +8,7 @@ import { MapPin, Building, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Business } from '@/types/business';
+import { BusinessSubmission } from '@/types/submissions';
 import { Link } from 'react-router-dom';
 import BusinessComments from '@/components/BusinessComments';
 
@@ -16,23 +17,36 @@ const BusinessDetails = () => {
   const { user } = useAuth();
 
   const { data: business, isLoading } = useQuery({
-    queryKey: ['business', businessId],
+    queryKey: ['business-details', businessId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First try to fetch from the business table
+      const { data: businessData, error: businessError } = await supabase
         .from('business')
         .select('*')
         .eq('id', businessId)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
-      
-      // Parse villages JSON string to array
-      const businessWithParsedVillages = {
-        ...data,
-        villages: data.villages ? (typeof data.villages === 'string' ? JSON.parse(data.villages) : data.villages) : null
-      };
-      
-      return businessWithParsedVillages as Business;
+      if (businessData) {
+        // Parse villages JSON string to array if it exists
+        return {
+          ...businessData,
+          villages: businessData.villages ? (typeof businessData.villages === 'string' ? JSON.parse(businessData.villages) : businessData.villages) : null
+        } as Business;
+      }
+
+      // If not found in business table, try business_submissions
+      const { data: submissionData, error: submissionError } = await supabase
+        .from('business_submissions')
+        .select('*')
+        .eq('id', businessId)
+        .eq('status', 'approved')
+        .maybeSingle();
+
+      if (submissionError && !submissionData) {
+        throw new Error('Business not found');
+      }
+
+      return submissionData as BusinessSubmission;
     },
     enabled: !!businessId,
   });

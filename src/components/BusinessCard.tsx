@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
 import { Business } from '@/types/business';
+import { BusinessSubmission } from '@/types/submissions';
 import { Link } from 'react-router-dom';
 
 interface BusinessCardProps {
-  business: Business;
+  business: Business | BusinessSubmission;
 }
 
 const BusinessCard = ({ business }: BusinessCardProps) => {
