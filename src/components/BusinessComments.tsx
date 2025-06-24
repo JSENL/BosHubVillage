@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBusinessComments } from '@/hooks/useBusinessComments';
 import { CommentsHeader } from './comments/CommentsHeader';
 import { CommentForm } from './comments/CommentForm';
-import { CommentsList } from './comments/CommentsList';
+import { GenericCommentsList } from './comments/GenericCommentsList';
 
 interface BusinessCommentsProps {
   businessId: string;
@@ -41,7 +41,7 @@ const BusinessComments = ({ businessId }: BusinessCommentsProps) => {
         onSubmitComment={handleSubmitComment}
       />
 
-      <CommentsList
+      <GenericCommentsList
         comments={comments}
         loading={loading}
         user={user}

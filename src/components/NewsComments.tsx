@@ -3,7 +3,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNewsComments } from '@/hooks/useNewsComments';
 import { CommentsHeader } from './comments/CommentsHeader';
 import { CommentForm } from './comments/CommentForm';
-import { CommentsList } from './comments/CommentsList';
+import { GenericCommentsList } from './comments/GenericCommentsList';
 
 interface NewsCommentsProps {
   newsId: string;
@@ -41,7 +41,7 @@ const NewsComments = ({ newsId }: NewsCommentsProps) => {
         onSubmitComment={handleSubmitComment}
       />
 
-      <CommentsList
+      <GenericCommentsList
         comments={comments}
         loading={loading}
         user={user}
