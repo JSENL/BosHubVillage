@@ -1,3 +1,4 @@
+
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import NewsComments from '@/components/NewsComments';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -100,13 +102,9 @@ const NewsDetails = () => {
           </CardContent>
         </Card>
 
-        {/* Comments section would go here */}
         <Card>
-          <CardHeader>
-            <CardTitle>Comments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-500">Comments functionality coming soon...</p>
+          <CardContent className="p-8">
+            <NewsComments newsId={news.id} />
           </CardContent>
         </Card>
       </div>

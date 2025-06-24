@@ -15,22 +15,29 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
       <Card className="hover:shadow-lg transition-shadow cursor-pointer">
         <CardHeader>
           <div className="flex justify-between items-start">
-            <CardTitle className="text-lg font-semibold line-clamp-2">
-              {business.title}
-            </CardTitle>
-            <Badge variant="secondary" className="ml-2">
-              <Building className="h-3 w-3 mr-1" />
-              {business.business_type}
-            </Badge>
+            <div>
+              <CardTitle className="text-lg font-semibold line-clamp-2">
+                {business.title}
+              </CardTitle>
+              <Badge variant="secondary" className="mb-2">
+                <Building className="h-3 w-3 mr-1" />
+                {business.business_type}
+              </Badge>
+            </div>
           </div>
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-gray-600 mb-2">
             <MapPin className="h-4 w-4 mr-1" />
             {business.address}, {business.neighborhood}
           </div>
         </CardHeader>
         <CardContent>
+          {business.short_description && (
+            <p className="text-gray-700 line-clamp-2 mb-2">
+              {business.short_description}
+            </p>
+          )}
           <p className="text-gray-700 line-clamp-3">
-            {business.short_description || business.description}
+            {business.description}
           </p>
         </CardContent>
       </Card>

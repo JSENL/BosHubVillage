@@ -1,3 +1,4 @@
+
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Business } from '@/types/business';
 import { Link } from 'react-router-dom';
+import BusinessComments from '@/components/BusinessComments';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -100,13 +102,9 @@ const BusinessDetails = () => {
           </CardContent>
         </Card>
 
-        {/* Comments section would go here */}
         <Card>
-          <CardHeader>
-            <CardTitle>Comments</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-500">Comments functionality coming soon...</p>
+          <CardContent className="p-8">
+            <BusinessComments businessId={business.id} />
           </CardContent>
         </Card>
       </div>
