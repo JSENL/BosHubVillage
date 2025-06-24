@@ -454,6 +454,48 @@ export type Database = {
           },
         ]
       }
+      local_services_nonprofits: {
+        Row: {
+          address: string
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          neighborhood: string
+          updated_at: string
+          village: string | null
+        }
+        Insert: {
+          address: string
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          neighborhood: string
+          updated_at?: string
+          village?: string | null
+        }
+        Update: {
+          address?: string
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          neighborhood?: string
+          updated_at?: string
+          village?: string | null
+        }
+        Relationships: []
+      }
       news: {
         Row: {
           content: string
