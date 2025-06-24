@@ -7,6 +7,7 @@ import { Navigation } from '@/components/Navigation';
 import AdminEventApproval from '@/components/AdminEventApproval';
 import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminBusinessApproval from '@/components/AdminBusinessApproval';
+import AdminLocalServiceApproval from '@/components/AdminLocalServiceApproval';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import { 
   Shield, 
@@ -14,7 +15,8 @@ import {
   Building, 
   Newspaper,
   FileText,
-  ArrowLeft
+  ArrowLeft,
+  Heart
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -79,7 +81,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -87,6 +89,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="businesses" className="flex items-center">
                 <Building className="h-4 w-4 mr-2" />
                 Businesses
+              </TabsTrigger>
+              <TabsTrigger value="local-services" className="flex items-center">
+                <Heart className="h-4 w-4 mr-2" />
+                Local Services
               </TabsTrigger>
               <TabsTrigger value="news" className="flex items-center">
                 <Newspaper className="h-4 w-4 mr-2" />
@@ -104,6 +110,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="businesses">
               <AdminBusinessApproval />
+            </TabsContent>
+            
+            <TabsContent value="local-services">
+              <AdminLocalServiceApproval />
             </TabsContent>
             
             <TabsContent value="news">
