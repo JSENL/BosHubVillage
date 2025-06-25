@@ -1,9 +1,9 @@
 
 import { useEffect, useRef, useState } from 'react';
-import { useMapLoader } from '@/hooks/useMapLoader';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { fitMapToBounds, clearMarkers } from '@/utils/mapUtils';
 
 interface MapItem {
   id: string;
@@ -24,13 +24,20 @@ interface UniversalMapProps {
 
 export const UniversalMap = ({ height = "400px", showFilters = false }: UniversalMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const markersRef = useRef<google.maps.Marker[]>([]);
+  const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
+  const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [mapItems, setMapItems] = useState<MapItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['event', 'news', 'business', 'local-service']);
+  const [mapboxToken, setMapboxToken] = useState<string>('');
   const navigate = useNavigate();
-  const { apiKey, mapLoaded, isLoadingApiKey, loadMap } = useMapLoader();
+
+  // Fetch Mapbox token from input or use a default public token
+  useEffect(() => {
+    // For now, we'll use a placeholder token. Users will need to replace this with their actual Mapbox token
+    const token = localStorage.getItem('mapbox_token') || 'pk.your_mapbox_token_here';
+    setMapboxToken(token);
+  }, []);
 
   // Fetch all data from Supabase
   const fetchMapData = async () => {
@@ -64,22 +71,6 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
         });
       }
 
-      // Process news (we'll need to geocode these since they don't have coordinates)
-      if (newsRes.data) {
-        newsRes.data.forEach(news => {
-          // For now, skip news without coordinates - we could geocode later
-          console.log('News item found but no coordinates:', news.title);
-        });
-      }
-
-      // Process businesses (we'll need to geocode these)
-      if (businessRes.data) {
-        businessRes.data.forEach(business => {
-          // For now, skip businesses without coordinates - we could geocode later
-          console.log('Business found but no coordinates:', business.title);
-        });
-      }
-
       // Process local services
       if (localServicesRes.data) {
         localServicesRes.data.forEach(service => {
@@ -107,50 +98,46 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
     }
   };
 
-  // Initialize map
+  // Initialize Mapbox map
   useEffect(() => {
-    const initializeMap = async () => {
-      if (!apiKey) return;
-      
-      const map = await loadMap(mapRef);
-      if (map) {
-        mapInstanceRef.current = map;
-      }
-    };
+    if (!mapRef.current || !mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') return;
 
-    initializeMap();
-  }, [apiKey, loadMap]);
+    mapboxgl.accessToken = mapboxToken;
+
+    const map = new mapboxgl.Map({
+      container: mapRef.current,
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [-71.0589, 42.3601], // Boston center
+      zoom: 12
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    mapInstanceRef.current = map;
+
+    return () => {
+      map.remove();
+    };
+  }, [mapboxToken]);
 
   // Fetch data
   useEffect(() => {
     fetchMapData();
   }, []);
 
-  // Create marker icon based on type
-  const createMarkerIcon = (type: string): google.maps.Icon => {
+  // Create marker color based on type
+  const getMarkerColor = (type: string): string => {
     const colors = {
       event: '#dc2626',
       news: '#2563eb',
       business: '#16a34a',
       'local-service': '#ca8a04'
     };
-
-    const color = colors[type as keyof typeof colors] || '#6b7280';
-
-    return {
-      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="16" cy="16" r="14" fill="${color}" stroke="white" stroke-width="2"/>
-          <circle cx="16" cy="16" r="6" fill="white"/>
-        </svg>
-      `),
-      scaledSize: new window.google.maps.Size(32, 32),
-      anchor: new window.google.maps.Point(16, 16)
-    };
+    return colors[type as keyof typeof colors] || '#6b7280';
   };
 
-  // Create info window content
-  const createInfoWindowContent = (item: MapItem): string => {
+  // Create popup content
+  const createPopupContent = (item: MapItem): string => {
     const typeLabel = {
       event: 'Event',
       news: 'News',
@@ -160,7 +147,7 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
 
     return `
       <div style="padding: 10px; max-width: 200px;">
-        <div style="background: ${item.type === 'event' ? '#dc2626' : item.type === 'news' ? '#2563eb' : item.type === 'business' ? '#16a34a' : '#ca8a04'}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-bottom: 8px;">
+        <div style="background: ${getMarkerColor(item.type)}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-bottom: 8px;">
           ${typeLabel}
         </div>
         <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${item.title}</h3>
@@ -186,53 +173,39 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
 
   // Add markers to map
   useEffect(() => {
-    if (!mapInstanceRef.current || !mapLoaded || !window.google || mapItems.length === 0) {
-      return;
-    }
-
-    console.log('Adding markers to map...');
+    if (!mapInstanceRef.current || mapItems.length === 0) return;
 
     // Clear existing markers
-    markersRef.current = clearMarkers(markersRef.current);
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
 
     // Filter items based on selected types
     const filteredItems = mapItems.filter(item => selectedTypes.includes(item.type));
 
     // Add new markers
     filteredItems.forEach((item) => {
-      const marker = new window.google.maps.Marker({
-        position: { lat: item.latitude, lng: item.longitude },
-        map: mapInstanceRef.current!,
-        title: item.title,
-        icon: createMarkerIcon(item.type)
-      });
+      const marker = new mapboxgl.Marker({
+        color: getMarkerColor(item.type)
+      })
+        .setLngLat([item.longitude, item.latitude])
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 })
+            .setHTML(createPopupContent(item))
+        )
+        .addTo(mapInstanceRef.current!);
 
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: createInfoWindowContent(item)
-      });
-
-      marker.addListener('click', () => {
-        // Close all other info windows
-        markersRef.current.forEach(m => {
-          if ((m as any).infoWindow) {
-            (m as any).infoWindow.close();
-          }
-        });
-
-        infoWindow.open(mapInstanceRef.current!, marker);
-        (marker as any).infoWindow = infoWindow;
-        mapInstanceRef.current!.panTo({ lat: item.latitude, lng: item.longitude });
-      });
-
-      (marker as any).infoWindow = infoWindow;
       markersRef.current.push(marker);
     });
 
     // Fit map to show all markers
     if (filteredItems.length > 0) {
-      fitMapToBounds(mapInstanceRef.current, markersRef.current);
+      const bounds = new mapboxgl.LngLatBounds();
+      filteredItems.forEach(item => {
+        bounds.extend([item.longitude, item.latitude]);
+      });
+      mapInstanceRef.current.fitBounds(bounds, { padding: 50 });
     }
-  }, [mapItems, mapLoaded, selectedTypes]);
+  }, [mapItems, selectedTypes]);
 
   // Handle type filter changes
   const toggleType = (type: string) => {
@@ -243,21 +216,20 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
     );
   };
 
-  if (isLoadingApiKey) {
+  if (!mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') {
     return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center" style={{ height }}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-          <p className="text-gray-600">Loading map...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!apiKey) {
-    return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center" style={{ height }}>
-        <p className="text-gray-500">Google Maps not configured</p>
+      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
+        <p className="text-gray-500 mb-4">Please enter your Mapbox token to display the map</p>
+        <input
+          type="text"
+          placeholder="Enter your Mapbox public token"
+          className="px-4 py-2 border rounded-lg mb-4 w-80"
+          onChange={(e) => {
+            localStorage.setItem('mapbox_token', e.target.value);
+            setMapboxToken(e.target.value);
+          }}
+        />
+        <p className="text-sm text-gray-400">Get your token from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500">mapbox.com</a></p>
       </div>
     );
   }
@@ -289,13 +261,11 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
       
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
         <div ref={mapRef} className="w-full h-full" />
-        {(loading || !mapLoaded) && (
+        {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-              <p className="text-gray-600">
-                {loading ? 'Loading data...' : 'Loading map...'}
-              </p>
+              <p className="text-gray-600">Loading data...</p>
             </div>
           </div>
         )}

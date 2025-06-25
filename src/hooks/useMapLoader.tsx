@@ -1,103 +1,56 @@
 
 import { useEffect, useState } from 'react';
-import { Loader } from '@googlemaps/js-api-loader';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import mapboxgl from 'mapbox-gl';
 
 export const useMapLoader = () => {
-  const [apiKey, setApiKey] = useState('');
+  const [mapboxToken, setMapboxToken] = useState('');
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [isLoadingApiKey, setIsLoadingApiKey] = useState(true);
+  const [isLoadingToken, setIsLoadingToken] = useState(true);
 
-  // Fetch Google Maps API key from edge function
+  // Get Mapbox token from localStorage
   useEffect(() => {
-    const fetchApiKey = async () => {
-      try {
-        console.log('Fetching Google Maps API key...');
-        const { data, error } = await supabase.functions.invoke('get-maps-key');
-        
-        if (error) {
-          console.error('Error fetching API key:', error);
-          toast.error('Failed to load Google Maps API key');
-          return;
-        }
-
-        if (data?.apiKey) {
-          console.log('Google Maps API key fetched successfully');
-          setApiKey(data.apiKey);
-        } else {
-          console.error('No API key returned from edge function');
-          toast.error('Google Maps API key not configured');
-        }
-      } catch (error) {
-        console.error('Error calling edge function:', error);
-        toast.error('Failed to fetch Google Maps configuration');
-      } finally {
-        setIsLoadingApiKey(false);
-      }
-    };
-
-    fetchApiKey();
+    const token = localStorage.getItem('mapbox_token') || '';
+    setMapboxToken(token);
+    setIsLoadingToken(false);
+    
+    if (token && token !== 'pk.your_mapbox_token_here') {
+      setMapLoaded(true);
+    }
   }, []);
 
   const loadMap = async (mapRef: React.RefObject<HTMLDivElement>) => {
-    if (!apiKey || !mapRef.current) {
-      console.log('Cannot load map:', { apiKey: !!apiKey, mapElement: !!mapRef.current });
+    if (!mapboxToken || !mapRef.current || mapboxToken === 'pk.your_mapbox_token_here') {
+      console.log('Cannot load map:', { mapboxToken: !!mapboxToken, mapElement: !!mapRef.current });
       return null;
     }
 
-    console.log('Loading Google Maps with API key...');
-
-    const loader = new Loader({
-      apiKey: apiKey,
-      version: 'weekly',
-      libraries: ['geometry', 'places']
-    });
+    console.log('Loading Mapbox with token...');
 
     try {
-      await loader.load();
+      mapboxgl.accessToken = mapboxToken;
       
-      if (!mapRef.current) {
-        console.error('Map container element not found');
-        return null;
-      }
-      
-      console.log('Creating map instance...');
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat: 42.3601, lng: -71.0589 }, // Boston center
-        zoom: 12,
-        styles: [
-          {
-            featureType: 'poi',
-            elementType: 'labels',
-            stylers: [{ visibility: 'off' }]
-          },
-          {
-            featureType: 'transit',
-            elementType: 'labels',
-            stylers: [{ visibility: 'off' }]
-          }
-        ],
-        mapTypeControl: true,
-        streetViewControl: true,
-        fullscreenControl: true,
-        zoomControl: true
+      const map = new mapboxgl.Map({
+        container: mapRef.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [-71.0589, 42.3601], // Boston center
+        zoom: 12
       });
 
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
       setMapLoaded(true);
-      console.log('Google Maps loaded successfully');
+      console.log('Mapbox loaded successfully');
       return map;
     } catch (error) {
-      console.error('Error loading Google Maps:', error);
-      toast.error('Failed to load Google Maps');
+      console.error('Error loading Mapbox:', error);
       return null;
     }
   };
 
   return {
-    apiKey,
+    apiKey: mapboxToken, // Keep this for backward compatibility
     mapLoaded,
-    isLoadingApiKey,
+    isLoadingApiKey: isLoadingToken,
     loadMap
   };
 };

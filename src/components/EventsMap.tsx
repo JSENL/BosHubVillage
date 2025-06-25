@@ -1,12 +1,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { Event } from '@/hooks/useEvents';
-import { useMapLoader } from '@/hooks/useMapLoader';
-import { createEventMarker } from './map/MapMarker';
 import { EventsSidebar } from './map/EventsSidebar';
-import { MapLoadingState, MapErrorState } from './map/MapLoadingState';
-import { fitMapToBounds, clearMarkers, closeAllInfoWindows } from '@/utils/mapUtils';
 import { useEventHighlight } from '@/hooks/useEventHighlight';
 
 interface EventsMapProps {
@@ -18,16 +16,18 @@ interface EventsMapProps {
 
 const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: EventsMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const markersRef = useRef<google.maps.Marker[]>([]);
+  const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
+  const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [mapboxToken, setMapboxToken] = useState<string>('');
   const navigate = useNavigate();
-  const { apiKey, mapLoaded, isLoadingApiKey, loadMap } = useMapLoader();
   const { highlightedEventId, highlightEvent } = useEventHighlight();
 
-  console.log('EventsMap rendered with events:', events.length);
-  console.log('Map loaded state:', mapLoaded);
-  console.log('API key available:', !!apiKey);
+  // Get Mapbox token
+  useEffect(() => {
+    const token = localStorage.getItem('mapbox_token') || 'pk.your_mapbox_token_here';
+    setMapboxToken(token);
+  }, []);
 
   // Filter events based on search and category, only include events with coordinates
   const filteredEvents = events.filter(event => {
@@ -38,35 +38,70 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     return matchesSearch && matchesCategory && hasCoordinates;
   });
 
-  console.log('Filtered events with coordinates:', filteredEvents.length);
-
-  // Initialize Google Maps
+  // Initialize Mapbox map
   useEffect(() => {
-    const initializeMap = async () => {
-      console.log('Attempting to initialize map...');
-      if (!apiKey) {
-        console.log('No API key available yet');
-        return;
+    if (!mapRef.current || !mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') return;
+
+    mapboxgl.accessToken = mapboxToken;
+
+    const map = new mapboxgl.Map({
+      container: mapRef.current,
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [-71.0589, 42.3601], // Boston center
+      zoom: 12
+    });
+
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    mapInstanceRef.current = map;
+
+    return () => {
+      map.remove();
+    };
+  }, [mapboxToken]);
+
+  // Create popup content for events
+  const createEventPopupContent = (event: Event): string => {
+    const formatTimeRange = (startTime: string, endTime: string) => {
+      if (!startTime && !endTime) return 'Time TBD';
+      if (startTime && endTime) {
+        return `${startTime} - ${endTime}`;
       }
-      
-      const map = await loadMap(mapRef);
-      if (map) {
-        console.log('Map successfully initialized');
-        mapInstanceRef.current = map;
-      } else {
-        console.error('Failed to initialize map');
-      }
+      return startTime || endTime;
     };
 
-    initializeMap();
-  }, [apiKey, loadMap]);
+    return `
+      <div style="padding: 10px; max-width: 200px;">
+        <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${event.title}</h3>
+        <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280;">${event.description.substring(0, 100)}...</p>
+        <div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;">
+          <strong>📅 ${new Date(event.date).toLocaleDateString()}</strong>
+        </div>
+        <div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;">
+          <strong>🕒 ${formatTimeRange(event.start_time, event.end_time)}</strong>
+        </div>
+        <div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;">
+          <strong>📍 ${event.location}</strong>
+        </div>
+        <div style="margin: 8px 0 0 0;">
+          <button onclick="window.location.href='/event/${event.id}'" style="
+            background: linear-gradient(to right, #8b5cf6, #3b82f6);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 500;
+          ">View Details</button>
+        </div>
+      </div>
+    `;
+  };
 
   // Handle marker click to highlight event card
-  const handleMarkerClick = (event: Event, position: { lat: number; lng: number }) => {
+  const handleMarkerClick = (event: Event) => {
     console.log('Marker clicked for event:', event.title);
-    
-    // Close any open info windows
-    closeAllInfoWindows(markersRef.current);
     
     // Set selected event
     setSelectedEvent(event);
@@ -78,38 +113,31 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     if (onEventSelect) {
       onEventSelect(event.id);
     }
-    
-    // Pan map to marker position
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.panTo(position);
-    }
   };
 
   // Add markers for filtered events
   useEffect(() => {
-    if (!mapInstanceRef.current || !mapLoaded || !window.google) {
-      console.log('Map not ready for markers:', {
-        mapInstance: !!mapInstanceRef.current,
-        mapLoaded,
-        googleAvailable: !!window.google
-      });
-      return;
-    }
-
-    console.log('Adding markers for', filteredEvents.length, 'events');
+    if (!mapInstanceRef.current || filteredEvents.length === 0) return;
 
     // Clear existing markers
-    markersRef.current = clearMarkers(markersRef.current);
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
 
     // Add new markers for filtered events
     filteredEvents.forEach((event) => {
       if (event.latitude && event.longitude) {
-        console.log('Creating marker for event:', event.title);
-        const marker = createEventMarker({
-          event,
-          map: mapInstanceRef.current!,
-          position: { lat: event.latitude, lng: event.longitude },
-          onMarkerClick: handleMarkerClick
+        const marker = new mapboxgl.Marker({
+          color: '#dc2626'
+        })
+          .setLngLat([event.longitude, event.latitude])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 })
+              .setHTML(createEventPopupContent(event))
+          )
+          .addTo(mapInstanceRef.current!);
+
+        marker.getElement().addEventListener('click', () => {
+          handleMarkerClick(event);
         });
 
         markersRef.current.push(marker);
@@ -117,22 +145,45 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     });
 
     // Fit map to show all markers if there are any
-    if (filteredEvents.length > 0 && markersRef.current.length > 0) {
-      console.log('Fitting map bounds to show all markers');
-      fitMapToBounds(mapInstanceRef.current, markersRef.current);
+    if (filteredEvents.length > 0) {
+      const bounds = new mapboxgl.LngLatBounds();
+      filteredEvents.forEach(event => {
+        if (event.latitude && event.longitude) {
+          bounds.extend([event.longitude, event.latitude]);
+        }
+      });
+      mapInstanceRef.current.fitBounds(bounds, { padding: 50 });
     }
-  }, [filteredEvents, mapLoaded]);
+  }, [filteredEvents]);
 
   const handleEventClick = (event: Event) => {
     navigate(`/event/${event.id}`);
   };
 
-  if (isLoadingApiKey) {
-    return <MapLoadingState />;
-  }
-
-  if (!apiKey) {
-    return <MapErrorState />;
+  if (!mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+        <div className="lg:col-span-2 bg-gray-100 rounded-2xl border border-red-200 overflow-hidden shadow-lg relative flex items-center justify-center flex-col p-8">
+          <p className="text-gray-500 mb-4">Please enter your Mapbox token to display the map</p>
+          <input
+            type="text"
+            placeholder="Enter your Mapbox public token"
+            className="px-4 py-2 border rounded-lg mb-4 w-80"
+            onChange={(e) => {
+              localStorage.setItem('mapbox_token', e.target.value);
+              setMapboxToken(e.target.value);
+            }}
+          />
+          <p className="text-sm text-gray-400">Get your token from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500">mapbox.com</a></p>
+        </div>
+        <EventsSidebar 
+          filteredEvents={filteredEvents}
+          selectedEvent={selectedEvent}
+          onEventClick={handleEventClick}
+          highlightedEventId={highlightedEventId}
+        />
+      </div>
+    );
   }
 
   return (
@@ -144,14 +195,6 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
           className="w-full h-full rounded-2xl" 
           style={{ minHeight: '400px' }}
         />
-        {!mapLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-2xl">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500 mx-auto mb-2"></div>
-              <p className="text-gray-600">Loading map...</p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Event Details Sidebar */}
