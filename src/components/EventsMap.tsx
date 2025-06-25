@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
@@ -6,6 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { Event } from '@/hooks/useEvents';
 import { EventsSidebar } from './map/EventsSidebar';
 import { useEventHighlight } from '@/hooks/useEventHighlight';
+import { useMapLoader } from '@/hooks/useMapLoader';
 
 interface EventsMapProps {
   searchQuery: string;
@@ -19,15 +19,9 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
   const navigate = useNavigate();
   const { highlightedEventId, highlightEvent } = useEventHighlight();
-
-  // Get Mapbox token
-  useEffect(() => {
-    const token = localStorage.getItem('mapbox_token') || 'pk.your_mapbox_token_here';
-    setMapboxToken(token);
-  }, []);
+  const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
 
   // Filter events based on search and category, only include events with coordinates
   const filteredEvents = events.filter(event => {
@@ -40,7 +34,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
 
   // Initialize Mapbox map
   useEffect(() => {
-    if (!mapRef.current || !mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') return;
+    if (!mapRef.current || !mapboxToken || isLoadingApiKey) return;
 
     mapboxgl.accessToken = mapboxToken;
 
@@ -58,7 +52,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     return () => {
       map.remove();
     };
-  }, [mapboxToken]);
+  }, [mapboxToken, isLoadingApiKey]);
 
   // Create popup content for events
   const createEventPopupContent = (event: Event): string => {
@@ -160,21 +154,29 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     navigate(`/event/${event.id}`);
   };
 
-  if (!mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') {
+  if (isLoadingApiKey) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
         <div className="lg:col-span-2 bg-gray-100 rounded-2xl border border-red-200 overflow-hidden shadow-lg relative flex items-center justify-center flex-col p-8">
-          <p className="text-gray-500 mb-4">Please enter your Mapbox token to display the map</p>
-          <input
-            type="text"
-            placeholder="Enter your Mapbox public token"
-            className="px-4 py-2 border rounded-lg mb-4 w-80"
-            onChange={(e) => {
-              localStorage.setItem('mapbox_token', e.target.value);
-              setMapboxToken(e.target.value);
-            }}
-          />
-          <p className="text-sm text-gray-400">Get your token from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500">mapbox.com</a></p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+          <p className="text-gray-600">Loading map...</p>
+        </div>
+        <EventsSidebar 
+          filteredEvents={filteredEvents}
+          selectedEvent={selectedEvent}
+          onEventClick={handleEventClick}
+          highlightedEventId={highlightedEventId}
+        />
+      </div>
+    );
+  }
+
+  if (error || !mapboxToken) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+        <div className="lg:col-span-2 bg-gray-100 rounded-2xl border border-red-200 overflow-hidden shadow-lg relative flex items-center justify-center flex-col p-8">
+          <p className="text-red-500 mb-4">{error || 'Failed to load Mapbox API key'}</p>
+          <p className="text-sm text-gray-400">Please check your Mapbox configuration</p>
         </div>
         <EventsSidebar 
           filteredEvents={filteredEvents}

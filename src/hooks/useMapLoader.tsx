@@ -1,25 +1,50 @@
 
 import { useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useMapLoader = () => {
   const [mapboxToken, setMapboxToken] = useState('');
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isLoadingToken, setIsLoadingToken] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Get Mapbox token from localStorage
+  // Get Mapbox token from Supabase edge function
   useEffect(() => {
-    const token = localStorage.getItem('mapbox_token') || '';
-    setMapboxToken(token);
-    setIsLoadingToken(false);
-    
-    if (token && token !== 'pk.your_mapbox_token_here') {
-      setMapLoaded(true);
-    }
+    const fetchMapboxToken = async () => {
+      try {
+        console.log('Fetching Mapbox API key from edge function...');
+        
+        const { data, error } = await supabase.functions.invoke('get-mapbox-key');
+        
+        if (error) {
+          console.error('Error fetching Mapbox API key:', error);
+          setError('Failed to fetch Mapbox API key');
+          setIsLoadingToken(false);
+          return;
+        }
+
+        if (data?.apiKey) {
+          console.log('Mapbox API key fetched successfully');
+          setMapboxToken(data.apiKey);
+          setMapLoaded(true);
+        } else {
+          console.error('No API key returned from edge function');
+          setError('No API key configured');
+        }
+      } catch (err) {
+        console.error('Error calling edge function:', err);
+        setError('Failed to connect to API service');
+      } finally {
+        setIsLoadingToken(false);
+      }
+    };
+
+    fetchMapboxToken();
   }, []);
 
   const loadMap = async (mapRef: React.RefObject<HTMLDivElement>) => {
-    if (!mapboxToken || !mapRef.current || mapboxToken === 'pk.your_mapbox_token_here') {
+    if (!mapboxToken || !mapRef.current) {
       console.log('Cannot load map:', { mapboxToken: !!mapboxToken, mapElement: !!mapRef.current });
       return null;
     }
@@ -38,19 +63,20 @@ export const useMapLoader = () => {
 
       map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-      setMapLoaded(true);
       console.log('Mapbox loaded successfully');
       return map;
     } catch (error) {
       console.error('Error loading Mapbox:', error);
+      setError('Failed to initialize map');
       return null;
     }
   };
 
   return {
-    apiKey: mapboxToken, // Keep this for backward compatibility
+    apiKey: mapboxToken,
     mapLoaded,
     isLoadingApiKey: isLoadingToken,
-    loadMap
+    loadMap,
+    error
   };
 };

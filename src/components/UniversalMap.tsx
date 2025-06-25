@@ -1,9 +1,9 @@
-
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useMapLoader } from '@/hooks/useMapLoader';
 
 interface MapItem {
   id: string;
@@ -29,15 +29,8 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
   const [mapItems, setMapItems] = useState<MapItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['event', 'news', 'business', 'local-service']);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
   const navigate = useNavigate();
-
-  // Fetch Mapbox token from input or use a default public token
-  useEffect(() => {
-    // For now, we'll use a placeholder token. Users will need to replace this with their actual Mapbox token
-    const token = localStorage.getItem('mapbox_token') || 'pk.your_mapbox_token_here';
-    setMapboxToken(token);
-  }, []);
+  const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
 
   // Fetch all data from Supabase
   const fetchMapData = async () => {
@@ -100,7 +93,7 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
 
   // Initialize Mapbox map
   useEffect(() => {
-    if (!mapRef.current || !mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') return;
+    if (!mapRef.current || !mapboxToken || isLoadingApiKey) return;
 
     mapboxgl.accessToken = mapboxToken;
 
@@ -118,7 +111,7 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
     return () => {
       map.remove();
     };
-  }, [mapboxToken]);
+  }, [mapboxToken, isLoadingApiKey]);
 
   // Fetch data
   useEffect(() => {
@@ -216,20 +209,20 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
     );
   };
 
-  if (!mapboxToken || mapboxToken === 'pk.your_mapbox_token_here') {
+  if (isLoadingApiKey) {
     return (
       <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
-        <p className="text-gray-500 mb-4">Please enter your Mapbox token to display the map</p>
-        <input
-          type="text"
-          placeholder="Enter your Mapbox public token"
-          className="px-4 py-2 border rounded-lg mb-4 w-80"
-          onChange={(e) => {
-            localStorage.setItem('mapbox_token', e.target.value);
-            setMapboxToken(e.target.value);
-          }}
-        />
-        <p className="text-sm text-gray-400">Get your token from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500">mapbox.com</a></p>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+        <p className="text-gray-600">Loading map...</p>
+      </div>
+    );
+  }
+
+  if (error || !mapboxToken) {
+    return (
+      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
+        <p className="text-red-500 mb-4">{error || 'Failed to load Mapbox API key'}</p>
+        <p className="text-sm text-gray-400">Please check your Mapbox configuration</p>
       </div>
     );
   }
