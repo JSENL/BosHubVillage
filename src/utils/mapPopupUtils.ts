@@ -1,19 +1,15 @@
 
 import { Event } from '@/hooks/useEvents';
 
-interface MapInfoWindowProps {
-  event: Event;
-}
+export const formatTimeRange = (startTime: string, endTime: string): string => {
+  if (!startTime && !endTime) return 'Time TBD';
+  if (startTime && endTime) {
+    return `${startTime} - ${endTime}`;
+  }
+  return startTime || endTime;
+};
 
-export const createInfoWindowContent = (event: Event): string => {
-  const formatTimeRange = (startTime: string, endTime: string) => {
-    if (!startTime && !endTime) return 'Time TBD';
-    if (startTime && endTime) {
-      return `${startTime} - ${endTime}`;
-    }
-    return startTime || endTime;
-  };
-
+export const createEventPopupContent = (event: Event): string => {
   return `
     <div style="padding: 10px; max-width: 200px;">
       <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${event.title}</h3>
