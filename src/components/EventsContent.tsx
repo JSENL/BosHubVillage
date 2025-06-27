@@ -1,8 +1,9 @@
 
 import { EventCard } from '@/components/EventCard';
-import EventsMap from '@/components/EventsMap';
+import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
 import EventsCalendar from '@/components/EventsCalendar';
 import { Event } from '@/hooks/useEvents';
+import { UnifiedItem } from '@/hooks/useUnifiedFiltering';
 import { Search } from 'lucide-react';
 
 interface EventsContentProps {
@@ -11,6 +12,8 @@ interface EventsContentProps {
   searchTerm: string;
   selectedCategory: string;
   loading: boolean;
+  selectedTypes?: string[];
+  onTypeToggle?: (type: string) => void;
 }
 
 export const EventsContent = ({
@@ -18,7 +21,9 @@ export const EventsContent = ({
   filteredEvents,
   searchTerm,
   selectedCategory,
-  loading
+  loading,
+  selectedTypes = ['event'],
+  onTypeToggle
 }: EventsContentProps) => {
   if (loading) {
     return (
@@ -32,11 +37,30 @@ export const EventsContent = ({
   }
 
   if (viewMode === 'map') {
+    // Convert events to unified items for the enhanced map
+    const unifiedItems: UnifiedItem[] = filteredEvents.map(event => ({
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      latitude: event.latitude,
+      longitude: event.longitude,
+      type: 'event' as const,
+      location: event.location,
+      category: event.category,
+      date: event.date,
+      start_time: event.start_time,
+      end_time: event.end_time,
+      price: event.price,
+      neighborhoods: event.neighborhoods
+    }));
+
     return (
-      <EventsMap 
-        events={filteredEvents}
-        searchQuery={searchTerm}
-        selectedCategory={selectedCategory}
+      <EnhancedUniversalMap 
+        items={unifiedItems}
+        height="600px"
+        showFilters={false}
+        selectedTypes={selectedTypes}
+        onTypeToggle={onTypeToggle}
       />
     );
   }
