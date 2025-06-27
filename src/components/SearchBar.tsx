@@ -2,6 +2,7 @@
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useEventFilterOptions } from '@/hooks/useDatabaseFilterOptions';
 
 interface SearchBarProps {
   searchQuery: string;
@@ -11,16 +12,14 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ searchQuery, onSearchChange, selectedCategory, onCategoryChange }: SearchBarProps) => {
-  const categories = [
+  const { categories } = useEventFilterOptions();
+
+  const categoryOptions = [
     { value: 'all', label: 'All Categories' },
-    { value: 'music', label: 'Music' },
-    { value: 'sports', label: 'Sports' },
-    { value: 'food', label: 'Food & Drink' },
-    { value: 'art', label: 'Arts & Culture' },
-    { value: 'business', label: 'Business' },
-    { value: 'education', label: 'Education' },
-    { value: 'family', label: 'Family' },
-    { value: 'health', label: 'Health & Wellness' },
+    ...categories.map(category => ({
+      value: category,
+      label: category.charAt(0).toUpperCase() + category.slice(1)
+    }))
   ];
 
   return (
@@ -40,7 +39,7 @@ const SearchBar = ({ searchQuery, onSearchChange, selectedCategory, onCategoryCh
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent>
-          {categories.map((category) => (
+          {categoryOptions.map((category) => (
             <SelectItem key={category.value} value={category.value}>
               {category.label}
             </SelectItem>

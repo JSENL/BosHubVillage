@@ -1,5 +1,5 @@
 
-import { useDynamicFilterOptions } from '@/hooks/useDynamicFilterOptions';
+import { useEventFilterOptions } from '@/hooks/useDatabaseFilterOptions';
 import { EventWithFilters } from '@/hooks/useEventsWithFilters';
 import { FilterHeader } from './filters/FilterHeader';
 import { CategoryFilter } from './filters/CategoryFilter';
@@ -39,15 +39,7 @@ export const EventFiltersEnhanced = ({
   filteredEventsCount
 }: EventFiltersEnhancedProps) => {
   
-  const { availableCategories, availableNeighborhoods, availableVillages } = useDynamicFilterOptions({
-    events,
-    selectedCategory,
-    selectedNeighborhood,
-    selectedVillage,
-    dateFilter,
-    timeFilter,
-    searchTerm
-  });
+  const { categories, neighborhoods, villages } = useEventFilterOptions();
 
   const handleClearAll = () => {
     onCategoryChange('all');
@@ -70,7 +62,7 @@ export const EventFiltersEnhanced = ({
       <CategoryFilter 
         selectedCategory={selectedCategory}
         onCategoryChange={onCategoryChange}
-        availableCategories={availableCategories}
+        availableCategories={categories}
       />
 
       <LocationFilter 
@@ -78,8 +70,8 @@ export const EventFiltersEnhanced = ({
         onNeighborhoodChange={onNeighborhoodChange}
         selectedVillage={selectedVillage}
         onVillageChange={onVillageChange}
-        availableNeighborhoods={availableNeighborhoods}
-        availableVillages={availableVillages}
+        availableNeighborhoods={neighborhoods}
+        availableVillages={villages}
       />
 
       <DateTimeFilter 

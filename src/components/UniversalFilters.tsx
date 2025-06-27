@@ -1,7 +1,12 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Filter } from 'lucide-react';
-import { useVillages } from '@/hooks/useVillages';
+import { 
+  useEventFilterOptions, 
+  useNewsFilterOptions, 
+  useBusinessFilterOptions, 
+  useLocalServiceFilterOptions 
+} from '@/hooks/useDatabaseFilterOptions';
 
 interface UniversalFiltersProps {
   selectedCategory: string;
@@ -11,7 +16,7 @@ interface UniversalFiltersProps {
   selectedVillage: string;
   onVillageChange: (village: string) => void;
   filteredItemsCount: number;
-  itemType: 'events' | 'businesses' | 'news';
+  itemType: 'events' | 'businesses' | 'news' | 'local-services';
 }
 
 export const UniversalFilters = ({
@@ -24,65 +29,44 @@ export const UniversalFilters = ({
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
-  const { villages } = useVillages();
+  const eventOptions = useEventFilterOptions();
+  const newsOptions = useNewsFilterOptions();
+  const businessOptions = useBusinessFilterOptions();
+  const localServiceOptions = useLocalServiceFilterOptions();
 
-  const getCategories = () => {
+  const getFilterOptions = () => {
     switch (itemType) {
       case 'events':
-        return [
-          { value: 'all', label: 'All Categories' },
-          { value: 'music', label: 'Music' },
-          { value: 'sports', label: 'Sports' },
-          { value: 'food', label: 'Food & Drink' },
-          { value: 'art', label: 'Arts & Culture' },
-          { value: 'business', label: 'Business' },
-          { value: 'education', label: 'Education' },
-          { value: 'family', label: 'Family' },
-          { value: 'health', label: 'Health & Wellness' },
-          { value: 'community', label: 'Community' },
-          { value: 'technology', label: 'Technology' },
-        ];
-      case 'businesses':
-        return [
-          { value: 'all', label: 'All Types' },
-          { value: 'restaurant', label: 'Restaurant' },
-          { value: 'retail', label: 'Retail' },
-          { value: 'service', label: 'Service' },
-          { value: 'healthcare', label: 'Healthcare' },
-          { value: 'professional', label: 'Professional' },
-          { value: 'entertainment', label: 'Entertainment' },
-        ];
+        return eventOptions;
       case 'news':
-        return [
-          { value: 'all', label: 'All Categories' },
-          { value: 'local', label: 'Local News' },
-          { value: 'business', label: 'Business' },
-          { value: 'community', label: 'Community' },
-          { value: 'events', label: 'Events' },
-          { value: 'government', label: 'Government' },
-        ];
+        return newsOptions;
+      case 'businesses':
+        return businessOptions;
+      case 'local-services':
+        return localServiceOptions;
       default:
-        return [{ value: 'all', label: 'All Categories' }];
+        return { categories: [], neighborhoods: [], villages: [] };
     }
   };
 
-  const neighborhoods = [
-    { value: 'all', label: 'All Neighborhoods' },
-    { value: 'beacon-hill', label: 'Beacon Hill' },
-    { value: 'back-bay', label: 'Back Bay' },
-    { value: 'north-end', label: 'North End' },
-    { value: 'south-end', label: 'South End' },
-    { value: 'chinatown', label: 'Chinatown' },
-    { value: 'financial-district', label: 'Financial District' },
-    { value: 'fenway', label: 'Fenway' },
-    { value: 'cambridge', label: 'Cambridge' },
-    { value: 'somerville', label: 'Somerville' },
-    { value: 'charlestown', label: 'Charlestown' },
-    { value: 'roxbury', label: 'Roxbury' },
-    { value: 'dorchester', label: 'Dorchester' },
+  const { categories, neighborhoods, villages } = getFilterOptions();
+
+  const categoryOptions = [
+    { value: 'all', label: 'All Categories' },
+    ...categories.map(category => ({
+      value: category,
+      label: category.charAt(0).toUpperCase() + category.slice(1)
+    }))
   ];
 
-  // Dynamic villages from database
+  const neighborhoodOptions = [
+    { value: 'all', label: 'All Neighborhoods' },
+    ...neighborhoods.map(neighborhood => ({
+      value: neighborhood.toLowerCase().replace(/\s+/g, '-'),
+      label: neighborhood
+    }))
+  ];
+
   const villageOptions = [
     { value: 'all', label: 'All Villages' },
     ...villages.map(village => ({
@@ -90,8 +74,6 @@ export const UniversalFilters = ({
       label: village
     }))
   ];
-
-  const categories = getCategories();
 
   return (
     <div className="flex flex-wrap items-center gap-3 sm:gap-4 p-4 bg-white rounded-lg shadow-sm border">
@@ -105,7 +87,7 @@ export const UniversalFilters = ({
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent>
-          {categories.map((category) => (
+          {categoryOptions.map((category) => (
             <SelectItem key={category.value} value={category.value}>
               {category.label}
             </SelectItem>
@@ -118,7 +100,7 @@ export const UniversalFilters = ({
           <SelectValue placeholder="Neighborhood" />
         </SelectTrigger>
         <SelectContent>
-          {neighborhoods.map((neighborhood) => (
+          {neighborhoodOptions.map((neighborhood) => (
             <SelectItem key={neighborhood.value} value={neighborhood.value}>
               {neighborhood.label}
             </SelectItem>
@@ -126,7 +108,7 @@ export const UniversalFilters = ({
         </SelectContent>
       </Select>
 
-      <Select value={selectedVillage} onValueChange={onVillageChange}>
+      <Select value={selectedVillage} onVillageChange={onVillageChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
           <SelectValue placeholder="Village" />
         </SelectTrigger>

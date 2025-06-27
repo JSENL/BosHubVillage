@@ -3,7 +3,7 @@ import { EventCard } from '@/components/EventCard';
 import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
 import EventsCalendar from '@/components/EventsCalendar';
 import { Event } from '@/hooks/useEvents';
-import { UnifiedItem } from '@/hooks/useUnifiedFiltering';
+import { UnifiedItem } from '@/types/unifiedItem';
 import { Search } from 'lucide-react';
 
 interface EventsContentProps {

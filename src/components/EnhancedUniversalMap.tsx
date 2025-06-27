@@ -1,10 +1,9 @@
-
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useNavigate } from 'react-router-dom';
 import { useMapLoader } from '@/hooks/useMapLoader';
-import { UnifiedItem } from '@/hooks/useUnifiedFiltering';
+import { UnifiedItem } from '@/types/unifiedItem';
 
 interface EnhancedUniversalMapProps {
   items: UnifiedItem[];
