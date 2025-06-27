@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -34,6 +35,10 @@ export const EnhancedUniversalMap = ({
     item.longitude !== null && 
     selectedTypes.includes(item.type)
   );
+
+  console.log('EnhancedUniversalMap: Filtered mappable items count:', filteredMappableItems.length);
+  console.log('EnhancedUniversalMap: Selected types:', selectedTypes);
+  console.log('EnhancedUniversalMap: Total items received:', items.length);
 
   // Initialize Mapbox map
   useEffect(() => {
@@ -103,17 +108,44 @@ export const EnhancedUniversalMap = ({
             font-weight: 500;
           ">View Details</button>
         </div>
-        <p style="margin: 8px 0 0 0; font-size: 11px; color: #8B5CF6; font-style: italic;">Double-click marker to go directly to details</p>
+        <p style="margin: 8px 0 0 0; font-size: 11px; color: #8B5CF6; font-style: italic;">Click marker to highlight in list</p>
       </div>
     `;
   };
 
-  // Handle marker click
+  // Handle marker click to highlight corresponding item
   const handleMarkerClick = (item: UnifiedItem) => {
-    console.log('Marker clicked for item:', item.title);
+    console.log('Marker clicked for item:', item.title, 'ID:', item.id);
+    
+    // Call the onItemClick callback if provided
     if (onItemClick) {
       onItemClick(item);
     }
+
+    // Scroll to the corresponding item in the list
+    setTimeout(() => {
+      const itemElement = document.getElementById(`item-${item.id}`) || 
+                         document.getElementById(`event-${item.id}`) ||
+                         document.getElementById(`news-${item.id}`) ||
+                         document.getElementById(`business-${item.id}`) ||
+                         document.getElementById(`service-${item.id}`);
+      
+      if (itemElement) {
+        console.log('Scrolling to item element:', item.id);
+        itemElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+        
+        // Add highlight effect
+        itemElement.classList.add('ring-2', 'ring-purple-500', 'ring-opacity-75');
+        setTimeout(() => {
+          itemElement.classList.remove('ring-2', 'ring-purple-500', 'ring-opacity-75');
+        }, 3000);
+      } else {
+        console.warn('Item element not found for ID:', item.id);
+      }
+    }, 100);
   };
 
   // Handle marker double-click to navigate to detail page
@@ -145,7 +177,7 @@ export const EnhancedUniversalMap = ({
         )
         .addTo(mapInstanceRef.current!);
 
-      // Add single-click event listener
+      // Add single-click event listener for highlighting
       marker.getElement().addEventListener('click', () => {
         handleMarkerClick(item);
       });
@@ -166,7 +198,11 @@ export const EnhancedUniversalMap = ({
       filteredMappableItems.forEach(item => {
         bounds.extend([item.longitude!, item.latitude!]);
       });
-      mapInstanceRef.current.fitBounds(bounds, { padding: 50 });
+      
+      // Only fit bounds if we have more than one marker or if the current view doesn't include all markers
+      if (filteredMappableItems.length > 1) {
+        mapInstanceRef.current.fitBounds(bounds, { padding: 50 });
+      }
     }
   }, [filteredMappableItems, onItemClick, navigate]);
 
@@ -196,8 +232,16 @@ export const EnhancedUniversalMap = ({
     );
   }
 
-  // Count items by type from the filtered items
+  // Count items by type from the filtered items that are passed to this component
   const itemCounts = items.reduce((acc, item) => {
+    acc[item.type] = (acc[item.type] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Count mappable items by type
+  const mappableItemCounts = items.filter(item => 
+    item.latitude !== null && item.longitude !== null
+  ).reduce((acc, item) => {
     acc[item.type] = (acc[item.type] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -213,11 +257,7 @@ export const EnhancedUniversalMap = ({
             { type: 'local-service', label: 'Local Services', color: 'bg-yellow-100 text-yellow-700' }
           ].map(({ type, label, color }) => {
             const totalCount = itemCounts[type] || 0;
-            const mappableCount = items.filter(item => 
-              item.type === type && 
-              item.latitude !== null && 
-              item.longitude !== null
-            ).length;
+            const mappableCount = mappableItemCounts[type] || 0;
             
             return (
               <button
@@ -242,7 +282,7 @@ export const EnhancedUniversalMap = ({
           Showing {filteredMappableItems.length} markers
         </div>
         <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-500">
-          💡 Double-click markers to view details
+          💡 Click markers to highlight items | Double-click to view details
         </div>
       </div>
     </div>

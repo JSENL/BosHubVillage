@@ -4,10 +4,12 @@ import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
 import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
 import { UniversalFilters } from '@/components/UniversalFilters';
+import { UnifiedItemCard } from '@/components/UnifiedItemCard';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { useUnifiedFiltering } from '@/hooks/useUnifiedFiltering';
 import { useFilters, FilterProvider } from '@/contexts/FilterContext';
+import { UnifiedItem } from '@/types/unifiedItem';
 
 const UnifiedIndexContent = () => {
   const {
@@ -37,11 +39,18 @@ const UnifiedIndexContent = () => {
     timeFilter
   });
 
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
+  const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
-  const handleItemClick = (item: any) => {
-    console.log('Item selected:', item.title);
+  const handleItemClick = (item: UnifiedItem) => {
+    console.log('Item selected from map:', item.title);
     setSelectedItem(item);
+    setHighlightedItemId(item.id);
+    
+    // Clear highlight after 3 seconds
+    setTimeout(() => {
+      setHighlightedItemId(null);
+    }, 3000);
   };
 
   if (loading) {
@@ -130,6 +139,31 @@ const UnifiedIndexContent = () => {
             Total filtered items: {allItems.length} | Items with location data: {mappableItems.length}
           </div>
         </div>
+
+        {/* Items List */}
+        {allItems.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h2 className="text-xl font-semibold mb-6">All Items ({allItems.length})</h2>
+            <div className="grid gap-6">
+              {allItems.map((item) => (
+                <UnifiedItemCard
+                  key={item.id}
+                  item={item}
+                  viewMode="list"
+                  isHighlighted={highlightedItemId === item.id}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {allItems.length === 0 && (
+          <div className="text-center py-12">
+            <Search className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-gray-400" />
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">No items found</h3>
+            <p className="text-gray-600 text-sm sm:text-base">Try adjusting your search criteria or browse all items.</p>
+          </div>
+        )}
       </main>
     </div>
   );
