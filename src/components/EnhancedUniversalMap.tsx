@@ -104,6 +104,7 @@ export const EnhancedUniversalMap = ({
             font-weight: 500;
           ">View Details</button>
         </div>
+        <p style="margin: 8px 0 0 0; font-size: 11px; color: #8B5CF6; font-style: italic;">Double-click marker to go directly to details</p>
       </div>
     `;
   };
@@ -114,6 +115,13 @@ export const EnhancedUniversalMap = ({
     if (onItemClick) {
       onItemClick(item);
     }
+  };
+
+  // Handle marker double-click to navigate to detail page
+  const handleMarkerDoubleClick = (item: UnifiedItem) => {
+    console.log('Marker double-clicked for item:', item.title);
+    const routePath = item.type === 'local-service' ? 'local-service' : item.type;
+    navigate(`/${routePath}/${item.id}`);
   };
 
   // Add markers to map - This effect will run whenever filteredMappableItems changes
@@ -138,8 +146,16 @@ export const EnhancedUniversalMap = ({
         )
         .addTo(mapInstanceRef.current!);
 
+      // Add single-click event listener
       marker.getElement().addEventListener('click', () => {
         handleMarkerClick(item);
+      });
+
+      // Add double-click event listener for navigation
+      marker.getElement().addEventListener('dblclick', (e) => {
+        e.preventDefault(); // Prevent map zoom on double-click
+        e.stopPropagation();
+        handleMarkerDoubleClick(item);
       });
 
       markersRef.current.push(marker);
@@ -153,7 +169,7 @@ export const EnhancedUniversalMap = ({
       });
       mapInstanceRef.current.fitBounds(bounds, { padding: 50 });
     }
-  }, [filteredMappableItems, onItemClick]);
+  }, [filteredMappableItems, onItemClick, navigate]);
 
   // Handle type filter changes
   const toggleType = (type: string) => {
@@ -225,6 +241,9 @@ export const EnhancedUniversalMap = ({
         <div ref={mapRef} className="w-full h-full" />
         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-sm text-gray-600">
           Showing {filteredMappableItems.length} markers
+        </div>
+        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-500">
+          💡 Double-click markers to view details
         </div>
       </div>
     </div>
