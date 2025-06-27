@@ -29,6 +29,13 @@ export const EnhancedUniversalMap = ({
   const navigate = useNavigate();
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
 
+  // Filter items to only show mappable ones (with coordinates) and selected types
+  const filteredMappableItems = items.filter(item => 
+    item.latitude !== null && 
+    item.longitude !== null && 
+    selectedTypes.includes(item.type)
+  );
+
   // Initialize Mapbox map
   useEffect(() => {
     if (!mapRef.current || !mapboxToken || isLoadingApiKey) return;
@@ -109,23 +116,18 @@ export const EnhancedUniversalMap = ({
     }
   };
 
-  // Add markers to map
+  // Add markers to map - This effect will run whenever filteredMappableItems changes
   useEffect(() => {
-    if (!mapInstanceRef.current || items.length === 0) return;
+    if (!mapInstanceRef.current) return;
+
+    console.log('Updating map markers. Filtered mappable items:', filteredMappableItems.length);
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());
     markersRef.current = [];
 
-    // Filter items with coordinates and selected types
-    const mappableItems = items.filter(item => 
-      item.latitude !== null && 
-      item.longitude !== null && 
-      selectedTypes.includes(item.type)
-    );
-
-    // Add new markers
-    mappableItems.forEach((item) => {
+    // Add new markers for filtered items
+    filteredMappableItems.forEach((item) => {
       const marker = new mapboxgl.Marker({
         color: getMarkerColor(item.type)
       })
@@ -143,18 +145,19 @@ export const EnhancedUniversalMap = ({
       markersRef.current.push(marker);
     });
 
-    // Fit map to show all markers
-    if (mappableItems.length > 0) {
+    // Fit map to show all markers if there are any
+    if (filteredMappableItems.length > 0) {
       const bounds = new mapboxgl.LngLatBounds();
-      mappableItems.forEach(item => {
+      filteredMappableItems.forEach(item => {
         bounds.extend([item.longitude!, item.latitude!]);
       });
       mapInstanceRef.current.fitBounds(bounds, { padding: 50 });
     }
-  }, [items, selectedTypes, onItemClick]);
+  }, [filteredMappableItems, onItemClick]);
 
   // Handle type filter changes
   const toggleType = (type: string) => {
+    console.log('Toggling type filter:', type);
     if (onTypeToggle) {
       onTypeToggle(type);
     }
@@ -178,7 +181,7 @@ export const EnhancedUniversalMap = ({
     );
   }
 
-  // Count items by type
+  // Count items by type from the filtered items
   const itemCounts = items.reduce((acc, item) => {
     acc[item.type] = (acc[item.type] || 0) + 1;
     return acc;
@@ -193,24 +196,36 @@ export const EnhancedUniversalMap = ({
             { type: 'news', label: 'News', color: 'bg-blue-100 text-blue-700' },
             { type: 'business', label: 'Businesses', color: 'bg-green-100 text-green-700' },
             { type: 'local-service', label: 'Local Services', color: 'bg-yellow-100 text-yellow-700' }
-          ].map(({ type, label, color }) => (
-            <button
-              key={type}
-              onClick={() => toggleType(type)}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
-                selectedTypes.includes(type) 
-                  ? color
-                  : 'bg-gray-100 text-gray-500'
-              }`}
-            >
-              {label} ({itemCounts[type] || 0})
-            </button>
-          ))}
+          ].map(({ type, label, color }) => {
+            const totalCount = itemCounts[type] || 0;
+            const mappableCount = items.filter(item => 
+              item.type === type && 
+              item.latitude !== null && 
+              item.longitude !== null
+            ).length;
+            
+            return (
+              <button
+                key={type}
+                onClick={() => toggleType(type)}
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
+                  selectedTypes.includes(type) 
+                    ? color
+                    : 'bg-gray-100 text-gray-500'
+                }`}
+              >
+                {label} ({totalCount}) - {mappableCount} on map
+              </button>
+            );
+          })}
         </div>
       )}
       
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
         <div ref={mapRef} className="w-full h-full" />
+        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-sm text-gray-600">
+          Showing {filteredMappableItems.length} markers
+        </div>
       </div>
     </div>
   );

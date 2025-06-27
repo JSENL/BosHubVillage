@@ -61,7 +61,10 @@ const UnifiedIndexContent = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
-      <HeroSection />
+      <HeroSection 
+        title="Discover Your Community"
+        subtitle="Find events, news, businesses, and services in your neighborhood"
+      />
       
       <main className="container mx-auto px-4 py-8 space-y-8">
         {/* Search Bar */}
@@ -89,9 +92,9 @@ const UnifiedIndexContent = () => {
           itemType="events"
         />
 
-        {/* Enhanced Universal Map */}
+        {/* Enhanced Universal Map - This will now show filtered markers */}
         <EnhancedUniversalMap
-          items={mappableItems}
+          items={allItems}
           height="600px"
           showFilters={true}
           selectedTypes={selectedTypes}
@@ -101,7 +104,7 @@ const UnifiedIndexContent = () => {
 
         {/* Results Summary */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-xl font-semibold mb-4">Results Summary</h2>
+          <h2 className="text-xl font-semibold mb-4">Filtered Results Summary</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { type: 'event', label: 'Events', color: 'text-red-600' },
@@ -122,6 +125,9 @@ const UnifiedIndexContent = () => {
                 </div>
               );
             })}
+          </div>
+          <div className="mt-4 text-sm text-gray-500">
+            Total filtered items: {allItems.length} | Items with location data: {mappableItems.length}
           </div>
         </div>
       </main>
