@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
@@ -23,13 +24,10 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   const { highlightedEventId, highlightEvent } = useEventHighlight();
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
 
-  // Filter events based on search and category, only include events with coordinates
+  // Use the filtered events passed from parent instead of filtering here
   const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
     const hasCoordinates = event.latitude !== null && event.longitude !== null;
-    return matchesSearch && matchesCategory && hasCoordinates;
+    return hasCoordinates;
   });
 
   // Initialize Mapbox map
@@ -111,7 +109,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
 
   // Add markers for filtered events
   useEffect(() => {
-    if (!mapInstanceRef.current || filteredEvents.length === 0) return;
+    if (!mapInstanceRef.current) return;
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());

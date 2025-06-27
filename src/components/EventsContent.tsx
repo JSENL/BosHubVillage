@@ -34,7 +34,7 @@ export const EventsContent = ({
   if (viewMode === 'map') {
     return (
       <EventsMap 
-        events={filteredEvents} 
+        events={filteredEvents}
         searchQuery={searchTerm}
         selectedCategory={selectedCategory}
       />
