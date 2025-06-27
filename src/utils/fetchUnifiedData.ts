@@ -4,24 +4,43 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { geocodeNewsItems } from './geocodeNewsItems';
 
 export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<any>): Promise<UnifiedItem[]> => {
+  console.log('Starting unified data fetch...');
+  
   const [eventsRes, newsRes, businessRes, localServicesRes] = await Promise.all([
-    supabase.from('events').select('*'),
-    supabase.from('news').select('*'),
-    supabase.from('business').select('*'),
-    supabase.from('local_services_nonprofits').select('*')
+    supabase.from('events').select('*').order('created_at', { ascending: false }),
+    supabase.from('news').select('*').order('created_at', { ascending: false }),
+    supabase.from('business').select('*').order('created_at', { ascending: false }),
+    supabase.from('local_services_nonprofits').select('*').order('created_at', { ascending: false })
   ]);
+
+  if (eventsRes.error) {
+    console.error('Error fetching events:', eventsRes.error);
+  }
+  if (newsRes.error) {
+    console.error('Error fetching news:', newsRes.error);
+  }
+  if (businessRes.error) {
+    console.error('Error fetching business:', businessRes.error);
+  }
+  if (localServicesRes.error) {
+    console.error('Error fetching local services:', localServicesRes.error);
+  }
 
   const items: UnifiedItem[] = [];
 
-  // Process events
+  // Process events with enhanced coordinate validation
   if (eventsRes.data) {
+    console.log('Processing events:', eventsRes.data.length);
     eventsRes.data.forEach(event => {
+      const lat = event.latitude ? Number(event.latitude) : null;
+      const lng = event.longitude ? Number(event.longitude) : null;
+      
       items.push({
         id: event.id,
         title: event.title,
         description: event.description || '',
-        latitude: event.latitude ? Number(event.latitude) : null,
-        longitude: event.longitude ? Number(event.longitude) : null,
+        latitude: (lat && !isNaN(lat)) ? lat : null,
+        longitude: (lng && !isNaN(lng)) ? lng : null,
         type: 'event',
         location: event.location,
         category: event.category,
@@ -35,62 +54,79 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     });
   }
 
-  // Process news - geocode addresses if needed
+  // Process news with geocoding and coordinate validation
   if (newsRes.data) {
-    // First, try to geocode news items that don't have coordinates
+    console.log('Processing news:', newsRes.data.length);
+    
+    // Try to geocode news items that don't have coordinates
     await geocodeNewsItems(newsRes.data, geocode);
     
     newsRes.data.forEach(news => {
+      const lat = news.latitude ? Number(news.latitude) : null;
+      const lng = news.longitude ? Number(news.longitude) : null;
+      
       items.push({
         id: news.id,
         title: news.title,
         description: news.content || '',
-        latitude: news.latitude ? Number(news.latitude) : null,
-        longitude: news.longitude ? Number(news.longitude) : null,
+        latitude: (lat && !isNaN(lat)) ? lat : null,
+        longitude: (lng && !isNaN(lng)) ? lng : null,
         type: 'news',
         location: news.location,
         address: news.Address,
         content: news.content,
         source: news.source,
-        villages: news.villages
+        villages: news.villages,
+        date: news.date_posted
       });
     });
   }
 
-  // Process businesses
+  // Process businesses with potential geocoding
   if (businessRes.data) {
+    console.log('Processing businesses:', businessRes.data.length);
     businessRes.data.forEach(business => {
       items.push({
         id: business.id,
         title: business.title,
         description: business.description || '',
-        latitude: null, // Business doesn't have coordinates yet
+        latitude: null, // Business table doesn't have coordinates yet
         longitude: null,
         type: 'business',
         address: business.address,
         category: business.business_type,
         business_type: business.business_type,
-        villages: business.villages
+        villages: business.villages,
+        neighborhoods: business.neighborhood
       });
     });
   }
 
-  // Process local services
+  // Process local services with coordinate validation
   if (localServicesRes.data) {
+    console.log('Processing local services:', localServicesRes.data.length);
     localServicesRes.data.forEach(service => {
+      const lat = service.latitude ? Number(service.latitude) : null;
+      const lng = service.longitude ? Number(service.longitude) : null;
+      
       items.push({
         id: service.id,
         title: service.name,
         description: service.description || '',
-        latitude: service.latitude ? Number(service.latitude) : null,
-        longitude: service.longitude ? Number(service.longitude) : null,
+        latitude: (lat && !isNaN(lat)) ? lat : null,
+        longitude: (lng && !isNaN(lng)) ? lng : null,
         type: 'local-service',
         address: service.address,
         category: service.category,
-        name: service.name
+        name: service.name,
+        neighborhoods: service.neighborhood,
+        villages: service.village
       });
     });
   }
 
+  console.log('Total unified items processed:', items.length);
+  console.log('Items with coordinates:', items.filter(item => item.latitude && item.longitude).length);
+  
   return items;
 };

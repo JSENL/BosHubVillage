@@ -10,6 +10,7 @@ import { Search } from 'lucide-react';
 import { useUnifiedFiltering } from '@/hooks/useUnifiedFiltering';
 import { useFilters, FilterProvider } from '@/contexts/FilterContext';
 import { UnifiedItem } from '@/types/unifiedItem';
+import { toast } from 'sonner';
 
 const UnifiedIndexContent = () => {
   const {
@@ -29,7 +30,7 @@ const UnifiedIndexContent = () => {
     setTimeFilter
   } = useFilters();
 
-  const { allItems, mappableItems, loading } = useUnifiedFiltering({
+  const { allItems, mappableItems, loading, refetch } = useUnifiedFiltering({
     selectedCategory,
     selectedNeighborhood,
     selectedVillage,
@@ -47,10 +48,21 @@ const UnifiedIndexContent = () => {
     setSelectedItem(item);
     setHighlightedItemId(item.id);
     
+    // Show toast notification
+    toast.success(`Selected: ${item.title}`, {
+      duration: 2000,
+    });
+    
     // Clear highlight after 3 seconds
     setTimeout(() => {
       setHighlightedItemId(null);
     }, 3000);
+  };
+
+  const handleRefresh = () => {
+    console.log('Refreshing data...');
+    refetch();
+    toast.success('Data refreshed!');
   };
 
   if (loading) {
@@ -60,7 +72,7 @@ const UnifiedIndexContent = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 text-sm sm:text-base">Loading content...</p>
+            <p className="text-gray-600 text-sm sm:text-base">Loading content from Supabase...</p>
           </div>
         </div>
       </div>
@@ -76,7 +88,7 @@ const UnifiedIndexContent = () => {
       />
       
       <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Search Bar */}
+        {/* Search Bar with Refresh */}
         <div className="flex flex-col md:flex-row gap-4 p-6 bg-white/70 backdrop-blur-md rounded-2xl border border-purple-100 shadow-lg">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -87,6 +99,13 @@ const UnifiedIndexContent = () => {
               className="pl-10 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
             />
           </div>
+          <button
+            onClick={handleRefresh}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+          >
+            <span className="text-sm">🔄</span>
+            Refresh Data
+          </button>
         </div>
 
         {/* Unified Filters */}
@@ -111,39 +130,56 @@ const UnifiedIndexContent = () => {
           onItemClick={handleItemClick}
         />
 
-        {/* Results Summary */}
+        {/* Results Summary with Real-time Stats */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h2 className="text-xl font-semibold mb-4">Filtered Results Summary</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Live Results Summary</h2>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-500">Real-time updates</span>
+            </div>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { type: 'event', label: 'Events', color: 'text-red-600' },
-              { type: 'news', label: 'News', color: 'text-blue-600' },
-              { type: 'business', label: 'Businesses', color: 'text-green-600' },
-              { type: 'local-service', label: 'Services', color: 'text-yellow-600' }
-            ].map(({ type, label, color }) => {
+              { type: 'event', label: 'Events', color: 'text-red-600', bgColor: 'bg-red-50' },
+              { type: 'news', label: 'News', color: 'text-blue-600', bgColor: 'bg-blue-50' },
+              { type: 'business', label: 'Businesses', color: 'text-green-600', bgColor: 'bg-green-50' },
+              { type: 'local-service', label: 'Services', color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
+            ].map(({ type, label, color, bgColor }) => {
               const count = allItems.filter(item => item.type === type).length;
               const mappableCount = mappableItems.filter(item => item.type === type).length;
               
               return (
-                <div key={type} className="text-center">
+                <div key={type} className={`text-center p-4 rounded-lg ${bgColor}`}>
                   <div className={`text-2xl font-bold ${color}`}>{count}</div>
-                  <div className="text-sm text-gray-600">{label}</div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-sm text-gray-600 font-medium">{label}</div>
+                  <div className="text-xs text-gray-400 mt-1">
                     {mappableCount} on map
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    {selectedTypes.includes(type) ? '✓ Showing' : '✗ Hidden'}
                   </div>
                 </div>
               );
             })}
           </div>
-          <div className="mt-4 text-sm text-gray-500">
-            Total filtered items: {allItems.length} | Items with location data: {mappableItems.length}
+          <div className="mt-4 text-sm text-gray-500 flex justify-between items-center">
+            <span>Total filtered items: {allItems.length} | Items with location data: {mappableItems.length}</span>
+            <span className="text-xs">Last updated: {new Date().toLocaleTimeString()}</span>
           </div>
         </div>
 
         {/* Items List */}
         {allItems.length > 0 && (
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h2 className="text-xl font-semibold mb-6">All Items ({allItems.length})</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">All Items ({allItems.length})</h2>
+              {selectedItem && (
+                <div className="text-sm text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+                  Selected: {selectedItem.title}
+                </div>
+              )}
+            </div>
             <div className="grid gap-6">
               {allItems.map((item) => (
                 <UnifiedItemCard
@@ -158,10 +194,16 @@ const UnifiedIndexContent = () => {
         )}
 
         {allItems.length === 0 && (
-          <div className="text-center py-12">
+          <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
             <Search className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-gray-400" />
             <h3 className="text-lg sm:text-xl font-semibold text-gray-600 mb-2">No items found</h3>
-            <p className="text-gray-600 text-sm sm:text-base">Try adjusting your search criteria or browse all items.</p>
+            <p className="text-gray-600 text-sm sm:text-base mb-4">Try adjusting your search criteria or browse all items.</p>
+            <button
+              onClick={handleRefresh}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            >
+              Refresh Data
+            </button>
           </div>
         )}
       </main>
