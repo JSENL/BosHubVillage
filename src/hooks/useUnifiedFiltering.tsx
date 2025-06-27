@@ -3,28 +3,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useGeocoding } from './useGeocoding';
-
-export interface UnifiedItem {
-  id: string;
-  title: string;
-  description: string;
-  latitude: number | null;
-  longitude: number | null;
-  type: 'event' | 'news' | 'business' | 'local-service';
-  address?: string;
-  location?: string;
-  category?: string;
-  date?: string;
-  start_time?: string;
-  end_time?: string;
-  price?: number;
-  neighborhoods?: string;
-  villages?: string[] | string;
-  business_type?: string;
-  name?: string;
-  content?: string;
-  source?: string;
-}
+import { UnifiedItem } from '@/types/unifiedItem';
+import { parseVillages } from '@/utils/villageUtils';
+import { geocodeNewsItems } from '@/utils/geocodeNewsItems';
+import { fetchAllUnifiedData } from '@/utils/fetchUnifiedData';
+import { filterUnifiedItems } from '@/utils/filterUnifiedItems';
 
 interface UseUnifiedFilteringProps {
   selectedCategory: string;
@@ -49,162 +32,13 @@ export const useUnifiedFiltering = ({
   const [loading, setLoading] = useState(true);
   const { geocode } = useGeocoding();
 
-  // Helper function to safely parse villages data
-  const parseVillages = (villagesData: any): string[] => {
-    if (!villagesData) return [];
-    
-    if (Array.isArray(villagesData)) {
-      return villagesData;
-    }
-    
-    if (typeof villagesData === 'string') {
-      if (villagesData.trim().startsWith('[') && villagesData.trim().endsWith(']')) {
-        try {
-          return JSON.parse(villagesData);
-        } catch (error) {
-          return [];
-        }
-      } else {
-        return [villagesData.trim()];
-      }
-    }
-    
-    return [];
-  };
-
-  // Geocode news items that don't have coordinates
-  const geocodeNewsItems = async (newsItems: any[]) => {
-    const newsWithoutCoords = newsItems.filter(news => !news.latitude || !news.longitude);
-    
-    for (const news of newsWithoutCoords) {
-      if (news.Address || news.location) {
-        const addressToGeocode = news.Address || news.location;
-        console.log('Geocoding news address:', addressToGeocode);
-        
-        try {
-          const result = await geocode(addressToGeocode);
-          if (result) {
-            // Update news item in database with coordinates
-            const { error } = await supabase
-              .from('news')
-              .update({
-                latitude: result.latitude,
-                longitude: result.longitude
-              })
-              .eq('id', news.id);
-
-            if (error) {
-              console.error('Error updating news coordinates:', error);
-            } else {
-              console.log('Successfully updated news coordinates for:', news.title);
-              // Update the local item
-              news.latitude = result.latitude;
-              news.longitude = result.longitude;
-            }
-          }
-        } catch (error) {
-          console.error('Error geocoding news address:', error);
-        }
-        
-        // Add delay to respect API rate limits
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-    }
-  };
-
   // Fetch all data from Supabase
   const fetchAllData = async () => {
     try {
       console.log('Fetching unified data from all tables...');
       
-      const [eventsRes, newsRes, businessRes, localServicesRes] = await Promise.all([
-        supabase.from('events').select('*'),
-        supabase.from('news').select('*'),
-        supabase.from('business').select('*'),
-        supabase.from('local_services_nonprofits').select('*')
-      ]);
-
-      const items: UnifiedItem[] = [];
-
-      // Process events
-      if (eventsRes.data) {
-        eventsRes.data.forEach(event => {
-          items.push({
-            id: event.id,
-            title: event.title,
-            description: event.description || '',
-            latitude: event.latitude ? Number(event.latitude) : null,
-            longitude: event.longitude ? Number(event.longitude) : null,
-            type: 'event',
-            location: event.location,
-            category: event.category,
-            date: event.date,
-            start_time: event.start_time,
-            end_time: event.end_time,
-            price: Number(event.price || 0),
-            neighborhoods: event.neighborhoods,
-            villages: event.villages
-          });
-        });
-      }
-
-      // Process news - geocode addresses if needed
-      if (newsRes.data) {
-        // First, try to geocode news items that don't have coordinates
-        await geocodeNewsItems(newsRes.data);
-        
-        newsRes.data.forEach(news => {
-          items.push({
-            id: news.id,
-            title: news.title,
-            description: news.content || '',
-            latitude: news.latitude ? Number(news.latitude) : null,
-            longitude: news.longitude ? Number(news.longitude) : null,
-            type: 'news',
-            location: news.location,
-            address: news.Address,
-            content: news.content,
-            source: news.source,
-            villages: news.villages
-          });
-        });
-      }
-
-      // Process businesses
-      if (businessRes.data) {
-        businessRes.data.forEach(business => {
-          items.push({
-            id: business.id,
-            title: business.title,
-            description: business.description || '',
-            latitude: null, // Business doesn't have coordinates yet
-            longitude: null,
-            type: 'business',
-            address: business.address,
-            category: business.business_type,
-            business_type: business.business_type,
-            villages: business.villages
-          });
-        });
-      }
-
-      // Process local services
-      if (localServicesRes.data) {
-        localServicesRes.data.forEach(service => {
-          items.push({
-            id: service.id,
-            title: service.name,
-            description: service.description || '',
-            latitude: service.latitude ? Number(service.latitude) : null,
-            longitude: service.longitude ? Number(service.longitude) : null,
-            type: 'local-service',
-            address: service.address,
-            category: service.category,
-            name: service.name
-          });
-        });
-      }
-
+      const items = await fetchAllUnifiedData(geocode);
+      
       console.log('Fetched unified items:', items);
       setAllItems(items);
     } catch (error) {
@@ -217,59 +51,14 @@ export const useUnifiedFiltering = ({
 
   // Filter items based on all criteria
   const filteredItems = useMemo(() => {
-    return allItems.filter(item => {
-      // Type filter
-      const matchesType = selectedTypes.length === 0 || selectedTypes.includes(item.type);
-
-      // Search term filter
-      const matchesSearch = searchTerm === '' || 
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.address?.toLowerCase().includes(searchTerm.toLowerCase());
-
-      // Category filter
-      const matchesCategory = selectedCategory === 'all' || 
-        item.category === selectedCategory ||
-        item.business_type === selectedCategory;
-
-      // Neighborhood filter
-      const matchesNeighborhood = selectedNeighborhood === 'all' || 
-        (item.neighborhoods && item.neighborhoods.includes(selectedNeighborhood.replace('-', ' '))) ||
-        (item.location && item.location.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase())) ||
-        (item.address && item.address.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase()));
-
-      // Village filter
-      const matchesVillage = selectedVillage === 'all' || (() => {
-        const itemVillages = parseVillages(item.villages);
-        return itemVillages.some(village => 
-          village.toLowerCase().replace(/\s+/g, '-') === selectedVillage ||
-          village.toLowerCase() === selectedVillage.replace('-', ' ').toLowerCase()
-        );
-      })();
-
-      // Date filter (only for events)
-      const matchesDate = item.type !== 'event' || dateFilter === '' || item.date === dateFilter;
-
-      // Time filter (only for events)
-      const matchesTime = item.type !== 'event' || timeFilter === 'all' || (() => {
-        if (!item.start_time) return timeFilter === 'all';
-        
-        const eventHour = parseInt(item.start_time.split(':')[0]);
-        
-        switch (timeFilter) {
-          case 'morning':
-            return eventHour >= 6 && eventHour < 12;
-          case 'afternoon':
-            return eventHour >= 12 && eventHour < 18;
-          case 'evening':
-            return eventHour >= 18 || eventHour < 6;
-          default:
-            return true;
-        }
-      })();
-
-      return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
+    return filterUnifiedItems(allItems, {
+      selectedTypes,
+      searchTerm,
+      selectedCategory,
+      selectedNeighborhood,
+      selectedVillage,
+      dateFilter,
+      timeFilter
     });
   }, [allItems, selectedTypes, searchTerm, selectedCategory, selectedNeighborhood, selectedVillage, dateFilter, timeFilter]);
 
