@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useGeocoding } from './useGeocoding';
 
 export interface UnifiedItem {
   id: string;
@@ -46,6 +47,7 @@ export const useUnifiedFiltering = ({
 }: UseUnifiedFilteringProps) => {
   const [allItems, setAllItems] = useState<UnifiedItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const { geocode } = useGeocoding();
 
   // Helper function to safely parse villages data
   const parseVillages = (villagesData: any): string[] => {
@@ -68,6 +70,46 @@ export const useUnifiedFiltering = ({
     }
     
     return [];
+  };
+
+  // Geocode news items that don't have coordinates
+  const geocodeNewsItems = async (newsItems: any[]) => {
+    const newsWithoutCoords = newsItems.filter(news => !news.latitude || !news.longitude);
+    
+    for (const news of newsWithoutCoords) {
+      if (news.Address || news.location) {
+        const addressToGeocode = news.Address || news.location;
+        console.log('Geocoding news address:', addressToGeocode);
+        
+        try {
+          const result = await geocode(addressToGeocode);
+          if (result) {
+            // Update news item in database with coordinates
+            const { error } = await supabase
+              .from('news')
+              .update({
+                latitude: result.latitude,
+                longitude: result.longitude
+              })
+              .eq('id', news.id);
+
+            if (error) {
+              console.error('Error updating news coordinates:', error);
+            } else {
+              console.log('Successfully updated news coordinates for:', news.title);
+              // Update the local item
+              news.latitude = result.latitude;
+              news.longitude = result.longitude;
+            }
+          }
+        } catch (error) {
+          console.error('Error geocoding news address:', error);
+        }
+        
+        // Add delay to respect API rate limits
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+    }
   };
 
   // Fetch all data from Supabase
@@ -106,17 +148,21 @@ export const useUnifiedFiltering = ({
         });
       }
 
-      // Process news
+      // Process news - geocode addresses if needed
       if (newsRes.data) {
+        // First, try to geocode news items that don't have coordinates
+        await geocodeNewsItems(newsRes.data);
+        
         newsRes.data.forEach(news => {
           items.push({
             id: news.id,
             title: news.title,
             description: news.content || '',
-            latitude: null, // News doesn't have coordinates yet
-            longitude: null,
+            latitude: news.latitude ? Number(news.latitude) : null,
+            longitude: news.longitude ? Number(news.longitude) : null,
             type: 'news',
             location: news.location,
+            address: news.Address,
             content: news.content,
             source: news.source,
             villages: news.villages

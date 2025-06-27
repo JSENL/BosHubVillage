@@ -635,36 +635,45 @@ export type Database = {
       }
       news: {
         Row: {
+          Address: string | null
           content: string
           created_at: string
           created_by: string | null
           date_posted: string
           id: string
+          latitude: number | null
           location: string
+          longitude: number | null
           source: string
           title: string
           updated_at: string
           villages: string | null
         }
         Insert: {
+          Address?: string | null
           content: string
           created_at?: string
           created_by?: string | null
           date_posted?: string
           id?: string
+          latitude?: number | null
           location: string
+          longitude?: number | null
           source: string
           title: string
           updated_at?: string
           villages?: string | null
         }
         Update: {
+          Address?: string | null
           content?: string
           created_at?: string
           created_by?: string | null
           date_posted?: string
           id?: string
+          latitude?: number | null
           location?: string
+          longitude?: number | null
           source?: string
           title?: string
           updated_at?: string
