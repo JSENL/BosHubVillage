@@ -58,9 +58,10 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
   if (newsRes.data) {
     console.log('Processing news:', newsRes.data.length);
     
-    // Try to geocode news items that don't have coordinates
+    // Always try to geocode news items that don't have coordinates
     const newsItemsToGeocode = newsRes.data.filter(news => 
-      (!news.latitude || !news.longitude) && (news.Address || news.location)
+      (!news.latitude || !news.longitude || news.latitude === null || news.longitude === null) && 
+      (news.Address || news.location)
     );
     
     if (newsItemsToGeocode.length > 0) {

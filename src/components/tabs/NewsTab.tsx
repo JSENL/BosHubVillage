@@ -1,6 +1,7 @@
 
 import { SectionMap } from "@/components/SectionMap";
 import NewsCard from "@/components/NewsCard";
+import { GeocodeAllNewsButton } from "@/components/GeocodeAllNewsButton";
 import { useNews } from "@/hooks/useNews";
 import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
 import { News } from "@/types/news";
@@ -31,12 +32,15 @@ export const NewsTab = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Local News</h2>
-        <button
-          onClick={handleRefresh}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Refresh ({allNews.length})
-        </button>
+        <div className="flex gap-2">
+          <GeocodeAllNewsButton />
+          <button
+            onClick={handleRefresh}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Refresh ({allNews.length})
+          </button>
+        </div>
       </div>
       
       <SectionMap height="400px" />
