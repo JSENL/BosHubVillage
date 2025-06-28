@@ -40,6 +40,7 @@ export const useUnifiedFiltering = ({
       const items = await fetchAllUnifiedData(geocode);
       
       console.log('Fetched unified items:', items);
+      console.log('News items count:', items.filter(item => item.type === 'news').length);
       setAllItems(items);
     } catch (error) {
       console.error('Error fetching unified data:', error);
@@ -66,13 +67,14 @@ export const useUnifiedFiltering = ({
         )
         .subscribe();
 
-      // News subscription
+      // News subscription - this is the key fix
       const newsChannel = supabase
         .channel('news-changes')
         .on('postgres_changes', 
           { event: '*', schema: 'public', table: 'news' },
           (payload) => {
             console.log('News table changed:', payload);
+            toast.success('News updated! Refreshing data...');
             fetchAllData(); // Refetch all data when news change
           }
         )
@@ -114,7 +116,7 @@ export const useUnifiedFiltering = ({
     fetchAllData();
 
     return cleanup;
-  }, []);
+  }, [geocode]);
 
   // Filter items based on all criteria with enhanced location matching
   const filteredItems = useMemo(() => {
@@ -139,6 +141,7 @@ export const useUnifiedFiltering = ({
     });
 
     console.log('Filtered items count:', filtered.length);
+    console.log('Filtered news items count:', filtered.filter(item => item.type === 'news').length);
     return filtered;
   }, [allItems, selectedTypes, searchTerm, selectedCategory, selectedNeighborhood, selectedVillage, dateFilter, timeFilter]);
 
@@ -152,6 +155,7 @@ export const useUnifiedFiltering = ({
     );
     
     console.log('Mappable items count:', mappable.length);
+    console.log('Mappable news items count:', mappable.filter(item => item.type === 'news').length);
     return mappable;
   }, [filteredItems]);
 

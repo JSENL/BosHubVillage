@@ -15,6 +15,11 @@ export const ResultsSummary = ({ allItems, mappableItems, selectedTypes }: Resul
     { type: 'local-service', label: 'Services', color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
   ];
 
+  // Add debug logging
+  console.log('ResultsSummary - All items:', allItems.length);
+  console.log('ResultsSummary - News items:', allItems.filter(item => item.type === 'news').length);
+  console.log('ResultsSummary - Mappable news items:', mappableItems.filter(item => item.type === 'news').length);
+
   return (
     <div className="bg-white rounded-lg shadow-sm border p-6">
       <div className="flex justify-between items-center mb-4">
@@ -28,6 +33,8 @@ export const ResultsSummary = ({ allItems, mappableItems, selectedTypes }: Resul
         {typeConfigs.map(({ type, label, color, bgColor }) => {
           const count = allItems.filter(item => item.type === type).length;
           const mappableCount = mappableItems.filter(item => item.type === type).length;
+          
+          console.log(`${label}: total=${count}, mappable=${mappableCount}`);
           
           return (
             <div key={type} className={`text-center p-4 rounded-lg ${bgColor}`}>

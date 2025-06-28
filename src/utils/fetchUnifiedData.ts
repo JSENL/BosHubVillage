@@ -8,7 +8,7 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
   
   const [eventsRes, newsRes, businessRes, localServicesRes] = await Promise.all([
     supabase.from('events').select('*').order('created_at', { ascending: false }),
-    supabase.from('news').select('*').order('created_at', { ascending: false }),
+    supabase.from('news').select('*').order('date_posted', { ascending: false }),
     supabase.from('business').select('*').order('created_at', { ascending: false }),
     supabase.from('local_services_nonprofits').select('*').order('created_at', { ascending: false })
   ]);
@@ -54,16 +54,25 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     });
   }
 
-  // Process news with geocoding and coordinate validation
+  // Process news with enhanced geocoding and coordinate validation
   if (newsRes.data) {
     console.log('Processing news:', newsRes.data.length);
     
     // Try to geocode news items that don't have coordinates
-    await geocodeNewsItems(newsRes.data, geocode);
+    const newsItemsToGeocode = newsRes.data.filter(news => 
+      (!news.latitude || !news.longitude) && (news.Address || news.location)
+    );
+    
+    if (newsItemsToGeocode.length > 0) {
+      console.log('Geocoding news items:', newsItemsToGeocode.length);
+      await geocodeNewsItems(newsItemsToGeocode, geocode);
+    }
     
     newsRes.data.forEach(news => {
       const lat = news.latitude ? Number(news.latitude) : null;
       const lng = news.longitude ? Number(news.longitude) : null;
+      
+      console.log(`News item ${news.id}: lat=${lat}, lng=${lng}, location=${news.location}, address=${news.Address}`);
       
       items.push({
         id: news.id,
@@ -127,6 +136,8 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
 
   console.log('Total unified items processed:', items.length);
   console.log('Items with coordinates:', items.filter(item => item.latitude && item.longitude).length);
+  console.log('News items processed:', items.filter(item => item.type === 'news').length);
+  console.log('News items with coordinates:', items.filter(item => item.type === 'news' && item.latitude && item.longitude).length);
   
   return items;
 };
