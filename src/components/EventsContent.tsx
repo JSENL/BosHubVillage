@@ -1,4 +1,3 @@
-
 import { EventCard } from '@/components/EventCard';
 import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
 import EventsCalendar from '@/components/EventsCalendar';
@@ -58,9 +57,7 @@ export const EventsContent = ({
       <EnhancedUniversalMap 
         items={unifiedItems}
         height="600px"
-        showFilters={false}
         selectedTypes={selectedTypes}
-        onTypeToggle={onTypeToggle}
       />
     );
   }
