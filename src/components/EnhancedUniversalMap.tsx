@@ -9,18 +9,14 @@ import { UnifiedItem } from '@/types/unifiedItem';
 interface EnhancedUniversalMapProps {
   items: UnifiedItem[];
   height?: string;
-  showFilters?: boolean;
   selectedTypes: string[];
-  onTypeToggle?: (type: string) => void;
   onItemClick?: (item: UnifiedItem) => void;
 }
 
 export const EnhancedUniversalMap = ({ 
   items, 
   height = "400px", 
-  showFilters = false,
   selectedTypes,
-  onTypeToggle,
   onItemClick
 }: EnhancedUniversalMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -66,13 +62,13 @@ export const EnhancedUniversalMap = ({
     };
   }, [mapboxToken, isLoadingApiKey]);
 
-  // Create marker color based on type
+  // Create marker color based on type with specified colors
   const getMarkerColor = (type: string): string => {
     const colors = {
-      event: '#dc2626',
-      news: '#2563eb',
-      business: '#16a34a',
-      'local-service': '#ca8a04'
+      event: '#dc2626',      // Red
+      news: '#2563eb',       // Blue
+      business: '#16a34a',   // Green
+      'local-service': '#eab308'  // Yellow
     };
     return colors[type as keyof typeof colors] || '#6b7280';
   };
@@ -243,14 +239,6 @@ export const EnhancedUniversalMap = ({
     }
   }, [filteredMappableItems, onItemClick, navigate]);
 
-  // Handle type filter changes
-  const toggleType = (type: string) => {
-    console.log('Toggling type filter:', type);
-    if (onTypeToggle) {
-      onTypeToggle(type);
-    }
-  };
-
   if (isLoadingApiKey) {
     return (
       <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
@@ -269,57 +257,32 @@ export const EnhancedUniversalMap = ({
     );
   }
 
-  // Count items by type from the filtered items that are passed to this component
-  const itemCounts = items.reduce((acc, item) => {
-    acc[item.type] = (acc[item.type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Count mappable items by type
-  const mappableItemCounts = items.filter(item => 
-    item.latitude !== null && 
-    item.longitude !== null &&
-    !isNaN(Number(item.latitude)) &&
-    !isNaN(Number(item.longitude))
-  ).reduce((acc, item) => {
-    acc[item.type] = (acc[item.type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
   return (
-    <div className="space-y-4">
-      {showFilters && (
-        <div className="flex flex-wrap gap-2">
-          {[
-            { type: 'event', label: 'Events', color: 'bg-red-100 text-red-700' },
-            { type: 'news', label: 'News', color: 'bg-blue-100 text-blue-700' },
-            { type: 'business', label: 'Businesses', color: 'bg-green-100 text-green-700' },
-            { type: 'local-service', label: 'Local Services', color: 'bg-yellow-100 text-yellow-700' }
-          ].map(({ type, label, color }) => {
-            const totalCount = itemCounts[type] || 0;
-            const mappableCount = mappableItemCounts[type] || 0;
-            
-            return (
-              <button
-                key={type}
-                onClick={() => toggleType(type)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
-                  selectedTypes.includes(type) 
-                    ? color
-                    : 'bg-gray-100 text-gray-500'
-                }`}
-              >
-                {label} ({totalCount}) - {mappableCount} on map
-              </button>
-            );
-          })}
-        </div>
-      )}
-      
+    <div className="space-y-4">      
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
         <div ref={mapRef} className="w-full h-full" />
         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-sm text-gray-600 shadow-sm">
           Showing {filteredMappableItems.length} markers
+        </div>
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-500 shadow-sm">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-red-600 rounded-full"></div>
+              <span>Events</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+              <span>News</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-green-600 rounded-full"></div>
+              <span>Businesses</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+              <span>Services</span>
+            </div>
+          </div>
         </div>
         <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-500 shadow-sm">
           💡 Click markers to highlight items | Double-click to view details

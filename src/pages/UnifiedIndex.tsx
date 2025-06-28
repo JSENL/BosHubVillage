@@ -120,13 +120,11 @@ const UnifiedIndexContent = () => {
           itemType="events"
         />
 
-        {/* Enhanced Universal Map - This will now show filtered markers */}
+        {/* Enhanced Universal Map - Clean map without built-in filters */}
         <EnhancedUniversalMap
           items={allItems}
           height="600px"
-          showFilters={true}
           selectedTypes={selectedTypes}
-          onTypeToggle={toggleType}
           onItemClick={handleItemClick}
         />
 
