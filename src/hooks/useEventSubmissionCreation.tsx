@@ -2,6 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from './useAuth';
+import { useGeocoding } from './useGeocoding';
 
 interface CreateEventSubmissionData {
   title: string;
@@ -23,6 +24,7 @@ interface CreateEventSubmissionData {
 
 export const useEventSubmissionCreation = () => {
   const { user } = useAuth();
+  const { geocode, isReady } = useGeocoding();
 
   const submitEvent = async (eventData: CreateEventSubmissionData) => {
     try {
@@ -30,19 +32,35 @@ export const useEventSubmissionCreation = () => {
         throw new Error('User not authenticated');
       }
 
-      console.log('Submitting event with coordinates and new fields:', {
+      let latitude = eventData.latitude;
+      let longitude = eventData.longitude;
+
+      // If coordinates are not provided and geocoding is available, try to geocode the location
+      if ((!latitude || !longitude) && eventData.location && isReady) {
+        console.log('Attempting to geocode event location:', eventData.location);
+        const geocodeResult = await geocode(eventData.location);
+        if (geocodeResult) {
+          latitude = geocodeResult.latitude;
+          longitude = geocodeResult.longitude;
+          console.log('Successfully geocoded event location:', { latitude, longitude });
+        }
+      }
+
+      console.log('Submitting event with coordinates:', {
         title: eventData.title,
         location: eventData.location,
         event_type: eventData.event_type,
         neighborhoods: eventData.neighborhoods,
-        latitude: eventData.latitude,
-        longitude: eventData.longitude
+        latitude,
+        longitude
       });
 
       const { data, error } = await supabase
         .from('event_submissions')
         .insert({
           ...eventData,
+          latitude,
+          longitude,
           submitted_by: user.id
         })
         .select()

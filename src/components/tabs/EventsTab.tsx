@@ -1,9 +1,11 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EventCard } from "@/components/EventCard";
 import { EventFiltersEnhanced } from "@/components/EventFiltersEnhanced";
 import { SectionMap } from "@/components/SectionMap";
 import { useEventsWithFilters } from "@/hooks/useEventsWithFilters";
+import { useGeocoding } from "@/hooks/useGeocoding";
+import { geocodeEvents } from "@/utils/geocodeEvents";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 
@@ -25,6 +27,34 @@ export const EventsTab = () => {
     setSearchTerm,
     events: allEvents
   } = useEventsWithFilters();
+
+  const { geocode, isReady } = useGeocoding();
+  const [hasGeocodedEvents, setHasGeocodedEvents] = useState(false);
+
+  // Automatically geocode events that don't have coordinates
+  useEffect(() => {
+    const geocodeEventsIfNeeded = async () => {
+      if (!isReady || hasGeocodedEvents || eventsLoading || allEvents.length === 0) {
+        return;
+      }
+
+      const eventsNeedingGeocode = allEvents.filter(event => 
+        (!event.latitude || !event.longitude) && event.location
+      );
+
+      if (eventsNeedingGeocode.length > 0) {
+        console.log(`Found ${eventsNeedingGeocode.length} events that need geocoding`);
+        try {
+          await geocodeEvents(eventsNeedingGeocode, geocode);
+          setHasGeocodedEvents(true);
+        } catch (error) {
+          console.error('Error geocoding events:', error);
+        }
+      }
+    };
+
+    geocodeEventsIfNeeded();
+  }, [allEvents, isReady, geocode, hasGeocodedEvents, eventsLoading]);
 
   return (
     <div className="space-y-6">
