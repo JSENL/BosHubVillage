@@ -60,7 +60,7 @@ export const useNewsSubmissionOperations = () => {
       toast.success(`News ${status} successfully!`);
     } catch (error: any) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} news:`, error);
-      toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} news`);
+      toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} news: ${error.message}`);
       throw error;
     } finally {
       setActionLoading(false);

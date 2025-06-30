@@ -746,13 +746,16 @@ export type Database = {
       }
       news_submissions: {
         Row: {
+          Address: string | null
           admin_notes: string | null
           content: string
           created_at: string
           date_posted: string
           id: string
+          latitude: number | null
           link: string | null
           location: string
+          longitude: number | null
           reviewed_at: string | null
           reviewed_by: string | null
           source: string
@@ -760,15 +763,19 @@ export type Database = {
           submitted_by: string
           title: string
           updated_at: string
+          villages: string[] | null
         }
         Insert: {
+          Address?: string | null
           admin_notes?: string | null
           content: string
           created_at?: string
           date_posted?: string
           id?: string
+          latitude?: number | null
           link?: string | null
           location: string
+          longitude?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           source: string
@@ -776,15 +783,19 @@ export type Database = {
           submitted_by: string
           title: string
           updated_at?: string
+          villages?: string[] | null
         }
         Update: {
+          Address?: string | null
           admin_notes?: string | null
           content?: string
           created_at?: string
           date_posted?: string
           id?: string
+          latitude?: number | null
           link?: string | null
           location?: string
+          longitude?: number | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           source?: string
@@ -792,6 +803,7 @@ export type Database = {
           submitted_by?: string
           title?: string
           updated_at?: string
+          villages?: string[] | null
         }
         Relationships: [
           {
