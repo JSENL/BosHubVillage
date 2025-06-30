@@ -2,10 +2,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
-import { LocalService } from '@/types/localServices';
+import { LocalResource } from '@/types/localServices';
 
 interface LocalServiceCardProps {
-  localService: LocalService;
+  localService: LocalResource;
 }
 
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {

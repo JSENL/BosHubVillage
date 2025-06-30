@@ -1,268 +1,156 @@
-import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+
+import { useEffect, useState } from 'react';
 import { useMapLoader } from '@/hooks/useMapLoader';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MapItem {
   id: string;
-  title: string;
-  description: string;
+  name: string;
+  description?: string;
   latitude: number;
   longitude: number;
-  type: 'event' | 'news' | 'business' | 'local-service';
+  type: 'business' | 'event' | 'news' | 'local_resource';
   address?: string;
-  location?: string;
   category?: string;
 }
 
-interface UniversalMapProps {
-  height?: string;
-  showFilters?: boolean;
-}
-
-export const UniversalMap = ({ height = "400px", showFilters = false }: UniversalMapProps) => {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
+export const UniversalMap = () => {
+  const { isLoaded, loadError } = useMapLoader();
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   const [mapItems, setMapItems] = useState<MapItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(['event', 'news', 'business', 'local-service']);
-  const navigate = useNavigate();
-  const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
 
-  // Fetch all data from Supabase
-  const fetchMapData = async () => {
-    try {
-      console.log('Fetching map data from all tables...');
-      
-      const [eventsRes, newsRes, businessRes, localServicesRes] = await Promise.all([
-        supabase.from('events').select('id, title, description, latitude, longitude, location, category'),
-        supabase.from('news').select('id, title, content, location'),
-        supabase.from('business').select('id, title, description, address, neighborhood'),
-        supabase.from('local_services_nonprofits').select('id, name, description, latitude, longitude, address, category')
-      ]);
-
-      const items: MapItem[] = [];
-
-      // Process events
-      if (eventsRes.data) {
-        eventsRes.data.forEach(event => {
-          if (event.latitude && event.longitude) {
-            items.push({
-              id: event.id,
-              title: event.title,
-              description: event.description || '',
-              latitude: Number(event.latitude),
-              longitude: Number(event.longitude),
-              type: 'event',
-              location: event.location,
-              category: event.category
-            });
-          }
-        });
-      }
-
-      // Process local services
-      if (localServicesRes.data) {
-        localServicesRes.data.forEach(service => {
-          if (service.latitude && service.longitude) {
-            items.push({
-              id: service.id,
-              title: service.name,
-              description: service.description || '',
-              latitude: Number(service.latitude),
-              longitude: Number(service.longitude),
-              type: 'local-service',
-              address: service.address,
-              category: service.category
-            });
-          }
-        });
-      }
-
-      console.log('Fetched map items:', items);
-      setMapItems(items);
-    } catch (error) {
-      console.error('Error fetching map data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Initialize Mapbox map
   useEffect(() => {
-    if (!mapRef.current || !mapboxToken || isLoadingApiKey) return;
+    const fetchMapData = async () => {
+      try {
+        // Fetch local resources
+        const { data: localResources, error: localResourcesError } = await supabase
+          .from('local_resources')
+          .select('*')
+          .not('latitude', 'is', null)
+          .not('longitude', 'is', null);
 
-    mapboxgl.accessToken = mapboxToken;
+        if (localResourcesError) throw localResourcesError;
 
-    const map = new mapboxgl.Map({
-      container: mapRef.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [-71.0589, 42.3601], // Boston center
-      zoom: 12
-    });
+        // Fetch other data (businesses, events, news)
+        const { data: businesses, error: businessError } = await supabase
+          .from('business')
+          .select('*')
+          .not('latitude', 'is', null)
+          .not('longitude', 'is', null);
 
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        if (businessError) throw businessError;
 
-    mapInstanceRef.current = map;
+        const allItems: MapItem[] = [];
 
-    return () => {
-      map.remove();
+        // Add local resources
+        if (localResources) {
+          localResources.forEach(resource => {
+            if (resource.latitude && resource.longitude) {
+              allItems.push({
+                id: resource.id,
+                name: resource.name,
+                description: resource.description || undefined,
+                latitude: resource.latitude,
+                longitude: resource.longitude,
+                type: 'local_resource',
+                address: resource.address,
+                category: resource.category
+              });
+            }
+          });
+        }
+
+        // Add businesses
+        if (businesses) {
+          businesses.forEach(business => {
+            if (business.latitude && business.longitude) {
+              allItems.push({
+                id: business.id,
+                name: business.title,
+                description: business.description,
+                latitude: business.latitude,
+                longitude: business.longitude,
+                type: 'business',
+                address: business.address,
+                category: business.business_type
+              });
+            }
+          });
+        }
+
+        setMapItems(allItems);
+      } catch (error) {
+        console.error('Error fetching map data:', error);
+      }
     };
-  }, [mapboxToken, isLoadingApiKey]);
 
-  // Fetch data
-  useEffect(() => {
     fetchMapData();
   }, []);
 
-  // Create marker color based on type
-  const getMarkerColor = (type: string): string => {
-    const colors = {
-      event: '#dc2626',
-      news: '#2563eb',
-      business: '#16a34a',
-      'local-service': '#ca8a04'
-    };
-    return colors[type as keyof typeof colors] || '#6b7280';
-  };
-
-  // Create popup content
-  const createPopupContent = (item: MapItem): string => {
-    const typeLabel = {
-      event: 'Event',
-      news: 'News',
-      business: 'Business',
-      'local-service': 'Local Service'
-    }[item.type];
-
-    return `
-      <div style="padding: 10px; max-width: 200px;">
-        <div style="background: ${getMarkerColor(item.type)}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-bottom: 8px;">
-          ${typeLabel}
-        </div>
-        <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${item.title}</h3>
-        <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280;">${item.description.substring(0, 100)}${item.description.length > 100 ? '...' : ''}</p>
-        ${item.location ? `<p style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📍 ${item.location}</strong></p>` : ''}
-        ${item.address ? `<p style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📍 ${item.address}</strong></p>` : ''}
-        ${item.category ? `<p style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>🏷️ ${item.category}</strong></p>` : ''}
-        <div style="margin: 8px 0 0 0;">
-          <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
-            background: linear-gradient(to right, #8b5cf6, #3b82f6);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: 500;
-          ">View Details</button>
-        </div>
-      </div>
-    `;
-  };
-
-  // Add markers to map
   useEffect(() => {
-    if (!mapInstanceRef.current || mapItems.length === 0) return;
-
-    // Clear existing markers
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
-
-    // Filter items based on selected types
-    const filteredItems = mapItems.filter(item => selectedTypes.includes(item.type));
-
-    // Add new markers
-    filteredItems.forEach((item) => {
-      const marker = new mapboxgl.Marker({
-        color: getMarkerColor(item.type)
-      })
-        .setLngLat([item.longitude, item.latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 })
-            .setHTML(createPopupContent(item))
-        )
-        .addTo(mapInstanceRef.current!);
-
-      markersRef.current.push(marker);
-    });
-
-    // Fit map to show all markers
-    if (filteredItems.length > 0) {
-      const bounds = new mapboxgl.LngLatBounds();
-      filteredItems.forEach(item => {
-        bounds.extend([item.longitude, item.latitude]);
-      });
-      mapInstanceRef.current.fitBounds(bounds, { padding: 50 });
+    if (isLoaded && !map) {
+      const mapInstance = new google.maps.Map(
+        document.getElementById('universal-map') as HTMLElement,
+        {
+          center: { lat: 40.7128, lng: -74.0060 }, // Default to NYC
+          zoom: 12,
+        }
+      );
+      setMap(mapInstance);
     }
-  }, [mapItems, selectedTypes]);
+  }, [isLoaded, map]);
 
-  // Handle type filter changes
-  const toggleType = (type: string) => {
-    setSelectedTypes(prev => 
-      prev.includes(type) 
-        ? prev.filter(t => t !== type)
-        : [...prev, type]
-    );
-  };
+  useEffect(() => {
+    if (map && mapItems.length > 0) {
+      // Clear existing markers
+      // Add new markers
+      mapItems.forEach(item => {
+        const marker = new google.maps.Marker({
+          position: { lat: item.latitude, lng: item.longitude },
+          map: map,
+          title: item.name,
+        });
 
-  if (isLoadingApiKey) {
-    return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-        <p className="text-gray-600">Loading map...</p>
-      </div>
-    );
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+            <div>
+              <h3>${item.name}</h3>
+              ${item.description ? `<p>${item.description}</p>` : ''}
+              ${item.address ? `<p><strong>Address:</strong> ${item.address}</p>` : ''}
+              ${item.category ? `<p><strong>Category:</strong> ${item.category}</p>` : ''}
+              <p><strong>Type:</strong> ${item.type.replace('_', ' ')}</p>
+            </div>
+          `,
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
+        });
+      });
+
+      // Fit map to show all markers
+      if (mapItems.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        mapItems.forEach(item => {
+          bounds.extend({ lat: item.latitude, lng: item.longitude });
+        });
+        map.fitBounds(bounds);
+      }
+    }
+  }, [map, mapItems]);
+
+  if (loadError) {
+    return <div>Error loading map</div>;
   }
 
-  if (error || !mapboxToken) {
-    return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
-        <p className="text-red-500 mb-4">{error || 'Failed to load Mapbox API key'}</p>
-        <p className="text-sm text-gray-400">Please check your Mapbox configuration</p>
-      </div>
-    );
+  if (!isLoaded) {
+    return <div>Loading map...</div>;
   }
 
   return (
-    <div className="space-y-4">
-      {showFilters && (
-        <div className="flex flex-wrap gap-2">
-          {[
-            { type: 'event', label: 'Events', color: 'bg-red-100 text-red-700' },
-            { type: 'news', label: 'News', color: 'bg-blue-100 text-blue-700' },
-            { type: 'business', label: 'Businesses', color: 'bg-green-100 text-green-700' },
-            { type: 'local-service', label: 'Local Services', color: 'bg-yellow-100 text-yellow-700' }
-          ].map(({ type, label, color }) => (
-            <button
-              key={type}
-              onClick={() => toggleType(type)}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
-                selectedTypes.includes(type) 
-                  ? color
-                  : 'bg-gray-100 text-gray-500'
-              }`}
-            >
-              {label} ({mapItems.filter(item => item.type === type).length})
-            </button>
-          ))}
-        </div>
-      )}
-      
-      <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
-        <div ref={mapRef} className="w-full h-full" />
-        {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-              <p className="text-gray-600">Loading data...</p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+    <div
+      id="universal-map"
+      style={{ height: '400px', width: '100%' }}
+    />
   );
 };

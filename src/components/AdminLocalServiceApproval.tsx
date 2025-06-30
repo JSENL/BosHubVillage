@@ -14,17 +14,17 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-import { LocalServiceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localServices';
 
-const AdminLocalServiceApproval = () => {
+const AdminLocalResourceApproval = () => {
   const { data: submissions, isLoading, refetch } = useLocalServiceSubmissions();
   const { user } = useAuth();
 
-  const handleApprove = async (submission: LocalServiceSubmission) => {
+  const handleApprove = async (submission: LocalResourceSubmission) => {
     try {
-      // First, insert into the main local_services_nonprofits table
+      // First, insert into the main local_resources table
       const { error: insertError } = await supabase
-        .from('local_services_nonprofits')
+        .from('local_resources')
         .insert({
           name: submission.name,
           category: submission.category,
@@ -40,7 +40,7 @@ const AdminLocalServiceApproval = () => {
 
       // Then update the submission status
       const { error: updateError } = await supabase
-        .from('local_services_nonprofits_submissions')
+        .from('local_resources_submissions')
         .update({
           status: 'approved',
           reviewed_by: user?.id,
@@ -50,18 +50,18 @@ const AdminLocalServiceApproval = () => {
 
       if (updateError) throw updateError;
 
-      toast.success('Local service approved successfully!');
+      toast.success('Local resource approved successfully!');
       refetch();
     } catch (error: any) {
-      console.error('Error approving local service:', error);
-      toast.error('Failed to approve local service: ' + error.message);
+      console.error('Error approving local resource:', error);
+      toast.error('Failed to approve local resource: ' + error.message);
     }
   };
 
-  const handleReject = async (submission: LocalServiceSubmission) => {
+  const handleReject = async (submission: LocalResourceSubmission) => {
     try {
       const { error } = await supabase
-        .from('local_services_nonprofits_submissions')
+        .from('local_resources_submissions')
         .update({
           status: 'rejected',
           reviewed_by: user?.id,
@@ -71,11 +71,11 @@ const AdminLocalServiceApproval = () => {
 
       if (error) throw error;
 
-      toast.success('Local service rejected successfully!');
+      toast.success('Local resource rejected successfully!');
       refetch();
     } catch (error: any) {
-      console.error('Error rejecting local service:', error);
-      toast.error('Failed to reject local service: ' + error.message);
+      console.error('Error rejecting local resource:', error);
+      toast.error('Failed to reject local resource: ' + error.message);
     }
   };
 
@@ -86,7 +86,7 @@ const AdminLocalServiceApproval = () => {
     return (
       <div className="text-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
-        <p className="mt-2 text-gray-600">Loading local service submissions...</p>
+        <p className="mt-2 text-gray-600">Loading local resource submissions...</p>
       </div>
     );
   }
@@ -94,7 +94,7 @@ const AdminLocalServiceApproval = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Local Service Submissions</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Local Resource Submissions</h2>
         
         {pendingSubmissions.length > 0 && (
           <div className="mb-8">
@@ -219,7 +219,7 @@ const AdminLocalServiceApproval = () => {
           <div className="text-center py-12">
             <Building className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No submissions yet</h3>
-            <p className="text-gray-500">Local service submissions will appear here for review.</p>
+            <p className="text-gray-500">Local resource submissions will appear here for review.</p>
           </div>
         )}
       </div>
@@ -227,4 +227,4 @@ const AdminLocalServiceApproval = () => {
   );
 };
 
-export default AdminLocalServiceApproval;
+export default AdminLocalResourceApproval;

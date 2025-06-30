@@ -1,172 +1,179 @@
 
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-interface FilterOptions {
+export interface FilterOptions {
   categories: string[];
-  neighborhoods: string[];
+  locations: string[];
+  businessTypes: string[];
   villages: string[];
+  neighborhoods: string[];
+  eventCategories: string[];
+  sources: string[];
 }
 
-export const useEventFilterOptions = () => {
-  const [options, setOptions] = useState<FilterOptions>({
-    categories: [],
-    neighborhoods: [],
-    villages: []
-  });
-
-  useEffect(() => {
-    const fetchEventOptions = async () => {
+export const useDatabaseFilterOptions = () => {
+  return useQuery({
+    queryKey: ['database-filter-options'],
+    queryFn: async (): Promise<FilterOptions> => {
+      console.log('Fetching filter options from database...');
+      
       try {
-        const { data: events } = await supabase
-          .from('events')
-          .select('category, neighborhoods, villages');
-
-        if (events) {
-          const categories = [...new Set(events.map(e => e.category).filter(Boolean))];
-          const neighborhoods = [...new Set(
-            events.flatMap(e => e.neighborhoods ? e.neighborhoods.split(',').map(n => n.trim()) : [])
-          )];
-          const villages = [...new Set(
-            events.flatMap(e => {
-              if (!e.villages) return [];
-              try {
-                return Array.isArray(e.villages) ? e.villages : JSON.parse(e.villages);
-              } catch {
-                return [e.villages];
-              }
-            })
-          )];
-
-          setOptions({ categories, neighborhoods, villages });
-        }
-      } catch (error) {
-        console.error('Error fetching event filter options:', error);
-      }
-    };
-
-    fetchEventOptions();
-  }, []);
-
-  return options;
-};
-
-export const useNewsFilterOptions = () => {
-  const [options, setOptions] = useState<FilterOptions>({
-    categories: [],
-    neighborhoods: [],
-    villages: []
-  });
-
-  useEffect(() => {
-    const fetchNewsOptions = async () => {
-      try {
-        const { data: news } = await supabase
-          .from('news')
-          .select('location, villages');
-
-        if (news) {
-          // Extract neighborhoods from location field
-          const neighborhoods = [...new Set(
-            news.map(n => n.location).filter(Boolean)
-          )];
-          
-          const villages = [...new Set(
-            news.flatMap(n => {
-              if (!n.villages) return [];
-              try {
-                return Array.isArray(n.villages) ? n.villages : JSON.parse(n.villages);
-              } catch {
-                return [n.villages];
-              }
-            })
-          )];
-
-          // News categories are typically predefined
-          const categories = ['local', 'business', 'community', 'events', 'government'];
-
-          setOptions({ categories, neighborhoods, villages });
-        }
-      } catch (error) {
-        console.error('Error fetching news filter options:', error);
-      }
-    };
-
-    fetchNewsOptions();
-  }, []);
-
-  return options;
-};
-
-export const useBusinessFilterOptions = () => {
-  const [options, setOptions] = useState<FilterOptions>({
-    categories: [],
-    neighborhoods: [],
-    villages: []
-  });
-
-  useEffect(() => {
-    const fetchBusinessOptions = async () => {
-      try {
-        const { data: businesses } = await supabase
+        // Fetch business types
+        const { data: businesses, error: businessError } = await supabase
           .from('business')
-          .select('business_type, neighborhood, villages');
+          .select('business_type, neighborhood, villages')
+          .not('business_type', 'is', null)
+          .not('neighborhood', 'is', null);
 
-        if (businesses) {
-          const categories = [...new Set(businesses.map(b => b.business_type).filter(Boolean))];
-          const neighborhoods = [...new Set(businesses.map(b => b.neighborhood).filter(Boolean))];
-          const villages = [...new Set(
-            businesses.flatMap(b => {
-              if (!b.villages) return [];
-              try {
-                return Array.isArray(b.villages) ? b.villages : JSON.parse(b.villages);
-              } catch {
-                return [b.villages];
-              }
-            })
-          )];
-
-          setOptions({ categories, neighborhoods, villages });
+        if (businessError) {
+          console.error('Error fetching business data:', businessError);
+          throw businessError;
         }
+
+        // Fetch event categories and locations
+        const { data: events, error: eventsError } = await supabase
+          .from('events')
+          .select('category, neighborhoods, villages')
+          .not('category', 'is', null)
+          .not('neighborhoods', 'is', null);
+
+        if (eventsError) {
+          console.error('Error fetching events data:', eventsError);
+          throw eventsError;
+        }
+
+        // Fetch news sources and locations
+        const { data: news, error: newsError } = await supabase
+          .from('news')
+          .select('source, location, villages')
+          .not('source', 'is', null)
+          .not('location', 'is', null);
+
+        if (newsError) {
+          console.error('Error fetching news data:', newsError);
+          throw newsError;
+        }
+
+        // Fetch local resource categories and locations
+        const { data: localResources, error: localResourcesError } = await supabase
+          .from('local_resources')
+          .select('category, neighborhood, village')
+          .not('category', 'is', null)
+          .not('neighborhood', 'is', null);
+
+        if (localResourcesError) {
+          console.error('Error fetching local resources data:', localResourcesError);
+          throw localResourcesError;
+        }
+
+        // Process business data
+        const businessTypes = new Set<string>();
+        const businessNeighborhoods = new Set<string>();
+        const businessVillages = new Set<string>();
+
+        businesses?.forEach(business => {
+          if (business.business_type) businessTypes.add(business.business_type);
+          if (business.neighborhood) businessNeighborhoods.add(business.neighborhood);
+          if (business.villages) {
+            const villageList = business.villages.split(',').map(v => v.trim());
+            villageList.forEach(village => businessVillages.add(village));
+          }
+        });
+
+        // Process events data
+        const eventCategories = new Set<string>();
+        const eventNeighborhoods = new Set<string>();
+        const eventVillages = new Set<string>();
+
+        events?.forEach(event => {
+          if (event.category) eventCategories.add(event.category);
+          if (event.neighborhoods) {
+            const neighborhoods = event.neighborhoods.split(',').map(n => n.trim());
+            neighborhoods.forEach(neighborhood => eventNeighborhoods.add(neighborhood));
+          }
+          if (event.villages) {
+            const villageList = event.villages.split(',').map(v => v.trim());
+            villageList.forEach(village => eventVillages.add(village));
+          }
+        });
+
+        // Process news data
+        const newsSources = new Set<string>();
+        const newsLocations = new Set<string>();
+        const newsVillages = new Set<string>();
+
+        news?.forEach(item => {
+          if (item.source) newsSources.add(item.source);
+          if (item.location) newsLocations.add(item.location);
+          if (item.villages) {
+            const villageList = item.villages.split(',').map(v => v.trim());
+            villageList.forEach(village => newsVillages.add(village));
+          }
+        });
+
+        // Process local resources data
+        const localResourceCategories = new Set<string>();
+        const localResourceNeighborhoods = new Set<string>();
+        const localResourceVillages = new Set<string>();
+
+        localResources?.forEach(resource => {
+          if (resource.category) localResourceCategories.add(resource.category);
+          if (resource.neighborhood) localResourceNeighborhoods.add(resource.neighborhood);
+          if (resource.village) localResourceVillages.add(resource.village);
+        });
+
+        // Combine all categories
+        const allCategories = new Set([
+          ...Array.from(businessTypes),
+          ...Array.from(eventCategories),
+          ...Array.from(localResourceCategories)
+        ]);
+
+        // Combine all locations (neighborhoods)
+        const allLocations = new Set([
+          ...Array.from(businessNeighborhoods),
+          ...Array.from(eventNeighborhoods),
+          ...Array.from(newsLocations),
+          ...Array.from(localResourceNeighborhoods)
+        ]);
+
+        // Combine all villages
+        const allVillages = new Set([
+          ...Array.from(businessVillages),
+          ...Array.from(eventVillages),
+          ...Array.from(newsVillages),
+          ...Array.from(localResourceVillages)
+        ]);
+
+        const filterOptions: FilterOptions = {
+          categories: Array.from(allCategories).sort(),
+          locations: Array.from(allLocations).sort(),
+          businessTypes: Array.from(businessTypes).sort(),
+          villages: Array.from(allVillages).sort(),
+          neighborhoods: Array.from(allLocations).sort(),
+          eventCategories: Array.from(eventCategories).sort(),
+          sources: Array.from(newsSources).sort()
+        };
+
+        console.log('Successfully fetched filter options:', filterOptions);
+        return filterOptions;
+
       } catch (error) {
-        console.error('Error fetching business filter options:', error);
+        console.error('Error in useDatabaseFilterOptions:', error);
+        // Return empty filter options as fallback
+        return {
+          categories: [],
+          locations: [],
+          businessTypes: [],
+          villages: [],
+          neighborhoods: [],
+          eventCategories: [],
+          sources: []
+        };
       }
-    };
-
-    fetchBusinessOptions();
-  }, []);
-
-  return options;
-};
-
-export const useLocalServiceFilterOptions = () => {
-  const [options, setOptions] = useState<FilterOptions>({
-    categories: [],
-    neighborhoods: [],
-    villages: []
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
-
-  useEffect(() => {
-    const fetchLocalServiceOptions = async () => {
-      try {
-        const { data: services } = await supabase
-          .from('local_services_nonprofits')
-          .select('category, neighborhood, village');
-
-        if (services) {
-          const categories = [...new Set(services.map(s => s.category).filter(Boolean))];
-          const neighborhoods = [...new Set(services.map(s => s.neighborhood).filter(Boolean))];
-          const villages = [...new Set(services.map(s => s.village).filter(Boolean))];
-
-          setOptions({ categories, neighborhoods, villages });
-        }
-      } catch (error) {
-        console.error('Error fetching local service filter options:', error);
-      }
-    };
-
-    fetchLocalServiceOptions();
-  }, []);
-
-  return options;
 };
