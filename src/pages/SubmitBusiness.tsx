@@ -9,11 +9,14 @@ import { Label } from '@/components/ui/label';
 import { Navigation } from '@/components/Navigation';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Building, ArrowLeft } from 'lucide-react';
+import { Building, ArrowLeft, AlertCircle } from 'lucide-react';
+import { useSubmissionErrorHandler } from '@/hooks/useSubmissionErrorHandler';
 
 const SubmitBusiness = () => {
   const { user } = useAuth();
+  const { handleSubmissionError, handleValidationError } = useSubmissionErrorHandler();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     business_type: '',
@@ -25,18 +28,43 @@ const SubmitBusiness = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear validation errors when user starts typing
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
+  };
+
+  const validateForm = () => {
+    const errors: string[] = [];
+    
+    if (!formData.title.trim()) errors.push('Business Name');
+    if (!formData.business_type.trim()) errors.push('Business Type');
+    if (!formData.address.trim()) errors.push('Address');
+    if (!formData.neighborhood.trim()) errors.push('Neighborhood');
+    if (!formData.description.trim()) errors.push('Full Description');
+
+    setValidationErrors(errors);
+    return errors;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!user) {
-      toast.error('You must be signed in to submit a business');
+      toast.error('Authentication required', {
+        description: 'You must be signed in to submit a business',
+        style: {
+          backgroundColor: '#fee2e2',
+          borderColor: '#fca5a5',
+          color: '#dc2626'
+        }
+      });
       return;
     }
 
-    if (!formData.title || !formData.business_type || !formData.address || !formData.neighborhood || !formData.description) {
-      toast.error('Please fill in all required fields');
+    const validationErrors = validateForm();
+    if (validationErrors.length > 0) {
+      handleValidationError(validationErrors, 'Business');
       return;
     }
 
@@ -53,7 +81,10 @@ const SubmitBusiness = () => {
 
       if (error) throw error;
 
-      toast.success('Business submitted successfully! It will be reviewed by our admin team.');
+      toast.success('Business submitted successfully!', {
+        description: 'Your business will be reviewed by our admin team.',
+        duration: 5000
+      });
       
       // Reset form
       setFormData({
@@ -64,9 +95,9 @@ const SubmitBusiness = () => {
         description: '',
         short_description: ''
       });
+      setValidationErrors([]);
     } catch (error: any) {
-      console.error('Error submitting business:', error);
-      toast.error('Failed to submit business. Please try again.');
+      handleSubmissionError(error, 'business');
     } finally {
       setIsSubmitting(false);
     }
@@ -112,6 +143,22 @@ const SubmitBusiness = () => {
             <p className="text-gray-600">Share a local business with the community</p>
           </div>
 
+          {validationErrors.length > 0 && (
+            <Card className="mb-6 border-orange-200 bg-orange-50">
+              <CardContent className="p-4">
+                <div className="flex items-start space-x-3">
+                  <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="text-orange-800 font-medium">Please complete all required fields</h4>
+                    <p className="text-orange-700 text-sm mt-1">
+                      Missing: {validationErrors.join(', ')}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -129,6 +176,7 @@ const SubmitBusiness = () => {
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     placeholder="Enter the business name"
                     required
+                    className={validationErrors.includes('Business Name') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
@@ -140,6 +188,7 @@ const SubmitBusiness = () => {
                     onChange={(e) => handleInputChange('business_type', e.target.value)}
                     placeholder="e.g., Restaurant, Retail, Service, etc."
                     required
+                    className={validationErrors.includes('Business Type') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
@@ -151,6 +200,7 @@ const SubmitBusiness = () => {
                     onChange={(e) => handleInputChange('address', e.target.value)}
                     placeholder="Enter the full address"
                     required
+                    className={validationErrors.includes('Address') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
@@ -162,6 +212,7 @@ const SubmitBusiness = () => {
                     onChange={(e) => handleInputChange('neighborhood', e.target.value)}
                     placeholder="Enter the neighborhood or area"
                     required
+                    className={validationErrors.includes('Neighborhood') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
@@ -185,6 +236,7 @@ const SubmitBusiness = () => {
                     placeholder="Provide a detailed description of the business, what they offer, their specialties, etc."
                     rows={5}
                     required
+                    className={validationErrors.includes('Full Description') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 

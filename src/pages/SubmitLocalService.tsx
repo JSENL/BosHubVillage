@@ -11,12 +11,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Heart, MapPin, Building, FileText } from 'lucide-react';
+import { Heart, MapPin, Building, FileText, AlertCircle } from 'lucide-react';
+import { useSubmissionErrorHandler } from '@/hooks/useSubmissionErrorHandler';
 
 const SubmitLocalService = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { handleSubmissionError, handleValidationError } = useSubmissionErrorHandler();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -29,18 +32,42 @@ const SubmitLocalService = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear validation errors when user starts typing
+    if (validationErrors.length > 0) {
+      setValidationErrors([]);
+    }
+  };
+
+  const validateForm = () => {
+    const errors: string[] = [];
+    
+    if (!formData.name.trim()) errors.push('Service/Organization Name');
+    if (!formData.category.trim()) errors.push('Category');
+    if (!formData.address.trim()) errors.push('Address');
+    if (!formData.neighborhood.trim()) errors.push('Neighborhood');
+
+    setValidationErrors(errors);
+    return errors;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!user) {
-      toast.error('You must be logged in to submit a local service');
+      toast.error('Authentication required', {
+        description: 'You must be signed in to submit a local service',
+        style: {
+          backgroundColor: '#fee2e2',
+          borderColor: '#fca5a5',
+          color: '#dc2626'
+        }
+      });
       return;
     }
 
-    if (!formData.name || !formData.category || !formData.address || !formData.neighborhood) {
-      toast.error('Please fill in all required fields');
+    const validationErrors = validateForm();
+    if (validationErrors.length > 0) {
+      handleValidationError(validationErrors, 'Local service');
       return;
     }
 
@@ -61,11 +88,24 @@ const SubmitLocalService = () => {
 
       if (error) throw error;
 
-      toast.success('Local service submitted successfully! It will be reviewed by our team.');
+      toast.success('Local service submitted successfully!', {
+        description: 'Your submission will be reviewed by our admin team.',
+        duration: 5000
+      });
+      
+      // Reset form and navigate
+      setFormData({
+        name: '',
+        category: '',
+        address: '',
+        neighborhood: '',
+        village: '',
+        description: '',
+      });
+      setValidationErrors([]);
       navigate('/');
     } catch (error: any) {
-      console.error('Error submitting local service:', error);
-      toast.error('Failed to submit local service: ' + error.message);
+      handleSubmissionError(error, 'local service');
     } finally {
       setIsSubmitting(false);
     }
@@ -97,6 +137,22 @@ const SubmitLocalService = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {validationErrors.length > 0 && (
+          <Card className="mb-6 border-orange-200 bg-orange-50">
+            <CardContent className="p-4">
+              <div className="flex items-start space-x-3">
+                <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="text-orange-800 font-medium">Please complete all required fields</h4>
+                  <p className="text-orange-700 text-sm mt-1">
+                    Missing: {validationErrors.join(', ')}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
@@ -122,13 +178,14 @@ const SubmitLocalService = () => {
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     placeholder="Enter the name of the service or organization"
                     required
+                    className={validationErrors.includes('Service/Organization Name') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="category">Category *</Label>
                   <Select onValueChange={(value) => handleInputChange('category', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className={validationErrors.includes('Category') ? 'border-red-300 bg-red-50' : ''}>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -163,6 +220,7 @@ const SubmitLocalService = () => {
                     onChange={(e) => handleInputChange('address', e.target.value)}
                     placeholder="Enter the full address"
                     required
+                    className={validationErrors.includes('Address') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
@@ -176,6 +234,7 @@ const SubmitLocalService = () => {
                       onChange={(e) => handleInputChange('neighborhood', e.target.value)}
                       placeholder="Enter neighborhood"
                       required
+                      className={validationErrors.includes('Neighborhood') ? 'border-red-300 bg-red-50' : ''}
                     />
                   </div>
 
