@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { Heart, MapPin, Building, FileText, AlertCircle } from 'lucide-react';
 import { useSubmissionErrorHandler } from '@/hooks/useSubmissionErrorHandler';
 
-const SubmitLocalService = () => {
+const SubmitLocalResource = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { handleSubmissionError, handleValidationError } = useSubmissionErrorHandler();
@@ -41,7 +41,7 @@ const SubmitLocalService = () => {
   const validateForm = () => {
     const errors: string[] = [];
     
-    if (!formData.name.trim()) errors.push('Service/Organization Name');
+    if (!formData.name.trim()) errors.push('Resource/Organization Name');
     if (!formData.category.trim()) errors.push('Category');
     if (!formData.address.trim()) errors.push('Address');
     if (!formData.neighborhood.trim()) errors.push('Neighborhood');
@@ -55,7 +55,7 @@ const SubmitLocalService = () => {
     
     if (!user) {
       toast.error('Authentication required', {
-        description: 'You must be signed in to submit a local service',
+        description: 'You must be signed in to submit a local resource',
         style: {
           backgroundColor: '#fee2e2',
           borderColor: '#fca5a5',
@@ -67,7 +67,7 @@ const SubmitLocalService = () => {
 
     const validationErrors = validateForm();
     if (validationErrors.length > 0) {
-      handleValidationError(validationErrors, 'Local service');
+      handleValidationError(validationErrors, 'Local resource');
       return;
     }
 
@@ -75,7 +75,7 @@ const SubmitLocalService = () => {
 
     try {
       const { error } = await supabase
-        .from('local_services_nonprofits_submissions')
+        .from('local_resources_submissions')
         .insert({
           name: formData.name,
           category: formData.category,
@@ -88,7 +88,7 @@ const SubmitLocalService = () => {
 
       if (error) throw error;
 
-      toast.success('Local service submitted successfully!', {
+      toast.success('Local resource submitted successfully!', {
         description: 'Your submission will be reviewed by our admin team.',
         duration: 5000
       });
@@ -105,7 +105,7 @@ const SubmitLocalService = () => {
       setValidationErrors([]);
       navigate('/');
     } catch (error: any) {
-      handleSubmissionError(error, 'local service');
+      handleSubmissionError(error, 'local resource');
     } finally {
       setIsSubmitting(false);
     }
@@ -121,7 +121,7 @@ const SubmitLocalService = () => {
               <Heart className="h-12 w-12 mx-auto mb-4 text-purple-600" />
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Sign In Required</h2>
               <p className="text-gray-600 mb-6">
-                You need to be signed in to submit a local service or nonprofit.
+                You need to be signed in to submit a local resource.
               </p>
               <Button onClick={() => navigate('/auth')} className="bg-purple-600 hover:bg-purple-700">
                 Sign In
@@ -157,7 +157,7 @@ const SubmitLocalService = () => {
           <CardHeader>
             <CardTitle className="flex items-center text-2xl font-bold text-gray-900">
               <Heart className="h-6 w-6 mr-2 text-purple-600" />
-              Submit Local Service or Nonprofit
+              Submit Local Resource
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -170,15 +170,15 @@ const SubmitLocalService = () => {
                 </h3>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="name">Service/Organization Name *</Label>
+                  <Label htmlFor="name">Resource/Organization Name *</Label>
                   <Input
                     id="name"
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    placeholder="Enter the name of the service or organization"
+                    placeholder="Enter the name of the resource or organization"
                     required
-                    className={validationErrors.includes('Service/Organization Name') ? 'border-red-300 bg-red-50' : ''}
+                    className={validationErrors.includes('Resource/Organization Name') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
@@ -264,7 +264,7 @@ const SubmitLocalService = () => {
                     id="description"
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    placeholder="Describe the services offered, mission, or other relevant information..."
+                    placeholder="Describe the resources offered, mission, or other relevant information..."
                     rows={4}
                   />
                 </div>
@@ -294,4 +294,4 @@ const SubmitLocalService = () => {
   );
 };
 
-export default SubmitLocalService;
+export default SubmitLocalResource;

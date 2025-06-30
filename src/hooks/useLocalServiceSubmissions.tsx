@@ -1,19 +1,19 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { LocalServiceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localServices';
 
 export const useLocalServiceSubmissions = () => {
   return useQuery({
-    queryKey: ['local-service-submissions'],
+    queryKey: ['local-resource-submissions'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('local_services_nonprofits_submissions')
+        .from('local_resources_submissions')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as LocalServiceSubmission[];
+      return data as LocalResourceSubmission[];
     },
   });
 };

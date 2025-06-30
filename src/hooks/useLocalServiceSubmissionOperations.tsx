@@ -20,7 +20,7 @@ export const useLocalServiceSubmissionOperations = () => {
       if (status === 'approved') {
         // Get the submission data
         const { data: submission, error: fetchError } = await supabase
-          .from('local_services_nonprofits_submissions')
+          .from('local_resources_submissions')
           .select('*')
           .eq('id', submissionId)
           .single();
@@ -30,20 +30,20 @@ export const useLocalServiceSubmissionOperations = () => {
         let latitude = submission.latitude;
         let longitude = submission.longitude;
 
-        // Try to geocode the service address if coordinates are missing and geocoding is available
+        // Try to geocode the resource address if coordinates are missing and geocoding is available
         if ((!latitude || !longitude) && submission.address && isReady) {
-          console.log('Attempting to geocode local service address:', submission.address);
+          console.log('Attempting to geocode local resource address:', submission.address);
           const geocodeResult = await geocode(submission.address);
           if (geocodeResult) {
             latitude = geocodeResult.latitude;
             longitude = geocodeResult.longitude;
-            console.log('Successfully geocoded local service address:', { latitude, longitude });
+            console.log('Successfully geocoded local resource address:', { latitude, longitude });
           }
         }
 
-        // Create the local service in the local_services_nonprofits table
+        // Create the local resource in the local_resources table
         const { error: createError } = await supabase
-          .from('local_services_nonprofits')
+          .from('local_resources')
           .insert({
             name: submission.name,
             category: submission.category,
@@ -60,7 +60,7 @@ export const useLocalServiceSubmissionOperations = () => {
 
       // Update the submission status
       const { error } = await supabase
-        .from('local_services_nonprofits_submissions')
+        .from('local_resources_submissions')
         .update({
           status,
           reviewed_by: user.id,
@@ -71,10 +71,10 @@ export const useLocalServiceSubmissionOperations = () => {
 
       if (error) throw error;
 
-      toast.success(`Local service ${status} successfully!`);
+      toast.success(`Local resource ${status} successfully!`);
     } catch (error: any) {
-      console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} local service:`, error);
-      toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} local service: ${error.message}`);
+      console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} local resource:`, error);
+      toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} local resource: ${error.message}`);
       throw error;
     } finally {
       setActionLoading(false);

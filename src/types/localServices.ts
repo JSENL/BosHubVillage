@@ -1,5 +1,5 @@
 
-export interface LocalService {
+export interface LocalResource {
   id: string;
   name: string;
   category: string;
@@ -13,7 +13,7 @@ export interface LocalService {
   updated_at: string;
 }
 
-export interface LocalServiceSubmission {
+export interface LocalResourceSubmission {
   id: string;
   name: string;
   category: string;

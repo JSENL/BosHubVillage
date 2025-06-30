@@ -470,7 +470,7 @@ export type Database = {
           },
         ]
       }
-      local_services_nonprofits: {
+      local_resources: {
         Row: {
           address: string
           category: string
@@ -512,12 +512,12 @@ export type Database = {
         }
         Relationships: []
       }
-      local_services_nonprofits_comments: {
+      local_resources_comments: {
         Row: {
           comment: string
           created_at: string
           id: string
-          local_service_nonprofit_id: string
+          local_resource_id: string
           parent_comment_id: string | null
           rating: number
           updated_at: string
@@ -527,7 +527,7 @@ export type Database = {
           comment: string
           created_at?: string
           id?: string
-          local_service_nonprofit_id: string
+          local_resource_id: string
           parent_comment_id?: string | null
           rating?: number
           updated_at?: string
@@ -537,7 +537,7 @@ export type Database = {
           comment?: string
           created_at?: string
           id?: string
-          local_service_nonprofit_id?: string
+          local_resource_id?: string
           parent_comment_id?: string | null
           rating?: number
           updated_at?: string
@@ -546,16 +546,16 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "local_services_nonprofits_comme_local_service_nonprofit_id_fkey"
-            columns: ["local_service_nonprofit_id"]
+            columns: ["local_resource_id"]
             isOneToOne: false
-            referencedRelation: "local_services_nonprofits"
+            referencedRelation: "local_resources"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "local_services_nonprofits_comments_parent_comment_id_fkey"
             columns: ["parent_comment_id"]
             isOneToOne: false
-            referencedRelation: "local_services_nonprofits_comments"
+            referencedRelation: "local_resources_comments"
             referencedColumns: ["id"]
           },
           {
@@ -567,7 +567,7 @@ export type Database = {
           },
         ]
       }
-      local_services_nonprofits_submissions: {
+      local_resources_submissions: {
         Row: {
           address: string
           admin_notes: string | null

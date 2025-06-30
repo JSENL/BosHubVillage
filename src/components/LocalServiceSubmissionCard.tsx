@@ -3,14 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Building, Check, X, Clock } from 'lucide-react';
-import { LocalServiceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localServices';
 import { SubmissionStatusBadge } from '@/components/SubmissionStatusBadge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 
 interface LocalServiceSubmissionCardProps {
-  submission: LocalServiceSubmission;
+  submission: LocalResourceSubmission;
   onUpdate: () => void;
 }
 
@@ -19,9 +19,9 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
 
   const handleApprove = async () => {
     try {
-      // First, insert into the main local_services_nonprofits table
+      // First, insert into the main local_resources table
       const { error: insertError } = await supabase
-        .from('local_services_nonprofits')
+        .from('local_resources')
         .insert({
           name: submission.name,
           category: submission.category,
@@ -37,7 +37,7 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
 
       // Then update the submission status
       const { error: updateError } = await supabase
-        .from('local_services_nonprofits_submissions')
+        .from('local_resources_submissions')
         .update({
           status: 'approved',
           reviewed_by: user?.id,
@@ -47,18 +47,18 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
 
       if (updateError) throw updateError;
 
-      toast.success('Local service approved successfully!');
+      toast.success('Local resource approved successfully!');
       onUpdate();
     } catch (error: any) {
-      console.error('Error approving local service:', error);
-      toast.error('Failed to approve local service: ' + error.message);
+      console.error('Error approving local resource:', error);
+      toast.error('Failed to approve local resource: ' + error.message);
     }
   };
 
   const handleReject = async () => {
     try {
       const { error } = await supabase
-        .from('local_services_nonprofits_submissions')
+        .from('local_resources_submissions')
         .update({
           status: 'rejected',
           reviewed_by: user?.id,
@@ -68,11 +68,11 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
 
       if (error) throw error;
 
-      toast.success('Local service rejected successfully!');
+      toast.success('Local resource rejected successfully!');
       onUpdate();
     } catch (error: any) {
-      console.error('Error rejecting local service:', error);
-      toast.error('Failed to reject local service: ' + error.message);
+      console.error('Error rejecting local resource:', error);
+      toast.error('Failed to reject local resource: ' + error.message);
     }
   };
 
