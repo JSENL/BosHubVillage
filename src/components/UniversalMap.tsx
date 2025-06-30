@@ -1,7 +1,8 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useMapLoader } from '@/hooks/useMapLoader';
 import { supabase } from '@/integrations/supabase/client';
+import mapboxgl from 'mapbox-gl';
 
 interface MapItem {
   id: string;
@@ -19,9 +20,10 @@ interface UniversalMapProps {
   showFilters?: boolean;
 }
 
-export const UniversalMap = ({ height = "400px", showFilters = false }: UniversalMapProps) => {
-  const { mapLoaded, error } = useMapLoader();
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
+  const { apiKey, mapLoaded, isLoadingApiKey, error } = useMapLoader();
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
   const [mapItems, setMapItems] = useState<MapItem[]>([]);
 
   useEffect(() => {
@@ -93,69 +95,88 @@ export const UniversalMap = ({ height = "400px", showFilters = false }: Universa
   }, []);
 
   useEffect(() => {
-    if (mapLoaded && !map) {
-      const mapInstance = new google.maps.Map(
-        document.getElementById('universal-map') as HTMLElement,
-        {
-          center: { lat: 40.7128, lng: -74.0060 }, // Default to NYC
-          zoom: 12,
-        }
-      );
-      setMap(mapInstance);
+    if (mapLoaded && apiKey && mapRef.current && !mapInstanceRef.current) {
+      console.log('Initializing Mapbox map...');
+      
+      mapboxgl.accessToken = apiKey;
+      
+      const map = new mapboxgl.Map({
+        container: mapRef.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [-71.0589, 42.3601], // Boston center
+        zoom: 12
+      });
+
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      
+      mapInstanceRef.current = map;
     }
-  }, [mapLoaded, map]);
+  }, [mapLoaded, apiKey]);
 
   useEffect(() => {
-    if (map && mapItems.length > 0) {
-      // Clear existing markers
-      // Add new markers
+    if (mapInstanceRef.current && mapItems.length > 0) {
+      console.log('Adding markers to map:', mapItems.length);
+      
+      // Add markers for each item
       mapItems.forEach(item => {
-        const marker = new google.maps.Marker({
-          position: { lat: item.latitude, lng: item.longitude },
-          map: map,
-          title: item.name,
-        });
-
-        const infoWindow = new google.maps.InfoWindow({
-          content: `
-            <div>
-              <h3>${item.name}</h3>
-              ${item.description ? `<p>${item.description}</p>` : ''}
-              ${item.address ? `<p><strong>Address:</strong> ${item.address}</p>` : ''}
-              ${item.category ? `<p><strong>Category:</strong> ${item.category}</p>` : ''}
-              <p><strong>Type:</strong> ${item.type.replace('_', ' ')}</p>
-            </div>
-          `,
-        });
-
-        marker.addListener('click', () => {
-          infoWindow.open(map, marker);
-        });
+        const marker = new mapboxgl.Marker({
+          color: item.type === 'business' ? '#22c55e' : 
+                 item.type === 'local_resource' ? '#3b82f6' : '#ef4444'
+        })
+          .setLngLat([item.longitude, item.latitude])
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 })
+              .setHTML(`
+                <div>
+                  <h3>${item.name}</h3>
+                  ${item.description ? `<p>${item.description}</p>` : ''}
+                  ${item.address ? `<p><strong>Address:</strong> ${item.address}</p>` : ''}
+                  ${item.category ? `<p><strong>Category:</strong> ${item.category}</p>` : ''}
+                  <p><strong>Type:</strong> ${item.type.replace('_', ' ')}</p>
+                </div>
+              `)
+          )
+          .addTo(mapInstanceRef.current!);
       });
 
       // Fit map to show all markers
       if (mapItems.length > 0) {
-        const bounds = new google.maps.LatLngBounds();
+        const bounds = new mapboxgl.LngLatBounds();
         mapItems.forEach(item => {
-          bounds.extend({ lat: item.latitude, lng: item.longitude });
+          bounds.extend([item.longitude, item.latitude]);
         });
-        map.fitBounds(bounds);
+        mapInstanceRef.current!.fitBounds(bounds, { padding: 50 });
       }
     }
-  }, [map, mapItems]);
+  }, [mapItems]);
 
   if (error) {
-    return <div>Error loading map</div>;
+    return (
+      <div className="flex items-center justify-center" style={{ height, width: '100%' }}>
+        <div className="text-center p-8">
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Map Unavailable</h3>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
   }
 
-  if (!mapLoaded) {
-    return <div>Loading map...</div>;
+  if (isLoadingApiKey || !mapLoaded) {
+    return (
+      <div className="flex items-center justify-center" style={{ height, width: '100%' }}>
+        <div className="text-center p-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading map...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div
-      id="universal-map"
+      ref={mapRef}
       style={{ height, width: '100%' }}
+      className="rounded-lg overflow-hidden"
     />
   );
 };
