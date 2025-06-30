@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useGeocoding } from '@/hooks/useGeocoding';
-import { geocodeAllNews } from '@/utils/geocodeAllNews';
+import { geocodeAllNews } from '@/utils/geocodeNewsItems';
 import { MapPin, Loader2 } from 'lucide-react';
 
 export const GeocodeAllNewsButton = () => {
@@ -19,7 +19,7 @@ export const GeocodeAllNewsButton = () => {
     try {
       await geocodeAllNews(geocode);
     } catch (error) {
-      console.error('Error geocoding all news:', error);
+      console.error('Error geocoding all news items:', error);
     } finally {
       setIsGeocoding(false);
     }

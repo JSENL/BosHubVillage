@@ -8,6 +8,8 @@ export interface Business {
   description: string;
   short_description?: string;
   villages?: string[];
+  latitude?: number;
+  longitude?: number;
   created_at: string;
   updated_at: string;
   created_by?: string;
