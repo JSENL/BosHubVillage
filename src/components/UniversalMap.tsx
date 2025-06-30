@@ -14,8 +14,13 @@ interface MapItem {
   category?: string;
 }
 
-export const UniversalMap = () => {
-  const { isLoaded, loadError } = useMapLoader();
+interface UniversalMapProps {
+  height?: string;
+  showFilters?: boolean;
+}
+
+export const UniversalMap = ({ height = "400px", showFilters = false }: UniversalMapProps) => {
+  const { mapLoaded, error } = useMapLoader();
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [mapItems, setMapItems] = useState<MapItem[]>([]);
 
@@ -88,7 +93,7 @@ export const UniversalMap = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoaded && !map) {
+    if (mapLoaded && !map) {
       const mapInstance = new google.maps.Map(
         document.getElementById('universal-map') as HTMLElement,
         {
@@ -98,7 +103,7 @@ export const UniversalMap = () => {
       );
       setMap(mapInstance);
     }
-  }, [isLoaded, map]);
+  }, [mapLoaded, map]);
 
   useEffect(() => {
     if (map && mapItems.length > 0) {
@@ -139,18 +144,18 @@ export const UniversalMap = () => {
     }
   }, [map, mapItems]);
 
-  if (loadError) {
+  if (error) {
     return <div>Error loading map</div>;
   }
 
-  if (!isLoaded) {
+  if (!mapLoaded) {
     return <div>Loading map...</div>;
   }
 
   return (
     <div
       id="universal-map"
-      style={{ height: '400px', width: '100%' }}
+      style={{ height, width: '100%' }}
     />
   );
 };

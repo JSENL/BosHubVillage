@@ -6,5 +6,5 @@ interface SectionMapProps {
 }
 
 export const SectionMap = ({ height = "300px" }: SectionMapProps) => {
-  return <UniversalMap height={height} showFilters={true} />;
+  return <UniversalMap height={height} />;
 };

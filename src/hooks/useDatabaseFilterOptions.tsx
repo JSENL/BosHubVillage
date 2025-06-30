@@ -177,3 +177,40 @@ export const useDatabaseFilterOptions = () => {
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
+
+// Export specific filter hooks for different components
+export const useEventFilterOptions = () => {
+  const { data } = useDatabaseFilterOptions();
+  return {
+    categories: data?.eventCategories || [],
+    neighborhoods: data?.neighborhoods || [],
+    villages: data?.villages || []
+  };
+};
+
+export const useNewsFilterOptions = () => {
+  const { data } = useDatabaseFilterOptions();
+  return {
+    categories: data?.sources || [],
+    neighborhoods: data?.neighborhoods || [],
+    villages: data?.villages || []
+  };
+};
+
+export const useBusinessFilterOptions = () => {
+  const { data } = useDatabaseFilterOptions();
+  return {
+    categories: data?.businessTypes || [],
+    neighborhoods: data?.neighborhoods || [],
+    villages: data?.villages || []
+  };
+};
+
+export const useLocalServiceFilterOptions = () => {
+  const { data } = useDatabaseFilterOptions();
+  return {
+    categories: data?.categories || [],
+    neighborhoods: data?.neighborhoods || [],
+    villages: data?.villages || []
+  };
+};

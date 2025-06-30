@@ -6,11 +6,11 @@ import { geocodeNewsItems } from './geocodeNewsItems';
 export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<any>): Promise<UnifiedItem[]> => {
   console.log('Starting unified data fetch...');
   
-  const [eventsRes, newsRes, businessRes, localServicesRes] = await Promise.all([
+  const [eventsRes, newsRes, businessRes, localResourcesRes] = await Promise.all([
     supabase.from('events').select('*').order('created_at', { ascending: false }),
     supabase.from('news').select('*').order('date_posted', { ascending: false }),
     supabase.from('business').select('*').order('created_at', { ascending: false }),
-    supabase.from('local_services_nonprofits').select('*').order('created_at', { ascending: false })
+    supabase.from('local_resources').select('*').order('created_at', { ascending: false })
   ]);
 
   if (eventsRes.error) {
@@ -22,8 +22,8 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
   if (businessRes.error) {
     console.error('Error fetching business:', businessRes.error);
   }
-  if (localServicesRes.error) {
-    console.error('Error fetching local services:', localServicesRes.error);
+  if (localResourcesRes.error) {
+    console.error('Error fetching local resources:', localResourcesRes.error);
   }
 
   const items: UnifiedItem[] = [];
@@ -112,25 +112,25 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     });
   }
 
-  // Process local services with coordinate validation
-  if (localServicesRes.data) {
-    console.log('Processing local services:', localServicesRes.data.length);
-    localServicesRes.data.forEach(service => {
-      const lat = service.latitude ? Number(service.latitude) : null;
-      const lng = service.longitude ? Number(service.longitude) : null;
+  // Process local resources with coordinate validation
+  if (localResourcesRes.data) {
+    console.log('Processing local resources:', localResourcesRes.data.length);
+    localResourcesRes.data.forEach(resource => {
+      const lat = resource.latitude ? Number(resource.latitude) : null;
+      const lng = resource.longitude ? Number(resource.longitude) : null;
       
       items.push({
-        id: service.id,
-        title: service.name,
-        description: service.description || '',
+        id: resource.id,
+        title: resource.name,
+        description: resource.description || '',
         latitude: (lat && !isNaN(lat)) ? lat : null,
         longitude: (lng && !isNaN(lng)) ? lng : null,
         type: 'local-service',
-        address: service.address,
-        category: service.category,
-        name: service.name,
-        neighborhoods: service.neighborhood,
-        villages: service.village
+        address: resource.address,
+        category: resource.category,
+        name: resource.name,
+        neighborhoods: resource.neighborhood,
+        villages: resource.village
       });
     });
   }
