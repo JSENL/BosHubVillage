@@ -8,18 +8,18 @@ export const geocodeLocalServices = async (services: any[], geocode: (address: s
     service.address
   );
   
-  console.log(`Found ${servicesWithoutCoords.length} local services without coordinates to geocode`);
+  console.log(`Found ${servicesWithoutCoords.length} local resources without coordinates to geocode`);
   
   for (const service of servicesWithoutCoords) {
     const addressToGeocode = service.address;
-    console.log('Geocoding local service address:', addressToGeocode);
+    console.log('Geocoding local resource address:', addressToGeocode);
     
     try {
       const result = await geocode(addressToGeocode);
       if (result && result.latitude && result.longitude) {
         // Update service in database with coordinates
         const { error } = await supabase
-          .from('local_services_nonprofits')
+          .from('local_resources')
           .update({
             latitude: result.latitude,
             longitude: result.longitude
@@ -27,9 +27,9 @@ export const geocodeLocalServices = async (services: any[], geocode: (address: s
           .eq('id', service.id);
 
         if (error) {
-          console.error('Error updating local service coordinates:', error);
+          console.error('Error updating local resource coordinates:', error);
         } else {
-          console.log('Successfully updated local service coordinates for:', service.name);
+          console.log('Successfully updated local resource coordinates for:', service.name);
           // Update the local service immediately
           service.latitude = result.latitude;
           service.longitude = result.longitude;
@@ -38,7 +38,7 @@ export const geocodeLocalServices = async (services: any[], geocode: (address: s
         console.warn(`Could not geocode address: ${addressToGeocode}`);
       }
     } catch (error) {
-      console.error('Error geocoding local service address:', error);
+      console.error('Error geocoding local resource address:', error);
     }
     
     // Add delay to respect API rate limits
@@ -47,29 +47,29 @@ export const geocodeLocalServices = async (services: any[], geocode: (address: s
 };
 
 export const geocodeAllLocalServices = async (geocode: (address: string) => Promise<any>) => {
-  console.log('Starting to geocode all local services...');
+  console.log('Starting to geocode all local resources...');
   
   try {
-    // Fetch all local services that don't have coordinates but have an address
+    // Fetch all local resources that don't have coordinates but have an address
     const { data: services, error } = await supabase
-      .from('local_services_nonprofits')
+      .from('local_resources')
       .select('*')
       .or('latitude.is.null,longitude.is.null')
       .not('address', 'is', null);
 
     if (error) {
-      console.error('Error fetching local services:', error);
-      toast.error('Failed to fetch local services for geocoding');
+      console.error('Error fetching local resources:', error);
+      toast.error('Failed to fetch local resources for geocoding');
       return;
     }
 
     if (!services || services.length === 0) {
-      console.log('No local services found that need geocoding');
-      toast.info('All local services already have coordinates');
+      console.log('No local resources found that need geocoding');
+      toast.info('All local resources already have coordinates');
       return;
     }
 
-    console.log(`Found ${services.length} local services to geocode`);
+    console.log(`Found ${services.length} local resources to geocode`);
     let successCount = 0;
     let errorCount = 0;
 
@@ -82,7 +82,7 @@ export const geocodeAllLocalServices = async (geocode: (address: string) => Prom
         continue;
       }
 
-      console.log(`Geocoding local service ${service.id}: ${addressToGeocode}`);
+      console.log(`Geocoding local resource ${service.id}: ${addressToGeocode}`);
       
       try {
         const result = await geocode(addressToGeocode);
@@ -90,7 +90,7 @@ export const geocodeAllLocalServices = async (geocode: (address: string) => Prom
         if (result && result.latitude && result.longitude) {
           // Update the service with coordinates
           const { error: updateError } = await supabase
-            .from('local_services_nonprofits')
+            .from('local_resources')
             .update({
               latitude: result.latitude,
               longitude: result.longitude
@@ -117,18 +117,18 @@ export const geocodeAllLocalServices = async (geocode: (address: string) => Prom
       await new Promise(resolve => setTimeout(resolve, 300));
     }
 
-    console.log(`Local services geocoding complete. Success: ${successCount}, Errors: ${errorCount}`);
+    console.log(`Local resources geocoding complete. Success: ${successCount}, Errors: ${errorCount}`);
     
     if (successCount > 0) {
-      toast.success(`Successfully geocoded ${successCount} local services!`);
+      toast.success(`Successfully geocoded ${successCount} local resources!`);
     }
     
     if (errorCount > 0) {
-      toast.warning(`Failed to geocode ${errorCount} local services`);
+      toast.warning(`Failed to geocode ${errorCount} local resources`);
     }
 
   } catch (error) {
     console.error('Error in geocodeAllLocalServices:', error);
-    toast.error('Failed to geocode local services');
+    toast.error('Failed to geocode local resources');
   }
 };
