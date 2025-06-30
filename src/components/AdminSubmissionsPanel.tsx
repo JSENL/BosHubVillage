@@ -10,12 +10,15 @@ import { BusinessSubmissionCard } from '@/components/BusinessSubmissionCard';
 import { NewsSubmissionCard } from '@/components/NewsSubmissionCard';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
 import { EventSubmissionCard } from '@/components/EventSubmissionCard';
+import { LocalResourceSubmission } from '@/types/localServices';
+import LocalServiceSubmissionCard from '@/components/LocalServiceSubmissionCard';
 import { 
   CheckCircle, 
   Clock,
   Building,
   Newspaper,
   Calendar,
+  Heart,
   AlertCircle
 } from 'lucide-react';
 
@@ -24,6 +27,7 @@ const AdminSubmissionsPanel = () => {
   const [businessSubmissions, setBusinessSubmissions] = useState<BusinessSubmission[]>([]);
   const [newsSubmissions, setNewsSubmissions] = useState<NewsSubmission[]>([]);
   const [eventSubmissions, setEventSubmissions] = useState<EventSubmission[]>([]);
+  const [localResourceSubmissions, setLocalResourceSubmissions] = useState<LocalResourceSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,6 +79,18 @@ const AdminSubmissionsPanel = () => {
         throw new Error(`Event submissions: ${eventError.message}`);
       }
 
+      // Fetch local resource submissions
+      const { data: localResourceData, error: localResourceError } = await supabase
+        .from('local_resources_submissions')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      if (localResourceError) {
+        console.error('Local resource submissions error:', localResourceError);
+        throw new Error(`Local resource submissions: ${localResourceError.message}`);
+      }
+
       // Type cast the data to ensure status field is properly typed
       const typedBusinessData = (businessData || []).map(submission => ({
         ...submission,
@@ -91,15 +107,22 @@ const AdminSubmissionsPanel = () => {
         status: submission.status as 'pending' | 'approved' | 'rejected'
       }));
 
+      const typedLocalResourceData = (localResourceData || []).map(submission => ({
+        ...submission,
+        status: submission.status as 'pending' | 'approved' | 'rejected'
+      }));
+
       console.log('Successfully fetched submissions:', {
         business: typedBusinessData.length,
         news: typedNewsData.length,
-        events: typedEventData.length
+        events: typedEventData.length,
+        localResources: typedLocalResourceData.length
       });
 
       setBusinessSubmissions(typedBusinessData);
       setNewsSubmissions(typedNewsData);
       setEventSubmissions(typedEventData);
+      setLocalResourceSubmissions(typedLocalResourceData);
     } catch (error: any) {
       console.error('Error fetching submissions:', error);
       setError(error.message || 'Failed to load submissions');
@@ -152,7 +175,7 @@ const AdminSubmissionsPanel = () => {
     );
   }
 
-  const totalPendingSubmissions = businessSubmissions.length + newsSubmissions.length + eventSubmissions.length;
+  const totalPendingSubmissions = businessSubmissions.length + newsSubmissions.length + eventSubmissions.length + localResourceSubmissions.length;
 
   return (
     <div className="space-y-6">
@@ -164,7 +187,7 @@ const AdminSubmissionsPanel = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-blue-50 p-4 rounded-lg">
               <div className="flex items-center">
                 <Calendar className="h-8 w-8 text-blue-600 mr-3" />
@@ -192,6 +215,15 @@ const AdminSubmissionsPanel = () => {
                 </div>
               </div>
             </div>
+            <div className="bg-purple-50 p-4 rounded-lg">
+              <div className="flex items-center">
+                <Heart className="h-8 w-8 text-purple-600 mr-3" />
+                <div>
+                  <p className="text-2xl font-bold text-purple-600">{localResourceSubmissions.length}</p>
+                  <p className="text-sm text-gray-600">Local Resource Submissions</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {totalPendingSubmissions === 0 ? (
@@ -202,7 +234,7 @@ const AdminSubmissionsPanel = () => {
             </div>
           ) : (
             <Tabs defaultValue="business" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-6">
+              <TabsList className="grid w-full grid-cols-4 mb-6">
                 <TabsTrigger value="business" className="flex items-center">
                   <Building className="h-4 w-4 mr-2" />
                   Business ({businessSubmissions.length})
@@ -214,6 +246,10 @@ const AdminSubmissionsPanel = () => {
                 <TabsTrigger value="events" className="flex items-center">
                   <Calendar className="h-4 w-4 mr-2" />
                   Events ({eventSubmissions.length})
+                </TabsTrigger>
+                <TabsTrigger value="local-resources" className="flex items-center">
+                  <Heart className="h-4 w-4 mr-2" />
+                  Local Resources ({localResourceSubmissions.length})
                 </TabsTrigger>
               </TabsList>
               
@@ -265,6 +301,25 @@ const AdminSubmissionsPanel = () => {
                   ) : (
                     eventSubmissions.map((submission) => (
                       <EventSubmissionCard
+                        key={submission.id}
+                        submission={submission}
+                        onUpdate={fetchAllSubmissions}
+                      />
+                    ))
+                  )}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="local-resources">
+                <div className="space-y-4">
+                  {localResourceSubmissions.length === 0 ? (
+                    <div className="text-center p-8">
+                      <Heart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-gray-600">No pending local resource submissions.</p>
+                    </div>
+                  ) : (
+                    localResourceSubmissions.map((submission) => (
+                      <LocalServiceSubmissionCard
                         key={submission.id}
                         submission={submission}
                         onUpdate={fetchAllSubmissions}
