@@ -22,15 +22,19 @@ export const BusinessTab = () => {
 
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
 
-  // Automatically geocode businesses that don't have coordinates
+  // Only geocode if we have businesses without coordinates and geocoding is ready
   useEffect(() => {
     const geocodeBusinessesIfNeeded = async () => {
       if (!isReady || hasGeocodedBusinesses || isBusinessLoading || !businesses || businesses.length === 0) {
         return;
       }
 
+      // Only geocode items that actually need geocoding (have address but no coordinates)
       const businessesNeedingGeocode = businesses.filter(business => 
-        (!business.latitude || !business.longitude) && business.address
+        business.address && 
+        business.address.trim() !== '' &&
+        (!business.latitude || !business.longitude || 
+         business.latitude === null || business.longitude === null)
       );
 
       if (businessesNeedingGeocode.length > 0) {
@@ -41,6 +45,8 @@ export const BusinessTab = () => {
         } catch (error) {
           console.error('Error geocoding businesses:', error);
         }
+      } else {
+        setHasGeocodedBusinesses(true); // No items need geocoding
       }
     };
 
@@ -54,7 +60,10 @@ export const BusinessTab = () => {
       <SectionMap height="400px" />
       
       {isBusinessLoading ? (
-        <div className="text-center py-8">Loading businesses...</div>
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading businesses...</p>
+        </div>
       ) : allBusinesses && allBusinesses.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {allBusinesses.map((business) => (

@@ -22,15 +22,19 @@ export const NewsTab = () => {
 
   const isNewsLoading = newsLoading || newsSubmissionsLoading;
 
-  // Automatically geocode news items that don't have coordinates
+  // Only geocode if we have news items without coordinates and geocoding is ready
   useEffect(() => {
     const geocodeNewsIfNeeded = async () => {
       if (!isReady || hasGeocodedNews || isNewsLoading || !news || news.length === 0) {
         return;
       }
 
+      // Only geocode items that actually need geocoding (have location but no coordinates)
       const newsNeedingGeocode = news.filter(newsItem => 
-        (!newsItem.latitude || !newsItem.longitude) && newsItem.location
+        newsItem.location && 
+        newsItem.location.trim() !== '' &&
+        (!newsItem.latitude || !newsItem.longitude || 
+         newsItem.latitude === null || newsItem.longitude === null)
       );
 
       if (newsNeedingGeocode.length > 0) {
@@ -41,6 +45,8 @@ export const NewsTab = () => {
         } catch (error) {
           console.error('Error geocoding news items:', error);
         }
+      } else {
+        setHasGeocodedNews(true); // No items need geocoding
       }
     };
 
@@ -54,7 +60,10 @@ export const NewsTab = () => {
       <SectionMap height="400px" />
       
       {isNewsLoading ? (
-        <div className="text-center py-8">Loading news...</div>
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading news...</p>
+        </div>
       ) : allNews && allNews.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {allNews.map((newsItem) => (
