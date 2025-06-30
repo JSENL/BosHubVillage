@@ -21,6 +21,10 @@ export interface NewsSubmission {
   title: string;
   content: string;
   location: string;
+  Address?: string;
+  villages?: string[];
+  latitude?: number;
+  longitude?: number;
   date_posted: string;
   source: string;
   link?: string;

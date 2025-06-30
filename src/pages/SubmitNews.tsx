@@ -10,14 +10,18 @@ import { Navigation } from '@/components/Navigation';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Newspaper, ArrowLeft } from 'lucide-react';
+import { useGeocoding } from '@/hooks/useGeocoding';
 
 const SubmitNews = () => {
   const { user } = useAuth();
+  const { geocode, isGeocoding } = useGeocoding();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     location: '',
+    address: '',
+    villages: '',
     source: '',
     date_posted: new Date().toISOString().split('T')[0] // Today's date
   });
@@ -42,10 +46,37 @@ const SubmitNews = () => {
     setIsSubmitting(true);
 
     try {
+      let latitude = null;
+      let longitude = null;
+
+      // Geocode the address if provided
+      if (formData.address) {
+        console.log('Geocoding address:', formData.address);
+        const geocodeResult = await geocode(formData.address);
+        if (geocodeResult) {
+          latitude = geocodeResult.latitude;
+          longitude = geocodeResult.longitude;
+          console.log('Geocoded coordinates:', { latitude, longitude });
+        }
+      }
+
+      // Convert villages string to array if provided
+      const villagesArray = formData.villages 
+        ? formData.villages.split(',').map(v => v.trim()).filter(v => v)
+        : null;
+
       const { error } = await supabase
         .from('news_submissions')
         .insert({
-          ...formData,
+          title: formData.title,
+          content: formData.content,
+          location: formData.location,
+          source: formData.source,
+          date_posted: formData.date_posted,
+          Address: formData.address,
+          villages: villagesArray,
+          latitude: latitude,
+          longitude: longitude,
           submitted_by: user.id,
           status: 'pending'
         });
@@ -59,6 +90,8 @@ const SubmitNews = () => {
         title: '',
         content: '',
         location: '',
+        address: '',
+        villages: '',
         source: '',
         date_posted: new Date().toISOString().split('T')[0]
       });
@@ -136,9 +169,36 @@ const SubmitNews = () => {
                     id="location"
                     value={formData.location}
                     onChange={(e) => handleInputChange('location', e.target.value)}
-                    placeholder="Where did this news happen?"
+                    placeholder="General location (e.g., Downtown, Main Street)"
                     required
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="address">Full Address</Label>
+                  <Input
+                    id="address"
+                    value={formData.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
+                    placeholder="Complete address for map location (e.g., 123 Main St, Boston, MA 02101)"
+                    disabled={isGeocoding}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {isGeocoding ? 'Geocoding address...' : 'Full address will be used to place the news on the map'}
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="villages">Villages</Label>
+                  <Input
+                    id="villages"
+                    value={formData.villages}
+                    onChange={(e) => handleInputChange('villages', e.target.value)}
+                    placeholder="Enter villages (comma-separated, e.g., Village A, Village B)"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Separate multiple villages with commas
+                  </p>
                 </div>
 
                 <div>
@@ -177,10 +237,10 @@ const SubmitNews = () => {
 
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isGeocoding}
                   className="w-full"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit News Article'}
+                  {isSubmitting ? 'Submitting...' : isGeocoding ? 'Processing Address...' : 'Submit News Article'}
                 </Button>
               </form>
             </CardContent>

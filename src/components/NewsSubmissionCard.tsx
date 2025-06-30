@@ -10,7 +10,8 @@ import {
   XCircle, 
   Clock, 
   Calendar, 
-  MapPin
+  MapPin,
+  Building2
 } from 'lucide-react';
 
 interface NewsSubmissionCardProps {
@@ -49,7 +50,23 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
               {submission.location}
             </div>
           </div>
+          {submission.Address && (
+            <div className="flex items-center text-sm text-gray-600 mt-1">
+              <Building2 className="h-4 w-4 mr-1" />
+              <span className="font-medium">Address:</span> {submission.Address}
+            </div>
+          )}
+          {submission.villages && submission.villages.length > 0 && (
+            <div className="flex items-center text-sm text-gray-600 mt-1">
+              <span className="font-medium">Villages:</span> {submission.villages.join(', ')}
+            </div>
+          )}
           <p className="text-sm text-gray-600 mt-1">Source: {submission.source}</p>
+          {submission.latitude && submission.longitude && (
+            <p className="text-xs text-green-600 mt-1">
+              📍 Geocoded: {submission.latitude}, {submission.longitude}
+            </p>
+          )}
         </div>
         <Badge variant="outline" className="text-orange-600 border-orange-600">
           <Clock className="h-3 w-3 mr-1" />

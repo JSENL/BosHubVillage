@@ -25,16 +25,19 @@ export const useNewsSubmissionOperations = () => {
 
         if (fetchError) throw fetchError;
 
-        // Create the news in the news table
+        // Create the news in the news table with all the new fields
         const { error: createError } = await supabase
           .from('news')
           .insert({
             title: submission.title,
             content: submission.content,
             location: submission.location,
+            Address: submission.Address,
+            villages: submission.villages,
+            latitude: submission.latitude,
+            longitude: submission.longitude,
             date_posted: submission.date_posted,
             source: submission.source,
-            villages: null,
             created_by: submission.submitted_by
           });
 
