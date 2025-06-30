@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useGeocoding } from './useGeocoding';
 
 export const useBusinessSubmissionOperations = () => {
   const { user } = useAuth();
   const [actionLoading, setActionLoading] = useState(false);
+  const { geocode, isReady } = useGeocoding();
 
   const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', adminNotes: string) => {
     setActionLoading(true);
@@ -25,6 +27,20 @@ export const useBusinessSubmissionOperations = () => {
 
         if (fetchError) throw fetchError;
 
+        let latitude = null;
+        let longitude = null;
+
+        // Try to geocode the business address if geocoding is available
+        if (submission.address && isReady) {
+          console.log('Attempting to geocode business address:', submission.address);
+          const geocodeResult = await geocode(submission.address);
+          if (geocodeResult) {
+            latitude = geocodeResult.latitude;
+            longitude = geocodeResult.longitude;
+            console.log('Successfully geocoded business address:', { latitude, longitude });
+          }
+        }
+
         // Create the business in the businesses table
         const { error: createError } = await supabase
           .from('business')
@@ -36,6 +52,8 @@ export const useBusinessSubmissionOperations = () => {
             description: submission.description,
             short_description: submission.short_description,
             villages: null,
+            latitude,
+            longitude,
             created_by: submission.submitted_by
           });
 

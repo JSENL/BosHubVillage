@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useGeocoding } from './useGeocoding';
 
 export const useLocalServiceSubmissionOperations = () => {
   const { user } = useAuth();
   const [actionLoading, setActionLoading] = useState(false);
+  const { geocode, isReady } = useGeocoding();
 
   const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', adminNotes: string) => {
     setActionLoading(true);
@@ -25,6 +27,20 @@ export const useLocalServiceSubmissionOperations = () => {
 
         if (fetchError) throw fetchError;
 
+        let latitude = submission.latitude;
+        let longitude = submission.longitude;
+
+        // Try to geocode the service address if coordinates are missing and geocoding is available
+        if ((!latitude || !longitude) && submission.address && isReady) {
+          console.log('Attempting to geocode local service address:', submission.address);
+          const geocodeResult = await geocode(submission.address);
+          if (geocodeResult) {
+            latitude = geocodeResult.latitude;
+            longitude = geocodeResult.longitude;
+            console.log('Successfully geocoded local service address:', { latitude, longitude });
+          }
+        }
+
         // Create the local service in the local_services_nonprofits table
         const { error: createError } = await supabase
           .from('local_services_nonprofits')
@@ -35,8 +51,8 @@ export const useLocalServiceSubmissionOperations = () => {
             neighborhood: submission.neighborhood,
             village: submission.village,
             description: submission.description,
-            latitude: submission.latitude,
-            longitude: submission.longitude
+            latitude,
+            longitude
           });
 
         if (createError) throw createError;

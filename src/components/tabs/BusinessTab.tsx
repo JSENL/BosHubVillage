@@ -1,14 +1,19 @@
 
+import { useState, useEffect } from "react";
 import { SectionMap } from "@/components/SectionMap";
 import BusinessCard from "@/components/BusinessCard";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
+import { useGeocoding } from "@/hooks/useGeocoding";
+import { geocodeBusinesses } from "@/utils/geocodeBusinesses";
 import { Business } from "@/types/business";
 import { BusinessSubmission } from "@/types/submissions";
 
 export const BusinessTab = () => {
   const { data: businesses, isLoading: businessLoading } = useBusiness();
   const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
+  const { geocode, isReady } = useGeocoding();
+  const [hasGeocodedBusinesses, setHasGeocodedBusinesses] = useState(false);
   
   const allBusinesses: (Business | BusinessSubmission)[] = [
     ...(businesses || []),
@@ -16,6 +21,31 @@ export const BusinessTab = () => {
   ];
 
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
+
+  // Automatically geocode businesses that don't have coordinates
+  useEffect(() => {
+    const geocodeBusinessesIfNeeded = async () => {
+      if (!isReady || hasGeocodedBusinesses || isBusinessLoading || !businesses || businesses.length === 0) {
+        return;
+      }
+
+      const businessesNeedingGeocode = businesses.filter(business => 
+        (!business.latitude || !business.longitude) && business.address
+      );
+
+      if (businessesNeedingGeocode.length > 0) {
+        console.log(`Found ${businessesNeedingGeocode.length} businesses that need geocoding`);
+        try {
+          await geocodeBusinesses(businessesNeedingGeocode, geocode);
+          setHasGeocodedBusinesses(true);
+        } catch (error) {
+          console.error('Error geocoding businesses:', error);
+        }
+      }
+    };
+
+    geocodeBusinessesIfNeeded();
+  }, [businesses, isReady, geocode, hasGeocodedBusinesses, isBusinessLoading]);
 
   return (
     <div className="space-y-6">

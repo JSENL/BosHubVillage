@@ -9,6 +9,7 @@ import { BusinessSubmission } from '@/types/submissions';
 import { Clock } from 'lucide-react';
 import { PendingBusinessSubmissions } from '@/components/admin/PendingBusinessSubmissions';
 import { PublishedBusinessesTable } from '@/components/admin/PublishedBusinessesTable';
+import { GeocodeAllBusinessesButton } from '@/components/GeocodeAllBusinessesButton';
 
 const AdminBusinessApproval = () => {
   const { isAdmin } = useAuth();
@@ -63,6 +64,11 @@ const AdminBusinessApproval = () => {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Business Management</h2>
+        <GeocodeAllBusinessesButton />
+      </div>
+      
       <PendingBusinessSubmissions 
         submissions={submissions} 
         onUpdate={fetchSubmissions} 
