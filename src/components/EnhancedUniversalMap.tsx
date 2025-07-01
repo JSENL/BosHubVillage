@@ -26,28 +26,48 @@ export const EnhancedUniversalMap = ({
   const navigate = useNavigate();
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
 
-  // Filter items to only show mappable ones (with coordinates) and selected types
+  // Enhanced filtering with detailed logging
   const filteredMappableItems = items.filter(item => {
     const hasCoords = item.latitude !== null && 
                      item.longitude !== null && 
                      !isNaN(Number(item.latitude)) &&
                      !isNaN(Number(item.longitude));
+    
     const isSelectedType = selectedTypes.length === 0 || selectedTypes.includes(item.type);
     
-    console.log(`Item ${item.id} (${item.type}): hasCoords=${hasCoords}, isSelectedType=${isSelectedType}, lat=${item.latitude}, lng=${item.longitude}`);
+    const lat = Number(item.latitude);
+    const lng = Number(item.longitude);
+    const isValidCoords = lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
     
-    return hasCoords && isSelectedType;
+    console.log(`🔍 Item Analysis: ${item.title}`, {
+      id: item.id,
+      type: item.type,
+      rawLat: item.latitude,
+      rawLng: item.longitude,
+      convertedLat: lat,
+      convertedLng: lng,
+      hasCoords,
+      isValidCoords,
+      isSelectedType,
+      willShow: hasCoords && isValidCoords && isSelectedType
+    });
+    
+    return hasCoords && isValidCoords && isSelectedType;
   });
 
-  console.log('EnhancedUniversalMap: Total items received:', items.length);
-  console.log('EnhancedUniversalMap: Filtered mappable items count:', filteredMappableItems.length);
-  console.log('EnhancedUniversalMap: Selected types:', selectedTypes);
-  console.log('EnhancedUniversalMap: Filtered items:', filteredMappableItems);
+  console.log('🗺️ EnhancedUniversalMap Analysis:', {
+    totalItems: items.length,
+    filteredItems: filteredMappableItems.length,
+    selectedTypes,
+    mapboxToken: mapboxToken ? 'Available' : 'Missing',
+    isLoading: isLoadingApiKey,
+    error: error || 'None'
+  });
 
   // Initialize Mapbox map
   useEffect(() => {
     if (!mapRef.current || !mapboxToken || isLoadingApiKey) {
-      console.log('Map initialization skipped:', { 
+      console.log('⏳ Map initialization skipped:', { 
         hasMapRef: !!mapRef.current, 
         hasToken: !!mapboxToken, 
         isLoading: isLoadingApiKey 
@@ -55,7 +75,7 @@ export const EnhancedUniversalMap = ({
       return;
     }
 
-    console.log('Initializing Mapbox map with token...');
+    console.log('🚀 Initializing Mapbox map...');
     mapboxgl.accessToken = mapboxToken;
 
     const map = new mapboxgl.Map({
@@ -68,17 +88,17 @@ export const EnhancedUniversalMap = ({
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     map.on('load', () => {
-      console.log('Mapbox map loaded successfully');
+      console.log('✅ Mapbox map loaded successfully');
     });
 
     map.on('error', (e) => {
-      console.error('Mapbox map error:', e);
+      console.error('❌ Mapbox map error:', e);
     });
 
     mapInstanceRef.current = map;
 
     return () => {
-      console.log('Cleaning up Mapbox map...');
+      console.log('🧹 Cleaning up Mapbox map...');
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
@@ -88,47 +108,56 @@ export const EnhancedUniversalMap = ({
 
   // Handle marker click to highlight corresponding item
   const handleMarkerClick = (item: UnifiedItem) => {
-    console.log('Marker clicked for item:', item.title, 'ID:', item.id);
+    console.log('📍 Marker clicked:', item.title, 'ID:', item.id);
     
-    // Call the onItemClick callback if provided
     if (onItemClick) {
       onItemClick(item);
     }
 
-    // Scroll to the corresponding item in the list
+    // Enhanced element finding with multiple ID patterns
     setTimeout(() => {
-      const itemElement = document.getElementById(`item-${item.id}`) || 
-                         document.getElementById(`event-${item.id}`) ||
-                         document.getElementById(`news-${item.id}`) ||
-                         document.getElementById(`business-${item.id}`) ||
-                         document.getElementById(`service-${item.id}`);
+      const possibleIds = [
+        `item-${item.id}`,
+        `event-${item.id}`,
+        `news-${item.id}`,
+        `business-${item.id}`,
+        `service-${item.id}`,
+        `local-service-${item.id}`
+      ];
+      
+      let itemElement = null;
+      for (const id of possibleIds) {
+        itemElement = document.getElementById(id);
+        if (itemElement) {
+          console.log(`✅ Found element with ID: ${id}`);
+          break;
+        }
+      }
       
       if (itemElement) {
-        console.log('Scrolling to item element:', item.id);
         itemElement.scrollIntoView({ 
           behavior: 'smooth', 
           block: 'center' 
         });
         
-        // Add highlight effect
         itemElement.classList.add('ring-2', 'ring-purple-500', 'ring-opacity-75');
         setTimeout(() => {
-          itemElement.classList.remove('ring-2', 'ring-purple-500', 'ring-opacity-75');
+          itemElement?.classList.remove('ring-2', 'ring-purple-500', 'ring-opacity-75');
         }, 3000);
       } else {
-        console.warn('Item element not found for ID:', item.id);
+        console.warn('⚠️ Item element not found for any ID pattern:', possibleIds);
       }
     }, 100);
   };
 
   // Handle marker double-click to navigate to detail page
   const handleMarkerDoubleClick = (item: UnifiedItem) => {
-    console.log('Marker double-clicked for item:', item.title);
+    console.log('🖱️ Marker double-clicked:', item.title);
     const routePath = item.type === 'local-service' ? 'local-service' : item.type;
     navigate(`/${routePath}/${item.id}`);
   };
 
-  // Use the map markers hook
+  // Use the map markers hook with enhanced logging
   useMapMarkers({
     map: mapInstanceRef.current,
     items: filteredMappableItems,
@@ -162,9 +191,22 @@ export const EnhancedUniversalMap = ({
           itemCount={filteredMappableItems.length}
           isEmpty={filteredMappableItems.length === 0 && !isLoadingApiKey}
         />
-        {/* Debug info overlay */}
-        <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs p-2 rounded">
-          Items: {filteredMappableItems.length} | Map: {mapInstanceRef.current ? 'Ready' : 'Loading'}
+        
+        {/* Enhanced debug info overlay */}
+        <div className="absolute top-2 left-2 bg-black bg-opacity-75 text-white text-xs p-3 rounded max-w-xs">
+          <div className="space-y-1">
+            <div>📊 Total Items: {items.length}</div>
+            <div>📍 Mappable: {filteredMappableItems.length}</div>
+            <div>🗺️ Map: {mapInstanceRef.current ? '✅ Ready' : '⏳ Loading'}</div>
+            <div>🔧 Types: {selectedTypes.length === 0 ? 'All' : selectedTypes.join(', ')}</div>
+            {filteredMappableItems.length > 0 && (
+              <div className="mt-2 pt-2 border-t border-gray-500">
+                <div className="text-green-300">Next marker coords:</div>
+                <div>Lat: {filteredMappableItems[0].latitude}</div>
+                <div>Lng: {filteredMappableItems[0].longitude}</div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
