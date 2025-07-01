@@ -1,7 +1,5 @@
-
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { useNavigate } from 'react-router-dom';
 import { useMapLoader } from '@/hooks/useMapLoader';
 import { useMapMarkers } from '@/components/map/MapMarkerManager';
