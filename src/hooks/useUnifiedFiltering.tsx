@@ -39,8 +39,8 @@ export const useUnifiedFiltering = ({
       setError(null);
       
       console.log('🔄 Fetching unified data...');
-      // Provide both required arguments - geocoding function and options object
-      const data = await fetchAllUnifiedData(mockGeocode, {});
+      // The function only expects one argument - the geocoding function
+      const data = await fetchAllUnifiedData(mockGeocode);
       
       console.log('📊 Raw data fetched:', {
         total: data.length,
@@ -70,8 +70,7 @@ export const useUnifiedFiltering = ({
   }, []);
 
   // Filter items based on criteria
-  const filteredItems = filterUnifiedItems({
-    items: allItems,
+  const filteredItems = filterUnifiedItems(allItems, {
     selectedCategory,
     selectedNeighborhood,
     selectedVillage,
