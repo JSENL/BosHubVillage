@@ -19,8 +19,13 @@ export const useMapMarkers = ({
   const markersRef = useRef<mapboxgl.Marker[]>([]);
 
   useEffect(() => {
-    if (!map || !items.length) {
-      console.log('🗺️ MapMarkers: No map or items', { hasMap: !!map, itemsCount: items.length });
+    if (!map) {
+      console.log('🗺️ MapMarkers: No map available');
+      return;
+    }
+
+    if (!items || items.length === 0) {
+      console.log('🗺️ MapMarkers: No items to display');
       return;
     }
 
@@ -44,9 +49,20 @@ export const useMapMarkers = ({
         const lat = Number(item.latitude);
         const lng = Number(item.longitude);
 
-        // Validate coordinates
-        if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
-          console.warn(`Invalid coordinates for item ${item.id}:`, { lat, lng });
+        // Validate coordinates more strictly
+        if (!item.latitude || !item.longitude || isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
+          console.warn(`Invalid coordinates for item ${item.id} "${item.title}":`, {
+            rawLat: item.latitude,
+            rawLng: item.longitude,
+            convertedLat: lat,
+            convertedLng: lng
+          });
+          return;
+        }
+
+        // Additional validation for reasonable coordinate ranges
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+          console.warn(`Coordinates out of range for item ${item.id} "${item.title}":`, { lat, lng });
           return;
         }
 
@@ -65,44 +81,58 @@ export const useMapMarkers = ({
         const markerElement = document.createElement('div');
         markerElement.className = 'marker-custom';
         markerElement.style.cssText = `
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
           border-radius: 50%;
           background-color: ${getMarkerColor(item.type)};
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          border: 3px solid white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.4);
           cursor: pointer;
           transition: transform 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          font-size: 10px;
         `;
+
+        // Add type indicator
+        const typeIndicator = item.type.charAt(0).toUpperCase();
+        markerElement.textContent = typeIndicator;
 
         // Add hover effect
         markerElement.addEventListener('mouseenter', () => {
-          markerElement.style.transform = 'scale(1.2)';
+          markerElement.style.transform = 'scale(1.3)';
+          markerElement.style.zIndex = '1000';
         });
         
         markerElement.addEventListener('mouseleave', () => {
           markerElement.style.transform = 'scale(1)';
+          markerElement.style.zIndex = 'auto';
         });
 
         // Create popup content
         const popupContent = `
-          <div class="p-3 max-w-xs">
-            <h3 class="font-semibold text-sm mb-1">${item.title}</h3>
-            <p class="text-xs text-gray-600 mb-2">${item.description || 'No description available'}</p>
-            <div class="space-y-1 text-xs">
-              ${item.address ? `<p><strong>Address:</strong> ${item.address}</p>` : ''}
-              ${item.location ? `<p><strong>Location:</strong> ${item.location}</p>` : ''}
-              ${item.category ? `<p><strong>Category:</strong> ${item.category}</p>` : ''}
-              <p><strong>Type:</strong> ${item.type.replace('-', ' ')}</p>
+          <div style="padding: 12px; max-width: 280px; font-family: system-ui;">
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${item.title}</h3>
+            <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280; line-height: 1.4;">${item.description || 'No description available'}</p>
+            <div style="space-y: 4px; font-size: 12px;">
+              ${item.address ? `<p style="margin: 2px 0;"><strong>Address:</strong> ${item.address}</p>` : ''}
+              ${item.location ? `<p style="margin: 2px 0;"><strong>Location:</strong> ${item.location}</p>` : ''}
+              ${item.category ? `<p style="margin: 2px 0;"><strong>Category:</strong> ${item.category}</p>` : ''}
+              <p style="margin: 2px 0;"><strong>Type:</strong> <span style="color: ${getMarkerColor(item.type)}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
+              ${item.date ? `<p style="margin: 2px 0;"><strong>Date:</strong> ${item.date}</p>` : ''}
             </div>
           </div>
         `;
 
         // Create popup
         const popup = new mapboxgl.Popup({
-          offset: 25,
+          offset: 30,
           closeButton: true,
-          closeOnClick: false
+          closeOnClick: false,
+          maxWidth: '300px'
         }).setHTML(popupContent);
 
         // Create marker
@@ -111,26 +141,24 @@ export const useMapMarkers = ({
           .setPopup(popup)
           .addTo(map);
 
-        // Add click handlers using simple data passing (not cloning objects)
+        // Add click handlers with simplified data objects
         markerElement.addEventListener('click', (e) => {
           e.stopPropagation();
           console.log('📍 Marker clicked:', item.title);
           
-          // Create a simple data object to avoid cloning issues
-          const safeItem = {
-            id: item.id,
-            title: item.title,
-            type: item.type,
-            latitude: item.latitude,
-            longitude: item.longitude,
-            description: item.description,
-            address: item.address,
-            location: item.location,
-            category: item.category
-          };
-          
           if (onMarkerClick) {
-            onMarkerClick(safeItem as UnifiedItem);
+            const simpleItem = {
+              id: item.id,
+              title: item.title,
+              type: item.type,
+              latitude: item.latitude,
+              longitude: item.longitude,
+              description: item.description,
+              address: item.address,
+              location: item.location,
+              category: item.category
+            };
+            onMarkerClick(simpleItem as UnifiedItem);
           }
         });
 
@@ -138,40 +166,34 @@ export const useMapMarkers = ({
           e.stopPropagation();
           console.log('🖱️ Marker double-clicked:', item.title);
           
-          // Create a simple data object to avoid cloning issues
-          const safeItem = {
-            id: item.id,
-            title: item.title,
-            type: item.type,
-            latitude: item.latitude,
-            longitude: item.longitude,
-            description: item.description,
-            address: item.address,
-            location: item.location,
-            category: item.category
-          };
-          
           if (onMarkerDoubleClick) {
-            onMarkerDoubleClick(safeItem as UnifiedItem);
+            const simpleItem = {
+              id: item.id,
+              title: item.title,
+              type: item.type,
+              latitude: item.latitude,
+              longitude: item.longitude,
+              description: item.description,
+              address: item.address,
+              location: item.location,
+              category: item.category
+            };
+            onMarkerDoubleClick(simpleItem as UnifiedItem);
           }
         });
 
         newMarkers.push(marker);
         
-        console.log(`✅ Created marker ${index + 1}/${items.length}:`, {
-          title: item.title,
-          type: item.type,
-          coordinates: [lng, lat]
-        });
+        console.log(`✅ Created marker ${index + 1}/${items.length}: "${item.title}" (${item.type}) at [${lng}, ${lat}]`);
 
       } catch (error) {
-        console.error(`❌ Error creating marker for item ${item.id}:`, error);
+        console.error(`❌ Error creating marker for item ${item.id} "${item.title}":`, error);
       }
     });
 
     markersRef.current = newMarkers;
     
-    console.log(`🎯 Successfully created ${newMarkers.length} markers`);
+    console.log(`🎯 Successfully created ${newMarkers.length} out of ${items.length} markers`);
 
     // Fit map to show all markers if we have any
     if (newMarkers.length > 0) {
@@ -180,7 +202,7 @@ export const useMapMarkers = ({
         items.forEach(item => {
           const lat = Number(item.latitude);
           const lng = Number(item.longitude);
-          if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
+          if (lat && lng && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
             bounds.extend([lng, lat]);
           }
         });
