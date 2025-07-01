@@ -2,172 +2,210 @@
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
-import { createPopupContent } from '@/utils/mapPopupContent';
 
-interface MapMarkerManagerProps {
+interface UseMapMarkersProps {
   map: mapboxgl.Map | null;
   items: UnifiedItem[];
   onMarkerClick?: (item: UnifiedItem) => void;
   onMarkerDoubleClick?: (item: UnifiedItem) => void;
 }
 
-export const useMapMarkers = ({ map, items, onMarkerClick, onMarkerDoubleClick }: MapMarkerManagerProps) => {
+export const useMapMarkers = ({
+  map,
+  items,
+  onMarkerClick,
+  onMarkerDoubleClick
+}: UseMapMarkersProps) => {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
 
-  const getMarkerColor = (type: string): string => {
-    const colors = {
-      event: '#dc2626',      // Red
-      news: '#2563eb',       // Blue
-      business: '#16a34a',   // Green
-      'local-service': '#eab308'  // Yellow
-    };
-    return colors[type as keyof typeof colors] || '#6b7280';
-  };
-
   useEffect(() => {
-    if (!map) {
-      console.log('⏸️ Map not ready for markers');
+    if (!map || !items.length) {
+      console.log('🗺️ MapMarkers: No map or items', { hasMap: !!map, itemsCount: items.length });
       return;
     }
 
-    console.log('🎯 MARKER MANAGER UPDATE');
-    console.log('📊 Items to process:', items.length);
+    console.log('🎯 Creating markers for items:', items.length);
 
     // Clear existing markers
-    console.log('🧹 Clearing existing markers:', markersRef.current.length);
     markersRef.current.forEach(marker => {
-      marker.remove();
+      try {
+        marker.remove();
+      } catch (error) {
+        console.warn('Error removing marker:', error);
+      }
     });
     markersRef.current = [];
 
-    // Process each item for markers
+    // Create new markers safely
+    const newMarkers: mapboxgl.Marker[] = [];
+    
     items.forEach((item, index) => {
-      const lat = Number(item.latitude);
-      const lng = Number(item.longitude);
-      
-      console.log(`📍 Processing marker ${index + 1}/${items.length}:`, {
-        id: item.id,
-        title: item.title,
-        type: item.type,
-        originalLat: item.latitude,
-        originalLng: item.longitude,
-        convertedLat: lat,
-        convertedLng: lng,
-        isValidLat: !isNaN(lat) && lat >= -90 && lat <= 90,
-        isValidLng: !isNaN(lng) && lng >= -180 && lng <= 180
-      });
-      
-      if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-        console.warn('❌ Invalid coordinates for item:', {
-          id: item.id,
-          title: item.title,
-          lat: lat,
-          lng: lng
-        });
-        return;
-      }
-
-      const markerColor = getMarkerColor(item.type);
-      console.log(`🎨 Creating marker for "${item.title}" at [${lng}, ${lat}] with color ${markerColor}`);
-
       try {
-        // Create marker with enhanced visibility
-        const marker = new mapboxgl.Marker({
-          color: markerColor,
-          scale: 1.2, // Make markers more visible
-          anchor: 'bottom'
-        })
-          .setLngLat([lng, lat])
-          .setPopup(
-            new mapboxgl.Popup({ 
-              offset: 25,
-              closeButton: true,
-              closeOnClick: false,
-              className: 'custom-popup'
-            }).setHTML(createPopupContent(item))
-          );
+        const lat = Number(item.latitude);
+        const lng = Number(item.longitude);
 
-        // Add the marker to the map
-        marker.addTo(map);
-        console.log(`✅ Marker successfully added for "${item.title}"`);
+        // Validate coordinates
+        if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+          console.warn(`Invalid coordinates for item ${item.id}:`, { lat, lng });
+          return;
+        }
 
-        // Add click event listeners
-        const markerElement = marker.getElement();
-        
-        // Single click for highlighting
-        markerElement.addEventListener('click', (e) => {
-          e.stopPropagation();
-          console.log('🖱️ Marker clicked:', item.title);
-          if (onMarkerClick) onMarkerClick(item);
-        });
+        // Determine marker color based on type
+        const getMarkerColor = (type: string): string => {
+          switch (type) {
+            case 'event': return '#ef4444'; // red
+            case 'news': return '#3b82f6'; // blue
+            case 'business': return '#22c55e'; // green
+            case 'local-service': return '#eab308'; // yellow
+            default: return '#6b7280'; // gray
+          }
+        };
 
-        // Double click for navigation
-        markerElement.addEventListener('dblclick', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('🖱️ Marker double-clicked:', item.title);
-          if (onMarkerDoubleClick) onMarkerDoubleClick(item);
-        });
+        // Create marker element
+        const markerElement = document.createElement('div');
+        markerElement.className = 'marker-custom';
+        markerElement.style.cssText = `
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background-color: ${getMarkerColor(item.type)};
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+          cursor: pointer;
+          transition: transform 0.2s;
+        `;
 
         // Add hover effect
-        markerElement.style.cursor = 'pointer';
         markerElement.addEventListener('mouseenter', () => {
-          markerElement.style.transform = 'scale(1.1)';
+          markerElement.style.transform = 'scale(1.2)';
         });
+        
         markerElement.addEventListener('mouseleave', () => {
           markerElement.style.transform = 'scale(1)';
         });
 
-        markersRef.current.push(marker);
+        // Create popup content
+        const popupContent = `
+          <div class="p-3 max-w-xs">
+            <h3 class="font-semibold text-sm mb-1">${item.title}</h3>
+            <p class="text-xs text-gray-600 mb-2">${item.description || 'No description available'}</p>
+            <div class="space-y-1 text-xs">
+              ${item.address ? `<p><strong>Address:</strong> ${item.address}</p>` : ''}
+              ${item.location ? `<p><strong>Location:</strong> ${item.location}</p>` : ''}
+              ${item.category ? `<p><strong>Category:</strong> ${item.category}</p>` : ''}
+              <p><strong>Type:</strong> ${item.type.replace('-', ' ')}</p>
+            </div>
+          </div>
+        `;
+
+        // Create popup
+        const popup = new mapboxgl.Popup({
+          offset: 25,
+          closeButton: true,
+          closeOnClick: false
+        }).setHTML(popupContent);
+
+        // Create marker
+        const marker = new mapboxgl.Marker(markerElement)
+          .setLngLat([lng, lat])
+          .setPopup(popup)
+          .addTo(map);
+
+        // Add click handlers using simple data passing (not cloning objects)
+        markerElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          console.log('📍 Marker clicked:', item.title);
+          
+          // Create a simple data object to avoid cloning issues
+          const safeItem = {
+            id: item.id,
+            title: item.title,
+            type: item.type,
+            latitude: item.latitude,
+            longitude: item.longitude,
+            description: item.description,
+            address: item.address,
+            location: item.location,
+            category: item.category
+          };
+          
+          if (onMarkerClick) {
+            onMarkerClick(safeItem as UnifiedItem);
+          }
+        });
+
+        markerElement.addEventListener('dblclick', (e) => {
+          e.stopPropagation();
+          console.log('🖱️ Marker double-clicked:', item.title);
+          
+          // Create a simple data object to avoid cloning issues
+          const safeItem = {
+            id: item.id,
+            title: item.title,
+            type: item.type,
+            latitude: item.latitude,
+            longitude: item.longitude,
+            description: item.description,
+            address: item.address,
+            location: item.location,
+            category: item.category
+          };
+          
+          if (onMarkerDoubleClick) {
+            onMarkerDoubleClick(safeItem as UnifiedItem);
+          }
+        });
+
+        newMarkers.push(marker);
+        
+        console.log(`✅ Created marker ${index + 1}/${items.length}:`, {
+          title: item.title,
+          type: item.type,
+          coordinates: [lng, lat]
+        });
+
       } catch (error) {
-        console.error('❌ Error creating marker for item:', item.id, error);
+        console.error(`❌ Error creating marker for item ${item.id}:`, error);
       }
     });
 
-    console.log(`📊 Total markers created: ${markersRef.current.length}`);
+    markersRef.current = newMarkers;
+    
+    console.log(`🎯 Successfully created ${newMarkers.length} markers`);
 
-    // Fit map to show all markers if there are any
-    if (items.length > 0 && markersRef.current.length > 0) {
+    // Fit map to show all markers if we have any
+    if (newMarkers.length > 0) {
       try {
         const bounds = new mapboxgl.LngLatBounds();
-        let validBounds = false;
-        
         items.forEach(item => {
           const lat = Number(item.latitude);
           const lng = Number(item.longitude);
-          if (!isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          if (lat && lng && !isNaN(lat) && !isNaN(lng)) {
             bounds.extend([lng, lat]);
-            validBounds = true;
           }
         });
         
-        if (validBounds) {
-          if (items.length > 1) {
-            console.log('🎯 Fitting bounds for multiple markers');
-            map.fitBounds(bounds, { 
-              padding: 80,
-              maxZoom: 15,
-              duration: 1000
-            });
-          } else if (items.length === 1) {
-            const item = items[0];
-            const lat = Number(item.latitude);
-            const lng = Number(item.longitude);
-            console.log('🎯 Centering on single marker:', [lng, lat]);
-            map.flyTo({
-              center: [lng, lat],
-              zoom: 14,
-              duration: 1000
-            });
-          }
-        }
+        map.fitBounds(bounds, { 
+          padding: { top: 50, bottom: 50, left: 50, right: 50 },
+          maxZoom: 15
+        });
       } catch (error) {
-        console.error('❌ Error fitting bounds:', error);
+        console.warn('Error fitting bounds:', error);
       }
     }
 
-    console.log('✅ MARKER MANAGER UPDATE COMPLETE');
+    // Cleanup function
+    return () => {
+      markersRef.current.forEach(marker => {
+        try {
+          marker.remove();
+        } catch (error) {
+          console.warn('Error cleaning up marker:', error);
+        }
+      });
+      markersRef.current = [];
+    };
   }, [map, items, onMarkerClick, onMarkerDoubleClick]);
 
-  return { markersRef };
+  return markersRef.current;
 };
