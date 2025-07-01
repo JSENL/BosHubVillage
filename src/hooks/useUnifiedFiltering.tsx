@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { UnifiedItem } from '@/types/unifiedItem';
-import { fetchUnifiedData } from '@/utils/fetchUnifiedData';
+import { fetchAllUnifiedData } from '@/utils/fetchUnifiedData';
 import { filterUnifiedItems } from '@/utils/filterUnifiedItems';
 
 interface UseUnifiedFilteringProps {
@@ -27,13 +27,19 @@ export const useUnifiedFiltering = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Simple geocoding function for the fetchAllUnifiedData call
+  const mockGeocode = async (address: string) => {
+    console.log('Mock geocoding for address:', address);
+    return { lat: null, lng: null };
+  };
+
   const fetchData = async () => {
     try {
       setLoading(true);
       setError(null);
       
       console.log('🔄 Fetching unified data...');
-      const data = await fetchUnifiedData();
+      const data = await fetchAllUnifiedData(mockGeocode);
       
       console.log('📊 Raw data fetched:', {
         total: data.length,
