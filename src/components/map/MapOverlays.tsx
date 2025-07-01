@@ -1,50 +1,40 @@
 
+import React from 'react';
+import { MapPin } from 'lucide-react';
+
 interface MapOverlaysProps {
   itemCount: number;
   isEmpty: boolean;
 }
 
-export const MapOverlays = ({ itemCount, isEmpty }: MapOverlaysProps) => {
+export const MapOverlays: React.FC<MapOverlaysProps> = ({ itemCount, isEmpty }) => {
   return (
     <>
-      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-sm text-gray-600 shadow-sm">
-        Showing {itemCount} markers
-      </div>
-      
-      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-500 shadow-sm">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-red-600 rounded-full"></div>
-            <span>Events</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
-            <span>News</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-600 rounded-full"></div>
-            <span>Businesses</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <span>Services</span>
-          </div>
+      {/* Item count overlay */}
+      <div className="absolute top-4 right-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg shadow-md text-sm font-medium">
+        <div className="flex items-center space-x-2">
+          <MapPin className="h-4 w-4 text-purple-600" />
+          <span>{itemCount} locations</span>
         </div>
       </div>
-      
-      <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-500 shadow-sm">
-        💡 Click markers to highlight items | Double-click to view details
-      </div>
-      
+
+      {/* Empty state overlay */}
       {isEmpty && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 backdrop-blur-sm">
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 bg-opacity-75">
           <div className="text-center p-6">
-            <div className="text-gray-400 mb-2">🗺️</div>
-            <p className="text-gray-600 text-sm">No mappable items match your current filters</p>
-            <p className="text-gray-400 text-xs mt-1">Try adjusting your filter criteria</p>
+            <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No locations to display</h3>
+            <p className="text-gray-600">
+              Select content types or adjust filters to see locations on the map
+            </p>
           </div>
         </div>
       )}
+
+      {/* Loading indicator for when map is initializing */}
+      <div className="absolute bottom-4 left-4 bg-green-500 text-white px-2 py-1 rounded text-xs">
+        Map Ready
+      </div>
     </>
   );
 };

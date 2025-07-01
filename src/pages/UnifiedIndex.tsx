@@ -43,6 +43,9 @@ const UnifiedIndexContent = () => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
+  // Default to showing all types if none are selected
+  const typesToShow = selectedTypes.length === 0 ? ['event', 'news', 'business', 'local-service'] : selectedTypes;
+
   const handleItemClick = (item: UnifiedItem) => {
     console.log('Item selected from map:', item.title);
     setSelectedItem(item);
@@ -105,10 +108,24 @@ const UnifiedIndexContent = () => {
           itemType="events"
         />
 
+        <div className="bg-white p-4 rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>Total Items: {allItems.length}</div>
+            <div>Mappable Items: {mappableItems.length}</div>
+            <div>Selected Types: {typesToShow.join(', ')}</div>
+            <div>Map Items: {allItems.filter(item => 
+              item.latitude !== null && 
+              item.longitude !== null && 
+              typesToShow.includes(item.type)
+            ).length}</div>
+          </div>
+        </div>
+
         <EnhancedUniversalMap
           items={allItems}
           height="600px"
-          selectedTypes={selectedTypes}
+          selectedTypes={typesToShow}
           onItemClick={handleItemClick}
         />
 

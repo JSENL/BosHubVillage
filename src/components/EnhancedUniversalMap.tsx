@@ -27,23 +27,35 @@ export const EnhancedUniversalMap = ({
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
 
   // Filter items to only show mappable ones (with coordinates) and selected types
-  const filteredMappableItems = items.filter(item => 
-    item.latitude !== null && 
-    item.longitude !== null && 
-    !isNaN(Number(item.latitude)) &&
-    !isNaN(Number(item.longitude)) &&
-    selectedTypes.includes(item.type)
-  );
+  const filteredMappableItems = items.filter(item => {
+    const hasCoords = item.latitude !== null && 
+                     item.longitude !== null && 
+                     !isNaN(Number(item.latitude)) &&
+                     !isNaN(Number(item.longitude));
+    const isSelectedType = selectedTypes.length === 0 || selectedTypes.includes(item.type);
+    
+    console.log(`Item ${item.id} (${item.type}): hasCoords=${hasCoords}, isSelectedType=${isSelectedType}, lat=${item.latitude}, lng=${item.longitude}`);
+    
+    return hasCoords && isSelectedType;
+  });
 
+  console.log('EnhancedUniversalMap: Total items received:', items.length);
   console.log('EnhancedUniversalMap: Filtered mappable items count:', filteredMappableItems.length);
   console.log('EnhancedUniversalMap: Selected types:', selectedTypes);
-  console.log('EnhancedUniversalMap: Total items received:', items.length);
+  console.log('EnhancedUniversalMap: Filtered items:', filteredMappableItems);
 
   // Initialize Mapbox map
   useEffect(() => {
-    if (!mapRef.current || !mapboxToken || isLoadingApiKey) return;
+    if (!mapRef.current || !mapboxToken || isLoadingApiKey) {
+      console.log('Map initialization skipped:', { 
+        hasMapRef: !!mapRef.current, 
+        hasToken: !!mapboxToken, 
+        isLoading: isLoadingApiKey 
+      });
+      return;
+    }
 
-    console.log('Initializing Mapbox map...');
+    console.log('Initializing Mapbox map with token...');
     mapboxgl.accessToken = mapboxToken;
 
     const map = new mapboxgl.Map({
@@ -55,11 +67,22 @@ export const EnhancedUniversalMap = ({
 
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
+    map.on('load', () => {
+      console.log('Mapbox map loaded successfully');
+    });
+
+    map.on('error', (e) => {
+      console.error('Mapbox map error:', e);
+    });
+
     mapInstanceRef.current = map;
 
     return () => {
       console.log('Cleaning up Mapbox map...');
-      map.remove();
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
     };
   }, [mapboxToken, isLoadingApiKey]);
 
@@ -139,6 +162,10 @@ export const EnhancedUniversalMap = ({
           itemCount={filteredMappableItems.length}
           isEmpty={filteredMappableItems.length === 0 && !isLoadingApiKey}
         />
+        {/* Debug info overlay */}
+        <div className="absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs p-2 rounded">
+          Items: {filteredMappableItems.length} | Map: {mapInstanceRef.current ? 'Ready' : 'Loading'}
+        </div>
       </div>
     </div>
   );
