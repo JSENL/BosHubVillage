@@ -1,3 +1,4 @@
+
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { useNavigate } from 'react-router-dom';
@@ -59,7 +60,11 @@ export const EnhancedUniversalMap = ({
     selectedTypes,
     mapboxToken: mapboxToken ? 'Available' : 'Missing',
     isLoading: isLoadingApiKey,
-    error: error || 'None'
+    error: error || 'None',
+    itemsByType: items.reduce((acc, item) => {
+      acc[item.type] = (acc[item.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>)
   });
 
   // Initialize Mapbox map
@@ -197,6 +202,15 @@ export const EnhancedUniversalMap = ({
             <div>📍 Mappable: {filteredMappableItems.length}</div>
             <div>🗺️ Map: {mapInstanceRef.current ? '✅ Ready' : '⏳ Loading'}</div>
             <div>🔧 Types: {selectedTypes.length === 0 ? 'All' : selectedTypes.join(', ')}</div>
+            <div className="mt-2 pt-2 border-t border-gray-500 text-xs">
+              <div>By Type:</div>
+              {Object.entries(items.reduce((acc, item) => {
+                acc[item.type] = (acc[item.type] || 0) + 1;
+                return acc;
+              }, {} as Record<string, number>)).map(([type, count]) => (
+                <div key={type}>• {type}: {count}</div>
+              ))}
+            </div>
             {filteredMappableItems.length > 0 && (
               <div className="mt-2 pt-2 border-t border-gray-500">
                 <div className="text-green-300">Next marker coords:</div>

@@ -4,7 +4,7 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { geocodeNewsItems } from './geocodeNewsItems';
 
 export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<any>): Promise<UnifiedItem[]> => {
-  console.log('Starting unified data fetch...');
+  console.log('🔄 Starting unified data fetch...');
   
   const [eventsRes, newsRes, businessRes, localResourcesRes] = await Promise.all([
     supabase.from('events').select('*').order('created_at', { ascending: false }),
@@ -13,27 +13,36 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     supabase.from('local_resources').select('*').order('created_at', { ascending: false })
   ]);
 
+  console.log('📊 Database fetch results:', {
+    events: { count: eventsRes.data?.length || 0, error: eventsRes.error },
+    news: { count: newsRes.data?.length || 0, error: newsRes.error },
+    business: { count: businessRes.data?.length || 0, error: businessRes.error },
+    localResources: { count: localResourcesRes.data?.length || 0, error: localResourcesRes.error }
+  });
+
   if (eventsRes.error) {
-    console.error('Error fetching events:', eventsRes.error);
+    console.error('❌ Error fetching events:', eventsRes.error);
   }
   if (newsRes.error) {
-    console.error('Error fetching news:', newsRes.error);
+    console.error('❌ Error fetching news:', newsRes.error);
   }
   if (businessRes.error) {
-    console.error('Error fetching business:', businessRes.error);
+    console.error('❌ Error fetching business:', businessRes.error);
   }
   if (localResourcesRes.error) {
-    console.error('Error fetching local resources:', localResourcesRes.error);
+    console.error('❌ Error fetching local resources:', localResourcesRes.error);
   }
 
   const items: UnifiedItem[] = [];
 
   // Process events with enhanced coordinate validation
   if (eventsRes.data) {
-    console.log('Processing events:', eventsRes.data.length);
+    console.log('📅 Processing events:', eventsRes.data.length);
     eventsRes.data.forEach(event => {
       const lat = event.latitude ? Number(event.latitude) : null;
       const lng = event.longitude ? Number(event.longitude) : null;
+      
+      console.log(`Event "${event.title}": lat=${lat}, lng=${lng}`);
       
       items.push({
         id: event.id,
@@ -56,24 +65,13 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
 
   // Process news with enhanced geocoding and coordinate validation
   if (newsRes.data) {
-    console.log('Processing news:', newsRes.data.length);
-    
-    // Always try to geocode news items that don't have coordinates
-    const newsItemsToGeocode = newsRes.data.filter(news => 
-      (!news.latitude || !news.longitude || news.latitude === null || news.longitude === null) && 
-      (news.Address || news.location)
-    );
-    
-    if (newsItemsToGeocode.length > 0) {
-      console.log('Geocoding news items:', newsItemsToGeocode.length);
-      await geocodeNewsItems(newsItemsToGeocode, geocode);
-    }
+    console.log('📰 Processing news:', newsRes.data.length);
     
     newsRes.data.forEach(news => {
       const lat = news.latitude ? Number(news.latitude) : null;
       const lng = news.longitude ? Number(news.longitude) : null;
       
-      console.log(`News item ${news.id}: lat=${lat}, lng=${lng}, location=${news.location}, address=${news.Address}`);
+      console.log(`News "${news.title}": lat=${lat}, lng=${lng}, location=${news.location}, address=${news.Address}`);
       
       items.push({
         id: news.id,
@@ -92,16 +90,21 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     });
   }
 
-  // Process businesses with potential geocoding
+  // Process businesses with coordinate validation
   if (businessRes.data) {
-    console.log('Processing businesses:', businessRes.data.length);
+    console.log('🏢 Processing businesses:', businessRes.data.length);
     businessRes.data.forEach(business => {
+      const lat = business.latitude ? Number(business.latitude) : null;
+      const lng = business.longitude ? Number(business.longitude) : null;
+      
+      console.log(`Business "${business.title}": lat=${lat}, lng=${lng}, address=${business.address}`);
+      
       items.push({
         id: business.id,
         title: business.title,
         description: business.description || '',
-        latitude: null, // Business table doesn't have coordinates yet
-        longitude: null,
+        latitude: (lat && !isNaN(lat)) ? lat : null,
+        longitude: (lng && !isNaN(lng)) ? lng : null,
         type: 'business',
         address: business.address,
         category: business.business_type,
@@ -114,10 +117,12 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
 
   // Process local resources with coordinate validation
   if (localResourcesRes.data) {
-    console.log('Processing local resources:', localResourcesRes.data.length);
+    console.log('🏪 Processing local resources:', localResourcesRes.data.length);
     localResourcesRes.data.forEach(resource => {
       const lat = resource.latitude ? Number(resource.latitude) : null;
       const lng = resource.longitude ? Number(resource.longitude) : null;
+      
+      console.log(`Local Resource "${resource.name}": lat=${lat}, lng=${lng}, address=${resource.address}`);
       
       items.push({
         id: resource.id,
@@ -135,10 +140,22 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     });
   }
 
-  console.log('Total unified items processed:', items.length);
-  console.log('Items with coordinates:', items.filter(item => item.latitude && item.longitude).length);
-  console.log('News items processed:', items.filter(item => item.type === 'news').length);
-  console.log('News items with coordinates:', items.filter(item => item.type === 'news' && item.latitude && item.longitude).length);
+  console.log('✅ Unified data processing complete:', {
+    totalItems: items.length,
+    itemsWithCoords: items.filter(item => item.latitude && item.longitude).length,
+    byType: {
+      events: items.filter(item => item.type === 'event').length,
+      news: items.filter(item => item.type === 'news').length,
+      business: items.filter(item => item.type === 'business').length,
+      localServices: items.filter(item => item.type === 'local-service').length
+    },
+    coordsByType: {
+      events: items.filter(item => item.type === 'event' && item.latitude && item.longitude).length,
+      news: items.filter(item => item.type === 'news' && item.latitude && item.longitude).length,
+      business: items.filter(item => item.type === 'business' && item.latitude && item.longitude).length,
+      localServices: items.filter(item => item.type === 'local-service' && item.latitude && item.longitude).length
+    }
+  });
   
   return items;
 };
