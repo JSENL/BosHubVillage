@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useGeocoding } from '@/hooks/useGeocoding';
+import { ArrowLeft } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -100,10 +102,18 @@ const SubmitLocalService = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-4">Submit a Local Resource</h1>
-      <p className="text-gray-600 mb-6">
-        Share local resources and services with the community. Your submission will be reviewed by our team.
-      </p>
+      <div className="mb-6">
+        <Link to="/">
+          <Button variant="outline" className="mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Home
+          </Button>
+        </Link>
+        <h1 className="text-2xl font-bold mb-4">Submit a Local Resource</h1>
+        <p className="text-gray-600 mb-6">
+          Share local resources and services with the community. Your submission will be reviewed by our team.
+        </p>
+      </div>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
