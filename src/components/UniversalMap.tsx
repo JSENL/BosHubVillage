@@ -148,7 +148,7 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
         mapInstanceRef.current!.fitBounds(bounds, { padding: 50 });
       }
     }
-  }, [mapItems]);
+  }, [mapItems, mapLoaded]);
 
   if (error) {
     return (
