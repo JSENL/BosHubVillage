@@ -19,4 +19,5 @@ export interface UnifiedItem {
   name?: string;
   content?: string;
   source?: string;
+  originalData?: any; // Store the original data for rendering components
 }
