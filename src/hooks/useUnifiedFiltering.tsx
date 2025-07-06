@@ -9,6 +9,7 @@ interface UseUnifiedFilteringProps {
   selectedNeighborhood?: string;
   selectedVillage?: string;
   selectedTypes: string[];
+  selectedType?: string;
   searchTerm?: string;
   dateFilter?: string;
   timeFilter?: string;
@@ -19,6 +20,7 @@ export const useUnifiedFiltering = ({
   selectedNeighborhood = 'all',
   selectedVillage = 'all',
   selectedTypes,
+  selectedType = 'all',
   searchTerm = '',
   dateFilter = 'all',
   timeFilter = 'all'
@@ -75,6 +77,7 @@ export const useUnifiedFiltering = ({
     selectedNeighborhood,
     selectedVillage,
     selectedTypes,
+    selectedType,
     searchTerm,
     dateFilter,
     timeFilter
@@ -97,6 +100,7 @@ export const useUnifiedFiltering = ({
     filteredItems: filteredItems.length,
     mappableItems: mappableItems.length,
     selectedTypes,
+    selectedType,
     loading,
     error
   });

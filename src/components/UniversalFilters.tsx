@@ -9,6 +9,8 @@ import {
 } from '@/hooks/useDatabaseFilterOptions';
 
 interface UniversalFiltersProps {
+  selectedType: string;
+  onTypeChange: (type: string) => void;
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
   selectedNeighborhood: string;
@@ -20,6 +22,8 @@ interface UniversalFiltersProps {
 }
 
 export const UniversalFilters = ({
+  selectedType,
+  onTypeChange,
   selectedCategory,
   onCategoryChange,
   selectedNeighborhood,
@@ -51,6 +55,14 @@ export const UniversalFilters = ({
 
   const { categories, neighborhoods, villages } = getFilterOptions();
 
+  const typeOptions = [
+    { value: 'all', label: 'All Types' },
+    { value: 'event', label: 'Events' },
+    { value: 'business', label: 'Business' },
+    { value: 'local-service', label: 'Local Resources' },
+    { value: 'news', label: 'News' }
+  ];
+
   const categoryOptions = [
     { value: 'all', label: 'All Categories' },
     ...categories.map(category => ({
@@ -81,6 +93,19 @@ export const UniversalFilters = ({
         <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
         <span className="text-xs sm:text-sm font-medium text-gray-600">Filters:</span>
       </div>
+      
+      <Select value={selectedType} onValueChange={onTypeChange}>
+        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
+          <SelectValue placeholder="Type" />
+        </SelectTrigger>
+        <SelectContent>
+          {typeOptions.map((type) => (
+            <SelectItem key={type.value} value={type.value}>
+              {type.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       
       <Select value={selectedCategory} onValueChange={onCategoryChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">

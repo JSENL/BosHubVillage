@@ -4,6 +4,7 @@ import { parseVillages } from './villageUtils';
 
 interface FilterCriteria {
   selectedTypes: string[];
+  selectedType: string;
   searchTerm: string;
   selectedCategory: string;
   selectedNeighborhood: string;
@@ -15,6 +16,7 @@ interface FilterCriteria {
 export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteria): UnifiedItem[] => {
   const {
     selectedTypes,
+    selectedType,
     searchTerm,
     selectedCategory,
     selectedNeighborhood,
@@ -24,7 +26,10 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
   } = criteria;
 
   return items.filter(item => {
-    // Type filter
+    // Type filter (new unified type filter)
+    const matchesUnifiedType = selectedType === 'all' || item.type === selectedType;
+    
+    // Legacy type filter for backward compatibility
     const matchesType = selectedTypes.length === 0 || selectedTypes.includes(item.type);
 
     // Search term filter
@@ -75,6 +80,6 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
       }
     })();
 
-    return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
+    return matchesUnifiedType && matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
   });
 };

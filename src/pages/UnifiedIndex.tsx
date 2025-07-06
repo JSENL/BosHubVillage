@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
@@ -23,6 +22,8 @@ const UnifiedIndexContent = () => {
     selectedVillage,
     setSelectedVillage,
     selectedTypes,
+    selectedType,
+    setSelectedType,
     toggleType,
     dateFilter,
     setDateFilter,
@@ -34,17 +35,18 @@ const UnifiedIndexContent = () => {
     selectedCategory,
     selectedNeighborhood,
     selectedVillage,
-    selectedTypes,
+    selectedTypes: selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType],
     searchTerm,
     dateFilter,
-    timeFilter
+    timeFilter,
+    selectedType
   });
 
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
-  // Default to showing all types if none are selected
-  const typesToShow = selectedTypes.length === 0 ? ['event', 'news', 'business', 'local-service'] : selectedTypes;
+  // Use the unified type filter to determine which types to show
+  const typesToShow = selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType];
 
   const handleItemClick = (item: UnifiedItem) => {
     console.log('Item selected from map:', item.title);
@@ -98,6 +100,8 @@ const UnifiedIndexContent = () => {
         />
 
         <UniversalFilters
+          selectedType={selectedType}
+          onTypeChange={setSelectedType}
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
           selectedNeighborhood={selectedNeighborhood}
@@ -132,7 +136,7 @@ const UnifiedIndexContent = () => {
         <ResultsSummary 
           allItems={allItems}
           mappableItems={mappableItems}
-          selectedTypes={selectedTypes}
+          selectedTypes={typesToShow}
         />
 
         <ItemsList 
