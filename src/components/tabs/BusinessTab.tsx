@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { SectionMap } from "@/components/SectionMap";
+import { UniversalFilters } from "@/components/UniversalFilters";
 import BusinessCard from "@/components/BusinessCard";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
@@ -14,6 +15,12 @@ export const BusinessTab = () => {
   const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedBusinesses, setHasGeocodedBusinesses] = useState(false);
+  
+  // Filter states
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
+  const [selectedVillage, setSelectedVillage] = useState("all");
   
   const allBusinesses: (Business | BusinessSubmission)[] = [
     ...(businesses || []),
@@ -56,6 +63,19 @@ export const BusinessTab = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Local Businesses</h2>
+      
+      <UniversalFilters
+        selectedType={selectedType}
+        onTypeChange={setSelectedType}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        selectedNeighborhood={selectedNeighborhood}
+        onNeighborhoodChange={setSelectedNeighborhood}
+        selectedVillage={selectedVillage}
+        onVillageChange={setSelectedVillage}
+        filteredItemsCount={allBusinesses.length}
+        itemType="businesses"
+      />
       
       <SectionMap height="400px" />
       

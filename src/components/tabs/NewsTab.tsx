@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { SectionMap } from "@/components/SectionMap";
+import { UniversalFilters } from "@/components/UniversalFilters";
 import NewsCard from "@/components/NewsCard";
 import { useNews } from "@/hooks/useNews";
 import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
@@ -14,6 +15,12 @@ export const NewsTab = () => {
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedNews, setHasGeocodedNews] = useState(false);
+  
+  // Filter states
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
+  const [selectedVillage, setSelectedVillage] = useState("all");
   
   const allNews: (News | NewsSubmission)[] = [
     ...(news || []),
@@ -56,6 +63,19 @@ export const NewsTab = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Community News</h2>
+      
+      <UniversalFilters
+        selectedType={selectedType}
+        onTypeChange={setSelectedType}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        selectedNeighborhood={selectedNeighborhood}
+        onNeighborhoodChange={setSelectedNeighborhood}
+        selectedVillage={selectedVillage}
+        onVillageChange={setSelectedVillage}
+        filteredItemsCount={allNews.length}
+        itemType="news"
+      />
       
       <SectionMap height="400px" />
       

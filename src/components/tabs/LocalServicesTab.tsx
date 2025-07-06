@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { SectionMap } from "@/components/SectionMap";
+import { UniversalFilters } from "@/components/UniversalFilters";
 import LocalServiceCard from "@/components/LocalServiceCard";
 import LocalServiceSubmissionCard from "@/components/LocalServiceSubmissionCard";
 import { useLocalServices } from "@/hooks/useLocalServices";
@@ -14,6 +15,12 @@ export const LocalServicesTab = () => {
   const { data: localResourceSubmissions, isLoading: localResourceSubmissionsLoading, refetch: refetchLocalResourceSubmissions } = useLocalServiceSubmissions();
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedResources, setHasGeocodedResources] = useState(false);
+  
+  // Filter states
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
+  const [selectedVillage, setSelectedVillage] = useState("all");
   
   const allLocalResources: (LocalResource | LocalResourceSubmission)[] = [
     ...(localResources || []),
@@ -59,6 +66,19 @@ export const LocalServicesTab = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Local Resources</h2>
+      
+      <UniversalFilters
+        selectedType={selectedType}
+        onTypeChange={setSelectedType}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        selectedNeighborhood={selectedNeighborhood}
+        onNeighborhoodChange={setSelectedNeighborhood}
+        selectedVillage={selectedVillage}
+        onVillageChange={setSelectedVillage}
+        filteredItemsCount={allLocalResources.length}
+        itemType="local-services"
+      />
       
       <SectionMap height="400px" />
       
