@@ -155,9 +155,25 @@ export const EnhancedUniversalMap = ({
 
   // Handle marker double-click to navigate to detail page
   const handleMarkerDoubleClick = (item: UnifiedItem) => {
-    console.log('🖱️ Marker double-clicked:', item.title);
-    const routePath = item.type === 'local-service' ? 'local-service' : item.type;
-    navigate(`/${routePath}/${item.id}`);
+    console.log('🖱️ Marker double-clicked:', item.title, 'Type:', item.type);
+    
+    // Navigate to the appropriate detail page based on item type
+    switch (item.type) {
+      case 'event':
+        navigate(`/event/${item.id}`);
+        break;
+      case 'news':
+        navigate(`/news/${item.id}`);
+        break;
+      case 'business':
+        navigate(`/business/${item.id}`);
+        break;
+      case 'local-service':
+        navigate(`/local-service/${item.id}`);
+        break;
+      default:
+        console.warn('Unknown item type for navigation:', item.type);
+    }
   };
 
   // Use the map markers hook with enhanced logging
@@ -218,6 +234,9 @@ export const EnhancedUniversalMap = ({
                 <div>Lng: {filteredMappableItems[0].longitude}</div>
               </div>
             )}
+            <div className="mt-2 pt-2 border-t border-gray-500 text-yellow-300">
+              💡 Double-click markers to view details
+            </div>
           </div>
         </div>
       </div>
