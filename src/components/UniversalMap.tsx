@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from 'react';
 import { useMapLoader } from '@/hooks/useMapLoader';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +11,7 @@ interface MapItem {
   longitude: number;
   type: 'business' | 'event' | 'news' | 'local_resource';
   address?: string;
+  location?: string;
   category?: string;
 }
 
@@ -29,6 +29,15 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
   useEffect(() => {
     const fetchMapData = async () => {
       try {
+        // Fetch events with the new address column
+        const { data: events, error: eventsError } = await supabase
+          .from('events')
+          .select('*')
+          .not('latitude', 'is', null)
+          .not('longitude', 'is', null);
+
+        if (eventsError) throw eventsError;
+
         // Fetch local resources
         const { data: localResources, error: localResourcesError } = await supabase
           .from('local_resources')
@@ -38,7 +47,7 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
 
         if (localResourcesError) throw localResourcesError;
 
-        // Fetch other data (businesses, events, news)
+        // Fetch businesses
         const { data: businesses, error: businessError } = await supabase
           .from('business')
           .select('*')
@@ -47,7 +56,35 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
 
         if (businessError) throw businessError;
 
+        // Fetch news
+        const { data: news, error: newsError } = await supabase
+          .from('news')
+          .select('*')
+          .not('latitude', 'is', null)
+          .not('longitude', 'is', null);
+
+        if (newsError) throw newsError;
+
         const allItems: MapItem[] = [];
+
+        // Add events with address support
+        if (events) {
+          events.forEach(event => {
+            if (event.latitude && event.longitude) {
+              allItems.push({
+                id: event.id,
+                name: event.title,
+                description: event.description || undefined,
+                latitude: event.latitude,
+                longitude: event.longitude,
+                type: 'event',
+                address: event.address || event.location,
+                location: event.location,
+                category: event.category
+              });
+            }
+          });
+        }
 
         // Add local resources
         if (localResources) {
@@ -85,6 +122,26 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
           });
         }
 
+        // Add news
+        if (news) {
+          news.forEach(newsItem => {
+            if (newsItem.latitude && newsItem.longitude) {
+              allItems.push({
+                id: newsItem.id,
+                name: newsItem.title,
+                description: newsItem.content || undefined,
+                latitude: newsItem.latitude,
+                longitude: newsItem.longitude,
+                type: 'news',
+                address: newsItem.Address || newsItem.location,
+                location: newsItem.location,
+                category: 'News'
+              });
+            }
+          });
+        }
+
+        console.log('Fetched map items:', allItems.length);
         setMapItems(allItems);
       } catch (error) {
         console.error('Error fetching map data:', error);
@@ -120,19 +177,22 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
       // Add markers for each item
       mapItems.forEach(item => {
         const marker = new mapboxgl.Marker({
-          color: item.type === 'business' ? '#22c55e' : 
-                 item.type === 'local_resource' ? '#3b82f6' : '#ef4444'
+          color: item.type === 'event' ? '#ef4444' :
+                 item.type === 'business' ? '#22c55e' : 
+                 item.type === 'local_resource' ? '#3b82f6' : 
+                 item.type === 'news' ? '#f59e0b' : '#6b7280'
         })
           .setLngLat([item.longitude, item.latitude])
           .setPopup(
             new mapboxgl.Popup({ offset: 25 })
               .setHTML(`
-                <div>
-                  <h3>${item.name}</h3>
-                  ${item.description ? `<p>${item.description}</p>` : ''}
-                  ${item.address ? `<p><strong>Address:</strong> ${item.address}</p>` : ''}
-                  ${item.category ? `<p><strong>Category:</strong> ${item.category}</p>` : ''}
-                  <p><strong>Type:</strong> ${item.type.replace('_', ' ')}</p>
+                <div style="max-width: 300px;">
+                  <h3 style="margin: 0 0 8px 0; font-weight: bold;">${item.name}</h3>
+                  ${item.description ? `<p style="margin: 0 0 8px 0; font-size: 14px;">${item.description}</p>` : ''}
+                  ${item.address ? `<p style="margin: 0 0 4px 0;"><strong>Address:</strong> ${item.address}</p>` : ''}
+                  ${item.location && item.location !== item.address ? `<p style="margin: 0 0 4px 0;"><strong>Location:</strong> ${item.location}</p>` : ''}
+                  ${item.category ? `<p style="margin: 0 0 4px 0;"><strong>Category:</strong> ${item.category}</p>` : ''}
+                  <p style="margin: 4px 0 0 0; font-size: 12px; color: #666;"><strong>Type:</strong> ${item.type.replace('_', ' ')}</p>
                 </div>
               `)
           )

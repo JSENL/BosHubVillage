@@ -24,6 +24,7 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
     description: event.description || '',
     category: event.category,
     location: event.location,
+    address: event.address || '',
     date: event.date,
     start_time: event.start_time || '',
     end_time: event.end_time || '',
@@ -43,6 +44,7 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
           description: formData.description,
           category: formData.category,
           location: formData.location,
+          address: formData.address,
           date: formData.date,
           start_time: formData.start_time,
           end_time: formData.end_time,
@@ -118,6 +120,16 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
               value={formData.location}
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
               required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="address">Address</Label>
+            <Input
+              id="address"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              placeholder="Full street address (optional)"
             />
           </div>
 

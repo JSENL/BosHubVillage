@@ -35,14 +35,14 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
 
   const items: UnifiedItem[] = [];
 
-  // Process events with enhanced coordinate validation
+  // Process events with enhanced coordinate validation and address support
   if (eventsRes.data) {
     console.log('📅 Processing events:', eventsRes.data.length);
     eventsRes.data.forEach((event, index) => {
       const lat = event.latitude ? Number(event.latitude) : null;
       const lng = event.longitude ? Number(event.longitude) : null;
       
-      console.log(`Event ${index + 1} "${event.title}": lat=${lat}, lng=${lng}, location=${event.location}`);
+      console.log(`Event ${index + 1} "${event.title}": lat=${lat}, lng=${lng}, location=${event.location}, address=${event.address}`);
       
       items.push({
         id: event.id,
@@ -52,6 +52,7 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
         longitude: (lng && !isNaN(lng) && lng !== 0) ? lng : null,
         type: 'event',
         location: event.location,
+        address: event.address || event.location,
         category: event.category,
         date: event.date,
         start_time: event.start_time,
