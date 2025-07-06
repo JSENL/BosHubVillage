@@ -1,6 +1,10 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Filter } from 'lucide-react';
+import { TypeFilter } from '@/components/filters/TypeFilter';
+import { CategoryFilter } from '@/components/filters/CategoryFilter';
+import { LocationFilter } from '@/components/filters/LocationFilter';
+import { DateTimeFilter } from '@/components/filters/DateTimeFilter';
 import { 
   useEventFilterOptions, 
   useNewsFilterOptions, 
@@ -17,6 +21,10 @@ interface UniversalFiltersProps {
   onNeighborhoodChange: (neighborhood: string) => void;
   selectedVillage: string;
   onVillageChange: (village: string) => void;
+  dateFilter?: string;
+  onDateFilterChange?: (date: string) => void;
+  timeFilter?: string;
+  onTimeFilterChange?: (time: string) => void;
   filteredItemsCount: number;
   itemType: 'events' | 'businesses' | 'news' | 'local-services';
 }
@@ -30,6 +38,10 @@ export const UniversalFilters = ({
   onNeighborhoodChange,
   selectedVillage,
   onVillageChange,
+  dateFilter = '',
+  onDateFilterChange,
+  timeFilter = 'all',
+  onTimeFilterChange,
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
@@ -55,38 +67,6 @@ export const UniversalFilters = ({
 
   const { categories, neighborhoods, villages } = getFilterOptions();
 
-  const typeOptions = [
-    { value: 'all', label: 'All Types' },
-    { value: 'event', label: 'Events' },
-    { value: 'business', label: 'Business' },
-    { value: 'local-service', label: 'Local Resources' },
-    { value: 'news', label: 'News' }
-  ];
-
-  const categoryOptions = [
-    { value: 'all', label: 'All Categories' },
-    ...categories.map(category => ({
-      value: category,
-      label: category.charAt(0).toUpperCase() + category.slice(1)
-    }))
-  ];
-
-  const neighborhoodOptions = [
-    { value: 'all', label: 'All Neighborhoods' },
-    ...neighborhoods.map(neighborhood => ({
-      value: neighborhood.toLowerCase().replace(/\s+/g, '-'),
-      label: neighborhood
-    }))
-  ];
-
-  const villageOptions = [
-    { value: 'all', label: 'All Villages' },
-    ...villages.map(village => ({
-      value: village.toLowerCase().replace(/\s+/g, '-'),
-      label: village
-    }))
-  ];
-
   return (
     <div className="flex flex-wrap items-center gap-3 sm:gap-4 p-4 bg-white rounded-lg shadow-sm border">
       <div className="flex items-center space-x-2">
@@ -94,57 +74,34 @@ export const UniversalFilters = ({
         <span className="text-xs sm:text-sm font-medium text-gray-600">Filters:</span>
       </div>
       
-      <Select value={selectedType} onValueChange={onTypeChange}>
-        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Type" />
-        </SelectTrigger>
-        <SelectContent>
-          {typeOptions.map((type) => (
-            <SelectItem key={type.value} value={type.value}>
-              {type.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <TypeFilter
+        selectedType={selectedType}
+        onTypeChange={onTypeChange}
+      />
       
-      <Select value={selectedCategory} onValueChange={onCategoryChange}>
-        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Category" />
-        </SelectTrigger>
-        <SelectContent>
-          {categoryOptions.map((category) => (
-            <SelectItem key={category.value} value={category.value}>
-              {category.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <CategoryFilter
+        selectedCategory={selectedCategory}
+        onCategoryChange={onCategoryChange}
+        availableCategories={categories}
+      />
 
-      <Select value={selectedNeighborhood} onValueChange={onNeighborhoodChange}>
-        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Neighborhood" />
-        </SelectTrigger>
-        <SelectContent>
-          {neighborhoodOptions.map((neighborhood) => (
-            <SelectItem key={neighborhood.value} value={neighborhood.value}>
-              {neighborhood.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <LocationFilter
+        selectedNeighborhood={selectedNeighborhood}
+        onNeighborhoodChange={onNeighborhoodChange}
+        selectedVillage={selectedVillage}
+        onVillageChange={onVillageChange}
+        availableNeighborhoods={neighborhoods}
+        availableVillages={villages}
+      />
 
-      <Select value={selectedVillage} onValueChange={onVillageChange}>
-        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Village" />
-        </SelectTrigger>
-        <SelectContent>
-          {villageOptions.map((village) => (
-            <SelectItem key={village.value} value={village.value}>
-              {village.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {onDateFilterChange && onTimeFilterChange && (
+        <DateTimeFilter
+          dateFilter={dateFilter}
+          onDateFilterChange={onDateFilterChange}
+          timeFilter={timeFilter}
+          onTimeFilterChange={onTimeFilterChange}
+        />
+      )}
 
       <div className="text-xs sm:text-sm text-gray-600">
         {filteredItemsCount} {itemType} found
