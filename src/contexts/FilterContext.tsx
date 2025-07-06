@@ -13,6 +13,8 @@ interface FilterContextType {
   setSelectedVillage: (village: string) => void;
   selectedTypes: string[];
   setSelectedTypes: (types: string[]) => void;
+  selectedTypeFilter: string;
+  setSelectedTypeFilter: (type: string) => void;
   
   // Event-specific filters
   dateFilter: string;
@@ -47,6 +49,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState('all');
   const [selectedVillage, setSelectedVillage] = useState('all');
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['event', 'news', 'business', 'local-service']);
+  const [selectedTypeFilter, setSelectedTypeFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('');
   const [timeFilter, setTimeFilter] = useState('all');
 
@@ -55,6 +58,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     setSelectedCategory('all');
     setSelectedNeighborhood('all');
     setSelectedVillage('all');
+    setSelectedTypeFilter('all');
     setDateFilter('');
     setTimeFilter('all');
   };
@@ -78,6 +82,8 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     setSelectedVillage,
     selectedTypes,
     setSelectedTypes,
+    selectedTypeFilter,
+    setSelectedTypeFilter,
     dateFilter,
     setDateFilter,
     timeFilter,

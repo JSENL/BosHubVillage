@@ -24,17 +24,27 @@ const UnifiedIndexContent = () => {
     setSelectedVillage,
     selectedTypes,
     toggleType,
+    selectedTypeFilter,
+    setSelectedTypeFilter,
     dateFilter,
     setDateFilter,
     timeFilter,
     setTimeFilter
   } = useFilters();
 
+  // Convert selectedTypeFilter to selectedTypes array for filtering
+  const getTypesFromFilter = (typeFilter: string) => {
+    if (typeFilter === 'all') {
+      return ['event', 'news', 'business', 'local-service'];
+    }
+    return [typeFilter];
+  };
+
   const { allItems, mappableItems, loading, refetch } = useUnifiedFiltering({
     selectedCategory,
     selectedNeighborhood,
     selectedVillage,
-    selectedTypes,
+    selectedTypes: getTypesFromFilter(selectedTypeFilter),
     searchTerm,
     dateFilter,
     timeFilter
@@ -43,8 +53,8 @@ const UnifiedIndexContent = () => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
-  // Default to showing all types if none are selected
-  const typesToShow = selectedTypes.length === 0 ? ['event', 'news', 'business', 'local-service'] : selectedTypes;
+  // Use the filtered types from the type filter
+  const typesToShow = getTypesFromFilter(selectedTypeFilter);
 
   const handleItemClick = (item: UnifiedItem) => {
     console.log('Item selected from map:', item.title);
@@ -104,6 +114,8 @@ const UnifiedIndexContent = () => {
           onNeighborhoodChange={setSelectedNeighborhood}
           selectedVillage={selectedVillage}
           onVillageChange={setSelectedVillage}
+          selectedTypeFilter={selectedTypeFilter}
+          onTypeFilterChange={setSelectedTypeFilter}
           filteredItemsCount={allItems.length}
           itemType="events"
         />
@@ -132,7 +144,7 @@ const UnifiedIndexContent = () => {
         <ResultsSummary 
           allItems={allItems}
           mappableItems={mappableItems}
-          selectedTypes={selectedTypes}
+          selectedTypes={getTypesFromFilter(selectedTypeFilter)}
         />
 
         <ItemsList 

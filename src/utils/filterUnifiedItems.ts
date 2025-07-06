@@ -10,6 +10,7 @@ interface FilterCriteria {
   selectedVillage: string;
   dateFilter: string;
   timeFilter: string;
+  selectedTypeFilter?: string;
 }
 
 export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteria): UnifiedItem[] => {
@@ -20,12 +21,18 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
     selectedNeighborhood,
     selectedVillage,
     dateFilter,
-    timeFilter
+    timeFilter,
+    selectedTypeFilter
   } = criteria;
 
   return items.filter(item => {
-    // Type filter
-    const matchesType = selectedTypes.length === 0 || selectedTypes.includes(item.type);
+    // Type filter - prioritize selectedTypeFilter if provided
+    let matchesType = true;
+    if (selectedTypeFilter && selectedTypeFilter !== 'all') {
+      matchesType = item.type === selectedTypeFilter;
+    } else {
+      matchesType = selectedTypes.length === 0 || selectedTypes.includes(item.type);
+    }
 
     // Search term filter
     const matchesSearch = searchTerm === '' || 
