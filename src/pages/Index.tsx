@@ -33,7 +33,7 @@ const Index = () => {
   const [selectedVillage, setSelectedVillage] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Data hooks - using correct property names
+  // Data hooks - using correct property names based on actual hook implementations
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: news, isLoading: newsLoading } = useNews();
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
