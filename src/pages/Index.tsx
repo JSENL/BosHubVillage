@@ -21,7 +21,7 @@ const Index = () => {
           <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="business">Business</TabsTrigger>
-            <TabsTrigger value="local-services">Local Services</TabsTrigger>
+            <TabsTrigger value="local-services">Local Resources</TabsTrigger>
             <TabsTrigger value="news">News</TabsTrigger>
           </TabsList>
           
