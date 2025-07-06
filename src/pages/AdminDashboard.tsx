@@ -92,7 +92,7 @@ const AdminDashboard = () => {
               </TabsTrigger>
               <TabsTrigger value="local-services" className="flex items-center">
                 <Heart className="h-4 w-4 mr-2" />
-                Local Services
+                Local Resources
               </TabsTrigger>
               <TabsTrigger value="news" className="flex items-center">
                 <Newspaper className="h-4 w-4 mr-2" />
