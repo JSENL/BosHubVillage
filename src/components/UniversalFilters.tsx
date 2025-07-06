@@ -1,7 +1,6 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Filter } from 'lucide-react';
-import { TypeFilter } from '@/components/filters/TypeFilter';
 import { CategoryFilter } from '@/components/filters/CategoryFilter';
 import { LocationFilter } from '@/components/filters/LocationFilter';
 import { DateTimeFilter } from '@/components/filters/DateTimeFilter';
@@ -67,6 +66,14 @@ export const UniversalFilters = ({
 
   const { categories, neighborhoods, villages } = getFilterOptions();
 
+  const typeOptions = [
+    { value: 'all', label: 'All Types' },
+    { value: 'event', label: 'Events' },
+    { value: 'business', label: 'Business' },
+    { value: 'local-service', label: 'Local Resources' },
+    { value: 'news', label: 'News' }
+  ];
+
   return (
     <div className="flex flex-wrap items-center gap-3 sm:gap-4 p-4 bg-white rounded-lg shadow-sm border">
       <div className="flex items-center space-x-2">
@@ -74,10 +81,18 @@ export const UniversalFilters = ({
         <span className="text-xs sm:text-sm font-medium text-gray-600">Filters:</span>
       </div>
       
-      <TypeFilter
-        selectedType={selectedType}
-        onTypeChange={onTypeChange}
-      />
+      <Select value={selectedType} onValueChange={onTypeChange}>
+        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
+          <SelectValue placeholder="Type" />
+        </SelectTrigger>
+        <SelectContent>
+          {typeOptions.map((type) => (
+            <SelectItem key={type.value} value={type.value}>
+              {type.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       
       <CategoryFilter
         selectedCategory={selectedCategory}
