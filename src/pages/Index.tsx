@@ -33,7 +33,7 @@ const Index = () => {
   const [selectedVillage, setSelectedVillage] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Data hooks
+  // Data hooks - using correct property names
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: news, isLoading: newsLoading } = useNews();
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
@@ -73,7 +73,7 @@ const Index = () => {
       longitude: newsItem.longitude,
       type: 'news' as const,
       location: newsItem.location,
-      address: newsItem.Address,
+      address: newsItem.Address || newsItem.location,
       content: newsItem.content,
       source: newsItem.source,
       villages: newsItem.villages,
@@ -88,7 +88,7 @@ const Index = () => {
       longitude: newsSubmission.longitude,
       type: 'news' as const,
       location: newsSubmission.location,
-      address: newsSubmission.Address,
+      address: newsSubmission.Address || newsSubmission.location,
       content: newsSubmission.content,
       source: newsSubmission.source,
       villages: newsSubmission.villages,
