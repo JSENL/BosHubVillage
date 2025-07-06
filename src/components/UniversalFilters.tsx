@@ -15,8 +15,6 @@ interface UniversalFiltersProps {
   onNeighborhoodChange: (neighborhood: string) => void;
   selectedVillage: string;
   onVillageChange: (village: string) => void;
-  selectedTypeFilter: string;
-  onTypeFilterChange: (type: string) => void;
   filteredItemsCount: number;
   itemType: 'events' | 'businesses' | 'news' | 'local-services';
 }
@@ -28,8 +26,6 @@ export const UniversalFilters = ({
   onNeighborhoodChange,
   selectedVillage,
   onVillageChange,
-  selectedTypeFilter,
-  onTypeFilterChange,
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
@@ -54,14 +50,6 @@ export const UniversalFilters = ({
   };
 
   const { categories, neighborhoods, villages } = getFilterOptions();
-
-  const typeOptions = [
-    { value: 'all', label: 'All Types' },
-    { value: 'event', label: 'Events' },
-    { value: 'business', label: 'Business' },
-    { value: 'local-service', label: 'Local Resources' },
-    { value: 'news', label: 'News' }
-  ];
 
   const categoryOptions = [
     { value: 'all', label: 'All Categories' },
@@ -94,19 +82,6 @@ export const UniversalFilters = ({
         <span className="text-xs sm:text-sm font-medium text-gray-600">Filters:</span>
       </div>
       
-      <Select value={selectedTypeFilter} onValueChange={onTypeFilterChange}>
-        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Type" />
-        </SelectTrigger>
-        <SelectContent>
-          {typeOptions.map((type) => (
-            <SelectItem key={type.value} value={type.value}>
-              {type.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
       <Select value={selectedCategory} onValueChange={onCategoryChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
           <SelectValue placeholder="Category" />
