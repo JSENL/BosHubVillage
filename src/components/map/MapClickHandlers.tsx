@@ -16,40 +16,8 @@ export const useMapClickHandlers = ({ onItemClick }: UseMapClickHandlersProps) =
       onItemClick(item);
     }
 
-    // Enhanced element finding with multiple ID patterns
-    setTimeout(() => {
-      const possibleIds = [
-        `item-${item.id}`,
-        `event-${item.id}`,
-        `news-${item.id}`,
-        `business-${item.id}`,
-        `service-${item.id}`,
-        `local-service-${item.id}`
-      ];
-      
-      let itemElement = null;
-      for (const id of possibleIds) {
-        itemElement = document.getElementById(id);
-        if (itemElement) {
-          console.log(`✅ Found element with ID: ${id}`);
-          break;
-        }
-      }
-      
-      if (itemElement) {
-        itemElement.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center' 
-        });
-        
-        itemElement.classList.add('ring-2', 'ring-purple-500', 'ring-opacity-75');
-        setTimeout(() => {
-          itemElement?.classList.remove('ring-2', 'ring-purple-500', 'ring-opacity-75');
-        }, 3000);
-      } else {
-        console.warn('⚠️ Item element not found for any ID pattern:', possibleIds);
-      }
-    }, 100);
+    // Show popup information instead of scrolling - the popup will be handled by the marker itself
+    // No need to scroll to the element, just let the popup show
   };
 
   const handleMarkerDoubleClick = (item: UnifiedItem) => {

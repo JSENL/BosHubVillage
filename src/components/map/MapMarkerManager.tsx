@@ -124,6 +124,19 @@ export const useMapMarkers = ({
               <p style="margin: 2px 0;"><strong>Type:</strong> <span style="color: ${getMarkerColor(item.type)}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
               ${item.date ? `<p style="margin: 2px 0;"><strong>Date:</strong> ${item.date}</p>` : ''}
             </div>
+            <div style="margin-top: 12px;">
+              <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
+                background: linear-gradient(to right, #8b5cf6, #3b82f6);
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                cursor: pointer;
+                font-weight: 500;
+                width: 100%;
+              ">View Details</button>
+            </div>
           </div>
         `;
 
@@ -141,10 +154,17 @@ export const useMapMarkers = ({
           .setPopup(popup)
           .addTo(map);
 
-        // Add click handlers with simplified data objects
+        // Add click handlers - single click shows popup
         markerElement.addEventListener('click', (e) => {
           e.stopPropagation();
           console.log('📍 Marker clicked:', item.title);
+          
+          // Toggle popup visibility
+          if (popup.isOpen()) {
+            popup.remove();
+          } else {
+            popup.addTo(map);
+          }
           
           if (onMarkerClick) {
             const simpleItem = {
