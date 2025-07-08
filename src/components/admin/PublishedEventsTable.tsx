@@ -28,14 +28,14 @@ interface PublishedEventsTableProps {
 
 export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableProps) => {
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const handleDeleteEvent = async (eventId: string) => {
     if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
       return;
     }
 
-    setActionLoading(true);
+    setActionLoading(eventId);
     try {
       const { error } = await supabase
         .from('events')
@@ -50,7 +50,7 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
       console.error('Error deleting event:', error);
       toast.error('Failed to delete event');
     } finally {
-      setActionLoading(false);
+      setActionLoading(null);
     }
   };
 
@@ -111,18 +111,19 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
                           onClick={() => setEditingEvent(event)}
                           variant="outline"
                           size="sm"
+                          disabled={actionLoading === event.id}
                         >
                           <Edit className="h-4 w-4 mr-2" />
                           Edit
                         </Button>
                         <Button
                           onClick={() => handleDeleteEvent(event.id)}
-                          disabled={actionLoading}
+                          disabled={actionLoading === event.id}
                           variant="destructive"
                           size="sm"
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
+                          {actionLoading === event.id ? 'Deleting...' : 'Delete'}
                         </Button>
                       </div>
                     </TableCell>
