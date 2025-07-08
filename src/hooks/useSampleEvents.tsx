@@ -15,6 +15,7 @@ export const useSampleEvents = () => {
       start_time: sampleEvent.time, // Use time as start_time
       end_time: '', // No end time for sample events
       location: sampleEvent.location,
+      address: sampleEvent.location, // Add address field
       price: sampleEvent.price,
       max_attendees: sampleEvent.max_attendees,
       is_recurring: sampleEvent.is_recurring,
@@ -23,6 +24,7 @@ export const useSampleEvents = () => {
       latitude: sampleEvent.latitude,
       longitude: sampleEvent.longitude,
       neighborhoods: 'downtown,back-bay', // Convert array to string format
+      villages: null, // Add villages field as null for sample events
       attendees_count: 0
     }));
   }, []);

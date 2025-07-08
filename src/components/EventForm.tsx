@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
@@ -69,6 +68,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         start_time: formData.start_time || '00:00',
         end_time: formData.end_time || '00:00',
         location: formData.location,
+        address: formData.location,
         price: parseFloat(formData.price) || 0,
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
@@ -76,6 +76,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods.join(',') : null,
+        villages: null,
       });
       
       onClose();
