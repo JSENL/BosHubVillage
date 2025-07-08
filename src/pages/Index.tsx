@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
@@ -24,6 +23,7 @@ import { geocodeLocalServices } from "@/utils/geocodeLocalServices";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 import { UnifiedItem } from "@/types/unifiedItem";
+import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 
 const Index = () => {
   // Filter states
@@ -268,6 +268,9 @@ const Index = () => {
     }
   };
 
+  // Determine selected types for the map
+  const selectedTypes = selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
@@ -277,7 +280,11 @@ const Index = () => {
         <div className="space-y-6">
           <h2 className="text-2xl font-bold text-gray-900">Local Community</h2>
           
-          <SectionMap height="400px" />
+          <EnhancedUniversalMap 
+            items={filteredItems}
+            height="400px"
+            selectedTypes={selectedTypes}
+          />
           
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
