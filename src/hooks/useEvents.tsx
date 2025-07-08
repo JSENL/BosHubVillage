@@ -22,6 +22,7 @@ export interface Event {
   latitude: number | null;
   longitude: number | null;
   neighborhoods: string | null;
+  villages: string | null;
   attendees_count?: number;
 }
 
