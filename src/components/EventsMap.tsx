@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Event } from '@/hooks/useEvents';
@@ -7,7 +8,6 @@ import { useEventHighlight } from '@/hooks/useEventHighlight';
 import { useMapLoader } from '@/hooks/useMapLoader';
 import { useMapboxMap } from '@/hooks/useMapboxMap';
 import { useMapMarkers } from '@/hooks/useMapMarkers';
-import { createEventPopupContent } from '@/utils/mapPopupUtils';
 
 interface EventsMapProps {
   searchQuery: string;
@@ -77,12 +77,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   useMapMarkers({
     map: mapInstance,
     items: unifiedEvents,
-    onMarkerClick: handleMarkerClick,
-    createPopupContent: (item: UnifiedItem) => {
-      // Convert UnifiedItem back to Event for popup creation
-      const event = item.originalData as Event;
-      return createEventPopupContent(event);
-    }
+    onMarkerClick: handleMarkerClick
   });
 
   const handleEventClick = (event: Event) => {
