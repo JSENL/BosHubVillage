@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Event } from '@/hooks/useEvents';
@@ -77,7 +76,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   // Add markers for unified events
   useMapMarkers({
     map: mapInstance,
-    events: unifiedEvents,
+    items: unifiedEvents,
     onMarkerClick: handleMarkerClick,
     createPopupContent: (item: UnifiedItem) => {
       // Convert UnifiedItem back to Event for popup creation
