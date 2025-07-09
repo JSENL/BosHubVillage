@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { SectionMap } from "@/components/SectionMap";
+import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UniversalFilters } from "@/components/UniversalFilters";
 import BusinessCard from "@/components/BusinessCard";
 import { useBusiness } from "@/hooks/useBusiness";
@@ -9,6 +9,8 @@ import { useGeocoding } from "@/hooks/useGeocoding";
 import { geocodeBusinesses } from "@/utils/geocodeBusinesses";
 import { Business } from "@/types/business";
 import { BusinessSubmission } from "@/types/submissions";
+import { UnifiedItem } from "@/types/unifiedItem";
+import { filterUnifiedItems } from "@/utils/filterUnifiedItems";
 import { toast } from "sonner";
 
 export const BusinessTab = () => {
@@ -18,16 +20,45 @@ export const BusinessTab = () => {
   const [hasGeocodedBusinesses, setHasGeocodedBusinesses] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
   
-  // Filter states
-  const [selectedType, setSelectedType] = useState("all");
+  // Filter states - matching the pattern used in other tabs
+  const [selectedType, setSelectedType] = useState("business");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   
   const allBusinesses: (Business | BusinessSubmission)[] = [
     ...(businesses || []),
     ...(businessSubmissions || [])
   ];
+
+  // Convert businesses to UnifiedItem format for the map
+  const unifiedBusinesses: UnifiedItem[] = allBusinesses.map(business => ({
+    id: business.id,
+    title: business.title,
+    description: business.description || '',
+    latitude: 'latitude' in business ? business.latitude : null,
+    longitude: 'longitude' in business ? business.longitude : null,
+    type: 'business' as const,
+    address: business.address,
+    category: business.business_type,
+    business_type: business.business_type,
+    neighborhoods: 'neighborhood' in business ? business.neighborhood : business.neighborhood,
+    villages: 'villages' in business ? business.villages : undefined,
+    originalData: business
+  }));
+
+  // Apply filtering
+  const filteredBusinesses = filterUnifiedItems(unifiedBusinesses, {
+    selectedTypes: [selectedType],
+    selectedType,
+    searchTerm,
+    selectedCategory,
+    selectedNeighborhood,
+    selectedVillage,
+    dateFilter: '',
+    timeFilter: 'all'
+  });
 
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
 
@@ -36,6 +67,7 @@ export const BusinessTab = () => {
     if (businesses && businesses.length > 0) {
       console.log('🏢 BusinessTab: Loaded businesses:', {
         count: businesses.length,
+        withCoords: businesses.filter(b => b.latitude && b.longitude && Number(b.latitude) !== 0 && Number(b.longitude) !== 0).length,
         samples: businesses.slice(0, 2).map(b => ({
           id: b.id,
           title: b.title,
@@ -104,11 +136,15 @@ export const BusinessTab = () => {
         onNeighborhoodChange={setSelectedNeighborhood}
         selectedVillage={selectedVillage}
         onVillageChange={setSelectedVillage}
-        filteredItemsCount={allBusinesses.length}
+        filteredItemsCount={filteredBusinesses.length}
         itemType="businesses"
       />
       
-      <SectionMap height="400px" />
+      <EnhancedUniversalMap
+        items={filteredBusinesses}
+        height="400px"
+        selectedTypes={['business']}
+      />
       
       {isBusinessLoading ? (
         <div className="text-center py-8">
@@ -120,23 +156,23 @@ export const BusinessTab = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-2 text-gray-600">Adding locations to businesses...</p>
         </div>
-      ) : allBusinesses && allBusinesses.length > 0 ? (
+      ) : filteredBusinesses && filteredBusinesses.length > 0 ? (
         <div>
           <div className="mb-4 text-sm text-gray-600">
-            Showing {allBusinesses.length} businesses 
+            Showing {filteredBusinesses.length} businesses 
             {businesses && (
               <span> • {businesses.filter(b => b.latitude && b.longitude && Number(b.latitude) !== 0 && Number(b.longitude) !== 0).length} with map locations</span>
             )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allBusinesses.map((business) => (
-              <BusinessCard key={business.id} business={business} />
+            {filteredBusinesses.map((business) => (
+              <BusinessCard key={business.id} business={business.originalData} />
             ))}
           </div>
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          No businesses found. Be the first to add one!
+          No businesses found matching your filters. Try adjusting your search criteria.
         </div>
       )}
     </div>

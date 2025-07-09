@@ -50,17 +50,22 @@ export const UniversalFilters = ({
   const localServiceOptions = useLocalServiceFilterOptions();
 
   const getFilterOptions = () => {
-    switch (itemType) {
-      case 'events':
+    switch (selectedType) {
+      case 'event':
         return eventOptions;
       case 'news':
         return newsOptions;
-      case 'businesses':
+      case 'business':
         return businessOptions;
-      case 'local-services':
+      case 'local-service':
         return localServiceOptions;
       default:
-        return { categories: [], neighborhoods: [], villages: [] };
+        // For 'all' type, combine all options
+        return {
+          categories: [...eventOptions.categories, ...newsOptions.categories, ...businessOptions.categories, ...localServiceOptions.categories],
+          neighborhoods: [...eventOptions.neighborhoods, ...newsOptions.neighborhoods, ...businessOptions.neighborhoods, ...localServiceOptions.neighborhoods],
+          villages: [...eventOptions.villages, ...newsOptions.villages, ...businessOptions.villages, ...localServiceOptions.villages]
+        };
     }
   };
 
@@ -109,7 +114,7 @@ export const UniversalFilters = ({
         availableVillages={villages}
       />
 
-      {onDateFilterChange && onTimeFilterChange && (
+      {onDateFilterChange && onTimeFilterChange && selectedType === 'event' && (
         <DateTimeFilter
           dateFilter={dateFilter}
           onDateFilterChange={onDateFilterChange}
@@ -119,7 +124,7 @@ export const UniversalFilters = ({
       )}
 
       <div className="text-xs sm:text-sm text-gray-600">
-        {filteredItemsCount} {itemType} found
+        {filteredItemsCount} {selectedType === 'all' ? 'items' : selectedType === 'business' ? 'businesses' : itemType} found
       </div>
     </div>
   );
