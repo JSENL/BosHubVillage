@@ -133,6 +133,8 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          latitude: number | null
+          longitude: number | null
           neighborhood: string
           reviewed_at: string | null
           reviewed_by: string | null
@@ -149,6 +151,8 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           neighborhood: string
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -165,6 +169,8 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           neighborhood?: string
           reviewed_at?: string | null
           reviewed_by?: string | null

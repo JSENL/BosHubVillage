@@ -27,17 +27,27 @@ export const useBusinessSubmissionOperations = () => {
 
         if (fetchError) throw fetchError;
 
-        let latitude = null;
-        let longitude = null;
+        let latitude = submission.latitude;
+        let longitude = submission.longitude;
 
-        // Try to geocode the business address if geocoding is available
-        if (submission.address && isReady) {
+        // Try to geocode the business address if coordinates are missing and geocoding is available
+        if (submission.address && isReady && (!latitude || !longitude)) {
           console.log('Attempting to geocode business address:', submission.address);
           const geocodeResult = await geocode(submission.address);
           if (geocodeResult) {
             latitude = geocodeResult.latitude;
             longitude = geocodeResult.longitude;
             console.log('Successfully geocoded business address:', { latitude, longitude });
+            
+            // Update the submission with the geocoded coordinates
+            const { error: updateError } = await supabase
+              .from('business_submissions')
+              .update({ latitude, longitude })
+              .eq('id', submissionId);
+
+            if (updateError) {
+              console.error('Error updating submission with coordinates:', updateError);
+            }
           }
         }
 

@@ -10,9 +10,10 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { BusinessSubmission } from '@/types/submissions';
 
 interface PendingBusinessSubmissionsProps {
-  submissions: any[];
+  submissions: BusinessSubmission[];
   onUpdate: () => void;
 }
 
