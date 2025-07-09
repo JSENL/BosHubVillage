@@ -65,3 +65,47 @@ export const geocodeBusinesses = async (
     toast.error(`Failed to geocode ${failureCount} businesses`);
   }
 };
+
+export const geocodeAllBusinesses = async (
+  geocodeFunction: (address: string) => Promise<GeocodeResult | null>
+): Promise<void> => {
+  console.log('🚀 Starting to geocode all businesses');
+  
+  try {
+    // Fetch all businesses that need geocoding (missing coordinates or have invalid coordinates)
+    const { data: businesses, error } = await supabase
+      .from('business')
+      .select('id, title, address, latitude, longitude')
+      .or('latitude.is.null,longitude.is.null');
+
+    if (error) {
+      console.error('❌ Error fetching businesses:', error);
+      toast.error('Failed to fetch businesses for geocoding');
+      return;
+    }
+
+    if (!businesses || businesses.length === 0) {
+      console.log('✅ No businesses need geocoding');
+      toast.success('All businesses already have coordinates');
+      return;
+    }
+
+    console.log(`📍 Found ${businesses.length} businesses that need geocoding`);
+    
+    // Convert to the expected format
+    const businessesToGeocode: BusinessToGeocode[] = businesses.map(business => ({
+      id: business.id,
+      address: business.address,
+      title: business.title,
+      latitude: business.latitude,
+      longitude: business.longitude
+    }));
+
+    // Start geocoding process
+    await geocodeBusinesses(businessesToGeocode, geocodeFunction);
+    
+  } catch (error) {
+    console.error('❌ Error in geocodeAllBusinesses:', error);
+    toast.error('Failed to geocode businesses');
+  }
+};
