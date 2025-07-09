@@ -32,7 +32,7 @@ export const BusinessTab = () => {
     ...(businessSubmissions || [])
   ];
 
-  // Convert businesses to UnifiedItem format for the map
+  // Convert business to UnifiedItem format for the map
   const unifiedBusinesses: UnifiedItem[] = allBusinesses.map((business) => {
     return {
       id: business.id,
@@ -101,7 +101,7 @@ export const BusinessTab = () => {
         return;
       }
 
-      // Find businesses that need geocoding
+      // Find business that need geocoding
       const businessesNeedingGeocode = businesses.filter(business => 
         business.address && 
         business.address.trim() !== '' &&
@@ -147,7 +147,7 @@ export const BusinessTab = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Local Businesses</h2>
+      <h2 className="text-2xl font-bold text-gray-900">Local Business</h2>
       
       <UniversalFilters
         selectedType={selectedType}
@@ -159,7 +159,7 @@ export const BusinessTab = () => {
         selectedVillage={selectedVillage}
         onVillageChange={setSelectedVillage}
         filteredItemsCount={filteredBusinesses.length}
-        itemType="businesses"
+        itemType="business"
       />
       
       <EnhancedUniversalMap
@@ -171,17 +171,17 @@ export const BusinessTab = () => {
       {isBusinessLoading ? (
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading businesses...</p>
+          <p className="mt-2 text-gray-600">Loading business...</p>
         </div>
       ) : isGeocoding ? (
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Adding locations to businesses...</p>
+          <p className="mt-2 text-gray-600">Adding locations to business...</p>
         </div>
       ) : filteredBusinesses && filteredBusinesses.length > 0 ? (
         <div>
           <div className="mb-4 text-sm text-gray-600">
-            Showing {filteredBusinesses.length} businesses 
+            Showing {filteredBusinesses.length} business 
             {businesses && (
               <span> • {businesses.filter(b => {
                 const lat = Number(b.latitude);
@@ -198,7 +198,7 @@ export const BusinessTab = () => {
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          No businesses found matching your filters. Try adjusting your search criteria.
+          No business found matching your filters. Try adjusting your search criteria.
         </div>
       )}
     </div>

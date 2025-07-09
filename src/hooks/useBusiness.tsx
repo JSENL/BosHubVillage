@@ -7,7 +7,7 @@ export const useBusiness = () => {
   return useQuery({
     queryKey: ['business'],
     queryFn: async () => {
-      console.log('Fetching businesses from Supabase...');
+      console.log('Fetching business from Supabase...');
       
       const { data, error } = await supabase
         .from('business')
@@ -15,7 +15,7 @@ export const useBusiness = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching businesses:', error);
+        console.error('Error fetching business:', error);
         throw error;
       }
 

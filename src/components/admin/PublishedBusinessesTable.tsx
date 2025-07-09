@@ -73,11 +73,11 @@ export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusi
 
       if (error) throw error;
 
-      toast.success('All businesses deleted successfully');
+      toast.success('All business deleted successfully');
       onUpdate();
     } catch (error: any) {
-      console.error('Error deleting all businesses:', error);
-      toast.error('Failed to delete all businesses');
+      console.error('Error deleting all business:', error);
+      toast.error('Failed to delete all business');
     } finally {
       setActionLoading(null);
     }
@@ -90,7 +90,7 @@ export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusi
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center text-gray-900">
               <Building className="h-5 w-5 mr-2 text-purple-600" />
-              Published Businesses ({businesses?.length || 0})
+              Published Business ({businesses?.length || 0})
             </CardTitle>
             {businesses && businesses.length > 0 && (
               <AlertDialog>
@@ -108,10 +108,10 @@ export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusi
                   <AlertDialogHeader>
                     <AlertDialogTitle className="flex items-center">
                       <AlertTriangle className="h-5 w-5 mr-2 text-red-500" />
-                      Delete All Businesses
+                      Delete All Business
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      Are you sure you want to delete all {businesses.length} businesses? This action cannot be undone and will permanently remove all business data from the system.
+                      Are you sure you want to delete all {businesses.length} business? This action cannot be undone and will permanently remove all business data from the system.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -132,8 +132,8 @@ export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusi
           {!businesses || businesses.length === 0 ? (
             <div className="text-center p-8">
               <Building className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Published Businesses</h3>
-              <p className="text-gray-600">Published businesses will appear here.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Published Business</h3>
+              <p className="text-gray-600">Published business will appear here.</p>
             </div>
           ) : (
             <Table>

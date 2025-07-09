@@ -34,11 +34,11 @@ export const DeleteAllBusinessesButton = ({ businessCount, onUpdate }: DeleteAll
 
       if (error) throw error;
 
-      toast.success('All businesses deleted successfully');
+      toast.success('All business deleted successfully');
       onUpdate();
     } catch (error: any) {
-      console.error('Error deleting all businesses:', error);
-      toast.error('Failed to delete all businesses');
+      console.error('Error deleting all business:', error);
+      toast.error('Failed to delete all business');
     } finally {
       setIsDeleting(false);
     }
@@ -55,17 +55,17 @@ export const DeleteAllBusinessesButton = ({ businessCount, onUpdate }: DeleteAll
           disabled={isDeleting}
         >
           <Trash2 className="h-4 w-4 mr-2" />
-          Delete All Businesses
+          Delete All Business
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center">
             <AlertTriangle className="h-5 w-5 mr-2 text-red-500" />
-            Delete All Businesses
+            Delete All Business
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete all {businessCount} businesses? This action cannot be undone and will permanently remove all business data from the system.
+            Are you sure you want to delete all {businessCount} business? This action cannot be undone and will permanently remove all business data from the system.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

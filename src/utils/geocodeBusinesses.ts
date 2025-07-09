@@ -19,10 +19,10 @@ export const geocodeBusinesses = async (
   businesses: BusinessToGeocode[],
   geocodeFunction: (address: string) => Promise<GeocodeResult | null>
 ): Promise<void> => {
-  console.log(`🌍 Starting geocoding for ${businesses.length} businesses`);
+  console.log(`🌍 Starting geocoding for ${businesses.length} business`);
   
   if (businesses.length === 0) {
-    console.log('No businesses to geocode');
+    console.log('No business to geocode');
     return;
   }
 
@@ -76,38 +76,38 @@ export const geocodeBusinesses = async (
   console.log(`🎯 Geocoding complete: ${successCount} successful, ${failCount} failed`);
   
   if (successCount > 0) {
-    toast.success(`Successfully geocoded ${successCount} businesses!`);
+    toast.success(`Successfully geocoded ${successCount} business!`);
   }
   if (failCount > 0) {
-    toast.warning(`Failed to geocode ${failCount} businesses. Check addresses and try again.`);
+    toast.warning(`Failed to geocode ${failCount} business. Check addresses and try again.`);
   }
 };
 
 export const geocodeAllBusinesses = async (
   geocodeFunction: (address: string) => Promise<GeocodeResult | null>
 ): Promise<void> => {
-  console.log('🚀 Starting to geocode all businesses');
+  console.log('🚀 Starting to geocode all business');
   
   try {
-    // Fetch all businesses that need geocoding
+    // Fetch all business that need geocoding
     const { data: businesses, error } = await supabase
       .from('business')
       .select('id, title, address, latitude, longitude')
       .or('latitude.is.null,longitude.is.null,latitude.eq.0,longitude.eq.0');
 
     if (error) {
-      console.error('❌ Error fetching businesses:', error);
-      toast.error('Failed to fetch businesses for geocoding');
+      console.error('❌ Error fetching business:', error);
+      toast.error('Failed to fetch business for geocoding');
       return;
     }
 
     if (!businesses || businesses.length === 0) {
-      console.log('✅ No businesses need geocoding');
-      toast.success('All businesses already have coordinates');
+      console.log('✅ No business need geocoding');
+      toast.success('All business already have coordinates');
       return;
     }
 
-    console.log(`📍 Found ${businesses.length} businesses that need geocoding`);
+    console.log(`📍 Found ${businesses.length} business that need geocoding`);
     
     // Convert to the expected format
     const businessesToGeocode: BusinessToGeocode[] = businesses
@@ -121,7 +121,7 @@ export const geocodeAllBusinesses = async (
       }));
 
     if (businessesToGeocode.length === 0) {
-      toast.warning('No businesses found with valid addresses to geocode');
+      toast.warning('No business found with valid addresses to geocode');
       return;
     }
 
@@ -130,6 +130,6 @@ export const geocodeAllBusinesses = async (
     
   } catch (error) {
     console.error('❌ Error in geocodeAllBusinesses:', error);
-    toast.error('Failed to geocode businesses');
+    toast.error('Failed to geocode business');
   }
 };
