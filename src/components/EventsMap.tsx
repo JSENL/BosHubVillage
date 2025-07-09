@@ -1,7 +1,8 @@
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Event } from '@/hooks/useEvents';
+import { UnifiedItem } from '@/types/unifiedItem';
 import { EventsSidebar } from './map/EventsSidebar';
 import { useEventHighlight } from '@/hooks/useEventHighlight';
 import { useMapLoader } from '@/hooks/useMapLoader';
@@ -28,6 +29,26 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     return hasCoordinates;
   });
 
+  // Convert events to UnifiedItem format for the map
+  const unifiedEvents = useMemo<UnifiedItem[]>(() => {
+    return filteredEvents.map(event => ({
+      id: event.id,
+      title: event.title,
+      description: event.description || '',
+      latitude: event.latitude,
+      longitude: event.longitude,
+      type: 'event' as const,
+      address: event.address,
+      location: event.location,
+      category: event.category,
+      date: event.date,
+      start_time: event.start_time,
+      end_time: event.end_time,
+      price: event.price,
+      originalData: event // Store original event data for backwards compatibility
+    }));
+  }, [filteredEvents]);
+
   // Initialize Mapbox map
   const { mapRef, mapInstance } = useMapboxMap({ 
     mapboxToken, 
@@ -35,27 +56,34 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   });
 
   // Handle marker click to highlight event card
-  const handleMarkerClick = (event: Event) => {
-    console.log('Marker clicked for event:', event.title);
+  const handleMarkerClick = (item: UnifiedItem) => {
+    console.log('Marker clicked for event:', item.title);
+    
+    // Find the original event using the stored originalData
+    const originalEvent = item.originalData as Event;
     
     // Set selected event
-    setSelectedEvent(event);
+    setSelectedEvent(originalEvent);
     
     // Highlight and scroll to the event card
-    highlightEvent(event.id);
+    highlightEvent(item.id);
     
     // Call optional event select callback
     if (onEventSelect) {
-      onEventSelect(event.id);
+      onEventSelect(item.id);
     }
   };
 
-  // Add markers for filtered events
+  // Add markers for unified events
   useMapMarkers({
     map: mapInstance,
-    events: filteredEvents,
+    events: unifiedEvents,
     onMarkerClick: handleMarkerClick,
-    createPopupContent: createEventPopupContent
+    createPopupContent: (item: UnifiedItem) => {
+      // Convert UnifiedItem back to Event for popup creation
+      const event = item.originalData as Event;
+      return createEventPopupContent(event);
+    }
   });
 
   const handleEventClick = (event: Event) => {
