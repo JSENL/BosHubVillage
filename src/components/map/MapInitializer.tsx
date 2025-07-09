@@ -26,7 +26,7 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
 
     const map = new mapboxgl.Map({
       container: mapRef.current,
-      style: 'mapbox://styles/mapbox/light-v11',
+      style: 'mapbox://styles/mapbox/streets-v12', // Changed from light-v11 to streets-v12
       center: [-71.0589, 42.3601], // Boston center
       zoom: 12
     });

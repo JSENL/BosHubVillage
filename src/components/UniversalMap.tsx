@@ -159,7 +159,7 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
       
       const map = new mapboxgl.Map({
         container: mapRef.current,
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: 'mapbox://styles/mapbox/streets-v12',
         center: [-71.0589, 42.3601], // Boston center
         zoom: 12
       });
