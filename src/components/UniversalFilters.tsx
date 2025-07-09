@@ -25,7 +25,7 @@ interface UniversalFiltersProps {
   timeFilter?: string;
   onTimeFilterChange?: (time: string) => void;
   filteredItemsCount: number;
-  itemType: 'events' | 'businesses' | 'news' | 'local-services';
+  itemType: 'events' | 'business' | 'news' | 'local-services';
 }
 
 export const UniversalFilters = ({
