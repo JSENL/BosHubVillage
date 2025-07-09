@@ -7,6 +7,9 @@ export interface BusinessSubmission {
   neighborhood: string;
   description: string;
   short_description?: string;
+  villages?: string[];
+  latitude?: number;
+  longitude?: number;
   status: 'pending' | 'approved' | 'rejected';
   submitted_by: string;
   reviewed_by?: string;

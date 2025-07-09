@@ -33,22 +33,29 @@ export const BusinessTab = () => {
   ];
 
   // Convert businesses to UnifiedItem format for the map
-  const unifiedBusinesses: UnifiedItem[] = allBusinesses.map(business => {
-    // Handle the neighborhood property difference between Business and BusinessSubmission
-    const neighborhood = 'neighborhood' in business ? business.neighborhood : business.neighborhood;
+  const unifiedBusinesses: UnifiedItem[] = allBusinesses.map((business) => {
+    // Type guard to check if it's a Business type
+    const isBusiness = (item: Business | BusinessSubmission): item is Business => {
+      return 'villages' in item && typeof item.villages !== 'undefined';
+    };
+    
+    // Type guard to check if it's a BusinessSubmission type
+    const isBusinessSubmission = (item: Business | BusinessSubmission): item is BusinessSubmission => {
+      return 'status' in item;
+    };
     
     return {
       id: business.id,
       title: business.title,
       description: business.description || '',
-      latitude: 'latitude' in business ? business.latitude : null,
-      longitude: 'longitude' in business ? business.longitude : null,
+      latitude: business.latitude || null,
+      longitude: business.longitude || null,
       type: 'business' as const,
       address: business.address,
       category: business.business_type,
       business_type: business.business_type,
-      neighborhoods: neighborhood,
-      villages: 'villages' in business ? business.villages : undefined,
+      neighborhoods: business.neighborhood,
+      villages: isBusiness(business) ? business.villages : undefined,
       originalData: business
     };
   });
