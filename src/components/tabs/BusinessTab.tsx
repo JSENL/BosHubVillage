@@ -20,7 +20,7 @@ export const BusinessTab = () => {
   const [hasGeocodedBusinesses, setHasGeocodedBusinesses] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
   
-  // Filter states - matching the pattern used in other tabs
+  // Filter states
   const [selectedType, setSelectedType] = useState("business");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
@@ -64,51 +64,44 @@ export const BusinessTab = () => {
 
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
 
-  // Debug log the businesses data
+  // Enhanced business data logging
   useEffect(() => {
     if (businesses && businesses.length > 0) {
-      console.log('🏢 BusinessTab: Loaded businesses:', {
-        count: businesses.length,
-        withCoords: businesses.filter(b => b.latitude && b.longitude && Number(b.latitude) !== 0 && Number(b.longitude) !== 0).length,
-        withValidCoords: businesses.filter(b => {
-          const lat = Number(b.latitude);
-          const lng = Number(b.longitude);
-          return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0 && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
-        }).length,
-        samples: businesses.slice(0, 3).map(b => ({
+      const businessesWithCoords = businesses.filter(b => 
+        b.latitude !== null && b.longitude !== null && 
+        !isNaN(Number(b.latitude)) && !isNaN(Number(b.longitude)) &&
+        Number(b.latitude) !== 0 && Number(b.longitude) !== 0
+      );
+      
+      const businessesNeedingGeocode = businesses.filter(b => 
+        b.address && b.address.trim() !== '' && 
+        (!b.latitude || !b.longitude || Number(b.latitude) === 0 || Number(b.longitude) === 0)
+      );
+
+      console.log('🏢 BusinessTab: Detailed business analysis:', {
+        totalBusinesses: businesses.length,
+        withValidCoordinates: businessesWithCoords.length,
+        needingGeocode: businessesNeedingGeocode.length,
+        geocodingReadiness: isReady ? 'Ready' : 'Not Ready',
+        sampleBusinesses: businesses.slice(0, 3).map(b => ({
           id: b.id,
           title: b.title,
           address: b.address,
-          lat: b.latitude,
-          lng: b.longitude,
-          validCoords: !isNaN(Number(b.latitude)) && !isNaN(Number(b.longitude))
+          coordinates: `${b.latitude}, ${b.longitude}`,
+          needsGeocode: !b.latitude || !b.longitude || Number(b.latitude) === 0 || Number(b.longitude) === 0
         }))
       });
     }
+  }, [businesses, isReady]);
 
-    if (unifiedBusinesses.length > 0) {
-      console.log('🗺️ BusinessTab: Unified businesses for map:', {
-        total: unifiedBusinesses.length,
-        withCoords: unifiedBusinesses.filter(b => b.latitude && b.longitude).length,
-        samples: unifiedBusinesses.slice(0, 3).map(b => ({
-          id: b.id,
-          title: b.title,
-          lat: b.latitude,
-          lng: b.longitude,
-          type: b.type
-        }))
-      });
-    }
-  }, [businesses, unifiedBusinesses]);
-
-  // Geocode businesses that need coordinates
+  // Improved geocoding with better error handling
   useEffect(() => {
     const geocodeBusinessesIfNeeded = async () => {
       if (!isReady || hasGeocodedBusinesses || isBusinessLoading || !businesses || businesses.length === 0 || isGeocoding) {
         return;
       }
 
-      // Find businesses that need geocoding (have address but no coordinates)
+      // Find businesses that need geocoding
       const businessesNeedingGeocode = businesses.filter(business => 
         business.address && 
         business.address.trim() !== '' &&
@@ -118,26 +111,33 @@ export const BusinessTab = () => {
       );
 
       if (businessesNeedingGeocode.length > 0) {
-        console.log(`🌍 Found ${businessesNeedingGeocode.length} businesses that need geocoding:`, 
-          businessesNeedingGeocode.map(b => ({ title: b.title, address: b.address }))
+        console.log(`🌍 Starting geocoding for ${businessesNeedingGeocode.length} businesses:`, 
+          businessesNeedingGeocode.map(b => ({ 
+            id: b.id,
+            title: b.title, 
+            address: b.address,
+            currentCoords: `${b.latitude}, ${b.longitude}`
+          }))
         );
         
         setIsGeocoding(true);
         
         try {
           await geocodeBusinesses(businessesNeedingGeocode, geocode);
-          toast.success(`Geocoded ${businessesNeedingGeocode.length} businesses!`);
-          // Refetch businesses to get updated coordinates
+          console.log('✅ Geocoding completed successfully');
+          toast.success(`Successfully geocoded ${businessesNeedingGeocode.length} businesses!`);
+          
+          // Refetch to get updated coordinates
           await refetchBusinesses();
           setHasGeocodedBusinesses(true);
         } catch (error) {
-          console.error('Error geocoding businesses:', error);
-          toast.error('Failed to geocode some businesses');
+          console.error('❌ Geocoding failed:', error);
+          toast.error('Failed to geocode some businesses. Please try again.');
         } finally {
           setIsGeocoding(false);
         }
       } else {
-        console.log('✅ All businesses already have coordinates');
+        console.log('✅ All businesses already have valid coordinates');
         setHasGeocodedBusinesses(true);
       }
     };
