@@ -10,6 +10,7 @@ import { Clock } from 'lucide-react';
 import { PendingBusinessSubmissions } from '@/components/admin/PendingBusinessSubmissions';
 import { PublishedBusinessesTable } from '@/components/admin/PublishedBusinessesTable';
 import { GeocodeAllBusinessesButton } from '@/components/GeocodeAllBusinessesButton';
+import { DeleteAllBusinessesButton } from '@/components/admin/DeleteAllBusinessesButton';
 
 const AdminBusinessApproval = () => {
   const { isAdmin } = useAuth();
@@ -66,7 +67,13 @@ const AdminBusinessApproval = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Business Management</h2>
-        <GeocodeAllBusinessesButton />
+        <div className="flex space-x-2">
+          <GeocodeAllBusinessesButton />
+          <DeleteAllBusinessesButton 
+            businessCount={businesses?.length || 0}
+            onUpdate={refetchBusinesses}
+          />
+        </div>
       </div>
       
       <PendingBusinessSubmissions 

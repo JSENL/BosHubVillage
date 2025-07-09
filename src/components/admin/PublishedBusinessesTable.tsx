@@ -15,12 +15,24 @@ import {
   Building,
   Trash2,
   MapPin,
-  Edit
+  Edit,
+  AlertTriangle
 } from 'lucide-react';
 import { Business } from '@/types/business';
 import { EditBusinessDialog } from '@/components/admin/EditBusinessDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface PublishedBusinessesTableProps {
   businesses: Business[];
@@ -29,14 +41,10 @@ interface PublishedBusinessesTableProps {
 
 export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusinessesTableProps) => {
   const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   const handleDeleteBusiness = async (businessId: string) => {
-    if (!confirm('Are you sure you want to delete this business? This action cannot be undone.')) {
-      return;
-    }
-
-    setActionLoading(true);
+    setActionLoading(businessId);
     try {
       const { error } = await supabase
         .from('business')
@@ -51,7 +59,27 @@ export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusi
       console.error('Error deleting business:', error);
       toast.error('Failed to delete business');
     } finally {
-      setActionLoading(false);
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteAllBusinesses = async () => {
+    setActionLoading('all');
+    try {
+      const { error } = await supabase
+        .from('business')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all records
+
+      if (error) throw error;
+
+      toast.success('All businesses deleted successfully');
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error deleting all businesses:', error);
+      toast.error('Failed to delete all businesses');
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -59,10 +87,46 @@ export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusi
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center text-gray-900">
-            <Building className="h-5 w-5 mr-2 text-purple-600" />
-            Published Businesses ({businesses?.length || 0})
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center text-gray-900">
+              <Building className="h-5 w-5 mr-2 text-purple-600" />
+              Published Businesses ({businesses?.length || 0})
+            </CardTitle>
+            {businesses && businesses.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={actionLoading === 'all'}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete All
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center">
+                      <AlertTriangle className="h-5 w-5 mr-2 text-red-500" />
+                      Delete All Businesses
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete all {businesses.length} businesses? This action cannot be undone and will permanently remove all business data from the system.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAllBusinesses}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      Delete All
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {!businesses || businesses.length === 0 ? (
@@ -109,19 +173,40 @@ export const PublishedBusinessesTable = ({ businesses, onUpdate }: PublishedBusi
                           onClick={() => setEditingBusiness(business)}
                           variant="outline"
                           size="sm"
+                          disabled={actionLoading === business.id}
                         >
                           <Edit className="h-4 w-4 mr-2" />
                           Edit
                         </Button>
-                        <Button
-                          onClick={() => handleDeleteBusiness(business.id)}
-                          disabled={actionLoading}
-                          variant="destructive"
-                          size="sm"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              disabled={actionLoading === business.id}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Business</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete "{business.title}"? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteBusiness(business.id)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </TableCell>
                   </TableRow>
