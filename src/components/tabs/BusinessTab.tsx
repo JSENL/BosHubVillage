@@ -33,20 +33,25 @@ export const BusinessTab = () => {
   ];
 
   // Convert businesses to UnifiedItem format for the map
-  const unifiedBusinesses: UnifiedItem[] = allBusinesses.map(business => ({
-    id: business.id,
-    title: business.title,
-    description: business.description || '',
-    latitude: 'latitude' in business ? business.latitude : null,
-    longitude: 'longitude' in business ? business.longitude : null,
-    type: 'business' as const,
-    address: business.address,
-    category: business.business_type,
-    business_type: business.business_type,
-    neighborhoods: 'neighborhood' in business ? business.neighborhood : business.neighborhood,
-    villages: 'villages' in business ? business.villages : undefined,
-    originalData: business
-  }));
+  const unifiedBusinesses: UnifiedItem[] = allBusinesses.map(business => {
+    // Handle the neighborhood property difference between Business and BusinessSubmission
+    const neighborhood = 'neighborhood' in business ? business.neighborhood : business.neighborhood;
+    
+    return {
+      id: business.id,
+      title: business.title,
+      description: business.description || '',
+      latitude: 'latitude' in business ? business.latitude : null,
+      longitude: 'longitude' in business ? business.longitude : null,
+      type: 'business' as const,
+      address: business.address,
+      category: business.business_type,
+      business_type: business.business_type,
+      neighborhoods: neighborhood,
+      villages: 'villages' in business ? business.villages : undefined,
+      originalData: business
+    };
+  });
 
   // Apply filtering
   const filteredBusinesses = filterUnifiedItems(unifiedBusinesses, {
