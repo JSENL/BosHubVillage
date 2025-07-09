@@ -19,8 +19,8 @@ export const useItemFiltering = ({ items, selectedTypes }: UseItemFilteringProps
     const hasValidNumbers = lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng);
     const hasReasonableCoords = hasValidNumbers && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
     
-    // For businesses, be more permissive with zero coordinates initially
-    const hasCoords = hasValidNumbers && hasReasonableCoords && !(lat === 0 && lng === 0);
+    // For businesses, allow zero coordinates temporarily but still require valid numbers
+    const hasCoords = hasValidNumbers && hasReasonableCoords;
     
     const isSelectedType = selectedTypes.length === 0 || selectedTypes.includes(item.type);
     
@@ -38,7 +38,8 @@ export const useItemFiltering = ({ items, selectedTypes }: UseItemFilteringProps
       hasCoords,
       isSelectedType,
       willShow: hasCoords && isSelectedType,
-      address: item.address
+      address: item.address,
+      zeroCoords: lat === 0 && lng === 0
     });
     
     return hasCoords && isSelectedType;
@@ -50,16 +51,20 @@ export const useItemFiltering = ({ items, selectedTypes }: UseItemFilteringProps
     filteredItems: filteredMappableItems.length,
     itemsWithoutCoords: items.filter(item => 
       !item.latitude || !item.longitude || 
-      isNaN(Number(item.latitude)) || isNaN(Number(item.longitude)) ||
-      (Number(item.latitude) === 0 && Number(item.longitude) === 0)
+      isNaN(Number(item.latitude)) || isNaN(Number(item.longitude))
     ).length,
     businessItems: items.filter(item => item.type === 'business').length,
     businessItemsWithCoords: items.filter(item => 
       item.type === 'business' && 
       item.latitude && item.longitude && 
-      !isNaN(Number(item.latitude)) && !isNaN(Number(item.longitude)) &&
-      !(Number(item.latitude) === 0 && Number(item.longitude) === 0)
-    ).length
+      !isNaN(Number(item.latitude)) && !isNaN(Number(item.longitude))
+    ).length,
+    businessItemsWithValidCoords: items.filter(item => {
+      if (item.type !== 'business') return false;
+      const lat = Number(item.latitude);
+      const lng = Number(item.longitude);
+      return !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+    }).length
   });
 
   return { filteredMappableItems };

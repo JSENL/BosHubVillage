@@ -34,16 +34,6 @@ export const BusinessTab = () => {
 
   // Convert businesses to UnifiedItem format for the map
   const unifiedBusinesses: UnifiedItem[] = allBusinesses.map((business) => {
-    // Type guard to check if it's a Business type
-    const isBusiness = (item: Business | BusinessSubmission): item is Business => {
-      return 'villages' in item && typeof item.villages !== 'undefined';
-    };
-    
-    // Type guard to check if it's a BusinessSubmission type
-    const isBusinessSubmission = (item: Business | BusinessSubmission): item is BusinessSubmission => {
-      return 'status' in item;
-    };
-    
     return {
       id: business.id,
       title: business.title,
@@ -55,7 +45,7 @@ export const BusinessTab = () => {
       category: business.business_type,
       business_type: business.business_type,
       neighborhoods: business.neighborhood,
-      villages: isBusiness(business) ? business.villages : undefined,
+      villages: 'villages' in business ? business.villages : undefined,
       originalData: business
     };
   });
@@ -80,16 +70,36 @@ export const BusinessTab = () => {
       console.log('🏢 BusinessTab: Loaded businesses:', {
         count: businesses.length,
         withCoords: businesses.filter(b => b.latitude && b.longitude && Number(b.latitude) !== 0 && Number(b.longitude) !== 0).length,
-        samples: businesses.slice(0, 2).map(b => ({
+        withValidCoords: businesses.filter(b => {
+          const lat = Number(b.latitude);
+          const lng = Number(b.longitude);
+          return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0 && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+        }).length,
+        samples: businesses.slice(0, 3).map(b => ({
           id: b.id,
           title: b.title,
           address: b.address,
           lat: b.latitude,
-          lng: b.longitude
+          lng: b.longitude,
+          validCoords: !isNaN(Number(b.latitude)) && !isNaN(Number(b.longitude))
         }))
       });
     }
-  }, [businesses]);
+
+    if (unifiedBusinesses.length > 0) {
+      console.log('🗺️ BusinessTab: Unified businesses for map:', {
+        total: unifiedBusinesses.length,
+        withCoords: unifiedBusinesses.filter(b => b.latitude && b.longitude).length,
+        samples: unifiedBusinesses.slice(0, 3).map(b => ({
+          id: b.id,
+          title: b.title,
+          lat: b.latitude,
+          lng: b.longitude,
+          type: b.type
+        }))
+      });
+    }
+  }, [businesses, unifiedBusinesses]);
 
   // Geocode businesses that need coordinates
   useEffect(() => {
@@ -173,7 +183,11 @@ export const BusinessTab = () => {
           <div className="mb-4 text-sm text-gray-600">
             Showing {filteredBusinesses.length} businesses 
             {businesses && (
-              <span> • {businesses.filter(b => b.latitude && b.longitude && Number(b.latitude) !== 0 && Number(b.longitude) !== 0).length} with map locations</span>
+              <span> • {businesses.filter(b => {
+                const lat = Number(b.latitude);
+                const lng = Number(b.longitude);
+                return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
+              }).length} with map locations</span>
             )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
