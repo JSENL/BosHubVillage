@@ -8,6 +8,8 @@ import { toast } from 'sonner';
 import { LocalResourceSubmission } from '@/types/localServices';
 import { Clock, Heart } from 'lucide-react';
 import { GeocodeAllLocalServicesButton } from '@/components/GeocodeAllLocalServicesButton';
+import { DeleteAllLocalResourcesButton } from '@/components/admin/DeleteAllLocalResourcesButton';
+import { PublishedLocalResourcesTable } from '@/components/admin/PublishedLocalResourcesTable';
 import LocalServiceSubmissionCard from '@/components/LocalServiceSubmissionCard';
 
 const AdminLocalResourceApprovalWithGeocoding = () => {
@@ -66,7 +68,13 @@ const AdminLocalResourceApprovalWithGeocoding = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Local Resources Management</h2>
-        <GeocodeAllLocalServicesButton />
+        <div className="flex space-x-2">
+          <GeocodeAllLocalServicesButton />
+          <DeleteAllLocalResourcesButton 
+            localResourceCount={localResources?.length || 0}
+            onUpdate={refetchLocalResources}
+          />
+        </div>
       </div>
       
       <Card>
@@ -96,6 +104,11 @@ const AdminLocalResourceApprovalWithGeocoding = () => {
           )}
         </CardContent>
       </Card>
+
+      <PublishedLocalResourcesTable 
+        localResources={localResources || []} 
+        onUpdate={refetchLocalResources} 
+      />
     </div>
   );
 };

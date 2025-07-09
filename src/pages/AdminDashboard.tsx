@@ -7,7 +7,7 @@ import { Navigation } from '@/components/Navigation';
 import AdminEventApproval from '@/components/AdminEventApproval';
 import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminBusinessApproval from '@/components/AdminBusinessApproval';
-import AdminLocalServiceApproval from '@/components/AdminLocalServiceApproval';
+import AdminLocalResourceApprovalWithGeocoding from '@/components/AdminLocalServiceApprovalWithGeocoding';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import { 
   Shield, 
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
             </TabsContent>
             
             <TabsContent value="local-services">
-              <AdminLocalServiceApproval />
+              <AdminLocalResourceApprovalWithGeocoding />
             </TabsContent>
             
             <TabsContent value="news">
