@@ -33,7 +33,7 @@ export const useNewsSubmissionOperations = () => {
             content: submission.content,
             location: submission.location,
             Address: submission.Address,
-            villages: submission.villages ? submission.villages.join(', ') : null,
+            villages: Array.isArray(submission.villages) ? submission.villages.join(', ') : submission.villages,
             latitude: submission.latitude,
             longitude: submission.longitude,
             date_posted: submission.date_posted,
