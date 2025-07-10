@@ -17,6 +17,7 @@ import EventDetails from "./pages/EventDetails";
 import BusinessDetails from "./pages/BusinessDetails";
 import NewsDetails from "./pages/NewsDetails";
 import LocalServiceDetails from "./pages/LocalServiceDetails";
+import NewsPage from "./pages/NewsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/business/:businessId" element={<BusinessDetails />} />
             <Route path="/news/:newsId" element={<NewsDetails />} />
+            <Route path="/news-page" element={<NewsPage />} />
             <Route path="/local-service/:serviceId" element={<LocalServiceDetails />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
