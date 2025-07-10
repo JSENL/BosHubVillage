@@ -51,8 +51,30 @@ export const getMarkerColor = (type: string): string => {
 export const createPopupContent = (item: UnifiedItem): string => {
   const markerColor = getMarkerColor(item.type);
   
+  // Enhanced content based on item type
+  let specificContent = '';
+  
+  if (item.type === 'event') {
+    specificContent = `
+      ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${item.date}</p>` : ''}
+      ${item.start_time ? `<p style="margin: 4px 0;"><strong>⏰ Time:</strong> ${item.start_time}${item.end_time ? ` - ${item.end_time}` : ''}</p>` : ''}
+      ${item.price && item.price > 0 ? `<p style="margin: 4px 0;"><strong>💰 Price:</strong> $${item.price}</p>` : ''}
+    `;
+  } else if (item.type === 'business') {
+    specificContent = `
+      ${item.business_type ? `<p style="margin: 4px 0;"><strong>🏢 Business Type:</strong> ${item.business_type}</p>` : ''}
+      ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${item.neighborhoods}</p>` : ''}
+      ${item.villages ? `<p style="margin: 4px 0;"><strong>🏘️ Village:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</p>` : ''}
+    `;
+  } else if (item.type === 'local-service') {
+    specificContent = `
+      ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${item.neighborhoods}</p>` : ''}
+      ${item.villages ? `<p style="margin: 4px 0;"><strong>🏘️ Village:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</p>` : ''}
+    `;
+  }
+  
   return `
-    <div style="padding: 16px; max-width: 300px; font-family: system-ui; line-height: 1.4;">
+    <div style="padding: 16px; max-width: 320px; font-family: system-ui; line-height: 1.4;">
       <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1f2937;">${item.title}</h3>
       <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">${item.description || 'No description available'}</p>
       <div style="font-size: 12px; color: #374151;">
@@ -60,11 +82,11 @@ export const createPopupContent = (item: UnifiedItem): string => {
         ${item.location && item.location !== item.address ? `<p style="margin: 4px 0;"><strong>📍 Location:</strong> ${item.location}</p>` : ''}
         ${item.category ? `<p style="margin: 4px 0;"><strong>🏷️ Category:</strong> ${item.category}</p>` : ''}
         <p style="margin: 4px 0;"><strong>🏷️ Type:</strong> <span style="color: ${markerColor}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
-        ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${item.date}</p>` : ''}
+        ${specificContent}
       </div>
       <div style="margin-top: 16px;">
         <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
-          background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+          background: linear-gradient(135deg, ${markerColor}cc 0%, ${markerColor} 100%);
           color: white;
           border: none;
           padding: 10px 16px;
@@ -74,7 +96,8 @@ export const createPopupContent = (item: UnifiedItem): string => {
           font-weight: 600;
           width: 100%;
           transition: all 0.2s ease;
-        ">
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
           View Details →
         </button>
       </div>
