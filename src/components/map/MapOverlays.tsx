@@ -1,59 +1,40 @@
 
 import React from 'react';
+import { MapPin } from 'lucide-react';
 
 interface MapOverlaysProps {
   itemCount: number;
   isEmpty: boolean;
 }
 
-export const MapOverlays = ({ itemCount, isEmpty }: MapOverlaysProps) => {
+export const MapOverlays: React.FC<MapOverlaysProps> = ({ itemCount, isEmpty }) => {
   return (
     <>
-      {/* Map Legend */}
-      <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-gray-200 z-10">
-        <h4 className="text-sm font-semibold text-gray-700 mb-2">Map Legend</h4>
-        <div className="space-y-2 text-xs">
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold">E</div>
-            <span className="text-gray-600">Events</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold">N</div>
-            <span className="text-gray-600">News</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white text-xs font-bold">B</div>
-            <span className="text-gray-600">Businesses</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center text-white text-xs font-bold">L</div>
-            <span className="text-gray-600">Local Services</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Item Counter */}
-      <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-gray-200 z-10">
+      {/* Item count overlay */}
+      <div className="absolute top-4 right-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg shadow-md text-sm font-medium">
         <div className="flex items-center space-x-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-sm font-medium text-gray-700">
-            {itemCount} {itemCount === 1 ? 'marker' : 'markers'}
-          </span>
+          <MapPin className="h-4 w-4 text-purple-600" />
+          <span>{itemCount} locations</span>
         </div>
       </div>
 
-      {/* Empty State Overlay */}
+      {/* Empty state overlay */}
       {isEmpty && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-50/80 backdrop-blur-sm z-20">
-          <div className="text-center p-8 bg-white rounded-lg shadow-lg border border-gray-200 max-w-sm">
-            <div className="text-4xl mb-4">📍</div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">No Items to Display</h3>
-            <p className="text-gray-500 text-sm">
-              Try adjusting your filters to see more content on the map.
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 bg-opacity-75">
+          <div className="text-center p-6">
+            <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No locations to display</h3>
+            <p className="text-gray-600">
+              Select content types or adjust filters to see locations on the map
             </p>
           </div>
         </div>
       )}
+
+      {/* Loading indicator for when map is initializing */}
+      <div className="absolute bottom-4 left-4 bg-green-500 text-white px-2 py-1 rounded text-xs">
+        Map Ready
+      </div>
     </>
   );
 };
