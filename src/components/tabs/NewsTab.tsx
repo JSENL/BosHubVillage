@@ -11,7 +11,7 @@ import { News } from "@/types/news";
 import { NewsSubmission } from "@/types/submissions";
 
 export const NewsTab = () => {
-  const { data: news, isLoading: newsLoading } = useNews();
+  const { data: news, isLoading: newsLoading, error: newsError } = useNews();
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedNews, setHasGeocodedNews] = useState(false);
@@ -22,10 +22,16 @@ export const NewsTab = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
   
+  console.log('NewsTab - news:', news);
+  console.log('NewsTab - newsSubmissions:', newsSubmissions);
+  console.log('NewsTab - newsError:', newsError);
+  
   const allNews: (News | NewsSubmission)[] = [
     ...(news || []),
     ...(newsSubmissions || [])
   ];
+
+  console.log('NewsTab - allNews:', allNews);
 
   const isNewsLoading = newsLoading || newsSubmissionsLoading;
 
@@ -78,6 +84,16 @@ export const NewsTab = () => {
       />
       
       <SectionMap height="400px" />
+      
+      <div className="mb-4 text-sm text-gray-500">
+        Total news items: {allNews.length} (Published: {news?.length || 0}, Submissions: {newsSubmissions?.length || 0})
+      </div>
+      
+      {newsError && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <p className="text-red-800">Error loading news: {newsError.message}</p>
+        </div>
+      )}
       
       {isNewsLoading ? (
         <div className="text-center py-8">

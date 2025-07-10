@@ -19,13 +19,20 @@ export const useNews = () => {
         throw error;
       }
       
-      console.log(`Fetched ${data?.length || 0} news items`);
+      console.log(`Fetched ${data?.length || 0} news items`, data);
       
-      // Parse villages JSON string to array
+      // Parse villages field safely
       const newsWithParsedVillages = data?.map(news => ({
         ...news,
-        villages: news.villages ? (typeof news.villages === 'string' ? JSON.parse(news.villages) : news.villages) : null
+        villages: news.villages ? 
+          (typeof news.villages === 'string' ? 
+            news.villages.split(',').map(v => v.trim()) : 
+            news.villages
+          ) : 
+          []
       })) || [];
+      
+      console.log('Processed news items:', newsWithParsedVillages);
       
       return newsWithParsedVillages as News[];
     },

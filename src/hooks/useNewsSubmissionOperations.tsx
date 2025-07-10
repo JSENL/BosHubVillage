@@ -25,6 +25,8 @@ export const useNewsSubmissionOperations = () => {
 
         if (fetchError) throw fetchError;
 
+        console.log('Approving news submission:', submission);
+
         // Create the news in the news table with all the new fields
         const { error: createError } = await supabase
           .from('news')
@@ -41,7 +43,12 @@ export const useNewsSubmissionOperations = () => {
             created_by: submission.submitted_by
           });
 
-        if (createError) throw createError;
+        if (createError) {
+          console.error('Error creating news:', createError);
+          throw createError;
+        }
+
+        console.log('News created successfully');
       }
 
       // Update the submission status
@@ -57,6 +64,7 @@ export const useNewsSubmissionOperations = () => {
 
       if (error) throw error;
 
+      console.log(`News ${status} successfully!`);
       toast.success(`News ${status} successfully!`);
     } catch (error: any) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} news:`, error);

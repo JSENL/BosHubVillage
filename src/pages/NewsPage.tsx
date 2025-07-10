@@ -9,8 +9,12 @@ import SecondaryArticles from '@/components/news/SecondaryArticles';
 import NewsGrid from '@/components/news/NewsGrid';
 
 const NewsPage = () => {
-  const { data: news, isLoading } = useNews();
+  const { data: news, isLoading, error } = useNews();
   const [searchTerm, setSearchTerm] = useState('');
+
+  console.log('NewsPage - news data:', news);
+  console.log('NewsPage - isLoading:', isLoading);
+  console.log('NewsPage - error:', error);
 
   const filteredNews = (news || []).filter(article =>
     article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -36,6 +40,20 @@ const NewsPage = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navigation />
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <p className="text-red-600">Error loading news: {error.message}</p>
+            <p className="text-gray-600 mt-2">Please check the console for more details.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -43,9 +61,20 @@ const NewsPage = () => {
       <NewsSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-4 text-sm text-gray-500">
+          Total news items: {news?.length || 0} | Filtered: {filteredNews.length}
+        </div>
+        
         {filteredNews.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No news articles found.</p>
+            <p className="text-gray-500 text-lg">
+              {news?.length === 0 ? 'No news articles found in database.' : 'No news articles match your search.'}
+            </p>
+            {news?.length === 0 && (
+              <p className="text-gray-400 text-sm mt-2">
+                Try submitting news articles or check if they need admin approval.
+              </p>
+            )}
           </div>
         ) : (
           <>
