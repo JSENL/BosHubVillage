@@ -43,110 +43,256 @@ export const useMapMarkers = ({
 
     // Create new markers safely
     const newMarkers: mapboxgl.Marker[] = [];
+    let validMarkersCount = 0;
+    let invalidCoordinatesCount = 0;
     
     items.forEach((item, index) => {
       try {
-        const lat = Number(item.latitude);
-        const lng = Number(item.longitude);
+        // Enhanced coordinate validation
+        const rawLat = item.latitude;
+        const rawLng = item.longitude;
+        
+        // Log coordinate analysis for debugging
+        console.log(`📍 Processing item "${item.title}" (${item.type}):`, {
+          rawLat,
+          rawLng,
+          id: item.id,
+          address: item.address
+        });
 
-        // Validate coordinates more strictly
-        if (!item.latitude || !item.longitude || isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
-          console.warn(`Invalid coordinates for item ${item.id} "${item.title}":`, {
-            rawLat: item.latitude,
-            rawLng: item.longitude,
+        // Check if coordinates exist
+        if (rawLat === null || rawLat === undefined || rawLng === null || rawLng === undefined) {
+          console.warn(`❌ Missing coordinates for ${item.type} "${item.title}":`, {
+            id: item.id,
+            address: item.address,
+            rawLat,
+            rawLng
+          });
+          invalidCoordinatesCount++;
+          return;
+        }
+
+        const lat = Number(rawLat);
+        const lng = Number(rawLng);
+
+        // Validate coordinates are valid numbers
+        if (isNaN(lat) || isNaN(lng)) {
+          console.warn(`❌ Invalid coordinates (NaN) for ${item.type} "${item.title}":`, {
+            id: item.id,
+            address: item.address,
+            rawLat,
+            rawLng,
             convertedLat: lat,
             convertedLng: lng
           });
+          invalidCoordinatesCount++;
           return;
         }
 
-        // Additional validation for reasonable coordinate ranges
+        // Check for zero coordinates (often indicates failed geocoding)
+        if (lat === 0 && lng === 0) {
+          console.warn(`⚠️ Zero coordinates detected for ${item.type} "${item.title}":`, {
+            id: item.id,
+            address: item.address,
+            message: 'This may indicate failed geocoding or default values'
+          });
+          invalidCoordinatesCount++;
+          return;
+        }
+
+        // Validate coordinate ranges
         if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          console.warn(`Coordinates out of range for item ${item.id} "${item.title}":`, { lat, lng });
+          console.warn(`❌ Coordinates out of valid range for ${item.type} "${item.title}":`, {
+            id: item.id,
+            address: item.address,
+            lat,
+            lng,
+            message: 'Latitude must be between -90 and 90, longitude between -180 and 180'
+          });
+          invalidCoordinatesCount++;
           return;
         }
 
-        // Determine marker color based on type
-        const getMarkerColor = (type: string): string => {
+        // Enhanced marker colors and icons for all four table types
+        const getMarkerConfig = (type: string) => {
           switch (type) {
-            case 'event': return '#ef4444'; // red
-            case 'news': return '#3b82f6'; // blue
-            case 'business': return '#22c55e'; // green
-            case 'local-service': return '#eab308'; // yellow
-            default: return '#6b7280'; // gray
+            case 'event':
+              return { 
+                color: '#ef4444', // red
+                icon: 'E',
+                bgGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+              };
+            case 'news':
+              return { 
+                color: '#3b82f6', // blue
+                icon: 'N',
+                bgGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+              };
+            case 'business':
+              return { 
+                color: '#22c55e', // green
+                icon: 'B',
+                bgGradient: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
+              };
+            case 'local-service':
+              return { 
+                color: '#eab308', // yellow
+                icon: 'L',
+                bgGradient: 'linear-gradient(135deg, #eab308 0%, #ca8a04 100%)'
+              };
+            default:
+              return { 
+                color: '#6b7280', // gray
+                icon: '?',
+                bgGradient: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'
+              };
           }
         };
 
-        // Create marker element
+        const markerConfig = getMarkerConfig(item.type);
+
+        // Create enhanced marker element
         const markerElement = document.createElement('div');
         markerElement.className = 'marker-custom';
         markerElement.style.cssText = `
-          width: 24px;
-          height: 24px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
-          background-color: ${getMarkerColor(item.type)};
+          background: ${markerConfig.bgGradient};
           border: 3px solid white;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
           cursor: pointer;
-          transition: transform 0.2s;
+          transition: all 0.3s ease;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: bold;
           color: white;
-          font-size: 10px;
+          font-size: 14px;
+          z-index: 1;
+          position: relative;
         `;
 
-        // Add type indicator
-        const typeIndicator = item.type.charAt(0).toUpperCase();
-        markerElement.textContent = typeIndicator;
+        // Add type indicator with enhanced styling
+        markerElement.textContent = markerConfig.icon;
 
-        // Add hover effect
+        // Add hover effect with enhanced animation
         markerElement.addEventListener('mouseenter', () => {
           markerElement.style.transform = 'scale(1.3)';
           markerElement.style.zIndex = '1000';
+          markerElement.style.boxShadow = '0 6px 20px rgba(0,0,0,0.4)';
         });
         
         markerElement.addEventListener('mouseleave', () => {
           markerElement.style.transform = 'scale(1)';
-          markerElement.style.zIndex = 'auto';
+          markerElement.style.zIndex = '1';
+          markerElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
         });
 
-        // Create popup content
-        const popupContent = `
-          <div style="padding: 12px; max-width: 280px; font-family: system-ui;">
-            <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${item.title}</h3>
-            <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280; line-height: 1.4;">${item.description || 'No description available'}</p>
-            <div style="space-y: 4px; font-size: 12px;">
-              ${item.address ? `<p style="margin: 2px 0;"><strong>Address:</strong> ${item.address}</p>` : ''}
-              ${item.location ? `<p style="margin: 2px 0;"><strong>Location:</strong> ${item.location}</p>` : ''}
-              ${item.category ? `<p style="margin: 2px 0;"><strong>Category:</strong> ${item.category}</p>` : ''}
-              <p style="margin: 2px 0;"><strong>Type:</strong> <span style="color: ${getMarkerColor(item.type)}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
-              ${item.date ? `<p style="margin: 2px 0;"><strong>Date:</strong> ${item.date}</p>` : ''}
+        // Create comprehensive popup content for all table types
+        const createPopupContent = (item: UnifiedItem) => {
+          const typeLabel = item.type.replace('-', ' ').toUpperCase();
+          
+          return `
+            <div style="padding: 16px; max-width: 320px; font-family: system-ui; line-height: 1.5;">
+              <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                <div style="
+                  width: 24px; 
+                  height: 24px; 
+                  border-radius: 50%; 
+                  background: ${markerConfig.bgGradient}; 
+                  color: white; 
+                  display: flex; 
+                  align-items: center; 
+                  justify-content: center; 
+                  font-weight: bold; 
+                  font-size: 12px;
+                  margin-right: 8px;
+                ">${markerConfig.icon}</div>
+                <span style="font-size: 12px; font-weight: 600; color: ${markerConfig.color}; text-transform: uppercase;">${typeLabel}</span>
+              </div>
+              
+              <h3 style="margin: 0 0 12px 0; font-size: 18px; font-weight: bold; color: #1f2937; line-height: 1.3;">${item.title}</h3>
+              
+              <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">${item.description || 'No description available'}</p>
+              
+              <div style="font-size: 13px; color: #374151; margin-bottom: 16px;">
+                ${item.address ? `
+                  <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <span style="margin-right: 6px;">📍</span>
+                    <strong>Address:</strong> <span style="margin-left: 4px;">${item.address}</span>
+                  </div>
+                ` : ''}
+                
+                ${item.location && item.location !== item.address ? `
+                  <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <span style="margin-right: 6px;">📍</span>
+                    <strong>Location:</strong> <span style="margin-left: 4px;">${item.location}</span>
+                  </div>
+                ` : ''}
+                
+                ${item.category ? `
+                  <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <span style="margin-right: 6px;">🏷️</span>
+                    <strong>Category:</strong> <span style="margin-left: 4px;">${item.category}</span>
+                  </div>
+                ` : ''}
+                
+                ${item.date ? `
+                  <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <span style="margin-right: 6px;">📅</span>
+                    <strong>Date:</strong> <span style="margin-left: 4px;">${item.date}</span>
+                  </div>
+                ` : ''}
+                
+                ${item.start_time ? `
+                  <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <span style="margin-right: 6px;">⏰</span>
+                    <strong>Time:</strong> <span style="margin-left: 4px;">${item.start_time}${item.end_time ? ` - ${item.end_time}` : ''}</span>
+                  </div>
+                ` : ''}
+                
+                ${item.price && item.price > 0 ? `
+                  <div style="display: flex; align-items: center; margin: 6px 0;">
+                    <span style="margin-right: 6px;">💰</span>
+                    <strong>Price:</strong> <span style="margin-left: 4px;">$${item.price}</span>
+                  </div>
+                ` : ''}
+                
+                <div style="margin: 6px 0; font-size: 11px; color: #9ca3af;">
+                  <strong>📍 Coordinates:</strong> ${lat.toFixed(4)}, ${lng.toFixed(4)}
+                </div>
+              </div>
+              
+              <div style="margin-top: 16px;">
+                <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
+                  background: ${markerConfig.bgGradient};
+                  color: white;
+                  border: none;
+                  padding: 12px 20px;
+                  border-radius: 8px;
+                  font-size: 13px;
+                  cursor: pointer;
+                  font-weight: 600;
+                  width: 100%;
+                  transition: all 0.2s ease;
+                  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
+                  View Details →
+                </button>
+              </div>
             </div>
-            <div style="margin-top: 12px;">
-              <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
-                background: linear-gradient(to right, #8b5cf6, #3b82f6);
-                color: white;
-                border: none;
-                padding: 8px 12px;
-                border-radius: 6px;
-                font-size: 12px;
-                cursor: pointer;
-                font-weight: 500;
-                width: 100%;
-              ">View Details</button>
-            </div>
-          </div>
-        `;
+          `;
+        };
 
         // Create popup
         const popup = new mapboxgl.Popup({
-          offset: 30,
+          offset: 40,
           closeButton: true,
           closeOnClick: false,
-          maxWidth: '300px'
-        }).setHTML(popupContent);
+          maxWidth: '360px',
+          className: 'custom-popup'
+        }).setHTML(createPopupContent(item));
 
         // Create marker
         const marker = new mapboxgl.Marker(markerElement)
@@ -154,10 +300,10 @@ export const useMapMarkers = ({
           .setPopup(popup)
           .addTo(map);
 
-        // Add click handlers - single click shows popup
+        // Add click handlers
         markerElement.addEventListener('click', (e) => {
           e.stopPropagation();
-          console.log('📍 Marker clicked:', item.title);
+          console.log(`📍 Marker clicked: ${item.title} (${item.type})`);
           
           // Toggle popup visibility
           if (popup.isOpen()) {
@@ -167,73 +313,77 @@ export const useMapMarkers = ({
           }
           
           if (onMarkerClick) {
-            const simpleItem = {
-              id: item.id,
-              title: item.title,
-              type: item.type,
-              latitude: item.latitude,
-              longitude: item.longitude,
-              description: item.description,
-              address: item.address,
-              location: item.location,
-              category: item.category
-            };
-            onMarkerClick(simpleItem as UnifiedItem);
+            onMarkerClick(item);
           }
         });
 
         markerElement.addEventListener('dblclick', (e) => {
           e.stopPropagation();
-          console.log('🖱️ Marker double-clicked:', item.title);
+          console.log(`🖱️ Marker double-clicked: ${item.title} (${item.type})`);
           
           if (onMarkerDoubleClick) {
-            const simpleItem = {
-              id: item.id,
-              title: item.title,
-              type: item.type,
-              latitude: item.latitude,
-              longitude: item.longitude,
-              description: item.description,
-              address: item.address,
-              location: item.location,
-              category: item.category
-            };
-            onMarkerDoubleClick(simpleItem as UnifiedItem);
+            onMarkerDoubleClick(item);
           }
         });
 
         newMarkers.push(marker);
+        validMarkersCount++;
         
-        console.log(`✅ Created marker ${index + 1}/${items.length}: "${item.title}" (${item.type}) at [${lng}, ${lat}]`);
+        console.log(`✅ Created marker ${validMarkersCount}: "${item.title}" (${item.type}) at [${lng}, ${lat}]`);
 
       } catch (error) {
-        console.error(`❌ Error creating marker for item ${item.id} "${item.title}":`, error);
+        console.error(`❌ Error creating marker for ${item.type} "${item.title}":`, {
+          id: item.id,
+          error: error.message,
+          stack: error.stack
+        });
+        invalidCoordinatesCount++;
       }
     });
 
     markersRef.current = newMarkers;
     
-    console.log(`🎯 Successfully created ${newMarkers.length} out of ${items.length} markers`);
+    // Enhanced summary logging
+    console.log(`🎯 Marker creation summary:`, {
+      totalItems: items.length,
+      validMarkers: validMarkersCount,
+      invalidCoordinates: invalidCoordinatesCount,
+      successRate: `${((validMarkersCount / items.length) * 100).toFixed(1)}%`,
+      markersByType: items.reduce((acc, item) => {
+        if (item.latitude && item.longitude && !isNaN(Number(item.latitude)) && !isNaN(Number(item.longitude))) {
+          acc[item.type] = (acc[item.type] || 0) + 1;
+        }
+        return acc;
+      }, {} as Record<string, number>)
+    });
 
-    // Fit map to show all markers if we have any
+    // Enhanced map bounds fitting
     if (newMarkers.length > 0) {
       try {
         const bounds = new mapboxgl.LngLatBounds();
+        let boundsCount = 0;
+        
         items.forEach(item => {
           const lat = Number(item.latitude);
           const lng = Number(item.longitude);
           if (lat && lng && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
             bounds.extend([lng, lat]);
+            boundsCount++;
           }
         });
         
-        map.fitBounds(bounds, { 
-          padding: { top: 50, bottom: 50, left: 50, right: 50 },
-          maxZoom: 15
-        });
+        if (boundsCount > 0) {
+          map.fitBounds(bounds, { 
+            padding: { top: 80, bottom: 80, left: 80, right: 80 },
+            maxZoom: 13
+          });
+          console.log(`🗺️ Map bounds fitted to ${boundsCount} valid coordinates`);
+        }
       } catch (error) {
-        console.warn('Error fitting bounds:', error);
+        console.warn('Error fitting map bounds:', error);
       }
+    } else {
+      console.warn('⚠️ No valid markers created - map bounds not adjusted');
     }
 
     // Cleanup function
