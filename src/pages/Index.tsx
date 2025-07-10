@@ -192,6 +192,9 @@ const Index = () => {
     return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage;
   });
 
+  // Create filtered items for map (excluding news)
+  const mapItems = filteredItems.filter(item => item.type !== 'news');
+
   // Geocode items that need geocoding
   useEffect(() => {
     const geocodeItemsIfNeeded = async () => {
@@ -268,8 +271,12 @@ const Index = () => {
     }
   };
 
-  // Determine selected types for the map
-  const selectedTypes = selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType];
+  // Determine selected types for the map (excluding news)
+  const selectedTypesForMap = selectedType === 'all' 
+    ? ['event', 'business', 'local-service'] 
+    : selectedType === 'news' 
+      ? [] 
+      : [selectedType];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
@@ -281,9 +288,9 @@ const Index = () => {
           <h2 className="text-2xl font-bold text-gray-900">Local Community</h2>
           
           <EnhancedUniversalMap 
-            items={filteredItems}
+            items={mapItems}
             height="400px"
-            selectedTypes={selectedTypes}
+            selectedTypes={selectedTypesForMap}
           />
           
           <div className="relative">
