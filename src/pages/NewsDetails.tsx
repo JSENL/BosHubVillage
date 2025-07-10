@@ -16,18 +16,32 @@ const NewsDetails = () => {
   const { newsId } = useParams();
   const { user } = useAuth();
 
-  const { data: news, isLoading } = useQuery({
+  console.log('NewsDetails - newsId:', newsId);
+
+  const { data: news, isLoading, error } = useQuery({
     queryKey: ['news', newsId],
     queryFn: async () => {
+      console.log('Fetching news with ID:', newsId);
+      
       const { data, error } = await supabase
         .from('news')
         .select('*')
         .eq('id', newsId)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching news:', error);
+        throw error;
+      }
       
-      // Parse villages JSON string to array
+      console.log('Fetched news data:', data);
+      
+      if (!data) {
+        console.log('No news found with ID:', newsId);
+        return null;
+      }
+      
+      // Parse villages JSON string to array if it exists
       const newsWithParsedVillages = {
         ...data,
         villages: data.villages ? (typeof data.villages === 'string' ? JSON.parse(data.villages) : data.villages) : null
@@ -38,11 +52,36 @@ const NewsDetails = () => {
     enabled: !!newsId,
   });
 
+  console.log('NewsDetails - news:', news);
+  console.log('NewsDetails - isLoading:', isLoading);
+  console.log('NewsDetails - error:', error);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">Loading news article...</div>
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading news article...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center py-8">
+            <p className="text-red-600">Error loading news article: {error.message}</p>
+            <Link to="/news-page">
+              <Button variant="outline" className="mt-4">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to News
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -52,7 +91,16 @@ const NewsDetails = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">News article not found</div>
+          <div className="text-center py-8">
+            <p className="text-gray-600 text-lg">News article not found</p>
+            <p className="text-gray-500 text-sm mt-2">The article you're looking for doesn't exist or may have been removed.</p>
+            <Link to="/news-page">
+              <Button variant="outline" className="mt-4">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to News
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -61,16 +109,16 @@ const NewsDetails = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
-        <Link to="/">
+        <Link to="/news-page">
           <Button variant="ghost" className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
+            Back to News
           </Button>
         </Link>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-900 mb-4">
+            <CardTitle className="text-3xl font-bold text-gray-900 mb-4">
               {news.title}
             </CardTitle>
             <div className="flex flex-wrap gap-4 text-sm text-gray-600">
@@ -90,7 +138,7 @@ const NewsDetails = () => {
           </CardHeader>
           <CardContent>
             <div className="prose max-w-none">
-              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
                 {news.content}
               </div>
             </div>
@@ -102,11 +150,13 @@ const NewsDetails = () => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-8">
-            <NewsComments newsId={news.id} />
-          </CardContent>
-        </Card>
+        {user && (
+          <Card>
+            <CardContent className="p-8">
+              <NewsComments newsId={news.id} />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
