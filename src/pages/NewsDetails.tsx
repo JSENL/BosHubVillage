@@ -41,10 +41,31 @@ const NewsDetails = () => {
         return null;
       }
       
-      // Parse villages JSON string to array if it exists
+      // Parse villages field safely - handle both string and JSON formats
+      let parsedVillages = null;
+      if (data.villages) {
+        try {
+          // If it's already an array, use it as is
+          if (Array.isArray(data.villages)) {
+            parsedVillages = data.villages;
+          } else if (typeof data.villages === 'string') {
+            // Try to parse as JSON first
+            try {
+              parsedVillages = JSON.parse(data.villages);
+            } catch {
+              // If JSON parsing fails, treat as comma-separated string
+              parsedVillages = data.villages.split(',').map(v => v.trim());
+            }
+          }
+        } catch (error) {
+          console.warn('Could not parse villages field:', error);
+          parsedVillages = null;
+        }
+      }
+      
       const newsWithParsedVillages = {
         ...data,
-        villages: data.villages ? (typeof data.villages === 'string' ? JSON.parse(data.villages) : data.villages) : null
+        villages: parsedVillages
       };
       
       return newsWithParsedVillages as News;
