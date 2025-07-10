@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
 import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
+import { TestMapWithSpecificMarker } from '@/components/TestMapWithSpecificMarker';
 import { UniversalFilters } from '@/components/UniversalFilters';
 import { SearchSection } from '@/components/unified/SearchSection';
 import { ResultsSummary } from '@/components/unified/ResultsSummary';
@@ -12,6 +13,8 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { toast } from 'sonner';
 
 const UnifiedIndexContent = () => {
+  const [showTestMap, setShowTestMap] = useState(false);
+
   const {
     searchTerm,
     setSearchTerm,
@@ -99,52 +102,74 @@ const UnifiedIndexContent = () => {
           onRefresh={handleRefresh}
         />
 
-        <UniversalFilters
-          selectedType={selectedType}
-          onTypeChange={setSelectedType}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          selectedNeighborhood={selectedNeighborhood}
-          onNeighborhoodChange={setSelectedNeighborhood}
-          selectedVillage={selectedVillage}
-          onVillageChange={setSelectedVillage}
-          filteredItemsCount={allItems.length}
-          itemType="events"
-        />
-
-        <div className="bg-white p-4 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>Total Items: {allItems.length}</div>
-            <div>Mappable Items: {mappableItems.length}</div>
-            <div>Selected Types: {typesToShow.join(', ')}</div>
-            <div>Map Items: {allItems.filter(item => 
-              item.latitude !== null && 
-              item.longitude !== null && 
-              typesToShow.includes(item.type)
-            ).length}</div>
-          </div>
+        {/* Toggle between normal map and test map */}
+        <div className="flex gap-4 mb-4">
+          <button
+            onClick={() => setShowTestMap(false)}
+            className={`px-4 py-2 rounded ${!showTestMap ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            Normal Map
+          </button>
+          <button
+            onClick={() => setShowTestMap(true)}
+            className={`px-4 py-2 rounded ${showTestMap ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            Test Specific Marker (ID: 16fc89e0-2e23-4f77-b4ac-bc09acf378eb)
+          </button>
         </div>
 
-        <EnhancedUniversalMap
-          items={allItems}
-          height="600px"
-          selectedTypes={typesToShow}
-          onItemClick={handleItemClick}
-        />
+        {showTestMap ? (
+          <TestMapWithSpecificMarker />
+        ) : (
+          <>
+            <UniversalFilters
+              selectedType={selectedType}
+              onTypeChange={setSelectedType}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              selectedNeighborhood={selectedNeighborhood}
+              onNeighborhoodChange={setSelectedNeighborhood}
+              selectedVillage={selectedVillage}
+              onVillageChange={setSelectedVillage}
+              filteredItemsCount={allItems.length}
+              itemType="events"
+            />
 
-        <ResultsSummary 
-          allItems={allItems}
-          mappableItems={mappableItems}
-          selectedTypes={typesToShow}
-        />
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div>Total Items: {allItems.length}</div>
+                <div>Mappable Items: {mappableItems.length}</div>
+                <div>Selected Types: {typesToShow.join(', ')}</div>
+                <div>Map Items: {allItems.filter(item => 
+                  item.latitude !== null && 
+                  item.longitude !== null && 
+                  typesToShow.includes(item.type)
+                ).length}</div>
+              </div>
+            </div>
 
-        <ItemsList 
-          allItems={allItems}
-          selectedItem={selectedItem}
-          highlightedItemId={highlightedItemId}
-          onRefresh={handleRefresh}
-        />
+            <EnhancedUniversalMap
+              items={allItems}
+              height="600px"
+              selectedTypes={typesToShow}
+              onItemClick={handleItemClick}
+            />
+
+            <ResultsSummary 
+              allItems={allItems}
+              mappableItems={mappableItems}
+              selectedTypes={typesToShow}
+            />
+
+            <ItemsList 
+              allItems={allItems}
+              selectedItem={selectedItem}
+              highlightedItemId={highlightedItemId}
+              onRefresh={handleRefresh}
+            />
+          </>
+        )}
       </main>
     </div>
   );
