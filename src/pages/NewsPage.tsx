@@ -117,9 +117,9 @@ const NewsPage = () => {
                           <p className="text-gray-700 text-lg leading-relaxed line-clamp-4">
                             {featuredArticle.content}
                           </p>
-                          {featuredArticle.villages && (
+                          {featuredArticle.villages && Array.isArray(featuredArticle.villages) && (
                             <div className="flex flex-wrap gap-1 mt-4">
-                              {JSON.parse(featuredArticle.villages).map((village: string, index: number) => (
+                              {featuredArticle.villages.map((village: string, index: number) => (
                                 <Badge key={index} variant="secondary" className="text-xs">
                                   {village}
                                 </Badge>
