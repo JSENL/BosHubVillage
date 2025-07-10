@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
@@ -102,7 +103,7 @@ const UnifiedIndexContent = () => {
           onRefresh={handleRefresh}
         />
 
-        {/* Toggle between normal map and test map */}
+        {/* Toggle between normal map and test map - ALWAYS VISIBLE */}
         <div className="flex gap-4 mb-4">
           <button
             onClick={() => setShowTestMap(false)}
