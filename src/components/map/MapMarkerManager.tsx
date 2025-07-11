@@ -95,27 +95,46 @@ export const useMapMarkers = ({
           .setLngLat([lng, lat])
           .addTo(map);
 
-        // Create popup content focused on business information
-        const popupContent = `
-          <div style="max-width: 300px; font-family: system-ui; padding: 8px;">
-            <h3 style="margin: 0 0 8px 0; color: ${getMarkerColor(item.type)}; font-size: 16px; font-weight: 600; line-height: 1.2;">${item.title}</h3>
-            <div style="background: ${getMarkerColor(item.type)}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; display: inline-block; margin-bottom: 8px;">
-              ${item.type.replace('-', ' ')}
+        // Create popup content with business-specific information
+        const createPopupContent = (item: UnifiedItem): string => {
+          if (item.type === 'business') {
+            return `
+              <div style="max-width: 300px; font-family: system-ui; padding: 12px;">
+                <h3 style="margin: 0 0 8px 0; color: #2563eb; font-size: 18px; font-weight: 600; line-height: 1.2;">${item.title}</h3>
+                <div style="background: #2563eb; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; display: inline-block; margin-bottom: 12px;">
+                  Business
+                </div>
+                ${item.category ? `<p style="margin: 4px 0 8px 0; font-size: 13px; color: #666; font-weight: 500; background: #f3f4f6; padding: 4px 8px; border-radius: 6px; display: inline-block;">${item.category}</p>` : ''}
+                <p style="margin: 8px 0; font-size: 14px; color: #333; line-height: 1.4;">${item.description || 'No description available'}</p>
+                ${item.address ? `<p style="margin: 8px 0 4px 0; font-size: 13px; color: #666;"><strong>📍</strong> ${item.address}</p>` : ''}
+                ${item.neighborhoods ? `<p style="margin: 4px 0; font-size: 12px; color: #888;">Neighborhood: ${item.neighborhoods}</p>` : ''}
+              </div>
+            `;
+          }
+          
+          // Default popup for other types
+          return `
+            <div style="max-width: 300px; font-family: system-ui; padding: 8px;">
+              <h3 style="margin: 0 0 8px 0; color: ${getMarkerColor(item.type)}; font-size: 16px; font-weight: 600; line-height: 1.2;">${item.title}</h3>
+              <div style="background: ${getMarkerColor(item.type)}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; display: inline-block; margin-bottom: 8px;">
+                ${item.type.replace('-', ' ')}
+              </div>
+              ${item.category ? `<p style="margin: 4px 0; font-size: 12px; color: #666; font-weight: 500;">${item.category}</p>` : ''}
+              <p style="margin: 8px 0; font-size: 14px; color: #333; line-height: 1.4;">${item.description || 'No description available'}</p>
+              ${item.address ? `<p style="margin: 4px 0; font-size: 13px; color: #666;"><strong>📍</strong> ${item.address}</p>` : ''}
+              ${item.neighborhoods ? `<p style="margin: 4px 0; font-size: 12px; color: #888;">Neighborhood: ${item.neighborhoods}</p>` : ''}
             </div>
-            ${item.category ? `<p style="margin: 4px 0; font-size: 12px; color: #666; font-weight: 500;">${item.category}</p>` : ''}
-            <p style="margin: 8px 0; font-size: 14px; color: #333; line-height: 1.4;">${item.description || 'No description available'}</p>
-            ${item.address ? `<p style="margin: 4px 0; font-size: 13px; color: #666;"><strong>📍</strong> ${item.address}</p>` : ''}
-            ${item.neighborhoods ? `<p style="margin: 4px 0; font-size: 12px; color: #888;">Neighborhood: ${item.neighborhoods}</p>` : ''}
-          </div>
-        `;
+          `;
+        };
 
         // Create popup instance
         const popup = new mapboxgl.Popup({
           offset: 25,
           closeButton: true,
-          closeOnClick: false
+          closeOnClick: false,
+          maxWidth: '320px'
         })
-          .setHTML(popupContent);
+          .setHTML(createPopupContent(item));
 
         // Add popup to marker
         marker.setPopup(popup);
