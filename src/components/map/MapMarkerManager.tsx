@@ -95,48 +95,78 @@ export const useMapMarkers = ({
           .setLngLat([lng, lat])
           .addTo(map);
 
-        // Create popup content with business-specific information
+        // Create popup content with type-specific information
         const createPopupContent = (item: UnifiedItem): string => {
-          if (item.type === 'business') {
-            return `
-              <div style="max-width: 300px; font-family: system-ui; padding: 12px;">
-                <h3 style="margin: 0 0 8px 0; color: #2563eb; font-size: 18px; font-weight: 600; line-height: 1.2;">${item.title}</h3>
-                <div style="background: #2563eb; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; display: inline-block; margin-bottom: 12px;">
-                  Business
+          const baseStyle = "max-width: 320px; font-family: system-ui; padding: 12px; line-height: 1.4;";
+          const titleStyle = "margin: 0 0 8px 0; font-size: 18px; font-weight: 600; line-height: 1.2;";
+          const badgeStyle = "color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; display: inline-block; margin-bottom: 12px;";
+          const categoryStyle = "margin: 4px 0 8px 0; font-size: 13px; color: #666; font-weight: 500; background: #f3f4f6; padding: 4px 8px; border-radius: 6px; display: inline-block;";
+          const descStyle = "margin: 8px 0; font-size: 14px; color: #333; line-height: 1.5;";
+          const addressStyle = "margin: 8px 0 4px 0; font-size: 13px; color: #666; display: flex; align-items: center; gap: 4px;";
+          const neighborhoodStyle = "margin: 4px 0; font-size: 12px; color: #888;";
+
+          switch (item.type) {
+            case 'business':
+              return `
+                <div style="${baseStyle}">
+                  <h3 style="${titleStyle} color: #2563eb;">${item.title}</h3>
+                  <div style="${badgeStyle} background: #2563eb;">Business</div>
+                  ${item.category ? `<p style="${categoryStyle}">${item.category}</p>` : ''}
+                  <p style="${descStyle}">${item.description || 'Business information not available'}</p>
+                  ${item.address ? `<p style="${addressStyle}"><span>📍</span> ${item.address}</p>` : ''}
+                  ${item.neighborhoods ? `<p style="${neighborhoodStyle}">Neighborhood: ${item.neighborhoods}</p>` : ''}
                 </div>
-                ${item.category ? `<p style="margin: 4px 0 8px 0; font-size: 13px; color: #666; font-weight: 500; background: #f3f4f6; padding: 4px 8px; border-radius: 6px; display: inline-block;">${item.category}</p>` : ''}
-                <p style="margin: 8px 0; font-size: 14px; color: #333; line-height: 1.4;">${item.description || 'No description available'}</p>
-                ${item.address ? `<p style="margin: 8px 0 4px 0; font-size: 13px; color: #666;"><strong>📍</strong> ${item.address}</p>` : ''}
-                ${item.neighborhoods ? `<p style="margin: 4px 0; font-size: 12px; color: #888;">Neighborhood: ${item.neighborhoods}</p>` : ''}
-              </div>
-            `;
+              `;
+            
+            case 'event':
+              return `
+                <div style="${baseStyle}">
+                  <h3 style="${titleStyle} color: #ef4444;">${item.title}</h3>
+                  <div style="${badgeStyle} background: #ef4444;">Event</div>
+                  ${item.category ? `<p style="${categoryStyle}">${item.category}</p>` : ''}
+                  <p style="${descStyle}">${item.description || 'Event details not available'}</p>
+                  ${item.address ? `<p style="${addressStyle}"><span>📅</span> ${item.address}</p>` : ''}
+                  ${item.neighborhoods ? `<p style="${neighborhoodStyle}">Area: ${item.neighborhoods}</p>` : ''}
+                </div>
+              `;
+            
+            case 'news':
+              return `
+                <div style="${baseStyle}">
+                  <h3 style="${titleStyle} color: #3b82f6;">${item.title}</h3>
+                  <div style="${badgeStyle} background: #3b82f6;">News</div>
+                  ${item.category ? `<p style="${categoryStyle}">${item.category}</p>` : ''}
+                  <p style="${descStyle}">${item.description || 'News content not available'}</p>
+                  ${item.address ? `<p style="${addressStyle}"><span>📰</span> ${item.address}</p>` : ''}
+                  ${item.neighborhoods ? `<p style="${neighborhoodStyle}">Location: ${item.neighborhoods}</p>` : ''}
+                </div>
+              `;
+            
+            case 'local-service':
+              return `
+                <div style="${baseStyle}">
+                  <h3 style="${titleStyle} color: #eab308;">${item.title}</h3>
+                  <div style="${badgeStyle} background: #eab308;">Local Service</div>
+                  ${item.category ? `<p style="${categoryStyle}">${item.category}</p>` : ''}
+                  <p style="${descStyle}">${item.description || 'Service information not available'}</p>
+                  ${item.address ? `<p style="${addressStyle}"><span>🏢</span> ${item.address}</p>` : ''}
+                  ${item.neighborhoods ? `<p style="${neighborhoodStyle}">Serves: ${item.neighborhoods}</p>` : ''}
+                </div>
+              `;
           }
-          
-          // Default popup for other types
-          return `
-            <div style="max-width: 300px; font-family: system-ui; padding: 8px;">
-              <h3 style="margin: 0 0 8px 0; color: ${getMarkerColor(item.type)}; font-size: 16px; font-weight: 600; line-height: 1.2;">${item.title}</h3>
-              <div style="background: ${getMarkerColor(item.type)}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; display: inline-block; margin-bottom: 8px;">
-                ${item.type.replace('-', ' ')}
-              </div>
-              ${item.category ? `<p style="margin: 4px 0; font-size: 12px; color: #666; font-weight: 500;">${item.category}</p>` : ''}
-              <p style="margin: 8px 0; font-size: 14px; color: #333; line-height: 1.4;">${item.description || 'No description available'}</p>
-              ${item.address ? `<p style="margin: 4px 0; font-size: 13px; color: #666;"><strong>📍</strong> ${item.address}</p>` : ''}
-              ${item.neighborhoods ? `<p style="margin: 4px 0; font-size: 12px; color: #888;">Neighborhood: ${item.neighborhoods}</p>` : ''}
-            </div>
-          `;
         };
 
-        // Create popup instance
+        // Create popup instance with enhanced styling
         const popup = new mapboxgl.Popup({
           offset: 25,
           closeButton: true,
           closeOnClick: false,
-          maxWidth: '320px'
+          maxWidth: '340px',
+          className: 'custom-popup'
         })
           .setHTML(createPopupContent(item));
 
-        // Add popup to marker
+        // Add popup to marker with click event
         marker.setPopup(popup);
 
         // Add click handler for additional functionality
