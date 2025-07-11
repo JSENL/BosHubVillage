@@ -77,7 +77,7 @@ export const useMapMarkers = ({
           }
         };
 
-        // Create marker element
+        // Create marker element with fixed positioning
         const markerElement = document.createElement('div');
         markerElement.className = 'marker-custom';
         markerElement.style.cssText = `
@@ -88,28 +88,32 @@ export const useMapMarkers = ({
           border: 3px solid white;
           box-shadow: 0 2px 6px rgba(0,0,0,0.4);
           cursor: pointer;
-          transition: transform 0.2s;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: bold;
           color: white;
           font-size: 10px;
+          position: relative;
+          transform-origin: center center;
         `;
 
         // Add type indicator
         const typeIndicator = item.type.charAt(0).toUpperCase();
         markerElement.textContent = typeIndicator;
 
-        // Add hover effect
+        // Add hover effect that doesn't move the marker
         markerElement.addEventListener('mouseenter', () => {
-          markerElement.style.transform = 'scale(1.3)';
+          markerElement.style.transform = 'scale(1.2)';
           markerElement.style.zIndex = '1000';
+          markerElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.5)';
         });
         
         markerElement.addEventListener('mouseleave', () => {
           markerElement.style.transform = 'scale(1)';
           markerElement.style.zIndex = 'auto';
+          markerElement.style.boxShadow = '0 2px 6px rgba(0,0,0,0.4)';
         });
 
         // Create popup content
@@ -140,51 +144,79 @@ export const useMapMarkers = ({
           </div>
         `;
 
-        // Create popup
+        // Create popup with proper anchor
         const popup = new mapboxgl.Popup({
           offset: 30,
           closeButton: true,
           closeOnClick: false,
-          maxWidth: '300px'
+          maxWidth: '300px',
+          anchor: 'bottom'
         }).setHTML(popupContent);
 
-        // Create marker
-        const marker = new mapboxgl.Marker(markerElement)
+        // Create marker with center anchor to prevent movement
+        const marker = new mapboxgl.Marker({
+          element: markerElement,
+          anchor: 'center'
+        })
           .setLngLat([lng, lat])
           .setPopup(popup)
           .addTo(map);
 
-        // Add click handlers - single click shows popup
+        let clickTimeout: NodeJS.Timeout | null = null;
+
+        // Add click handlers with proper timing
         markerElement.addEventListener('click', (e) => {
           e.stopPropagation();
-          console.log('📍 Marker clicked:', item.title);
           
-          // Toggle popup visibility
-          if (popup.isOpen()) {
-            popup.remove();
-          } else {
-            popup.addTo(map);
+          if (clickTimeout) {
+            clearTimeout(clickTimeout);
+            clickTimeout = null;
+            return;
           }
-          
-          if (onMarkerClick) {
-            const simpleItem = {
-              id: item.id,
-              title: item.title,
-              type: item.type,
-              latitude: item.latitude,
-              longitude: item.longitude,
-              description: item.description,
-              address: item.address,
-              location: item.location,
-              category: item.category
-            };
-            onMarkerClick(simpleItem as UnifiedItem);
-          }
+
+          clickTimeout = setTimeout(() => {
+            console.log('📍 Marker clicked:', item.title);
+            
+            // Toggle popup visibility
+            if (popup.isOpen()) {
+              popup.remove();
+            } else {
+              popup.addTo(map);
+            }
+            
+            if (onMarkerClick) {
+              const simpleItem = {
+                id: item.id,
+                title: item.title,
+                type: item.type,
+                latitude: item.latitude,
+                longitude: item.longitude,
+                description: item.description,
+                address: item.address,
+                location: item.location,
+                category: item.category
+              };
+              onMarkerClick(simpleItem as UnifiedItem);
+            }
+            
+            clickTimeout = null;
+          }, 200);
         });
 
         markerElement.addEventListener('dblclick', (e) => {
           e.stopPropagation();
+          
+          if (clickTimeout) {
+            clearTimeout(clickTimeout);
+            clickTimeout = null;
+          }
+          
           console.log('🖱️ Marker double-clicked:', item.title);
+          
+          // Ensure popup stays visible on double-click
+          if (!popup.isOpen()) {
+            popup.addTo(map);
+          }
           
           if (onMarkerDoubleClick) {
             const simpleItem = {

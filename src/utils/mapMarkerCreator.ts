@@ -21,13 +21,14 @@ export const createMarkerElement = (item: UnifiedItem): HTMLDivElement => {
     font-weight: bold;
     color: white;
     font-size: 12px;
-    z-index: 1;
+    position: relative;
+    transform-origin: center center;
   `;
 
   const typeIndicator = item.type.charAt(0).toUpperCase();
   markerElement.textContent = typeIndicator;
 
-  // Add hover effects
+  // Add hover effects that don't affect positioning
   markerElement.addEventListener('mouseenter', () => {
     markerElement.style.transform = 'scale(1.2)';
     markerElement.style.zIndex = '1000';
@@ -61,34 +62,64 @@ export const createMapboxMarker = (
     closeButton: true,
     closeOnClick: false,
     maxWidth: '320px',
-    className: 'custom-popup'
+    className: 'custom-popup',
+    anchor: 'bottom'
   }).setHTML(createPopupContent(item));
 
-  // Create marker
-  const marker = new mapboxgl.Marker(markerElement)
+  // Create marker with proper anchor
+  const marker = new mapboxgl.Marker({
+    element: markerElement,
+    anchor: 'center'
+  })
     .setLngLat([lng, lat])
     .setPopup(popup)
     .addTo(map);
 
-  // Add event listeners
+  let clickTimeout: NodeJS.Timeout | null = null;
+
+  // Add single click handler with delay to distinguish from double-click
   markerElement.addEventListener('click', (e) => {
     e.stopPropagation();
-    console.log(`📍 Marker clicked: ${item.title} (${item.type})`);
     
-    if (popup.isOpen()) {
-      popup.remove();
-    } else {
-      popup.addTo(map);
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      clickTimeout = null;
+      return;
     }
-    
-    if (onMarkerClick) {
-      onMarkerClick(item);
-    }
+
+    clickTimeout = setTimeout(() => {
+      console.log(`📍 Marker clicked: ${item.title} (${item.type})`);
+      
+      // Toggle popup visibility
+      if (popup.isOpen()) {
+        popup.remove();
+      } else {
+        popup.addTo(map);
+      }
+      
+      if (onMarkerClick) {
+        onMarkerClick(item);
+      }
+      
+      clickTimeout = null;
+    }, 200);
   });
 
+  // Add double-click handler
   markerElement.addEventListener('dblclick', (e) => {
     e.stopPropagation();
+    
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      clickTimeout = null;
+    }
+    
     console.log(`🖱️ Marker double-clicked: ${item.title} (${item.type})`);
+    
+    // Ensure popup stays open on double-click
+    if (!popup.isOpen()) {
+      popup.addTo(map);
+    }
     
     if (onMarkerDoubleClick) {
       onMarkerDoubleClick(item);
