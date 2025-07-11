@@ -19,6 +19,7 @@ export interface BusinessSubmission {
   updated_at: string;
 }
 
+
 export interface NewsSubmission {
   id: string;
   title: string;

@@ -62,6 +62,12 @@ export const Navigation = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link to="/submit-business" className="cursor-pointer">
+                      <Building className="h-4 w-4 mr-2" />
+                      Submit Business
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/submit-local-service" className="cursor-pointer">
                       <Heart className="h-4 w-4 mr-2" />
                       Submit Local Service
