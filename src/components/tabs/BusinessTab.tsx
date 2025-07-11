@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from "react";
-import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
+import { SectionMap } from "@/components/SectionMap";
 import { UniversalFilters } from "@/components/UniversalFilters";
 import BusinessCard from "@/components/BusinessCard";
+import { BusinessSubmissionCard } from "@/components/BusinessSubmissionCard";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
 import { useGeocoding } from "@/hooks/useGeocoding";
@@ -15,13 +16,13 @@ import { toast } from "sonner";
 
 export const BusinessTab = () => {
   const { data: businesses, isLoading: businessLoading, refetch: refetchBusinesses } = useBusiness();
-  const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
+  const { data: businessSubmissions, isLoading: businessSubmissionsLoading, refetch: refetchBusinessSubmissions } = useBusinessSubmissions();
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedBusinesses, setHasGeocodedBusinesses] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
   
   // Filter states
-  const [selectedType, setSelectedType] = useState("business");
+  const [selectedType, setSelectedType] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
@@ -32,37 +33,44 @@ export const BusinessTab = () => {
     ...(businessSubmissions || [])
   ];
 
-  // Convert business to UnifiedItem format for the map
-  const unifiedBusinesses: UnifiedItem[] = allBusinesses.map((business) => {
-    return {
-      id: business.id,
-      title: business.title,
-      description: business.description || '',
-      latitude: business.latitude || null,
-      longitude: business.longitude || null,
-      type: 'business' as const,
-      address: business.address,
-      category: business.business_type,
-      business_type: business.business_type,
-      neighborhoods: business.neighborhood,
-      villages: 'villages' in business ? business.villages : undefined,
-      originalData: business
-    };
-  });
+  const isBusinessLoading = businessLoading || businessSubmissionsLoading;
 
-  // Apply filtering
+  const isBusinessSubmission = (item: Business | BusinessSubmission): item is BusinessSubmission => {
+    return 'status' in item;
+  };
+
+  const handleBusinessesUpdate = () => {
+    refetchBusinesses();
+    refetchBusinessSubmissions();
+  };
+
+  // Transform businesses to UnifiedItem format for map integration
+  const unifiedBusinesses: UnifiedItem[] = allBusinesses.map(business => ({
+    id: business.id,
+    title: business.title,
+    description: business.description,
+    type: 'business' as const,
+    latitude: business.latitude,
+    longitude: business.longitude,
+    address: business.address,
+    location: business.address,
+    date: business.created_at,
+    category: business.business_type,
+    neighborhoods: business.neighborhood,
+    villages: business.villages ? (Array.isArray(business.villages) ? business.villages : JSON.parse(business.villages as string)) : null
+  }));
+
+  // Apply filters to the unified businesses
   const filteredBusinesses = filterUnifiedItems(unifiedBusinesses, {
-    selectedTypes: [selectedType],
-    selectedType,
-    searchTerm,
-    selectedCategory,
-    selectedNeighborhood,
-    selectedVillage,
+    selectedTypes: selectedType === 'all' ? [] : [selectedType],
+    selectedType: selectedType,
+    searchTerm: searchTerm,
+    selectedCategory: selectedCategory,
+    selectedNeighborhood: selectedNeighborhood,
+    selectedVillage: selectedVillage,
     dateFilter: '',
     timeFilter: 'all'
   });
-
-  const isBusinessLoading = businessLoading || businessSubmissionsLoading;
 
   // Enhanced business data logging
   useEffect(() => {
@@ -147,7 +155,7 @@ export const BusinessTab = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Local Business</h2>
+      <h2 className="text-2xl font-bold text-gray-900">Local Businesses</h2>
       
       <UniversalFilters
         selectedType={selectedType}
@@ -162,11 +170,7 @@ export const BusinessTab = () => {
         itemType="business"
       />
       
-      <EnhancedUniversalMap
-        items={filteredBusinesses}
-        height="400px"
-        selectedTypes={['business']}
-      />
+      <SectionMap height="400px" />
       
       {isBusinessLoading ? (
         <div className="text-center py-8">
@@ -178,27 +182,21 @@ export const BusinessTab = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
           <p className="mt-2 text-gray-600">Adding locations to business...</p>
         </div>
-      ) : filteredBusinesses && filteredBusinesses.length > 0 ? (
-        <div>
-          <div className="mb-4 text-sm text-gray-600">
-            Showing {filteredBusinesses.length} business 
-            {businesses && (
-              <span> • {businesses.filter(b => {
-                const lat = Number(b.latitude);
-                const lng = Number(b.longitude);
-                return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
-              }).length} with map locations</span>
-            )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBusinesses.map((business) => (
-              <BusinessCard key={business.id} business={business.originalData} />
+      ) : filteredBusinesses.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {allBusinesses
+            .filter(business => filteredBusinesses.some(filtered => filtered.id === business.id))
+            .map((business) => (
+              isBusinessSubmission(business) ? (
+                <BusinessSubmissionCard key={business.id} submission={business} onUpdate={handleBusinessesUpdate} />
+              ) : (
+                <BusinessCard key={business.id} business={business} />
+              )
             ))}
-          </div>
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          No business found matching your filters. Try adjusting your search criteria.
+          No businesses found. Try adjusting your filters or be the first to add one!
         </div>
       )}
     </div>

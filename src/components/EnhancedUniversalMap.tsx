@@ -39,12 +39,11 @@ export const EnhancedUniversalMap = ({
     }, {} as Record<string, number>)
   });
 
-  // Use the map markers hook with both click and double-click handlers
+  // Use the map markers hook with click handler
   useMapMarkers({
     map: mapInstance,
     items: filteredMappableItems,
-    onMarkerClick: handleMarkerClick,
-    onMarkerDoubleClick: handleMarkerDoubleClick
+    onMarkerClick: handleMarkerClick
   });
 
   if (isLoadingApiKey) {
