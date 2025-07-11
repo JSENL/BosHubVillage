@@ -12,6 +12,7 @@ import { Business } from "@/types/business";
 import { BusinessSubmission } from "@/types/submissions";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { filterUnifiedItems } from "@/utils/filterUnifiedItems";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const BusinessTab = () => {
@@ -28,9 +29,14 @@ export const BusinessTab = () => {
   const [selectedVillage, setSelectedVillage] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   
+  // Separate approved business submissions from pending ones
+  const approvedBusinessSubmissions = (businessSubmissions || []).filter(sub => sub.status === 'approved');
+  const pendingBusinessSubmissions = (businessSubmissions || []).filter(sub => sub.status === 'pending');
+  
   const allBusinesses: (Business | BusinessSubmission)[] = [
     ...(businesses || []),
-    ...(businessSubmissions || [])
+    ...approvedBusinessSubmissions,
+    ...pendingBusinessSubmissions
   ];
 
   const isBusinessLoading = businessLoading || businessSubmissionsLoading;
@@ -102,15 +108,15 @@ export const BusinessTab = () => {
     }
   }, [businesses, isReady]);
 
-  // Improved geocoding with better error handling
+  // Improved geocoding with better error handling for both businesses and submissions
   useEffect(() => {
     const geocodeBusinessesIfNeeded = async () => {
-      if (!isReady || hasGeocodedBusinesses || isBusinessLoading || !businesses || businesses.length === 0 || isGeocoding) {
+      if (!isReady || hasGeocodedBusinesses || isBusinessLoading || isGeocoding) {
         return;
       }
 
       // Find business that need geocoding
-      const businessesNeedingGeocode = businesses.filter(business => 
+      const businessesNeedingGeocode = (businesses || []).filter(business => 
         business.address && 
         business.address.trim() !== '' &&
         (!business.latitude || !business.longitude || 
@@ -118,40 +124,76 @@ export const BusinessTab = () => {
          Number(business.latitude) === 0 || Number(business.longitude) === 0)
       );
 
-      if (businessesNeedingGeocode.length > 0) {
-        console.log(`🌍 Starting geocoding for ${businessesNeedingGeocode.length} businesses:`, 
-          businessesNeedingGeocode.map(b => ({ 
-            id: b.id,
-            title: b.title, 
-            address: b.address,
-            currentCoords: `${b.latitude}, ${b.longitude}`
-          }))
-        );
+      // Find business submissions that need geocoding
+      const submissionsNeedingGeocode = (businessSubmissions || []).filter(submission => 
+        submission.address && 
+        submission.address.trim() !== '' &&
+        (!submission.latitude || !submission.longitude || 
+         submission.latitude === null || submission.longitude === null ||
+         Number(submission.latitude) === 0 || Number(submission.longitude) === 0)
+      );
+
+      const totalNeedingGeocode = businessesNeedingGeocode.length + submissionsNeedingGeocode.length;
+
+      if (totalNeedingGeocode > 0) {
+        console.log(`🌍 Starting geocoding for ${totalNeedingGeocode} items:`, {
+          businesses: businessesNeedingGeocode.length,
+          submissions: submissionsNeedingGeocode.length
+        });
         
         setIsGeocoding(true);
         
         try {
-          await geocodeBusinesses(businessesNeedingGeocode, geocode);
+          // Geocode businesses
+          if (businessesNeedingGeocode.length > 0) {
+            await geocodeBusinesses(businessesNeedingGeocode, geocode);
+          }
+          
+          // Geocode business submissions
+          if (submissionsNeedingGeocode.length > 0) {
+            // Use the same geocoding utility but for submissions table
+            for (const submission of submissionsNeedingGeocode) {
+              try {
+                const result = await geocode(submission.address);
+                if (result) {
+                  const { data, error } = await supabase
+                    .from('business_submissions')
+                    .update({
+                      latitude: result.latitude,
+                      longitude: result.longitude
+                    })
+                    .eq('id', submission.id);
+                    
+                  if (error) throw error;
+                  console.log(`✅ Geocoded submission: ${submission.title}`);
+                }
+              } catch (error) {
+                console.error(`❌ Failed to geocode submission ${submission.title}:`, error);
+              }
+            }
+          }
+          
           console.log('✅ Geocoding completed successfully');
-          toast.success(`Successfully geocoded ${businessesNeedingGeocode.length} businesses!`);
+          toast.success(`Successfully geocoded ${totalNeedingGeocode} items!`);
           
           // Refetch to get updated coordinates
           await refetchBusinesses();
+          await refetchBusinessSubmissions();
           setHasGeocodedBusinesses(true);
         } catch (error) {
           console.error('❌ Geocoding failed:', error);
-          toast.error('Failed to geocode some businesses. Please try again.');
+          toast.error('Failed to geocode some items. Please try again.');
         } finally {
           setIsGeocoding(false);
         }
       } else {
-        console.log('✅ All businesses already have valid coordinates');
+        console.log('✅ All businesses and submissions already have valid coordinates');
         setHasGeocodedBusinesses(true);
       }
     };
 
     geocodeBusinessesIfNeeded();
-  }, [businesses, isReady, geocode, hasGeocodedBusinesses, isBusinessLoading, isGeocoding, refetchBusinesses]);
+  }, [businesses, businessSubmissions, isReady, geocode, hasGeocodedBusinesses, isBusinessLoading, isGeocoding, refetchBusinesses, refetchBusinessSubmissions]);
 
   return (
     <div className="space-y-6">
