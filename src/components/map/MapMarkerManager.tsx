@@ -77,36 +77,93 @@ export const useMapMarkers = ({
           }
         };
 
-        // Create popup content
+        // Create detailed submission card popup content
         const popupContent = `
-          <div style="padding: 16px; max-width: 320px; font-family: system-ui; line-height: 1.4;">
-            <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1f2937;">${item.title}</h3>
-            <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">${item.description || 'No description available'}</p>
-            <div style="font-size: 12px; color: #374151;">
-              ${item.address ? `<p style="margin: 4px 0;"><strong>📍 Address:</strong> ${item.address}</p>` : ''}
-              ${item.location && item.location !== item.address ? `<p style="margin: 4px 0;"><strong>📍 Location:</strong> ${item.location}</p>` : ''}
-              ${item.category ? `<p style="margin: 4px 0;"><strong>🏷️ Category:</strong> ${item.category}</p>` : ''}
-              <p style="margin: 4px 0;"><strong>🏷️ Type:</strong> <span style="color: ${getMarkerColor(item.type)}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
-              ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${item.date}</p>` : ''}
-              ${item.business_type ? `<p style="margin: 4px 0;"><strong>🏢 Business Type:</strong> ${item.business_type}</p>` : ''}
-              ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${item.neighborhoods}</p>` : ''}
-              ${item.villages ? `<p style="margin: 4px 0;"><strong>🏘️ Village:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</p>` : ''}
+          <div style="padding: 0; max-width: 380px; font-family: system-ui; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
+            <!-- Header with type badge -->
+            <div style="background: linear-gradient(135deg, ${getMarkerColor(item.type)}15 0%, ${getMarkerColor(item.type)}25 100%); padding: 16px; border-bottom: 1px solid #f3f4f6;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="background: ${getMarkerColor(item.type)}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                  ${item.type.replace('-', ' ')}
+                </span>
+                ${item.date ? `<span style="font-size: 12px; color: #6b7280; font-weight: 500;">📅 ${item.date}</span>` : ''}
+              </div>
+              <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #111827; line-height: 1.3;">${item.title}</h3>
             </div>
-            <div style="margin-top: 16px;">
+            
+            <!-- Content -->
+            <div style="padding: 16px;">
+              <p style="margin: 0 0 16px 0; font-size: 14px; color: #4b5563; line-height: 1.5;">${item.description || 'No description available'}</p>
+              
+              <!-- Info grid -->
+              <div style="display: grid; gap: 8px; margin-bottom: 16px;">
+                ${item.address ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">📍</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Address:</strong> ${item.address}</span>
+                  </div>
+                ` : ''}
+                ${item.location && item.location !== item.address ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">📍</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Location:</strong> ${item.location}</span>
+                  </div>
+                ` : ''}
+                ${item.category ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏷️</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Category:</strong> ${item.category}</span>
+                  </div>
+                ` : ''}
+                ${item.business_type ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏢</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Business Type:</strong> ${item.business_type}</span>
+                  </div>
+                ` : ''}
+                ${item.neighborhoods ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏘️</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Neighborhood:</strong> ${item.neighborhoods}</span>
+                  </div>
+                ` : ''}
+                ${item.villages ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏘️</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Village:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</span>
+                  </div>
+                ` : ''}
+                ${item.start_time || item.end_time ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">⏰</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Time:</strong> ${item.start_time || ''} ${item.end_time ? `- ${item.end_time}` : ''}</span>
+                  </div>
+                ` : ''}
+                ${item.price !== null && item.price !== undefined ? `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">💰</span>
+                    <span style="font-size: 13px; color: #374151;"><strong>Price:</strong> ${item.price === 0 ? 'Free' : `$${item.price}`}</span>
+                  </div>
+                ` : ''}
+              </div>
+              
+              <!-- Action button -->
               <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
-                background: linear-gradient(135deg, ${getMarkerColor(item.type)}cc 0%, ${getMarkerColor(item.type)} 100%);
+                background: linear-gradient(135deg, ${getMarkerColor(item.type)} 0%, ${getMarkerColor(item.type)}dd 100%);
                 color: white;
                 border: none;
-                padding: 10px 16px;
+                padding: 12px 20px;
                 border-radius: 8px;
-                font-size: 12px;
+                font-size: 13px;
                 cursor: pointer;
                 font-weight: 600;
                 width: 100%;
-                transition: all 0.2s ease;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-              " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
-                View Details →
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px ${getMarkerColor(item.type)}25;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px ${getMarkerColor(item.type)}35'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px ${getMarkerColor(item.type)}25'">
+                View Full Details →
               </button>
             </div>
           </div>
@@ -128,22 +185,13 @@ export const useMapMarkers = ({
           .setPopup(popup)
           .addTo(map);
 
-        // Add click handlers
+        // Add single click handler only
         marker.getElement().addEventListener('click', (e) => {
           e.stopPropagation();
           console.log('📍 Marker clicked:', item.title);
           
           if (onMarkerClick) {
             onMarkerClick(item);
-          }
-        });
-
-        marker.getElement().addEventListener('dblclick', (e) => {
-          e.stopPropagation();
-          console.log('🖱️ Marker double-clicked:', item.title);
-          
-          if (onMarkerDoubleClick) {
-            onMarkerDoubleClick(item);
           }
         });
 
