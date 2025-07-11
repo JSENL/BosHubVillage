@@ -77,160 +77,73 @@ export const useMapMarkers = ({
           }
         };
 
-        // Create marker element with fixed positioning
-        const markerElement = document.createElement('div');
-        markerElement.className = 'marker-custom';
-        markerElement.style.cssText = `
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          background-color: ${getMarkerColor(item.type)};
-          border: 3px solid white;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-          cursor: pointer;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: white;
-          font-size: 10px;
-          position: relative;
-          transform-origin: center center;
-        `;
-
-        // Add type indicator
-        const typeIndicator = item.type.charAt(0).toUpperCase();
-        markerElement.textContent = typeIndicator;
-
-        // Add hover effect that doesn't move the marker
-        markerElement.addEventListener('mouseenter', () => {
-          markerElement.style.transform = 'scale(1.2)';
-          markerElement.style.zIndex = '1000';
-          markerElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.5)';
-        });
-        
-        markerElement.addEventListener('mouseleave', () => {
-          markerElement.style.transform = 'scale(1)';
-          markerElement.style.zIndex = 'auto';
-          markerElement.style.boxShadow = '0 2px 6px rgba(0,0,0,0.4)';
-        });
-
         // Create popup content
         const popupContent = `
-          <div style="padding: 12px; max-width: 280px; font-family: system-ui;">
-            <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${item.title}</h3>
-            <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280; line-height: 1.4;">${item.description || 'No description available'}</p>
-            <div style="space-y: 4px; font-size: 12px;">
-              ${item.address ? `<p style="margin: 2px 0;"><strong>Address:</strong> ${item.address}</p>` : ''}
-              ${item.location ? `<p style="margin: 2px 0;"><strong>Location:</strong> ${item.location}</p>` : ''}
-              ${item.category ? `<p style="margin: 2px 0;"><strong>Category:</strong> ${item.category}</p>` : ''}
-              <p style="margin: 2px 0;"><strong>Type:</strong> <span style="color: ${getMarkerColor(item.type)}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
-              ${item.date ? `<p style="margin: 2px 0;"><strong>Date:</strong> ${item.date}</p>` : ''}
+          <div style="padding: 16px; max-width: 320px; font-family: system-ui; line-height: 1.4;">
+            <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1f2937;">${item.title}</h3>
+            <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">${item.description || 'No description available'}</p>
+            <div style="font-size: 12px; color: #374151;">
+              ${item.address ? `<p style="margin: 4px 0;"><strong>📍 Address:</strong> ${item.address}</p>` : ''}
+              ${item.location && item.location !== item.address ? `<p style="margin: 4px 0;"><strong>📍 Location:</strong> ${item.location}</p>` : ''}
+              ${item.category ? `<p style="margin: 4px 0;"><strong>🏷️ Category:</strong> ${item.category}</p>` : ''}
+              <p style="margin: 4px 0;"><strong>🏷️ Type:</strong> <span style="color: ${getMarkerColor(item.type)}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
+              ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${item.date}</p>` : ''}
+              ${item.business_type ? `<p style="margin: 4px 0;"><strong>🏢 Business Type:</strong> ${item.business_type}</p>` : ''}
+              ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${item.neighborhoods}</p>` : ''}
+              ${item.villages ? `<p style="margin: 4px 0;"><strong>🏘️ Village:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</p>` : ''}
             </div>
-            <div style="margin-top: 12px;">
+            <div style="margin-top: 16px;">
               <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
-                background: linear-gradient(to right, #8b5cf6, #3b82f6);
+                background: linear-gradient(135deg, ${getMarkerColor(item.type)}cc 0%, ${getMarkerColor(item.type)} 100%);
                 color: white;
                 border: none;
-                padding: 8px 12px;
-                border-radius: 6px;
+                padding: 10px 16px;
+                border-radius: 8px;
                 font-size: 12px;
                 cursor: pointer;
-                font-weight: 500;
+                font-weight: 600;
                 width: 100%;
-              ">View Details</button>
+                transition: all 0.2s ease;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
+                View Details →
+              </button>
             </div>
           </div>
         `;
 
-        // Create popup with proper anchor
+        // Create popup
         const popup = new mapboxgl.Popup({
-          offset: 30,
+          offset: 25,
           closeButton: true,
           closeOnClick: false,
-          maxWidth: '300px',
-          anchor: 'bottom'
+          maxWidth: '340px'
         }).setHTML(popupContent);
 
-        // Create marker with center anchor to prevent movement
+        // Create marker using the standard Mapbox approach
         const marker = new mapboxgl.Marker({
-          element: markerElement,
-          anchor: 'center'
+          color: getMarkerColor(item.type)
         })
           .setLngLat([lng, lat])
           .setPopup(popup)
           .addTo(map);
 
-        let clickTimeout: NodeJS.Timeout | null = null;
-
-        // Add click handlers with proper timing
-        markerElement.addEventListener('click', (e) => {
+        // Add click handlers
+        marker.getElement().addEventListener('click', (e) => {
           e.stopPropagation();
+          console.log('📍 Marker clicked:', item.title);
           
-          if (clickTimeout) {
-            clearTimeout(clickTimeout);
-            clickTimeout = null;
-            return;
+          if (onMarkerClick) {
+            onMarkerClick(item);
           }
-
-          clickTimeout = setTimeout(() => {
-            console.log('📍 Marker clicked:', item.title);
-            
-            // Toggle popup visibility
-            if (popup.isOpen()) {
-              popup.remove();
-            } else {
-              popup.addTo(map);
-            }
-            
-            if (onMarkerClick) {
-              const simpleItem = {
-                id: item.id,
-                title: item.title,
-                type: item.type,
-                latitude: item.latitude,
-                longitude: item.longitude,
-                description: item.description,
-                address: item.address,
-                location: item.location,
-                category: item.category
-              };
-              onMarkerClick(simpleItem as UnifiedItem);
-            }
-            
-            clickTimeout = null;
-          }, 200);
         });
 
-        markerElement.addEventListener('dblclick', (e) => {
+        marker.getElement().addEventListener('dblclick', (e) => {
           e.stopPropagation();
-          
-          if (clickTimeout) {
-            clearTimeout(clickTimeout);
-            clickTimeout = null;
-          }
-          
           console.log('🖱️ Marker double-clicked:', item.title);
           
-          // Ensure popup stays visible on double-click
-          if (!popup.isOpen()) {
-            popup.addTo(map);
-          }
-          
           if (onMarkerDoubleClick) {
-            const simpleItem = {
-              id: item.id,
-              title: item.title,
-              type: item.type,
-              latitude: item.latitude,
-              longitude: item.longitude,
-              description: item.description,
-              address: item.address,
-              location: item.location,
-              category: item.category
-            };
-            onMarkerDoubleClick(simpleItem as UnifiedItem);
+            onMarkerDoubleClick(item);
           }
         });
 
