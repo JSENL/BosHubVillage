@@ -7,24 +7,22 @@ import {
   Calendar,
   Heart
 } from 'lucide-react';
-import { BusinessSubmission, NewsSubmission } from '@/types/submissions';
+import { NewsSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
 import { LocalResourceSubmission } from '@/types/localServices';
 
 interface SubmissionsOverviewCardsProps {
-  businessSubmissions: BusinessSubmission[];
   newsSubmissions: NewsSubmission[];
   eventSubmissions: EventSubmission[];
   localResourceSubmissions: LocalResourceSubmission[];
 }
 
 export const SubmissionsOverviewCards = ({
-  businessSubmissions,
   newsSubmissions, 
   eventSubmissions,
   localResourceSubmissions
 }: SubmissionsOverviewCardsProps) => {
-  const totalPendingSubmissions = businessSubmissions.length + newsSubmissions.length + eventSubmissions.length + localResourceSubmissions.length;
+  const totalPendingSubmissions = newsSubmissions.length + eventSubmissions.length + localResourceSubmissions.length;
 
   if (totalPendingSubmissions === 0) {
     return (
@@ -37,22 +35,13 @@ export const SubmissionsOverviewCards = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div className="bg-blue-50 p-4 rounded-lg">
         <div className="flex items-center">
           <Calendar className="h-8 w-8 text-blue-600 mr-3" />
           <div>
             <p className="text-2xl font-bold text-blue-600">{eventSubmissions.length}</p>
             <p className="text-sm text-gray-600">Event Submissions</p>
-          </div>
-        </div>
-      </div>
-      <div className="bg-green-50 p-4 rounded-lg">
-        <div className="flex items-center">
-          <Building className="h-8 w-8 text-green-600 mr-3" />
-          <div>
-            <p className="text-2xl font-bold text-green-600">{businessSubmissions.length}</p>
-            <p className="text-sm text-gray-600">Business Submissions</p>
           </div>
         </div>
       </div>

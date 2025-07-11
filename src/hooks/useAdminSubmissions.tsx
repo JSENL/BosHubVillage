@@ -3,13 +3,12 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { BusinessSubmission, NewsSubmission } from '@/types/submissions';
+import { NewsSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
 import { LocalResourceSubmission } from '@/types/localServices';
 
 export const useAdminSubmissions = () => {
   const { isAdmin, user } = useAuth();
-  const [businessSubmissions, setBusinessSubmissions] = useState<BusinessSubmission[]>([]);
   const [newsSubmissions, setNewsSubmissions] = useState<NewsSubmission[]>([]);
   const [eventSubmissions, setEventSubmissions] = useState<EventSubmission[]>([]);
   const [localResourceSubmissions, setLocalResourceSubmissions] = useState<LocalResourceSubmission[]>([]);
@@ -28,18 +27,6 @@ export const useAdminSubmissions = () => {
       
       console.log('Fetching all submissions for admin user:', user.id);
       
-      // Fetch business submissions
-      const { data: businessData, error: businessError } = await supabase
-        .from('business_submissions')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
-
-      if (businessError) {
-        console.error('Business submissions error:', businessError);
-        throw new Error(`Business submissions: ${businessError.message}`);
-      }
-
       // Fetch news submissions
       const { data: newsData, error: newsError } = await supabase
         .from('news_submissions')
@@ -77,11 +64,6 @@ export const useAdminSubmissions = () => {
       }
 
       // Type cast the data to ensure status field is properly typed
-      const typedBusinessData = (businessData || []).map(submission => ({
-        ...submission,
-        status: submission.status as 'pending' | 'approved' | 'rejected'
-      }));
-
       const typedNewsData = (newsData || []).map(submission => ({
         ...submission,
         status: submission.status as 'pending' | 'approved' | 'rejected'
@@ -98,13 +80,11 @@ export const useAdminSubmissions = () => {
       }));
 
       console.log('Successfully fetched submissions:', {
-        business: typedBusinessData.length,
         news: typedNewsData.length,
         events: typedEventData.length,
         localResources: typedLocalResourceData.length
       });
 
-      setBusinessSubmissions(typedBusinessData);
       setNewsSubmissions(typedNewsData);
       setEventSubmissions(typedEventData);
       setLocalResourceSubmissions(typedLocalResourceData);
@@ -128,7 +108,6 @@ export const useAdminSubmissions = () => {
   }, [isAdmin, user]);
 
   return {
-    businessSubmissions,
     newsSubmissions,
     eventSubmissions,
     localResourceSubmissions,

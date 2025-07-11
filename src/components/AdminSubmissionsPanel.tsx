@@ -13,7 +13,6 @@ import {
 const AdminSubmissionsPanel = () => {
   const { isAdmin } = useAuth();
   const {
-    businessSubmissions,
     newsSubmissions,
     eventSubmissions,
     localResourceSubmissions,
@@ -55,7 +54,7 @@ const AdminSubmissionsPanel = () => {
     );
   }
 
-  const totalPendingSubmissions = businessSubmissions.length + newsSubmissions.length + eventSubmissions.length + localResourceSubmissions.length;
+  const totalPendingSubmissions = newsSubmissions.length + eventSubmissions.length + localResourceSubmissions.length;
 
   return (
     <div className="space-y-6">
@@ -68,7 +67,6 @@ const AdminSubmissionsPanel = () => {
         </CardHeader>
         <CardContent>
           <SubmissionsOverviewCards
-            businessSubmissions={businessSubmissions}
             newsSubmissions={newsSubmissions}
             eventSubmissions={eventSubmissions}
             localResourceSubmissions={localResourceSubmissions}
@@ -76,7 +74,6 @@ const AdminSubmissionsPanel = () => {
 
           {totalPendingSubmissions > 0 && (
             <SubmissionsTabs
-              businessSubmissions={businessSubmissions}
               newsSubmissions={newsSubmissions}
               eventSubmissions={eventSubmissions}
               localResourceSubmissions={localResourceSubmissions}

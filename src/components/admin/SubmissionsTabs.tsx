@@ -6,16 +6,14 @@ import {
   Calendar,
   Heart
 } from 'lucide-react';
-import { BusinessSubmission, NewsSubmission } from '@/types/submissions';
+import { NewsSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
 import { LocalResourceSubmission } from '@/types/localServices';
-import { BusinessSubmissionCard } from '@/components/BusinessSubmissionCard';
 import { NewsSubmissionCard } from '@/components/NewsSubmissionCard';
 import { EventSubmissionCard } from '@/components/EventSubmissionCard';
 import LocalServiceSubmissionCard from '@/components/LocalServiceSubmissionCard';
 
 interface SubmissionsTabsProps {
-  businessSubmissions: BusinessSubmission[];
   newsSubmissions: NewsSubmission[];
   eventSubmissions: EventSubmission[];
   localResourceSubmissions: LocalResourceSubmission[];
@@ -23,19 +21,14 @@ interface SubmissionsTabsProps {
 }
 
 export const SubmissionsTabs = ({
-  businessSubmissions,
   newsSubmissions,
   eventSubmissions,
   localResourceSubmissions,
   onUpdate
 }: SubmissionsTabsProps) => {
   return (
-    <Tabs defaultValue="business" className="w-full">
-      <TabsList className="grid w-full grid-cols-4 mb-6">
-        <TabsTrigger value="business" className="flex items-center">
-          <Building className="h-4 w-4 mr-2" />
-          Business ({businessSubmissions.length})
-        </TabsTrigger>
+    <Tabs defaultValue="news" className="w-full">
+      <TabsList className="grid w-full grid-cols-3 mb-6">
         <TabsTrigger value="news" className="flex items-center">
           <Newspaper className="h-4 w-4 mr-2" />
           News ({newsSubmissions.length})
@@ -49,25 +42,6 @@ export const SubmissionsTabs = ({
           Local Resources ({localResourceSubmissions.length})
         </TabsTrigger>
       </TabsList>
-      
-      <TabsContent value="business">
-        <div className="space-y-4">
-          {businessSubmissions.length === 0 ? (
-            <div className="text-center p-8">
-              <Building className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600">No pending business submissions.</p>
-            </div>
-          ) : (
-            businessSubmissions.map((submission) => (
-              <BusinessSubmissionCard
-                key={submission.id}
-                submission={submission}
-                onUpdate={onUpdate}
-              />
-            ))
-          )}
-        </div>
-      </TabsContent>
       
       <TabsContent value="news">
         <div className="space-y-4">
