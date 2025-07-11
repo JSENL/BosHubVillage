@@ -77,118 +77,40 @@ export const useMapMarkers = ({
           }
         };
 
-        // Create detailed submission card popup content
-        const popupContent = `
-          <div style="padding: 0; max-width: 380px; font-family: system-ui; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.12);">
-            <!-- Header with type badge -->
-            <div style="background: linear-gradient(135deg, ${getMarkerColor(item.type)}15 0%, ${getMarkerColor(item.type)}25 100%); padding: 16px; border-bottom: 1px solid #f3f4f6;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="background: ${getMarkerColor(item.type)}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                  ${item.type.replace('-', ' ')}
-                </span>
-                ${item.date ? `<span style="font-size: 12px; color: #6b7280; font-weight: 500;">📅 ${item.date}</span>` : ''}
-              </div>
-              <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #111827; line-height: 1.3;">${item.title}</h3>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding: 16px;">
-              <p style="margin: 0 0 16px 0; font-size: 14px; color: #4b5563; line-height: 1.5;">${item.description || 'No description available'}</p>
-              
-              <!-- Info grid -->
-              <div style="display: grid; gap: 8px; margin-bottom: 16px;">
-                ${item.address ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">📍</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Address:</strong> ${item.address}</span>
-                  </div>
-                ` : ''}
-                ${item.location && item.location !== item.address ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">📍</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Location:</strong> ${item.location}</span>
-                  </div>
-                ` : ''}
-                ${item.category ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏷️</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Category:</strong> ${item.category}</span>
-                  </div>
-                ` : ''}
-                ${item.business_type ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏢</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Business Type:</strong> ${item.business_type}</span>
-                  </div>
-                ` : ''}
-                ${item.neighborhoods ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏘️</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Neighborhood:</strong> ${item.neighborhoods}</span>
-                  </div>
-                ` : ''}
-                ${item.villages ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">🏘️</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Village:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</span>
-                  </div>
-                ` : ''}
-                ${item.start_time || item.end_time ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">⏰</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Time:</strong> ${item.start_time || ''} ${item.end_time ? `- ${item.end_time}` : ''}</span>
-                  </div>
-                ` : ''}
-                ${item.price !== null && item.price !== undefined ? `
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: ${getMarkerColor(item.type)}; font-size: 14px;">💰</span>
-                    <span style="font-size: 13px; color: #374151;"><strong>Price:</strong> ${item.price === 0 ? 'Free' : `$${item.price}`}</span>
-                  </div>
-                ` : ''}
-              </div>
-              
-              <!-- Action button -->
-              <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
-                background: linear-gradient(135deg, ${getMarkerColor(item.type)} 0%, ${getMarkerColor(item.type)}dd 100%);
-                color: white;
-                border: none;
-                padding: 12px 20px;
-                border-radius: 8px;
-                font-size: 13px;
-                cursor: pointer;
-                font-weight: 600;
-                width: 100%;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 12px ${getMarkerColor(item.type)}25;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-              " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px ${getMarkerColor(item.type)}35'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px ${getMarkerColor(item.type)}25'">
-                View Full Details →
-              </button>
-            </div>
-          </div>
-        `;
-
-        // Create popup
-        const popup = new mapboxgl.Popup({
-          offset: 25,
-          closeButton: true,
-          closeOnClick: false,
-          maxWidth: '340px'
-        }).setHTML(popupContent);
-
         // Create marker using the standard Mapbox approach
         const marker = new mapboxgl.Marker({
           color: getMarkerColor(item.type)
         })
           .setLngLat([lng, lat])
-          .setPopup(popup)
           .addTo(map);
 
-        // Add single click handler only
+        // Create simple popup content
+        const popupContent = `
+          <div style="max-width: 300px; font-family: system-ui;">
+            <h3 style="margin: 0 0 8px 0; color: ${getMarkerColor(item.type)}; font-size: 16px; font-weight: 600;">${item.title}</h3>
+            <div style="background: ${getMarkerColor(item.type)}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; text-transform: uppercase; display: inline-block; margin-bottom: 8px;">
+              ${item.type.replace('-', ' ')}
+            </div>
+            <p style="margin: 8px 0; font-size: 14px; color: #666; line-height: 1.4;">${item.description || 'No description available'}</p>
+            ${item.address ? `<p style="margin: 4px 0; font-size: 13px; color: #888;"><strong>📍</strong> ${item.address}</p>` : ''}
+            ${item.location && item.location !== item.address ? `<p style="margin: 4px 0; font-size: 13px; color: #888;"><strong>📍</strong> ${item.location}</p>` : ''}
+          </div>
+        `;
+
+        // Add click handler to show popup
         marker.getElement().addEventListener('click', (e) => {
           e.stopPropagation();
           console.log('📍 Marker clicked:', item.title);
+          
+          // Create and show popup
+          new mapboxgl.Popup({
+            offset: 25,
+            closeButton: true,
+            closeOnClick: false
+          })
+            .setLngLat([lng, lat])
+            .setHTML(popupContent)
+            .addTo(map);
           
           if (onMarkerClick) {
             onMarkerClick(item);
