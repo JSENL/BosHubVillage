@@ -27,7 +27,7 @@ interface UserReport {
 }
 
 const AdminUserReports = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { toast } = useToast();
   const [reports, setReports] = useState<UserReport[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,8 +36,12 @@ const AdminUserReports = () => {
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchReports();
-  }, []);
+    if (isAdmin) {
+      fetchReports();
+    } else {
+      setLoading(false);
+    }
+  }, [isAdmin]);
 
   const fetchReports = async () => {
     try {
