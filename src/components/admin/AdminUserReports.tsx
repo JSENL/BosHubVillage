@@ -9,13 +9,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { MessageCircle, User, Clock, AlertCircle } from 'lucide-react';
 
-interface UserReport {
+interface ContactAdminMessage {
   id: string;
   user_id: string;
   subject: string;
   message: string;
   priority: string;
   status: string;
+  user_email: string;
+  user_name: string;
   admin_response?: string;
   reviewed_by?: string;
   created_at: string;
@@ -29,9 +31,9 @@ interface UserReport {
 const AdminUserReports = () => {
   const { user, isAdmin } = useAuth();
   const { toast } = useToast();
-  const [reports, setReports] = useState<UserReport[]>([]);
+  const [reports, setReports] = useState<ContactAdminMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedReport, setSelectedReport] = useState<UserReport | null>(null);
+  const [selectedReport, setSelectedReport] = useState<ContactAdminMessage | null>(null);
   const [adminResponse, setAdminResponse] = useState('');
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
@@ -46,7 +48,7 @@ const AdminUserReports = () => {
   const fetchReports = async () => {
     try {
       const { data, error } = await supabase
-        .from('user_reports')
+        .from('contact_admin')
         .select(`
           *,
           profiles (
@@ -62,7 +64,7 @@ const AdminUserReports = () => {
       console.error('Error fetching reports:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch user reports.",
+        description: "Failed to fetch contact admin messages.",
         variant: "destructive"
       });
     } finally {
@@ -70,14 +72,15 @@ const AdminUserReports = () => {
     }
   };
 
-  const updateReport = async (reportId: string, updates: Partial<UserReport>) => {
+  const updateReport = async (reportId: string, updates: Partial<ContactAdminMessage>) => {
     setUpdatingStatus(reportId);
     try {
       const { error } = await supabase
-        .from('user_reports')
+        .from('contact_admin')
         .update({
           ...updates,
-          reviewed_by: user?.id
+          reviewed_by: user?.id,
+          reviewed_at: new Date().toISOString()
         })
         .eq('id', reportId);
 
@@ -89,13 +92,13 @@ const AdminUserReports = () => {
       
       toast({
         title: "Success",
-        description: "Report updated successfully."
+        description: "Message updated successfully."
       });
     } catch (error) {
-      console.error('Error updating report:', error);
+      console.error('Error updating message:', error);
       toast({
         title: "Error",
-        description: "Failed to update report.",
+        description: "Failed to update message.",
         variant: "destructive"
       });
     } finally {
@@ -126,7 +129,7 @@ const AdminUserReports = () => {
       <Card>
         <CardContent className="p-8 text-center">
           <MessageCircle className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p>Loading user reports...</p>
+          <p>Loading contact admin messages...</p>
         </CardContent>
       </Card>
     );
@@ -178,7 +181,7 @@ const AdminUserReports = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>User Reports</CardTitle>
+          <CardTitle>Contact Admin Messages</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -188,7 +191,7 @@ const AdminUserReports = () => {
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">
-                      {report.profiles?.full_name || report.profiles?.email}
+                      {report.user_name || report.user_email}
                     </span>
                     <Badge variant={getPriorityColor(report.priority)}>
                       {report.priority}
@@ -253,8 +256,8 @@ const AdminUserReports = () => {
             {reports.length === 0 && (
               <div className="text-center py-8">
                 <MessageCircle className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-semibold mb-2">No Reports</h3>
-                <p className="text-muted-foreground">No user reports have been submitted yet.</p>
+                <h3 className="text-lg font-semibold mb-2">No Messages</h3>
+                <p className="text-muted-foreground">No contact admin messages have been submitted yet.</p>
               </div>
             )}
           </div>
@@ -264,14 +267,14 @@ const AdminUserReports = () => {
       {selectedReport && (
         <Card>
           <CardHeader>
-            <CardTitle>Respond to Report</CardTitle>
+            <CardTitle>Respond to Message</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
                 <p className="font-medium">Subject: {selectedReport.subject}</p>
                 <p className="text-sm text-muted-foreground">
-                  From: {selectedReport.profiles?.full_name || selectedReport.profiles?.email}
+                  From: {selectedReport.user_name || selectedReport.user_email}
                 </p>
               </div>
               

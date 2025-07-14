@@ -43,12 +43,14 @@ const UserReportForm = () => {
     
     try {
       const { error } = await supabase
-        .from('user_reports')
+        .from('contact_admin')
         .insert({
           user_id: user.id,
           subject: subject.trim(),
           message: message.trim(),
-          priority
+          priority,
+          user_email: user.email || '',
+          user_name: user.user_metadata?.full_name || user.email || ''
         });
 
       if (error) throw error;

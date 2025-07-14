@@ -103,7 +103,7 @@ const AdminDashboard = () => {
               </TabsTrigger>
               <TabsTrigger value="user-reports" className="flex items-center">
                 <MessageCircle className="h-4 w-4 mr-2" />
-                User Reports
+                Contact Admin
               </TabsTrigger>
               <TabsTrigger value="user-management" className="flex items-center">
                 <Users className="h-4 w-4 mr-2" />

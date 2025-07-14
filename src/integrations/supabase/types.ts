@@ -235,6 +235,69 @@ export type Database = {
           },
         ]
       }
+      contact_admin: {
+        Row: {
+          admin_response: string | null
+          created_at: string
+          id: string
+          message: string
+          priority: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          subject: string
+          updated_at: string
+          user_email: string
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          admin_response?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          priority?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+          user_email: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          admin_response?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          priority?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_email?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_admin_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_admin_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_attendees: {
         Row: {
           event_id: string
