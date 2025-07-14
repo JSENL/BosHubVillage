@@ -8,6 +8,7 @@ import AdminEventApproval from '@/components/AdminEventApproval';
 import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminLocalResourceApprovalWithGeocoding from '@/components/AdminLocalServiceApprovalWithGeocoding';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
+import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import { 
   Shield, 
   Calendar, 
@@ -15,7 +16,8 @@ import {
   Newspaper,
   FileText,
   ArrowLeft,
-  Heart
+  Heart,
+  MessageCircle
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -80,7 +82,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -96,6 +98,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="submissions" className="flex items-center">
                 <FileText className="h-4 w-4 mr-2" />
                 All Submissions
+              </TabsTrigger>
+              <TabsTrigger value="reported-to-admin" className="flex items-center">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Reported to Admin
               </TabsTrigger>
             </TabsList>
             
@@ -113,6 +119,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="submissions">
               <AdminSubmissionsPanel />
+            </TabsContent>
+            
+            <TabsContent value="reported-to-admin">
+              <ContactAdminMessages />
             </TabsContent>
           </Tabs>
         </div>
