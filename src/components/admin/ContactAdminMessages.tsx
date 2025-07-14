@@ -4,8 +4,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Reply } from 'lucide-react';
 
 interface ContactAdminMessage {
   id: string;
@@ -25,6 +29,8 @@ const ContactAdminMessages = () => {
   const [messages, setMessages] = useState<ContactAdminMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingMessages, setUpdatingMessages] = useState<Set<string>>(new Set());
+  const [replyText, setReplyText] = useState('');
+  const [replyingToMessage, setReplyingToMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -91,6 +97,54 @@ const ContactAdminMessages = () => {
         newSet.delete(messageId);
         return newSet;
       });
+    }
+  };
+
+  const handleReply = async (messageId: string) => {
+    if (!replyText.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a response",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setReplyingToMessage(messageId);
+
+    try {
+      const { error } = await supabase
+        .from('contact_admin')
+        .update({ 
+          admin_response: replyText,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', messageId);
+
+      if (error) throw error;
+
+      setMessages(prev => 
+        prev.map(message => 
+          message.id === messageId 
+            ? { ...message, admin_response: replyText }
+            : message
+        )
+      );
+
+      setReplyText('');
+      toast({
+        title: "Success",
+        description: "Response sent successfully",
+      });
+    } catch (error) {
+      console.error('Error sending reply:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send response",
+        variant: "destructive",
+      });
+    } finally {
+      setReplyingToMessage(null);
     }
   };
 
@@ -172,25 +226,66 @@ const ContactAdminMessages = () => {
                       {new Date(message.created_at).toLocaleTimeString()}
                     </p>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`completed-${message.id}`}
-                      checked={message.status === 'completed'}
-                      onCheckedChange={(checked) => 
-                        handleStatusChange(message.id, checked as boolean)
-                      }
-                      disabled={updatingMessages.has(message.id)}
-                    />
-                    <label 
-                      htmlFor={`completed-${message.id}`} 
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {updatingMessages.has(message.id) ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        'Completed'
-                      )}
-                    </label>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`completed-${message.id}`}
+                        checked={message.status === 'completed'}
+                        onCheckedChange={(checked) => 
+                          handleStatusChange(message.id, checked as boolean)
+                        }
+                        disabled={updatingMessages.has(message.id)}
+                      />
+                      <label 
+                        htmlFor={`completed-${message.id}`} 
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {updatingMessages.has(message.id) ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          'Completed'
+                        )}
+                      </label>
+                    </div>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setReplyText(message.admin_response || '')}
+                        >
+                          <Reply className="h-4 w-4 mr-1" />
+                          Reply
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Reply to {message.user_name || 'User'}</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="reply">Response</Label>
+                            <Textarea
+                              id="reply"
+                              placeholder="Type your response here..."
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              className="min-h-[100px]"
+                            />
+                          </div>
+                          <Button 
+                            onClick={() => handleReply(message.id)}
+                            disabled={replyingToMessage === message.id}
+                            className="w-full"
+                          >
+                            {replyingToMessage === message.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            ) : null}
+                            Send Response
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
                 <div className="mt-2">

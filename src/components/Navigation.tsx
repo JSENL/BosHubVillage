@@ -111,6 +111,12 @@ export const Navigation = () => {
                       Contact Admin
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/my-messages" className="cursor-pointer">
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      My Messages
+                    </Link>
+                  </DropdownMenuItem>
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
