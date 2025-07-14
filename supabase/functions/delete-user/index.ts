@@ -85,7 +85,27 @@ Deno.serve(async (req) => {
       )
     }
 
-    // Delete user from auth (this will cascade to profile and other tables)
+    // First delete from user_roles table
+    const { error: rolesError } = await supabaseAdmin
+      .from('user_roles')
+      .delete()
+      .eq('user_id', userId)
+
+    if (rolesError) {
+      console.error('Error deleting user roles:', rolesError)
+    }
+
+    // Delete from profiles table 
+    const { error: profileError } = await supabaseAdmin
+      .from('profiles')
+      .delete()
+      .eq('id', userId)
+
+    if (profileError) {
+      console.error('Error deleting user profile:', profileError)
+    }
+
+    // Finally delete user from auth (this should cascade to remaining tables)
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId)
 
     if (deleteError) {
