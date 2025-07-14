@@ -19,6 +19,7 @@ import NewsDetails from "./pages/NewsDetails";
 import LocalServiceDetails from "./pages/LocalServiceDetails";
 import NewsPage from "./pages/NewsPage";
 
+import ContactAdmin from "./pages/ContactAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,7 +44,7 @@ const App = () => (
             <Route path="/news/:newsId" element={<NewsDetails />} />
             <Route path="/news-page" element={<NewsPage />} />
             <Route path="/local-service/:serviceId" element={<LocalServiceDetails />} />
-            
+            <Route path="/contact-admin" element={<ContactAdmin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
