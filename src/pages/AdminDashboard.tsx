@@ -8,6 +8,8 @@ import AdminEventApproval from '@/components/AdminEventApproval';
 import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminLocalResourceApprovalWithGeocoding from '@/components/AdminLocalServiceApprovalWithGeocoding';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
+import AdminUserReports from '@/components/admin/AdminUserReports';
+import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { 
   Shield, 
   Calendar, 
@@ -15,7 +17,9 @@ import {
   Newspaper,
   FileText,
   ArrowLeft,
-  Heart
+  Heart,
+  MessageCircle,
+  Users
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -80,7 +84,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-6 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -96,6 +100,14 @@ const AdminDashboard = () => {
               <TabsTrigger value="submissions" className="flex items-center">
                 <FileText className="h-4 w-4 mr-2" />
                 All Submissions
+              </TabsTrigger>
+              <TabsTrigger value="user-reports" className="flex items-center">
+                <MessageCircle className="h-4 w-4 mr-2" />
+                User Reports
+              </TabsTrigger>
+              <TabsTrigger value="user-management" className="flex items-center">
+                <Users className="h-4 w-4 mr-2" />
+                User Management
               </TabsTrigger>
             </TabsList>
             
@@ -113,6 +125,14 @@ const AdminDashboard = () => {
             
             <TabsContent value="submissions">
               <AdminSubmissionsPanel />
+            </TabsContent>
+            
+            <TabsContent value="user-reports">
+              <AdminUserReports />
+            </TabsContent>
+            
+            <TabsContent value="user-management">
+              <AdminUserManagement />
             </TabsContent>
           </Tabs>
         </div>

@@ -20,7 +20,8 @@ import {
   LogOut, 
   Settings,
   CheckSquare,
-  Heart
+  Heart,
+  MessageCircle
 } from 'lucide-react';
 
 export const Navigation = () => {
@@ -104,14 +105,23 @@ export const Navigation = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link to="/contact-admin" className="cursor-pointer">
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Contact Admin
+                    </Link>
+                  </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="cursor-pointer">
-                        <Settings className="h-4 w-4 mr-2" />
-                        Admin Dashboard
-                        <Badge variant="secondary" className="ml-2">Admin</Badge>
-                      </Link>
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="cursor-pointer">
+                          <Settings className="h-4 w-4 mr-2" />
+                          Admin Dashboard
+                          <Badge variant="secondary" className="ml-2">Admin</Badge>
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
                   )}
                   <DropdownMenuItem onClick={signOut} className="cursor-pointer">
                     <LogOut className="h-4 w-4 mr-2" />
