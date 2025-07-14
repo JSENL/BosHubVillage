@@ -9,7 +9,7 @@ import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminLocalResourceApprovalWithGeocoding from '@/components/AdminLocalServiceApprovalWithGeocoding';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import AdminUserReports from '@/components/admin/AdminUserReports';
-import AdminUserManagement from '@/components/admin/AdminUserManagement';
+import AdminUserReportsTable from '@/components/admin/AdminUserReportsTable';
 import { 
   Shield, 
   Calendar, 
@@ -101,13 +101,13 @@ const AdminDashboard = () => {
                 <FileText className="h-4 w-4 mr-2" />
                 All Submissions
               </TabsTrigger>
-              <TabsTrigger value="user-reports" className="flex items-center">
+              <TabsTrigger value="contact-admin" className="flex items-center">
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Contact Admin
               </TabsTrigger>
-              <TabsTrigger value="user-management" className="flex items-center">
+              <TabsTrigger value="user-reports" className="flex items-center">
                 <Users className="h-4 w-4 mr-2" />
-                User Management
+                User Reports
               </TabsTrigger>
             </TabsList>
             
@@ -127,12 +127,12 @@ const AdminDashboard = () => {
               <AdminSubmissionsPanel />
             </TabsContent>
             
-            <TabsContent value="user-reports">
+            <TabsContent value="contact-admin">
               <AdminUserReports />
             </TabsContent>
             
-            <TabsContent value="user-management">
-              <AdminUserManagement />
+            <TabsContent value="user-reports">
+              <AdminUserReportsTable />
             </TabsContent>
           </Tabs>
         </div>
