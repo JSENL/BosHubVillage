@@ -1,4 +1,3 @@
-
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,10 +7,13 @@ import { MapPin, Building, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
+import { CommentForm } from '@/components/comments/CommentForm';
+import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
+import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
 
-const LocalResourceDetails = () => {
+const LocalServiceDetails = () => {
   const { serviceId } = useParams();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   const { data: resource, isLoading } = useQuery({
     queryKey: ['local-resource-details', serviceId],
@@ -28,11 +30,20 @@ const LocalResourceDetails = () => {
     enabled: !!serviceId,
   });
 
+  const {
+    comments,
+    isLoading: commentsLoading,
+    addComment,
+    replyToComment,
+    deleteComment,
+    isAddingComment
+  } = useLocalResourceComments(serviceId!);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">Loading resource details...</div>
+          <div className="text-center py-8">Loading service details...</div>
         </div>
       </div>
     );
@@ -42,7 +53,7 @@ const LocalResourceDetails = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">Resource not found</div>
+          <div className="text-center py-8">Service not found</div>
         </div>
       </div>
     );
@@ -90,9 +101,33 @@ const LocalResourceDetails = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Comments Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-bold text-gray-900">Comments & Reviews</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {user && (
+              <CommentForm
+                user={user}
+                onSubmitComment={addComment}
+              />
+            )}
+            
+            <GenericCommentsList
+              comments={comments}
+              loading={commentsLoading}
+              user={user}
+              isAdmin={isAdmin}
+              onDeleteComment={deleteComment}
+              onReplyToComment={replyToComment}
+            />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 };
 
-export default LocalResourceDetails;
+export default LocalServiceDetails;

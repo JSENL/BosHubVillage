@@ -6,11 +6,14 @@ import { SectionMap } from "@/components/SectionMap";
 import { EventCard } from "@/components/EventCard";
 import NewsCard from "@/components/NewsCard";
 import BusinessCard from "@/components/BusinessCard";
+import LocalServiceCard from "@/components/LocalServiceCard";
 import { useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
 import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
+import { useLocalServices } from "@/hooks/useLocalServices";
+import { useLocalServiceSubmissions } from "@/hooks/useLocalServiceSubmissions";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { geocodeEvents } from "@/utils/geocodeEvents";
 import { geocodeNewsItems } from "@/utils/geocodeNewsItems";
@@ -34,6 +37,8 @@ const Index = () => {
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
   const { data: businesses, isLoading: businessLoading } = useBusiness();
   const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
+  const { data: localServices, isLoading: localServicesLoading } = useLocalServices();
+  const { data: localServiceSubmissions, isLoading: localServiceSubmissionsLoading } = useLocalServiceSubmissions();
 
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedItems, setHasGeocodedItems] = useState(false);
@@ -114,11 +119,40 @@ const Index = () => {
       business_type: businessSubmission.business_type,
       neighborhoods: businessSubmission.neighborhood,
       originalData: businessSubmission
+    })),
+    ...(localServices || []).map(localService => ({
+      id: localService.id,
+      title: localService.name,
+      description: localService.description || '',
+      latitude: localService.latitude,
+      longitude: localService.longitude,
+      type: 'local-service' as const,
+      address: localService.address,
+      category: localService.category,
+      name: localService.name,
+      neighborhoods: localService.neighborhood,
+      villages: localService.village,
+      originalData: localService
+    })),
+    ...(localServiceSubmissions || []).map(localServiceSubmission => ({
+      id: localServiceSubmission.id,
+      title: localServiceSubmission.name,
+      description: localServiceSubmission.description || '',
+      latitude: localServiceSubmission.latitude,
+      longitude: localServiceSubmission.longitude,
+      type: 'local-service' as const,
+      address: localServiceSubmission.address,
+      category: localServiceSubmission.category,
+      name: localServiceSubmission.name,
+      neighborhoods: localServiceSubmission.neighborhood,
+      villages: localServiceSubmission.village,
+      originalData: localServiceSubmission
     }))
   ];
 
   const isLoading = eventsLoading || newsLoading || newsSubmissionsLoading || 
-                   businessLoading || businessSubmissionsLoading;
+                   businessLoading || businessSubmissionsLoading ||
+                   localServicesLoading || localServiceSubmissionsLoading;
 
   // Filter items based on criteria
   const filteredItems = allItems.filter(item => {
@@ -214,6 +248,8 @@ const Index = () => {
         return <NewsCard key={item.id} news={item.originalData} />;
       case 'business':
         return <BusinessCard key={item.id} business={item.originalData} />;
+      case 'local-service':
+        return <LocalServiceCard key={item.id} localService={item.originalData} />;
       default:
         return null;
     }
@@ -221,7 +257,7 @@ const Index = () => {
 
   // Determine selected types for the map (excluding news)
   const selectedTypesForMap = selectedType === 'all' 
-    ? ['event', 'business'] 
+    ? ['event', 'business', 'local-service'] 
     : selectedType === 'news' 
       ? [] 
       : [selectedType];
