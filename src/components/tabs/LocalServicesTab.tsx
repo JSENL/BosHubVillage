@@ -22,25 +22,26 @@ export const LocalServicesTab = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
   
-  // Only include approved submissions that haven't been moved to main table
-  const approvedSubmissions = (localResourceSubmissions || []).filter(submission => 
-    submission.status === 'approved'
-  );
+  // Create a map to track unique resources by name+address combination
+  const resourceMap = new Map<string, LocalResource | LocalResourceSubmission>();
   
-  // Create a Set of existing resource names/addresses to avoid duplicates
-  const existingResources = new Set(
-    (localResources || []).map(resource => `${resource.name}-${resource.address}`)
-  );
+  // First add all main local resources (these take priority)
+  (localResources || []).forEach(resource => {
+    const key = `${resource.name}-${resource.address}`;
+    resourceMap.set(key, resource);
+  });
   
-  // Filter out submissions that already exist in the main resources table
-  const uniqueSubmissions = approvedSubmissions.filter(submission => 
-    !existingResources.has(`${submission.name}-${submission.address}`)
-  );
+  // Then add only pending submissions (don't include approved submissions as they should be in main table)
+  (localResourceSubmissions || [])
+    .filter(submission => submission.status === 'pending')
+    .forEach(submission => {
+      const key = `${submission.name}-${submission.address}`;
+      if (!resourceMap.has(key)) {
+        resourceMap.set(key, submission);
+      }
+    });
   
-  const allLocalResources: (LocalResource | LocalResourceSubmission)[] = [
-    ...(localResources || []),
-    ...uniqueSubmissions
-  ];
+  const allLocalResources: (LocalResource | LocalResourceSubmission)[] = Array.from(resourceMap.values());
 
   const isLocalResourcesLoading = localResourcesLoading || localResourceSubmissionsLoading;
 
