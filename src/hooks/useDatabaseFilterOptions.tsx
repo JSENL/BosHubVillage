@@ -147,13 +147,13 @@ export const useDatabaseFilterOptions = () => {
         ]);
 
         const filterOptions: FilterOptions = {
-          categories: Array.from(allCategories).sort(),
-          locations: Array.from(allLocations).sort(),
-          businessTypes: Array.from(businessTypes).sort(),
-          villages: Array.from(allVillages).sort(),
-          neighborhoods: Array.from(allLocations).sort(),
-          eventCategories: Array.from(eventCategories).sort(),
-          sources: Array.from(newsSources).sort()
+          categories: Array.from(allCategories).filter(Boolean).sort(),
+          locations: Array.from(allLocations).filter(Boolean).sort(),
+          businessTypes: Array.from(businessTypes).filter(Boolean).sort(),
+          villages: Array.from(allVillages).filter(Boolean).sort(),
+          neighborhoods: Array.from(allLocations).filter(Boolean).sort(),
+          eventCategories: Array.from(eventCategories).filter(Boolean).sort(),
+          sources: Array.from(newsSources).filter(Boolean).sort()
         };
 
         console.log('Successfully fetched filter options:', filterOptions);

@@ -18,19 +18,25 @@ export const LocationFilter = ({
   availableNeighborhoods,
   availableVillages
 }: LocationFilterProps) => {
+  // Deduplicate and create unique options
+  const uniqueNeighborhoods = [...new Set(availableNeighborhoods)].filter(Boolean);
+  const uniqueVillages = [...new Set(availableVillages)].filter(Boolean);
+
   const neighborhoodOptions = [
-    { value: 'all', label: 'All Neighborhoods' },
-    ...availableNeighborhoods.map(neighborhood => ({
+    { value: 'all', label: 'All Neighborhoods', uniqueKey: 'neighborhood-all' },
+    ...uniqueNeighborhoods.map((neighborhood, index) => ({
       value: neighborhood.toLowerCase().replace(/\s+/g, '-'),
-      label: neighborhood
+      label: neighborhood,
+      uniqueKey: `neighborhood-${index}-${neighborhood.toLowerCase().replace(/\s+/g, '-')}`
     }))
   ];
 
   const villageOptions = [
-    { value: 'all', label: 'All Villages' },
-    ...availableVillages.map(village => ({
+    { value: 'all', label: 'All Villages', uniqueKey: 'village-all' },
+    ...uniqueVillages.map((village, index) => ({
       value: village.toLowerCase().replace(/\s+/g, '-'),
-      label: village
+      label: village,
+      uniqueKey: `village-${index}-${village.toLowerCase().replace(/\s+/g, '-')}`
     }))
   ];
 
@@ -42,7 +48,10 @@ export const LocationFilter = ({
         </SelectTrigger>
         <SelectContent>
           {neighborhoodOptions.map((neighborhood) => (
-            <SelectItem key={neighborhood.value} value={neighborhood.value}>
+            <SelectItem 
+              key={neighborhood.uniqueKey} 
+              value={neighborhood.value}
+            >
               {neighborhood.label}
             </SelectItem>
           ))}
@@ -55,7 +64,10 @@ export const LocationFilter = ({
         </SelectTrigger>
         <SelectContent>
           {villageOptions.map((village) => (
-            <SelectItem key={village.value} value={village.value}>
+            <SelectItem 
+              key={village.uniqueKey} 
+              value={village.value}
+            >
               {village.label}
             </SelectItem>
           ))}
