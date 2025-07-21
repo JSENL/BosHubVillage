@@ -22,9 +22,24 @@ export const LocalServicesTab = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
   
+  // Only include approved submissions that haven't been moved to main table
+  const approvedSubmissions = (localResourceSubmissions || []).filter(submission => 
+    submission.status === 'approved'
+  );
+  
+  // Create a Set of existing resource names/addresses to avoid duplicates
+  const existingResources = new Set(
+    (localResources || []).map(resource => `${resource.name}-${resource.address}`)
+  );
+  
+  // Filter out submissions that already exist in the main resources table
+  const uniqueSubmissions = approvedSubmissions.filter(submission => 
+    !existingResources.has(`${submission.name}-${submission.address}`)
+  );
+  
   const allLocalResources: (LocalResource | LocalResourceSubmission)[] = [
     ...(localResources || []),
-    ...(localResourceSubmissions || [])
+    ...uniqueSubmissions
   ];
 
   const isLocalResourcesLoading = localResourcesLoading || localResourceSubmissionsLoading;
