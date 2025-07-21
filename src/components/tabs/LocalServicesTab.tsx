@@ -22,26 +22,34 @@ export const LocalServicesTab = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
   
-  // Create a map to track unique resources by name+address combination
+  // Create a comprehensive deduplication system
   const resourceMap = new Map<string, LocalResource | LocalResourceSubmission>();
   
-  // First add all main local resources (these take priority)
+  console.log('🔍 LocalServicesTab Deduplication Debug:');
+  console.log('Local Resources:', localResources?.length || 0);
+  console.log('Local Resource Submissions:', localResourceSubmissions?.length || 0);
+  
+  // First priority: Add all resources from main local_resources table
   (localResources || []).forEach(resource => {
-    const key = `${resource.name}-${resource.address}`;
+    const key = `${resource.name.trim()}-${resource.address.trim()}`.toLowerCase();
+    console.log(`✅ Adding main resource: ${resource.name} (${resource.id})`);
     resourceMap.set(key, resource);
   });
   
-  // Then add only pending submissions (don't include approved submissions as they should be in main table)
-  (localResourceSubmissions || [])
-    .filter(submission => submission.status === 'pending')
-    .forEach(submission => {
-      const key = `${submission.name}-${submission.address}`;
-      if (!resourceMap.has(key)) {
-        resourceMap.set(key, submission);
-      }
-    });
+  // Second priority: Only add submissions that don't already exist in main table
+  // This includes both pending and approved submissions to handle edge cases
+  (localResourceSubmissions || []).forEach(submission => {
+    const key = `${submission.name.trim()}-${submission.address.trim()}`.toLowerCase();
+    if (!resourceMap.has(key)) {
+      console.log(`✅ Adding unique submission: ${submission.name} (${submission.id})`);
+      resourceMap.set(key, submission);
+    } else {
+      console.log(`❌ Skipping duplicate submission: ${submission.name} (${submission.id})`);
+    }
+  });
   
   const allLocalResources: (LocalResource | LocalResourceSubmission)[] = Array.from(resourceMap.values());
+  console.log(`📊 Final unique resources count: ${allLocalResources.length}`);
 
   const isLocalResourcesLoading = localResourcesLoading || localResourceSubmissionsLoading;
 
