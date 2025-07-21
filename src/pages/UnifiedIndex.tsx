@@ -35,7 +35,7 @@ const UnifiedIndexContent = () => {
     selectedCategory,
     selectedNeighborhood,
     selectedVillage,
-    selectedTypes: selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType],
+    selectedTypes: selectedType === 'all' ? ['event', 'news', 'business'] : [selectedType],
     searchTerm,
     dateFilter,
     timeFilter,
@@ -46,7 +46,7 @@ const UnifiedIndexContent = () => {
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
   // Use the unified type filter to determine which types to show
-  const typesToShow = selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType];
+  const typesToShow = selectedType === 'all' ? ['event', 'news', 'business'] : [selectedType];
 
   const handleItemClick = (item: UnifiedItem) => {
     console.log('Item selected from map:', item.title);

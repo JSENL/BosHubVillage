@@ -7,8 +7,7 @@ import { DateTimeFilter } from '@/components/filters/DateTimeFilter';
 import { 
   useEventFilterOptions, 
   useNewsFilterOptions, 
-  useBusinessFilterOptions, 
-  useLocalServiceFilterOptions 
+  useBusinessFilterOptions 
 } from '@/hooks/useDatabaseFilterOptions';
 
 interface UniversalFiltersProps {
@@ -25,7 +24,7 @@ interface UniversalFiltersProps {
   timeFilter?: string;
   onTimeFilterChange?: (time: string) => void;
   filteredItemsCount: number;
-  itemType: 'events' | 'business' | 'news' | 'local-services';
+  itemType: 'events' | 'business' | 'news';
 }
 
 export const UniversalFilters = ({
@@ -47,7 +46,7 @@ export const UniversalFilters = ({
   const eventOptions = useEventFilterOptions();
   const newsOptions = useNewsFilterOptions();
   const businessOptions = useBusinessFilterOptions();
-  const localServiceOptions = useLocalServiceFilterOptions();
+  
 
   const getFilterOptions = () => {
     switch (selectedType) {
@@ -57,14 +56,12 @@ export const UniversalFilters = ({
         return newsOptions;
       case 'business':
         return businessOptions;
-      case 'local-service':
-        return localServiceOptions;
       default:
         // For 'all' type, combine all options
         return {
-          categories: [...eventOptions.categories, ...newsOptions.categories, ...businessOptions.categories, ...localServiceOptions.categories],
-          neighborhoods: [...eventOptions.neighborhoods, ...newsOptions.neighborhoods, ...businessOptions.neighborhoods, ...localServiceOptions.neighborhoods],
-          villages: [...eventOptions.villages, ...newsOptions.villages, ...businessOptions.villages, ...localServiceOptions.villages]
+          categories: [...eventOptions.categories, ...newsOptions.categories, ...businessOptions.categories],
+          neighborhoods: [...eventOptions.neighborhoods, ...newsOptions.neighborhoods, ...businessOptions.neighborhoods],
+          villages: [...eventOptions.villages, ...newsOptions.villages, ...businessOptions.villages]
         };
     }
   };
@@ -75,7 +72,6 @@ export const UniversalFilters = ({
     { value: 'all', label: 'All Types' },
     { value: 'event', label: 'Events' },
     { value: 'business', label: 'Business' },
-    { value: 'local-service', label: 'Local Resources' },
     { value: 'news', label: 'News' }
   ];
 

@@ -14,7 +14,6 @@ export const TypeFilter = ({
     { value: 'all', label: 'All Types' },
     { value: 'event', label: 'Events' },
     { value: 'business', label: 'Business' },
-    { value: 'local-service', label: 'Local Resources' },
     { value: 'news', label: 'News' }
   ];
 

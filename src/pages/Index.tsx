@@ -6,20 +6,15 @@ import { SectionMap } from "@/components/SectionMap";
 import { EventCard } from "@/components/EventCard";
 import NewsCard from "@/components/NewsCard";
 import BusinessCard from "@/components/BusinessCard";
-import LocalServiceCard from "@/components/LocalServiceCard";
-import LocalServiceSubmissionCard from "@/components/LocalServiceSubmissionCard";
 import { useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
 import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
-import { useLocalServices } from "@/hooks/useLocalServices";
-import { useLocalServiceSubmissions } from "@/hooks/useLocalServiceSubmissions";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { geocodeEvents } from "@/utils/geocodeEvents";
 import { geocodeNewsItems } from "@/utils/geocodeNewsItems";
 import { geocodeBusinesses } from "@/utils/geocodeBusinesses";
-import { geocodeLocalServices } from "@/utils/geocodeLocalServices";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 import { UnifiedItem } from "@/types/unifiedItem";
@@ -39,8 +34,6 @@ const Index = () => {
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
   const { data: businesses, isLoading: businessLoading } = useBusiness();
   const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
-  const { data: localResources, isLoading: localResourcesLoading } = useLocalServices();
-  const { data: localResourceSubmissions, isLoading: localResourceSubmissionsLoading } = useLocalServiceSubmissions();
 
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedItems, setHasGeocodedItems] = useState(false);
@@ -95,34 +88,6 @@ const Index = () => {
       date: newsSubmission.date_posted,
       originalData: newsSubmission
     })),
-    ...(localResources || []).map(resource => ({
-      id: resource.id,
-      title: resource.name,
-      description: resource.description || '',
-      latitude: resource.latitude,
-      longitude: resource.longitude,
-      type: 'local-service' as const,
-      address: resource.address,
-      category: resource.category,
-      name: resource.name,
-      neighborhoods: resource.neighborhood,
-      villages: resource.village,
-      originalData: resource
-    })),
-    ...(localResourceSubmissions || []).map(resourceSubmission => ({
-      id: resourceSubmission.id,
-      title: resourceSubmission.name,
-      description: resourceSubmission.description || '',
-      latitude: resourceSubmission.latitude,
-      longitude: resourceSubmission.longitude,
-      type: 'local-service' as const,
-      address: resourceSubmission.address,
-      category: resourceSubmission.category,
-      name: resourceSubmission.name,
-      neighborhoods: resourceSubmission.neighborhood,
-      villages: resourceSubmission.village,
-      originalData: resourceSubmission
-    })),
     ...(businesses || []).map(business => ({
       id: business.id,
       title: business.title,
@@ -153,8 +118,7 @@ const Index = () => {
   ];
 
   const isLoading = eventsLoading || newsLoading || newsSubmissionsLoading || 
-                   businessLoading || businessSubmissionsLoading ||
-                   localResourcesLoading || localResourceSubmissionsLoading;
+                   businessLoading || businessSubmissionsLoading;
 
   // Filter items based on criteria
   const filteredItems = allItems.filter(item => {
@@ -233,14 +197,6 @@ const Index = () => {
           await geocodeBusinesses(businessesNeedingGeocode, geocode);
         }
 
-        // Geocode local resources
-        const resourcesNeedingGeocode = (localResources || []).filter(resource => 
-          (!resource.latitude || !resource.longitude) && resource.address
-        );
-        if (resourcesNeedingGeocode.length > 0) {
-          await geocodeLocalServices(resourcesNeedingGeocode, geocode);
-        }
-
         setHasGeocodedItems(true);
       } catch (error) {
         console.error('Error geocoding items:', error);
@@ -248,7 +204,7 @@ const Index = () => {
     };
 
     geocodeItemsIfNeeded();
-  }, [events, news, businesses, localResources, isReady, geocode, hasGeocodedItems, isLoading]);
+  }, [events, news, businesses, isReady, geocode, hasGeocodedItems, isLoading]);
 
   const renderItem = (item: UnifiedItem) => {
     switch (item.type) {
@@ -258,11 +214,6 @@ const Index = () => {
         return <NewsCard key={item.id} news={item.originalData} />;
       case 'business':
         return <BusinessCard key={item.id} business={item.originalData} />;
-      case 'local-service':
-        if ('status' in item.originalData) {
-          return <LocalServiceSubmissionCard key={item.id} submission={item.originalData} onUpdate={() => {}} />;
-        }
-        return <LocalServiceCard key={item.id} localService={item.originalData} />;
       default:
         return null;
     }
@@ -270,7 +221,7 @@ const Index = () => {
 
   // Determine selected types for the map (excluding news)
   const selectedTypesForMap = selectedType === 'all' 
-    ? ['event', 'business', 'local-service'] 
+    ? ['event', 'business'] 
     : selectedType === 'news' 
       ? [] 
       : [selectedType];
