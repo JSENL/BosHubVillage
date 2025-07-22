@@ -10,12 +10,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Building, ArrowLeft } from 'lucide-react';
+import { Building, ArrowLeft, Loader2 } from 'lucide-react';
+import { useGeocoding } from '@/hooks/useGeocoding';
+import LocationFields from '@/components/forms/LocationFields';
 
 const SubmitBusiness = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { geocode, isGeocoding } = useGeocoding();
   const [formData, setFormData] = useState({
     title: '',
     business_type: '',
@@ -36,6 +39,10 @@ const SubmitBusiness = () => {
     'Cambridge', 'Somerville', 'Roxbury', 'Jamaica Plain', 'Other'
   ];
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -45,10 +52,31 @@ const SubmitBusiness = () => {
 
     setLoading(true);
     try {
+      let latitude = null;
+      let longitude = null;
+
+      // Geocode the address if provided
+      if (formData.address) {
+        console.log('Geocoding business address:', formData.address);
+        try {
+          const geocodeResult = await geocode(formData.address);
+          if (geocodeResult) {
+            latitude = geocodeResult.latitude;
+            longitude = geocodeResult.longitude;
+            console.log('Geocoded coordinates:', { latitude, longitude });
+          }
+        } catch (geocodeError) {
+          console.warn('Geocoding failed:', geocodeError);
+          // Continue with submission even if geocoding fails
+        }
+      }
+
       const { error } = await supabase
         .from('business_submissions')
         .insert({
           ...formData,
+          latitude,
+          longitude,
           submitted_by: user.id,
           status: 'pending'
         });
@@ -140,16 +168,11 @@ const SubmitBusiness = () => {
                   </Select>
                 </div>
 
-                <div>
-                  <Label htmlFor="address">Address *</Label>
-                  <Input
-                    id="address"
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    placeholder="Enter full address"
-                    required
-                  />
-                </div>
+                <LocationFields
+                  formData={{ location: formData.address }}
+                  onInputChange={(field, value) => handleInputChange('address', value)}
+                  isGeocoding={isGeocoding}
+                />
 
                 <div>
                   <Label htmlFor="neighborhood">Neighborhood *</Label>
@@ -194,10 +217,22 @@ const SubmitBusiness = () => {
 
                 <Button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || isGeocoding}
                   className="w-full bg-purple-600 hover:bg-purple-700"
                 >
-                  {loading ? 'Submitting...' : 'Submit Business'}
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : isGeocoding ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Processing Address...
+                    </>
+                  ) : (
+                    'Submit Business'
+                  )}
                 </Button>
               </form>
             </CardContent>
