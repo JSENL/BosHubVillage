@@ -42,7 +42,20 @@ export const useItemFiltering = ({ items, selectedTypes }: UseItemFilteringProps
       zeroCoords: lat === 0 && lng === 0
     });
     
-    return hasCoords && isSelectedType;
+    const shouldShow = hasCoords && isSelectedType;
+    
+    if (item.type === 'business') {
+      console.log(`🏢 Business Item "${item.title}":`, {
+        shouldShow,
+        hasCoords,
+        isSelectedType,
+        selectedTypes,
+        coordinates: { lat, lng },
+        id: item.id
+      });
+    }
+    
+    return shouldShow;
   });
 
   console.log(`🎯 Filtering Summary:`, {
