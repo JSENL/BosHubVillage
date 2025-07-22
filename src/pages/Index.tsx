@@ -36,7 +36,7 @@ const Index = () => {
   const { data: news, isLoading: newsLoading } = useNews();
   const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
   const { data: businesses, isLoading: businessLoading } = useBusiness();
-  const { data: businessSubmissions, isLoading: businessSubmissionsLoading } = useBusinessSubmissions();
+  const { submissions: businessSubmissions, loading: businessSubmissionsLoading } = useBusinessSubmissions();
   const { data: localServices, isLoading: localServicesLoading } = useLocalServices();
   const { data: localServiceSubmissions, isLoading: localServiceSubmissionsLoading } = useLocalServiceSubmissions();
 

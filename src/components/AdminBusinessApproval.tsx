@@ -5,10 +5,10 @@ import { Clock } from 'lucide-react';
 import { BusinessSubmissionCard } from '@/components/BusinessSubmissionCard';
 
 const AdminBusinessApproval = () => {
-  const { data: submissions, isLoading } = useBusinessSubmissions();
+  const { submissions, loading } = useBusinessSubmissions();
   const { data: businesses, refetch: fetchBusinesses } = useBusiness();
 
-  if (isLoading) {
+  if (loading) {
     return (
       <Card>
         <CardContent className="p-8 text-center">
@@ -19,8 +19,8 @@ const AdminBusinessApproval = () => {
     );
   }
 
-  const pendingSubmissions = submissions?.filter(sub => sub.status === 'pending') || [];
-  const recentlyReviewed = submissions?.filter(sub => sub.status !== 'pending') || [];
+  const pendingSubmissions = submissions.filter(sub => sub.status === 'pending');
+  const recentlyReviewed = submissions.filter(sub => sub.status !== 'pending');
 
   return (
     <div className="space-y-6">
@@ -44,7 +44,7 @@ const AdminBusinessApproval = () => {
                 <BusinessSubmissionCard
                   key={submission.id}
                   submission={submission}
-                  onUpdate={() => window.location.reload()}
+                  onUpdate={() => fetchBusinesses()}
                 />
               ))}
             </div>
@@ -105,7 +105,7 @@ const AdminBusinessApproval = () => {
                 <BusinessSubmissionCard
                   key={submission.id}
                   submission={submission}
-                  onUpdate={() => window.location.reload()}
+                  onUpdate={() => fetchBusinesses()}
                 />
               ))}
             </div>
