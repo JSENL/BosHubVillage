@@ -6,12 +6,14 @@ import { toast } from 'sonner';
 import { NewsSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
 import { LocalResourceSubmission } from '@/types/localServices';
+import { BusinessSubmission } from '@/hooks/useBusinessSubmissions';
 
 export const useAdminSubmissions = () => {
   const { isAdmin, user } = useAuth();
   const [newsSubmissions, setNewsSubmissions] = useState<NewsSubmission[]>([]);
   const [eventSubmissions, setEventSubmissions] = useState<EventSubmission[]>([]);
   const [localResourceSubmissions, setLocalResourceSubmissions] = useState<LocalResourceSubmission[]>([]);
+  const [businessSubmissions, setBusinessSubmissions] = useState<BusinessSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,6 +65,18 @@ export const useAdminSubmissions = () => {
         throw new Error(`Local resource submissions: ${localResourceError.message}`);
       }
 
+      // Fetch business submissions
+      const { data: businessData, error: businessError } = await supabase
+        .from('business_submissions')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      if (businessError) {
+        console.error('Business submissions error:', businessError);
+        throw new Error(`Business submissions: ${businessError.message}`);
+      }
+
       // Type cast the data to ensure status field is properly typed
       const typedNewsData = (newsData || []).map(submission => ({
         ...submission,
@@ -79,15 +93,22 @@ export const useAdminSubmissions = () => {
         status: submission.status as 'pending' | 'approved' | 'rejected'
       }));
 
+      const typedBusinessData = (businessData || []).map(submission => ({
+        ...submission,
+        status: submission.status as 'pending' | 'approved' | 'rejected'
+      }));
+
       console.log('Successfully fetched submissions:', {
         news: typedNewsData.length,
         events: typedEventData.length,
-        localResources: typedLocalResourceData.length
+        localResources: typedLocalResourceData.length,
+        business: typedBusinessData.length
       });
 
       setNewsSubmissions(typedNewsData);
       setEventSubmissions(typedEventData);
       setLocalResourceSubmissions(typedLocalResourceData);
+      setBusinessSubmissions(typedBusinessData);
     } catch (error: any) {
       console.error('Error fetching submissions:', error);
       setError(error.message || 'Failed to load submissions');
@@ -111,6 +132,7 @@ export const useAdminSubmissions = () => {
     newsSubmissions,
     eventSubmissions,
     localResourceSubmissions,
+    businessSubmissions,
     loading,
     error,
     fetchAllSubmissions
