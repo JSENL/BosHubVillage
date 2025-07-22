@@ -7,6 +7,7 @@ import { Navigation } from '@/components/Navigation';
 import AdminEventApproval from '@/components/AdminEventApproval';
 import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminLocalResourceApprovalWithGeocoding from '@/components/AdminLocalServiceApprovalWithGeocoding';
+import AdminBusinessApproval from '@/components/AdminBusinessApproval';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
@@ -84,7 +85,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 mb-8">
+            <TabsList className="grid w-full grid-cols-7 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -92,6 +93,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="local-services" className="flex items-center">
                 <Heart className="h-4 w-4 mr-2" />
                 Local Resources
+              </TabsTrigger>
+              <TabsTrigger value="business" className="flex items-center">
+                <Building className="h-4 w-4 mr-2" />
+                Business
               </TabsTrigger>
               <TabsTrigger value="news" className="flex items-center">
                 <Newspaper className="h-4 w-4 mr-2" />
@@ -117,6 +122,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="local-services">
               <AdminLocalResourceApprovalWithGeocoding />
+            </TabsContent>
+            
+            <TabsContent value="business">
+              <AdminBusinessApproval />
             </TabsContent>
             
             <TabsContent value="news">
