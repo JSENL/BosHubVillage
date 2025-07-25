@@ -12,7 +12,7 @@ import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
-import { GNEAnnouncements } from '@/components/admin/GNEAnnouncements';
+import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
 import { 
   Shield, 
   Calendar, 

@@ -351,3 +351,5 @@ export const GNEAnnouncements = () => {
     </div>
   );
 };
+
+export default GNEAnnouncements;
