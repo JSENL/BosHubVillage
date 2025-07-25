@@ -6,8 +6,13 @@ import { BusinessSubmissionCard } from '@/components/BusinessSubmissionCard';
 import { PublishedBusinessTable } from '@/components/admin/PublishedBusinessTable';
 
 const AdminBusinessApproval = () => {
-  const { submissions, loading } = useBusinessSubmissions();
+  const { submissions, loading, fetchSubmissions } = useBusinessSubmissions();
   const { data: businesses, refetch: fetchBusinesses } = useBusiness();
+
+  const handleUpdate = () => {
+    fetchSubmissions();
+    fetchBusinesses();
+  };
 
   if (loading) {
     return (
@@ -45,7 +50,7 @@ const AdminBusinessApproval = () => {
                 <BusinessSubmissionCard
                   key={submission.id}
                   submission={submission}
-                  onUpdate={() => fetchBusinesses()}
+                  onUpdate={handleUpdate}
                 />
               ))}
             </div>
@@ -57,7 +62,7 @@ const AdminBusinessApproval = () => {
       {businesses && (
         <PublishedBusinessTable 
           businesses={businesses}
-          onUpdate={() => fetchBusinesses()}
+          onUpdate={handleUpdate}
         />
       )}
 
@@ -73,7 +78,7 @@ const AdminBusinessApproval = () => {
                 <BusinessSubmissionCard
                   key={submission.id}
                   submission={submission}
-                  onUpdate={() => fetchBusinesses()}
+                  onUpdate={handleUpdate}
                 />
               ))}
             </div>

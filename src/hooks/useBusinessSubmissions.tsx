@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useBusinessSubmissionOperations } from './useBusinessSubmissionOperations';
 
 export interface BusinessSubmission {
   id: string;
@@ -24,6 +25,7 @@ export interface BusinessSubmission {
 export const useBusinessSubmissions = () => {
   const [submissions, setSubmissions] = useState<BusinessSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  const submissionOperations = useBusinessSubmissionOperations();
 
   const fetchSubmissions = async () => {
     try {
@@ -59,18 +61,15 @@ export const useBusinessSubmissions = () => {
     loading,
     fetchSubmissions,
     approveSubmission: async (submissionId: string, adminNotes?: string) => {
-      console.log(`Mock: Approving business submission ${submissionId} with notes: ${adminNotes}`);
-      toast.success('Business submission approved successfully');
+      await submissionOperations.updateSubmissionStatus(submissionId, 'approved', adminNotes);
       handleOperationComplete();
     },
     rejectSubmission: async (submissionId: string, adminNotes: string) => {
-      console.log(`Mock: Rejecting business submission ${submissionId} with notes: ${adminNotes}`);
-      toast.success('Business submission rejected successfully');
+      await submissionOperations.updateSubmissionStatus(submissionId, 'rejected', adminNotes);
       handleOperationComplete();
     },
     updateSubmissionStatus: async (submissionId: string, status: 'approved' | 'rejected', adminNotes?: string) => {
-      console.log(`Mock: Updating business submission ${submissionId} status to ${status} with notes: ${adminNotes}`);
-      toast.success(`Business submission ${status} successfully`);
+      await submissionOperations.updateSubmissionStatus(submissionId, status, adminNotes);
       handleOperationComplete();
     }
   };
