@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Navigation } from '@/components/Navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useUserAnnouncements } from '@/hooks/useUserAnnouncements';
 import { Loader2, Megaphone, MessageSquare, Clock, Users } from 'lucide-react';
@@ -80,34 +81,42 @@ const MyMessages = () => {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardContent className="text-center py-8">
-            <p>Please sign in to view your messages.</p>
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <Card>
+            <CardContent className="text-center py-8">
+              <p>Please sign in to view your messages.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </>
     );
   }
 
   if (loading || announcementsLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>My Messages</CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="ml-2">Loading messages...</span>
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <Navigation />
+        <div className="container mx-auto px-4 py-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>My Messages</CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin" />
+              <span className="ml-2">Loading messages...</span>
+            </CardContent>
+          </Card>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      <Navigation />
+      <div className="container mx-auto px-4 py-8">
       <Card>
         <CardHeader>
           <CardTitle>My Messages</CardTitle>
@@ -230,6 +239,7 @@ const MyMessages = () => {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 };
 
