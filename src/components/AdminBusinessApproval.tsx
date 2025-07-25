@@ -3,6 +3,7 @@ import { useBusiness } from '@/hooks/useBusiness';
 import { Card, CardContent } from '@/components/ui/card';
 import { Clock } from 'lucide-react';
 import { BusinessSubmissionCard } from '@/components/BusinessSubmissionCard';
+import { PublishedBusinessTable } from '@/components/admin/PublishedBusinessTable';
 
 const AdminBusinessApproval = () => {
   const { submissions, loading } = useBusinessSubmissions();
@@ -53,45 +54,12 @@ const AdminBusinessApproval = () => {
       </Card>
 
       {/* Published Businesses Table */}
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-xl font-semibold mb-4">
-            Published Businesses ({businesses?.length || 0})
-          </h3>
-          {!businesses || businesses.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">
-              No published businesses
-            </p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left p-2">Title</th>
-                    <th className="text-left p-2">Type</th>
-                    <th className="text-left p-2">Address</th>
-                    <th className="text-left p-2">Neighborhood</th>
-                    <th className="text-left p-2">Created</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {businesses.map((business) => (
-                    <tr key={business.id} className="border-b hover:bg-gray-50">
-                      <td className="p-2 font-medium">{business.title}</td>
-                      <td className="p-2">{business.business_type}</td>
-                      <td className="p-2">{business.address}</td>
-                      <td className="p-2">{business.neighborhood}</td>
-                      <td className="p-2">
-                        {new Date(business.created_at).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {businesses && (
+        <PublishedBusinessTable 
+          businesses={businesses}
+          onUpdate={() => fetchBusinesses()}
+        />
+      )}
 
       {/* Recently Reviewed Submissions */}
       {recentlyReviewed.length > 0 && (
