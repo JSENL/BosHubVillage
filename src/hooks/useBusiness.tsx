@@ -1,19 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
 import { Business } from '@/types/business';
-import { mockBusinesses } from '@/data/mockBusiness';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useBusiness = () => {
   return useQuery({
     queryKey: ['business'],
     queryFn: async () => {
-      console.log('Fetching businesses from mock data...');
+      console.log('Fetching businesses from Supabase...');
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const { data, error } = await supabase
+        .from('business')
+        .select('*')
+        .order('created_at', { ascending: false });
       
-      console.log(`Fetched ${mockBusinesses.length} business items from mock data`);
+      if (error) {
+        console.error('Error fetching businesses:', error);
+        throw error;
+      }
       
-      return mockBusinesses as Business[];
+      console.log(`Fetched ${data?.length || 0} business items from Supabase`);
+      
+      return (data || []) as Business[];
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes

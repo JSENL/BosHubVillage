@@ -2,30 +2,27 @@
 import { supabase } from '@/integrations/supabase/client';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { geocodeNewsItems } from './geocodeNewsItems';
-import { mockBusinesses } from '@/data/mockBusiness';
 
 export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<any>): Promise<UnifiedItem[]> => {
   console.log('🔄 Starting unified data fetch...');
   
-  const [eventsRes, newsRes, localResourcesRes] = await Promise.all([
+  const [eventsRes, newsRes, localResourcesRes, businessRes] = await Promise.all([
     supabase.from('events').select('*').order('created_at', { ascending: false }),
     supabase.from('news').select('*').order('date_posted', { ascending: false }),
-    supabase.from('local_resources').select('*').order('created_at', { ascending: false })
+    supabase.from('local_resources').select('*').order('created_at', { ascending: false }),
+    supabase.from('business').select('*').order('created_at', { ascending: false })
   ]);
-
-  // Use mock data for businesses
-  const businessRes = { data: mockBusinesses, error: null };
 
   console.log('📊 Database fetch results:', {
     events: { count: eventsRes.data?.length || 0, error: eventsRes.error },
     news: { count: newsRes.data?.length || 0, error: newsRes.error },
-    business: { count: businessRes.data?.length || 0, error: businessRes.error, source: 'mock' },
+    business: { count: businessRes.data?.length || 0, error: businessRes.error },
     localResources: { count: localResourcesRes.data?.length || 0, error: localResourcesRes.error }
   });
 
   // Log specific business data for debugging
   if (businessRes.data && businessRes.data.length > 0) {
-    console.log('🏢 Business data details (from mock):', businessRes.data.map(b => ({
+    console.log('🏢 Business data details (from Supabase):', businessRes.data.map(b => ({
       id: b.id,
       title: b.title,
       lat: b.latitude,
@@ -33,7 +30,7 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
       address: b.address
     })));
   } else {
-    console.log('🚨 No business data found in mock data');
+    console.log('🚨 No business data found in Supabase');
   }
 
   if (eventsRes.error) {
@@ -42,7 +39,9 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
   if (newsRes.error) {
     console.error('❌ Error fetching news:', newsRes.error);
   }
-  // No error handling needed for mock business data
+  if (businessRes.error) {
+    console.error('❌ Error fetching businesses:', businessRes.error);
+  }
   if (localResourcesRes.error) {
     console.error('❌ Error fetching local resources:', localResourcesRes.error);
   }
@@ -105,9 +104,9 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     });
   }
 
-  // Process businesses with coordinate validation (from mock data)
+  // Process businesses with coordinate validation (from Supabase)
   if (businessRes.data) {
-    console.log('🏢 Processing businesses from mock data:', businessRes.data.length);
+    console.log('🏢 Processing businesses from Supabase:', businessRes.data.length);
     businessRes.data.forEach((business, index) => {
       const lat = business.latitude ? Number(business.latitude) : null;
       const lng = business.longitude ? Number(business.longitude) : null;
