@@ -61,8 +61,8 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
         id: event.id,
         title: event.title,
         description: event.description || '',
-        latitude: (lat && !isNaN(lat) && lat !== 0) ? lat : null,
-        longitude: (lng && !isNaN(lng) && lng !== 0) ? lng : null,
+        latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,
+        longitude: (lng !== null && !isNaN(lng) && lng !== 0) ? lng : null,
         type: 'event',
         location: event.location,
         address: event.address || event.location,
@@ -91,8 +91,8 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
         id: news.id,
         title: news.title,
         description: news.content || '',
-        latitude: (lat && !isNaN(lat) && lat !== 0) ? lat : null,
-        longitude: (lng && !isNaN(lng) && lng !== 0) ? lng : null,
+        latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,
+        longitude: (lng !== null && !isNaN(lng) && lng !== 0) ? lng : null,
         type: 'news',
         location: news.location,
         address: news.Address,
@@ -113,19 +113,23 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
       
       console.log(`Business ${index + 1} "${business.title}": lat=${lat}, lng=${lng}, address=${business.address}`);
       
-      items.push({
+      const item = {
         id: business.id,
         title: business.title,
         description: business.description || '',
-        latitude: (lat && !isNaN(lat) && lat !== 0) ? lat : null,
-        longitude: (lng && !isNaN(lng) && lng !== 0) ? lng : null,
-        type: 'business',
+        latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,
+        longitude: (lng !== null && !isNaN(lng) && lng !== 0) ? lng : null,
+        type: 'business' as const,
         address: business.address,
         category: business.business_type,
         business_type: business.business_type,
         villages: business.villages,
-        neighborhoods: business.neighborhood
-      });
+        neighborhoods: business.neighborhood,
+        originalData: business
+      };
+      
+      console.log(`🏢 Transformed business item:`, item);
+      items.push(item);
     });
   }
 
@@ -142,8 +146,8 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
         id: resource.id,
         title: resource.name,
         description: resource.description || '',
-        latitude: (lat && !isNaN(lat) && lat !== 0) ? lat : null,
-        longitude: (lng && !isNaN(lng) && lng !== 0) ? lng : null,
+        latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,
+        longitude: (lng !== null && !isNaN(lng) && lng !== 0) ? lng : null,
         type: 'local-service',
         address: resource.address,
         category: resource.category,
