@@ -19,6 +19,16 @@ export const useDatabaseFilterOptions = () => {
       console.log('Fetching filter options from database...');
       
       try {
+        // Fetch categories from the categories table
+        const { data: categories, error: categoriesError } = await supabase
+          .from('categories')
+          .select('name, type');
+
+        if (categoriesError) {
+          console.error('Error fetching categories:', categoriesError);
+          throw categoriesError;
+        }
+
         // Fetch business data from Supabase
         const { data: businesses, error: businessError } = await supabase
           .from('business')
@@ -128,11 +138,17 @@ export const useDatabaseFilterOptions = () => {
           if (resource.village) localResourceVillages.add(resource.village);
         });
 
-        // Combine all categories
+        // Get categories from database grouped by type
+        const dbBusinessTypes = categories?.filter(c => c.type === 'business').map(c => c.name) || [];
+        const dbEventCategories = categories?.filter(c => c.type === 'event').map(c => c.name) || [];
+        const dbLocalServiceCategories = categories?.filter(c => c.type === 'local_service').map(c => c.name) || [];
+        const dbNewsSources = categories?.filter(c => c.type === 'news').map(c => c.name) || [];
+
+        // Combine all categories from database
         const allCategories = new Set([
-          ...Array.from(businessTypes),
-          ...Array.from(eventCategories),
-          ...Array.from(localResourceCategories)
+          ...dbBusinessTypes,
+          ...dbEventCategories,
+          ...dbLocalServiceCategories
         ]);
 
         // Combine all locations (neighborhoods)
@@ -154,11 +170,11 @@ export const useDatabaseFilterOptions = () => {
         const filterOptions: FilterOptions = {
           categories: Array.from(allCategories).filter(Boolean).sort(),
           locations: Array.from(allLocations).filter(Boolean).sort(),
-          businessTypes: Array.from(businessTypes).filter(Boolean).sort(),
+          businessTypes: dbBusinessTypes.filter(Boolean).sort(),
           villages: Array.from(allVillages).filter(Boolean).sort(),
           neighborhoods: Array.from(allLocations).filter(Boolean).sort(),
-          eventCategories: Array.from(eventCategories).filter(Boolean).sort(),
-          sources: Array.from(newsSources).filter(Boolean).sort()
+          eventCategories: dbEventCategories.filter(Boolean).sort(),
+          sources: dbNewsSources.filter(Boolean).sort()
         };
 
         console.log('Successfully fetched filter options:', filterOptions);

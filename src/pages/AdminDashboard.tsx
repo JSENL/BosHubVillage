@@ -11,6 +11,7 @@ import AdminBusinessApproval from '@/components/AdminBusinessApproval';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
+import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
 import { 
   Shield, 
   Calendar, 
@@ -20,7 +21,8 @@ import {
   ArrowLeft,
   Heart,
   MessageCircle,
-  Users
+  Users,
+  Tag
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -85,7 +87,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-7 mb-8">
+            <TabsList className="grid w-full grid-cols-8 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -113,6 +115,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="all-users" className="flex items-center">
                 <Users className="h-4 w-4 mr-2" />
                 All Users
+              </TabsTrigger>
+              <TabsTrigger value="categories" className="flex items-center">
+                <Tag className="h-4 w-4 mr-2" />
+                Categories
               </TabsTrigger>
             </TabsList>
             
@@ -142,6 +148,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="all-users">
               <AdminUserManagement />
+            </TabsContent>
+            
+            <TabsContent value="categories">
+              <CategoriesManagement />
             </TabsContent>
           </Tabs>
         </div>

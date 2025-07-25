@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useGeocoding } from '@/hooks/useGeocoding';
+import { useLocalServiceCategories } from '@/hooks/useCategories';
 import { ArrowLeft } from 'lucide-react';
 
 const formSchema = z.object({
@@ -37,6 +38,7 @@ const SubmitLocalService = () => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { geocode, isReady } = useGeocoding();
+  const { data: localServiceCategories = [] } = useLocalServiceCategories();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -143,11 +145,11 @@ const SubmitLocalService = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="community">Community</SelectItem>
-                    <SelectItem value="education">Education</SelectItem>
-                    <SelectItem value="health">Health</SelectItem>
-                    <SelectItem value="food">Food</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    {localServiceCategories.map((category) => (
+                      <SelectItem key={category.id} value={category.name}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />

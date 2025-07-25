@@ -1,11 +1,13 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useNewsCategories } from '@/hooks/useCategories';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Navigation } from '@/components/Navigation';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -19,6 +21,7 @@ const SubmitNews = () => {
   const { handleSubmissionError, handleValidationError } = useSubmissionErrorHandler();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const { data: newsCategories = [] } = useNewsCategories();
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -257,14 +260,22 @@ const SubmitNews = () => {
 
                 <div>
                   <Label htmlFor="source">Source *</Label>
-                  <Input
-                    id="source"
+                  <Select
                     value={formData.source}
-                    onChange={(e) => handleInputChange('source', e.target.value)}
-                    placeholder="News source (e.g., Local Herald, City Council, etc.)"
+                    onValueChange={(value) => handleInputChange('source', value)}
                     required
-                    className={validationErrors.includes('Source') ? 'border-red-300 bg-red-50' : ''}
-                  />
+                  >
+                    <SelectTrigger className={validationErrors.includes('Source') ? 'border-red-300 bg-red-50' : ''}>
+                      <SelectValue placeholder="Select news source" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {newsCategories.map((category) => (
+                        <SelectItem key={category.id} value={category.name}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>

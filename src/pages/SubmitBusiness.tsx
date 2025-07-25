@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
-// Mock submission - no Supabase needed
+import { useBusinessCategories } from '@/hooks/useCategories';
 import { toast } from 'sonner';
 import { Building, ArrowLeft, Loader2 } from 'lucide-react';
 import { useGeocoding } from '@/hooks/useGeocoding';
@@ -28,11 +28,7 @@ const SubmitBusiness = () => {
     short_description: ''
   });
 
-  const businessTypes = [
-    'Restaurant', 'Cafe', 'Retail Store', 'Service Provider', 
-    'Healthcare', 'Beauty & Wellness', 'Technology', 'Professional Services',
-    'Education', 'Entertainment', 'Automotive', 'Home & Garden', 'Other'
-  ];
+  const { data: businessCategories = [] } = useBusinessCategories();
 
   const neighborhoods = [
     'Dorchester', 'South End', 'Back Bay', 'North End', 'Beacon Hill',
@@ -161,8 +157,8 @@ const SubmitBusiness = () => {
                       <SelectValue placeholder="Select business type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {businessTypes.map((type) => (
-                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      {businessCategories.map((category) => (
+                        <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

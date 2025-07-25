@@ -11,6 +11,7 @@ import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Send, Loader2 } fro
 import { toast } from 'sonner';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { useGeocoding } from '@/hooks/useGeocoding';
+import { useEventCategories } from '@/hooks/useCategories';
 
 interface EventSubmissionFormProps {
   onClose?: () => void;
@@ -35,17 +36,9 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
 
   const { submitEvent } = useEventSubmissions();
   const { geocode, isGeocoding, isReady } = useGeocoding();
+  const { data: eventCategories = [] } = useEventCategories();
 
-  const categories = [
-    { value: 'music', label: 'Music' },
-    { value: 'sports', label: 'Sports' },
-    { value: 'food', label: 'Food & Drink' },
-    { value: 'art', label: 'Arts & Culture' },
-    { value: 'business', label: 'Business' },
-    { value: 'education', label: 'Education' },
-    { value: 'family', label: 'Family' },
-    { value: 'health', label: 'Health & Wellness' },
-  ];
+  // Event categories now come from the database
 
   const eventTypes = [
     { value: 'event', label: 'Event' },
@@ -192,9 +185,9 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
+                    {eventCategories.map((category) => (
+                      <SelectItem key={category.id} value={category.name}>
+                        {category.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
