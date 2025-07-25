@@ -20,6 +20,19 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     localResources: { count: localResourcesRes.data?.length || 0, error: localResourcesRes.error }
   });
 
+  // Log specific business data for debugging
+  if (businessRes.data && businessRes.data.length > 0) {
+    console.log('🏢 Business data details:', businessRes.data.map(b => ({
+      id: b.id,
+      title: b.title,
+      lat: b.latitude,
+      lng: b.longitude,
+      address: b.address
+    })));
+  } else {
+    console.log('🚨 No business data found or error:', businessRes.error);
+  }
+
   if (eventsRes.error) {
     console.error('❌ Error fetching events:', eventsRes.error);
   }
