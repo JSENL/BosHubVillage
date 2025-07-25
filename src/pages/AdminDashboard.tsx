@@ -12,6 +12,7 @@ import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
+import { GNEAnnouncements } from '@/components/admin/GNEAnnouncements';
 import { 
   Shield, 
   Calendar, 
@@ -22,7 +23,8 @@ import {
   Heart,
   MessageCircle,
   Users,
-  Tag
+  Tag,
+  Megaphone
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -87,7 +89,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-8 mb-8">
+            <TabsList className="grid w-full grid-cols-9 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -99,6 +101,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="business" className="flex items-center">
                 <Building className="h-4 w-4 mr-2" />
                 Business
+              </TabsTrigger>
+              <TabsTrigger value="announcements" className="flex items-center">
+                <Megaphone className="h-4 w-4 mr-2" />
+                GNE!
               </TabsTrigger>
               <TabsTrigger value="news" className="flex items-center">
                 <Newspaper className="h-4 w-4 mr-2" />
@@ -130,9 +136,13 @@ const AdminDashboard = () => {
               <AdminLocalResourceApprovalWithGeocoding />
             </TabsContent>
             
-            <TabsContent value="business">
-              <AdminBusinessApproval />
-            </TabsContent>
+          <TabsContent value="business">
+            <AdminBusinessApproval />
+          </TabsContent>
+
+          <TabsContent value="announcements">
+            <GNEAnnouncements />
+          </TabsContent>
             
             <TabsContent value="news">
               <AdminNewsApproval />
