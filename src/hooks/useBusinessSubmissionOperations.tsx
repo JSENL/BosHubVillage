@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useBusinessSubmissionOperations = () => {
   const [actionLoading, setActionLoading] = useState(false);
@@ -11,10 +12,46 @@ export const useBusinessSubmissionOperations = () => {
   ) => {
     setActionLoading(true);
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      console.log(`Mock: Updating business submission ${submissionId} to ${status} with notes: ${adminNotes}`);
+      if (status === 'approved') {
+        // First get the submission data
+        const { data: submission, error: fetchError } = await supabase
+          .from('business_submissions')
+          .select('*')
+          .eq('id', submissionId)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        // Insert into business table
+        const { error: insertError } = await supabase
+          .from('business')
+          .insert({
+            title: submission.title,
+            business_type: submission.business_type,
+            address: submission.address,
+            neighborhood: submission.neighborhood,
+            description: submission.description,
+            short_description: submission.short_description,
+            latitude: submission.latitude,
+            longitude: submission.longitude,
+            created_by: submission.submitted_by
+          });
+
+        if (insertError) throw insertError;
+      }
+
+      // Update submission status (this will trigger deletion if approved)
+      const { error: updateError } = await supabase
+        .from('business_submissions')
+        .update({
+          status,
+          admin_notes: adminNotes,
+          reviewed_by: (await supabase.auth.getUser()).data.user?.id,
+          reviewed_at: new Date().toISOString()
+        })
+        .eq('id', submissionId);
+
+      if (updateError) throw updateError;
       
       toast.success(`Business submission ${status} successfully`);
     } catch (error) {
