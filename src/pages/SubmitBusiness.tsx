@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useBusinessCategories } from '@/hooks/useCategories';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Building, ArrowLeft, Loader2 } from 'lucide-react';
 import { useGeocoding } from '@/hooks/useGeocoding';
@@ -67,19 +68,38 @@ const SubmitBusiness = () => {
         }
       }
 
-      // Mock submission - simulate success
-      console.log('Mock business submission:', {
-        ...formData,
-        latitude,
-        longitude,
-        submitted_by: user.id,
-        status: 'pending'
+      // Submit to Supabase business_submissions table
+      const { error } = await supabase
+        .from('business_submissions')
+        .insert({
+          title: formData.title,
+          business_type: formData.business_type,
+          address: formData.address,
+          neighborhood: formData.neighborhood,
+          description: formData.description,
+          short_description: formData.short_description || null,
+          latitude,
+          longitude,
+          submitted_by: user.id,
+          status: 'pending'
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success('Business submitted successfully! It will be reviewed by our admin team.');
+      
+      // Reset form after successful submission
+      setFormData({
+        title: '',
+        business_type: '',
+        address: '',
+        neighborhood: '',
+        description: '',
+        short_description: ''
       });
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      toast.success('Business submitted successfully! It will be reviewed by our team.');
+      
       navigate('/');
     } catch (error: any) {
       console.error('Error submitting business:', error);
