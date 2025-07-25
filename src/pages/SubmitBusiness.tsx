@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+// Mock submission - no Supabase needed
 import { toast } from 'sonner';
 import { Building, ArrowLeft, Loader2 } from 'lucide-react';
 import { useGeocoding } from '@/hooks/useGeocoding';
@@ -71,17 +71,17 @@ const SubmitBusiness = () => {
         }
       }
 
-      const { error } = await supabase
-        .from('business_submissions')
-        .insert({
-          ...formData,
-          latitude,
-          longitude,
-          submitted_by: user.id,
-          status: 'pending'
-        });
+      // Mock submission - simulate success
+      console.log('Mock business submission:', {
+        ...formData,
+        latitude,
+        longitude,
+        submitted_by: user.id,
+        status: 'pending'
+      });
 
-      if (error) throw error;
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       toast.success('Business submitted successfully! It will be reviewed by our team.');
       navigate('/');

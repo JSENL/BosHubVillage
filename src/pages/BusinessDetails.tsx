@@ -4,8 +4,8 @@ import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
 import { Business } from '@/types/business';
+import { mockBusinesses } from '@/data/mockBusiness';
 import { ArrowLeft, MapPin, Building, Clock } from 'lucide-react';
 
 const BusinessDetails = () => {
@@ -17,19 +17,14 @@ const BusinessDetails = () => {
     queryFn: async () => {
       if (!businessId) throw new Error('Business ID is required');
       
-      const { data, error } = await supabase
-        .from('business')
-        .select('*')
-        .eq('id', businessId)
-        .single();
-
-      if (error) throw error;
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Parse villages if it's a string
-      const businessData = {
-        ...data,
-        villages: data.villages ? (typeof data.villages === 'string' ? JSON.parse(data.villages) : data.villages) : null
-      };
+      const businessData = mockBusinesses.find(b => b.id === businessId);
+      
+      if (!businessData) {
+        throw new Error('Business not found');
+      }
       
       return businessData as Business;
     },

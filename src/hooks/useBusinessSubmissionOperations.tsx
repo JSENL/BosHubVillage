@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export const useBusinessSubmissionOperations = () => {
@@ -12,17 +11,11 @@ export const useBusinessSubmissionOperations = () => {
   ) => {
     setActionLoading(true);
     try {
-      const { error } = await supabase
-        .from('business_submissions')
-        .update({
-          status,
-          admin_notes: adminNotes || null,
-          reviewed_at: new Date().toISOString(),
-        })
-        .eq('id', submissionId);
-
-      if (error) throw error;
-
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log(`Mock: Updating business submission ${submissionId} to ${status} with notes: ${adminNotes}`);
+      
       toast.success(`Business submission ${status} successfully`);
     } catch (error) {
       console.error('Error updating submission status:', error);

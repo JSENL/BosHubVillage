@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useBusinessSubmissionOperations } from './useBusinessSubmissionOperations';
+import { mockBusinessSubmissions } from '@/data/mockBusiness';
 
 export interface BusinessSubmission {
   id: string;
@@ -25,28 +24,16 @@ export interface BusinessSubmission {
 export const useBusinessSubmissions = () => {
   const [submissions, setSubmissions] = useState<BusinessSubmission[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  const submissionOperations = useBusinessSubmissionOperations();
 
   const fetchSubmissions = async () => {
     try {
-      console.log('Fetching business submissions from Supabase...');
+      console.log('Fetching business submissions from mock data...');
       
-      const { data, error } = await supabase
-        .from('business_submissions')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 100));
 
-      if (error) throw error;
-
-      // Type cast the data to ensure status field is properly typed
-      const typedData = (data || []).map(submission => ({
-        ...submission,
-        status: submission.status as 'pending' | 'approved' | 'rejected'
-      }));
-
-      console.log(`Fetched ${typedData.length} business submissions`);
-      setSubmissions(typedData);
+      console.log(`Fetched ${mockBusinessSubmissions.length} business submissions from mock data`);
+      setSubmissions(mockBusinessSubmissions);
     } catch (error: any) {
       console.error('Error fetching business submissions:', error);
       toast.error('Failed to load business submissions');
@@ -68,15 +55,18 @@ export const useBusinessSubmissions = () => {
     loading,
     fetchSubmissions,
     approveSubmission: async (submissionId: string, adminNotes?: string) => {
-      await submissionOperations.updateSubmissionStatus(submissionId, 'approved', adminNotes);
+      console.log(`Mock: Approving business submission ${submissionId} with notes: ${adminNotes}`);
+      toast.success('Business submission approved successfully');
       handleOperationComplete();
     },
     rejectSubmission: async (submissionId: string, adminNotes: string) => {
-      await submissionOperations.updateSubmissionStatus(submissionId, 'rejected', adminNotes);
+      console.log(`Mock: Rejecting business submission ${submissionId} with notes: ${adminNotes}`);
+      toast.success('Business submission rejected successfully');
       handleOperationComplete();
     },
     updateSubmissionStatus: async (submissionId: string, status: 'approved' | 'rejected', adminNotes?: string) => {
-      await submissionOperations.updateSubmissionStatus(submissionId, status, adminNotes);
+      console.log(`Mock: Updating business submission ${submissionId} status to ${status} with notes: ${adminNotes}`);
+      toast.success(`Business submission ${status} successfully`);
       handleOperationComplete();
     }
   };
