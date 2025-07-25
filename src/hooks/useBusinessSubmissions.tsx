@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { mockBusinessSubmissions } from '@/data/mockBusiness';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface BusinessSubmission {
   id: string;
@@ -27,13 +27,17 @@ export const useBusinessSubmissions = () => {
 
   const fetchSubmissions = async () => {
     try {
-      console.log('Fetching business submissions from mock data...');
+      console.log('Fetching business submissions from Supabase...');
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 100));
+      const { data, error } = await supabase
+        .from('business_submissions')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      console.log(`Fetched ${mockBusinessSubmissions.length} business submissions from mock data`);
-      setSubmissions(mockBusinessSubmissions);
+      if (error) throw error;
+
+      console.log(`Fetched ${data?.length || 0} business submissions from Supabase`);
+      setSubmissions((data || []) as BusinessSubmission[]);
     } catch (error: any) {
       console.error('Error fetching business submissions:', error);
       toast.error('Failed to load business submissions');

@@ -1,7 +1,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { mockBusinesses } from '@/data/mockBusiness';
 
 export interface FilterOptions {
   categories: string[];
@@ -20,14 +19,17 @@ export const useDatabaseFilterOptions = () => {
       console.log('Fetching filter options from database...');
       
       try {
-        // Use mock business data instead of Supabase
-        const businesses = mockBusinesses
-          .filter(business => business.business_type && business.neighborhood)
-          .map(business => ({
-            business_type: business.business_type,
-            neighborhood: business.neighborhood,
-            villages: business.villages
-          }));
+        // Fetch business data from Supabase
+        const { data: businesses, error: businessError } = await supabase
+          .from('business')
+          .select('business_type, neighborhood, villages')
+          .not('business_type', 'is', null)
+          .not('neighborhood', 'is', null);
+
+        if (businessError) {
+          console.error('Error fetching business data:', businessError);
+          throw businessError;
+        }
 
         // Fetch event categories and locations
         const { data: events, error: eventsError } = await supabase
@@ -73,8 +75,14 @@ export const useDatabaseFilterOptions = () => {
         businesses?.forEach(business => {
           if (business.business_type) businessTypes.add(business.business_type);
           if (business.neighborhood) businessNeighborhoods.add(business.neighborhood);
-          if (business.villages && Array.isArray(business.villages)) {
-            business.villages.forEach(village => businessVillages.add(village));
+          if (business.villages) {
+            // Handle both string and array formats
+            const villageList = typeof business.villages === 'string' 
+              ? business.villages.split(',').map(v => v.trim())
+              : Array.isArray(business.villages) 
+                ? business.villages
+                : [];
+            villageList.forEach(village => businessVillages.add(village));
           }
         });
 
