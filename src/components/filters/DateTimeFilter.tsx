@@ -1,7 +1,12 @@
 
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface DateTimeFilterProps {
   dateFilter: string;
@@ -23,17 +28,54 @@ export const DateTimeFilter = ({
     { value: 'evening', label: 'Evening (6PM-12AM)' },
   ];
 
+  const selectedDate = dateFilter ? new Date(dateFilter) : undefined;
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      onDateFilterChange(formattedDate);
+    } else {
+      onDateFilterChange('');
+    }
+  };
+
   return (
     <>
       <div className="flex items-center space-x-2">
-        <Calendar className="h-4 w-4 text-yelp-gray" />
-        <Input
-          type="date"
-          value={dateFilter}
-          onChange={(e) => onDateFilterChange(e.target.value)}
-          className="w-36 sm:w-40 h-8 sm:h-10 text-xs sm:text-sm"
-          placeholder="Select date"
-        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className={cn(
+                "w-36 sm:w-40 h-8 sm:h-10 text-xs sm:text-sm justify-start text-left font-normal",
+                !selectedDate && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {selectedDate ? format(selectedDate, "MMM dd, yyyy") : "Pick a date"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={handleDateSelect}
+              initialFocus
+              className={cn("p-3 pointer-events-auto")}
+            />
+          </PopoverContent>
+        </Popover>
+        
+        {selectedDate && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleDateSelect(undefined)}
+            className="h-8 px-2 text-xs"
+          >
+            Clear
+          </Button>
+        )}
       </div>
 
       <Select value={timeFilter} onValueChange={onTimeFilterChange}>
