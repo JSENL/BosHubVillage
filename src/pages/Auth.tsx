@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Mail, Lock, User, Calendar } from 'lucide-react';
+import { AlertCircle, Mail, Lock, User, Calendar, Check, X } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -18,6 +18,22 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Password validation helpers
+  const validatePassword = (password: string) => {
+    const hasMinLength = password.length >= 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+    
+    return {
+      hasMinLength,
+      hasUppercase,
+      hasSymbol,
+      isValid: hasMinLength && hasUppercase && hasSymbol
+    };
+  };
+
+  const passwordValidation = validatePassword(password);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -34,6 +50,13 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    // Validate password complexity
+    if (!passwordValidation.isValid) {
+      setError('Password does not meet requirements');
+      setLoading(false);
+      return;
+    }
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -207,8 +230,42 @@ const Auth = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-10"
                       required
-                      minLength={6}
+                      minLength={8}
                     />
+                  </div>
+                  
+                  {/* Password requirements */}
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      {passwordValidation.hasMinLength ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={passwordValidation.hasMinLength ? 'text-green-700' : 'text-red-600'}>
+                        At least 8 characters
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {passwordValidation.hasUppercase ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={passwordValidation.hasUppercase ? 'text-green-700' : 'text-red-600'}>
+                        At least one uppercase letter
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {passwordValidation.hasSymbol ? (
+                        <Check className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <X className="h-4 w-4 text-red-500" />
+                      )}
+                      <span className={passwordValidation.hasSymbol ? 'text-green-700' : 'text-red-600'}>
+                        At least one symbol (!@#$%^&* etc.)
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -222,7 +279,7 @@ const Auth = () => {
                 <Button
                   type="submit"
                   className="w-full yelp-gradient hover:opacity-90 text-white"
-                  disabled={loading}
+                  disabled={loading || !passwordValidation.isValid}
                 >
                   {loading ? 'Creating account...' : 'Create Account'}
                 </Button>
