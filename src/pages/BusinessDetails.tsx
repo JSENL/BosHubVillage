@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Business } from '@/types/business';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, MapPin, Building, Clock } from 'lucide-react';
+import BusinessComments from '@/components/BusinessComments';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -130,6 +131,12 @@ const BusinessDetails = () => {
                 <Clock className="h-4 w-4 mr-1" />
                 <span>Added {new Date(business.created_at).toLocaleDateString()}</span>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6">
+            <CardContent className="p-6">
+              <BusinessComments businessId={businessId!} />
             </CardContent>
           </Card>
         </div>
