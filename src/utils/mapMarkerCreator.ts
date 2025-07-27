@@ -108,6 +108,7 @@ export const createMapboxMarker = (
   // Add double-click handler
   markerElement.addEventListener('dblclick', (e) => {
     e.stopPropagation();
+    e.preventDefault();
     
     if (clickTimeout) {
       clearTimeout(clickTimeout);
