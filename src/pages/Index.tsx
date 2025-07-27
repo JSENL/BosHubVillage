@@ -30,6 +30,8 @@ const Index = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [timeFilter, setTimeFilter] = useState("all");
 
   // Data hooks - using correct property names based on actual hook implementations
   const { events, loading: eventsLoading } = useEvents();
@@ -187,7 +189,28 @@ const Index = () => {
       );
     })();
 
-    return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage;
+    // Date filter (only for events)
+    const matchesDate = item.type !== 'event' || dateFilter === '' || item.date === dateFilter;
+
+    // Time filter (only for events)
+    const matchesTime = item.type !== 'event' || timeFilter === 'all' || (() => {
+      if (!item.start_time) return timeFilter === 'all';
+      
+      const eventHour = parseInt(item.start_time.split(':')[0]);
+      
+      switch (timeFilter) {
+        case 'morning':
+          return eventHour >= 6 && eventHour < 12;
+        case 'afternoon':
+          return eventHour >= 12 && eventHour < 18;
+        case 'evening':
+          return eventHour >= 18 || eventHour < 6;
+        default:
+          return true;
+      }
+    })();
+
+    return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
   });
 
   // Create filtered items for map (excluding news)
@@ -296,6 +319,10 @@ const Index = () => {
             onNeighborhoodChange={setSelectedNeighborhood}
             selectedVillage={selectedVillage}
             onVillageChange={setSelectedVillage}
+            dateFilter={dateFilter}
+            onDateFilterChange={setDateFilter}
+            timeFilter={timeFilter}
+            onTimeFilterChange={setTimeFilter}
             filteredItemsCount={filteredItems.length}
             itemType="events"
           />
