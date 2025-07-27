@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -21,11 +21,14 @@ import {
   Settings,
   CheckSquare,
   Heart,
-  MessageCircle
+  MessageCircle,
+  ArrowLeft
 } from 'lucide-react';
 
 export const Navigation = () => {
   const { user, isAdmin, signOut } = useAuth();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   return (
     <nav className="bg-white shadow-lg border-b">
@@ -35,6 +38,17 @@ export const Navigation = () => {
             <Link to="/" className="text-2xl font-bold text-purple-600">
               LocalHub
             </Link>
+            
+            {/* Back to Home Button - Hidden on home page */}
+            {!isHomePage && (
+              <Link 
+                to="/" 
+                className="flex items-center text-gray-700 hover:text-purple-600 transition-colors font-medium"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Home
+              </Link>
+            )}
             
             {/* News Page Link */}
             <Link 
