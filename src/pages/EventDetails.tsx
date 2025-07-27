@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { useEvents } from '@/hooks/useEvents';
 import EventComments from '@/components/EventComments';
+import { Navigation } from '@/components/Navigation';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -49,20 +50,8 @@ const EventDetails = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/')}
-            className="flex items-center space-x-2 text-purple-600 hover:bg-purple-50"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Events</span>
-          </Button>
-        </div>
-      </header>
-
+      <Navigation />
+      
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
