@@ -3,13 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Building, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { MapPin, Building } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { Link } from 'react-router-dom';
 import { CommentForm } from '@/components/comments/CommentForm';
 import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
 import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
+import { Navigation } from '@/components/Navigation';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
@@ -60,14 +59,9 @@ const LocalServiceDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <Link to="/">
-          <Button variant="ghost" className="mb-4">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Button>
-        </Link>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+      <Navigation />
+      <div className="max-w-4xl mx-auto space-y-6 p-4">
 
         <Card>
           <CardHeader>
