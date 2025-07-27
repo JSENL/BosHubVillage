@@ -41,6 +41,7 @@ const App = () => (
             <Route path="/submit-news" element={<SubmitNews />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/approval" element={<AdminApproval />} />
+            <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/business/:businessId" element={<BusinessDetails />} />
             <Route path="/news/:newsId" element={<NewsDetails />} />
             <Route path="/news-page" element={<NewsPage />} />
