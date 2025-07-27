@@ -4,6 +4,7 @@ import { Calendar, MapPin, DollarSign, Users, Star } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
 
 interface Event {
   id: string;
@@ -25,8 +26,10 @@ interface EventCardProps {
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
+  const navigate = useNavigate();
+  
   const handleViewDetails = () => {
-    window.location.href = `/event/${event.id}`;
+    navigate(`/event/${event.id}`);
   };
 
   const formatTimeRange = (startTime: string, endTime: string) => {
