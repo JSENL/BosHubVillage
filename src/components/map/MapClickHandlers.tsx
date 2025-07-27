@@ -1,6 +1,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { UnifiedItem } from '@/types/unifiedItem';
+import { useToast } from '@/hooks/use-toast';
 
 interface UseMapClickHandlersProps {
   onItemClick?: (item: UnifiedItem) => void;
@@ -8,6 +9,7 @@ interface UseMapClickHandlersProps {
 
 export const useMapClickHandlers = ({ onItemClick }: UseMapClickHandlersProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleMarkerClick = (item: UnifiedItem) => {
     console.log('📍 Marker clicked:', item.title, 'ID:', item.id);
@@ -23,23 +25,11 @@ export const useMapClickHandlers = ({ onItemClick }: UseMapClickHandlersProps) =
   const handleMarkerDoubleClick = (item: UnifiedItem) => {
     console.log('🖱️ Marker double-clicked:', item.title, 'Type:', item.type);
     
-    // Navigate to the appropriate detail page based on item type
-    switch (item.type) {
-      case 'event':
-        navigate(`/event/${item.id}`);
-        break;
-      case 'news':
-        navigate(`/news/${item.id}`);
-        break;
-      case 'business':
-        navigate(`/business/${item.id}`);
-        break;
-      case 'local-service':
-        navigate(`/local-service/${item.id}`);
-        break;
-      default:
-        console.warn('Unknown item type for navigation:', item.type);
-    }
+    // Show the marker name in a toast
+    toast({
+      title: item.title,
+      description: `${item.type.charAt(0).toUpperCase() + item.type.slice(1)} marker`,
+    });
   };
 
   return {
