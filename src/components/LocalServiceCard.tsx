@@ -3,14 +3,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
+import { useNavigate } from 'react-router-dom';
 
 interface LocalServiceCardProps {
   localService: LocalResource;
 }
 
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/local-service/${localService.id}`);
+  };
+
   return (
-    <Card className="h-full hover:shadow-lg transition-shadow duration-200">
+    <Card className="h-full hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={handleClick}>
       <CardHeader>
         <div className="flex items-start justify-between">
           <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-2">
