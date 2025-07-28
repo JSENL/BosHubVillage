@@ -1,11 +1,12 @@
 
+import { useState } from 'react';
 import { useMapLoader } from '@/hooks/useMapLoader';
-import { useMapMarkers } from '@/components/map/MapMarkerManager';
+import { useMapMarkers } from '@/hooks/useMapMarkers';
 import { MapOverlays } from '@/components/map/MapOverlays';
 import { MapDebugOverlay } from '@/components/map/MapDebugOverlay';
 import { useItemFiltering } from '@/components/map/MapItemFiltering';
-import { useMapClickHandlers } from '@/components/map/MapClickHandlers';
 import { useMapInitializer } from '@/components/map/MapInitializer';
+import { MapItemSidebar } from '@/components/MapItemSidebar';
 import { UnifiedItem } from '@/types/unifiedItem';
 
 interface EnhancedUniversalMapProps {
@@ -21,9 +22,9 @@ export const EnhancedUniversalMap = ({
   selectedTypes,
   onItemClick
 }: EnhancedUniversalMapProps) => {
+  const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
   const { filteredMappableItems } = useItemFiltering({ items, selectedTypes });
-  const { handleMarkerClick, handleMarkerDoubleClick } = useMapClickHandlers({ onItemClick });
   const { mapRef, mapInstance } = useMapInitializer({ mapboxToken, isLoadingApiKey });
 
   console.log('🗺️ EnhancedUniversalMap Analysis:', {
@@ -38,6 +39,16 @@ export const EnhancedUniversalMap = ({
       return acc;
     }, {} as Record<string, number>)
   });
+
+  // Handle marker click to show in sidebar
+  const handleMarkerClick = (item: UnifiedItem) => {
+    console.log('📍 Marker clicked:', item.title);
+    console.log('📍 Marker clicked:', item.title, 'ID:', item.id);
+    setSelectedItem(item);
+    if (onItemClick) {
+      onItemClick(item);
+    }
+  };
 
   // Use the map markers hook with click handler
   useMapMarkers({
@@ -77,6 +88,10 @@ export const EnhancedUniversalMap = ({
           filteredItems={filteredMappableItems}
           selectedTypes={selectedTypes}
           isMapReady={!!mapInstance}
+        />
+        <MapItemSidebar 
+          selectedItem={selectedItem}
+          onClose={() => setSelectedItem(null)}
         />
       </div>
     </div>

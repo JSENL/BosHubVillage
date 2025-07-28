@@ -49,6 +49,8 @@ export const useMapMarkers = ({
       // Add click handler
       el.addEventListener('click', (e) => {
         e.stopPropagation();
+        console.log('📍 Marker clicked:', item.title);
+        console.log('📍 Marker clicked:', item.title, 'ID:', item.id);
         if (onMarkerClick) {
           onMarkerClick(item);
         }
@@ -62,42 +64,9 @@ export const useMapMarkers = ({
         }
       });
 
-      // Create popup content with database information
-      const popupHTML = `
-        <div style="padding: 10px; max-width: 250px;">
-          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${item.title}</h3>
-          <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280;">${item.description || 'No description available'}</p>
-          ${item.type ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>Type:</strong> ${item.type}</div>` : ''}
-          ${item.category ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>Category:</strong> ${item.category}</div>` : ''}
-          ${item.address ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📍 Address:</strong> ${item.address}</div>` : ''}
-          ${item.location ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📍 Location:</strong> ${item.location}</div>` : ''}
-          ${item.date ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📅 Date:</strong> ${new Date(item.date).toLocaleDateString()}</div>` : ''}
-          ${item.start_time ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>🕒 Time:</strong> ${item.start_time}${item.end_time ? ` - ${item.end_time}` : ''}</div>` : ''}
-          ${item.price && item.price > 0 ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>💰 Price:</strong> $${item.price}</div>` : ''}
-          ${item.villages ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>🏘️ Villages:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</div>` : ''}
-          ${item.neighborhoods ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>🏠 Neighborhoods:</strong> ${item.neighborhoods}</div>` : ''}
-          <div style="margin: 8px 0 0 0;">
-            <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
-              background: linear-gradient(to right, #8b5cf6, #3b82f6);
-              color: white;
-              border: none;
-              padding: 6px 12px;
-              border-radius: 6px;
-              font-size: 12px;
-              cursor: pointer;
-              font-weight: 500;
-            ">View Details</button>
-          </div>
-        </div>
-      `;
-
-      // Create marker with popup
+      // Create marker without popup for now (sidebar will handle display)
       const marker = new mapboxgl.Marker(el)
         .setLngLat([coords.lng, coords.lat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 })
-            .setHTML(popupHTML)
-        )
         .addTo(map);
 
       markersRef.current.push(marker);
