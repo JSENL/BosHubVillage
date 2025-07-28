@@ -8,6 +8,7 @@ import { useItemFiltering } from '@/components/map/MapItemFiltering';
 import { useMapInitializer } from '@/components/map/MapInitializer';
 import { MapItemSidebar } from '@/components/MapItemSidebar';
 import { DirectionsModal } from '@/components/map/DirectionsModal';
+import { ClearDirectionsButton } from '@/components/map/ClearDirectionsButton';
 import { useDirections } from '@/hooks/useDirections';
 import { UnifiedItem } from '@/types/unifiedItem';
 
@@ -29,7 +30,7 @@ export const EnhancedUniversalMap = ({
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
   const { filteredMappableItems } = useItemFiltering({ items, selectedTypes });
   const { mapRef, mapInstance } = useMapInitializer({ mapboxToken, isLoadingApiKey });
-  const { getDirections, clearDirections } = useDirections(mapInstance);
+  const { getDirections, clearDirections, route } = useDirections(mapInstance);
 
   console.log('🗺️ EnhancedUniversalMap Analysis:', {
     totalItems: items.length,
@@ -102,6 +103,10 @@ export const EnhancedUniversalMap = ({
     <div className="space-y-4">      
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
         <div ref={mapRef} className="w-full h-full" />
+        <ClearDirectionsButton 
+          onClear={clearDirections}
+          isVisible={!!route}
+        />
         <MapOverlays 
           itemCount={filteredMappableItems.length}
           isEmpty={filteredMappableItems.length === 0 && !isLoadingApiKey}
