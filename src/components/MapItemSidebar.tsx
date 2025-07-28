@@ -35,48 +35,48 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
       {/* Desktop Sidebar - Right side */}
       <div className="hidden lg:block absolute top-4 right-4 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-2rem)] overflow-y-auto">
         <Card className="border-0 shadow-none">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-2">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge className={getTypeColor(selectedItem.type)}>
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge className={`${getTypeColor(selectedItem.type)} text-xs`}>
                     {selectedItem.type.replace('-', ' ')}
                   </Badge>
                 </div>
-                <CardTitle className="text-lg leading-tight">{selectedItem.title}</CardTitle>
+                <CardTitle className="text-base leading-tight">{selectedItem.title}</CardTitle>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="h-8 w-8 p-0 hover:bg-gray-100"
+                className="h-6 w-6 p-0 hover:bg-gray-100"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3 w-3" />
               </Button>
             </div>
           </CardHeader>
           
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3">
             {selectedItem.description && (
               <div>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-xs text-gray-600 leading-relaxed">
                   {selectedItem.description}
                 </p>
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {selectedItem.category && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Tag className="h-4 w-4 text-gray-500" />
+                <div className="flex items-center gap-2 text-xs">
+                  <Tag className="h-3 w-3 text-gray-500" />
                   <span className="font-medium">Category:</span>
                   <span className="text-gray-600">{selectedItem.category}</span>
                 </div>
               )}
 
               {(selectedItem.address || selectedItem.location) && (
-                <div className="flex items-start gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-gray-500 mt-0.5" />
+                <div className="flex items-start gap-2 text-xs">
+                  <MapPin className="h-3 w-3 text-gray-500 mt-0.5" />
                   <div>
                     <span className="font-medium">Location:</span>
                     <div className="text-gray-600">
@@ -87,8 +87,8 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
               )}
 
               {selectedItem.date && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar className="h-4 w-4 text-gray-500" />
+                <div className="flex items-center gap-2 text-xs">
+                  <Calendar className="h-3 w-3 text-gray-500" />
                   <span className="font-medium">Date:</span>
                   <span className="text-gray-600">
                     {new Date(selectedItem.date).toLocaleDateString()}
@@ -97,8 +97,8 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
               )}
 
               {(selectedItem.start_time || selectedItem.end_time) && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-gray-500" />
+                <div className="flex items-center gap-2 text-xs">
+                  <Clock className="h-3 w-3 text-gray-500" />
                   <span className="font-medium">Time:</span>
                   <span className="text-gray-600">
                     {selectedItem.start_time && selectedItem.end_time 
@@ -110,16 +110,16 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
               )}
 
               {selectedItem.price && selectedItem.price > 0 && (
-                <div className="flex items-center gap-2 text-sm">
-                  <DollarSign className="h-4 w-4 text-gray-500" />
+                <div className="flex items-center gap-2 text-xs">
+                  <DollarSign className="h-3 w-3 text-gray-500" />
                   <span className="font-medium">Price:</span>
                   <span className="text-gray-600">${selectedItem.price}</span>
                 </div>
               )}
 
               {selectedItem.villages && (
-                <div className="flex items-start gap-2 text-sm">
-                  <Building className="h-4 w-4 text-gray-500 mt-0.5" />
+                <div className="flex items-start gap-2 text-xs">
+                  <Building className="h-3 w-3 text-gray-500 mt-0.5" />
                   <div>
                     <span className="font-medium">Villages:</span>
                     <div className="text-gray-600">
@@ -133,8 +133,8 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
               )}
 
               {selectedItem.neighborhoods && (
-                <div className="flex items-start gap-2 text-sm">
-                  <Building className="h-4 w-4 text-gray-500 mt-0.5" />
+                <div className="flex items-start gap-2 text-xs">
+                  <Building className="h-3 w-3 text-gray-500 mt-0.5" />
                   <div>
                     <span className="font-medium">Neighborhoods:</span>
                     <div className="text-gray-600">{selectedItem.neighborhoods}</div>
@@ -143,8 +143,8 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
               )}
             </div>
 
-            <div className="pt-3 border-t">
-              <Button onClick={handleViewDetails} className="w-full">
+            <div className="pt-2 border-t">
+              <Button onClick={handleViewDetails} className="w-full text-xs" size="sm">
                 View Full Details
               </Button>
             </div>
@@ -156,25 +156,25 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg">
         {/* Collapsed Header */}
         <div 
-          className="flex items-center justify-between p-4 cursor-pointer"
+          className="flex items-center justify-between p-3 cursor-pointer"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <div className="flex items-center gap-3">
-            <Badge className={getTypeColor(selectedItem.type)} variant="secondary">
+          <div className="flex items-center gap-2">
+            <Badge className={`${getTypeColor(selectedItem.type)} text-xs`} variant="secondary">
               {selectedItem.type.replace('-', ' ')}
             </Badge>
             <div>
-              <h3 className="font-semibold text-sm truncate max-w-[200px]">
+              <h3 className="font-semibold text-xs truncate max-w-[180px]">
                 {selectedItem.title}
               </h3>
               {(selectedItem.address || selectedItem.location) && (
-                <p className="text-xs text-gray-500 truncate max-w-[200px]">
+                <p className="text-xs text-gray-500 truncate max-w-[180px]">
                   {selectedItem.address || selectedItem.location}
                 </p>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
@@ -182,34 +182,34 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
                 e.stopPropagation();
                 onClose();
               }}
-              className="h-8 w-8 p-0"
+              className="h-6 w-6 p-0"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3" />
             </Button>
             {isExpanded ? (
-              <ChevronDown className="h-5 w-5 text-gray-500" />
+              <ChevronDown className="h-4 w-4 text-gray-500" />
             ) : (
-              <ChevronUp className="h-5 w-5 text-gray-500" />
+              <ChevronUp className="h-4 w-4 text-gray-500" />
             )}
           </div>
         </div>
 
         {/* Expanded Content */}
         {isExpanded && (
-          <div className="px-4 pb-4 max-h-[60vh] overflow-y-auto">
-            <div className="space-y-3">
+          <div className="px-3 pb-3 max-h-[50vh] overflow-y-auto">
+            <div className="space-y-2">
               {selectedItem.description && (
                 <div>
-                  <p className="text-sm text-gray-600 leading-relaxed">
+                  <p className="text-xs text-gray-600 leading-relaxed">
                     {selectedItem.description}
                   </p>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 gap-2 text-sm">
+              <div className="grid grid-cols-1 gap-1 text-xs">
                 {selectedItem.category && (
                   <div className="flex items-center gap-2">
-                    <Tag className="h-4 w-4 text-gray-500" />
+                    <Tag className="h-3 w-3 text-gray-500" />
                     <span className="font-medium">Category:</span>
                     <span className="text-gray-600">{selectedItem.category}</span>
                   </div>
@@ -217,7 +217,7 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
 
                 {selectedItem.date && (
                   <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <Calendar className="h-3 w-3 text-gray-500" />
                     <span className="font-medium">Date:</span>
                     <span className="text-gray-600">
                       {new Date(selectedItem.date).toLocaleDateString()}
@@ -227,7 +227,7 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
 
                 {(selectedItem.start_time || selectedItem.end_time) && (
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
+                    <Clock className="h-3 w-3 text-gray-500" />
                     <span className="font-medium">Time:</span>
                     <span className="text-gray-600">
                       {selectedItem.start_time && selectedItem.end_time 
@@ -240,15 +240,15 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
 
                 {selectedItem.price && selectedItem.price > 0 && (
                   <div className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-gray-500" />
+                    <DollarSign className="h-3 w-3 text-gray-500" />
                     <span className="font-medium">Price:</span>
                     <span className="text-gray-600">${selectedItem.price}</span>
                   </div>
                 )}
               </div>
 
-              <div className="pt-3">
-                <Button onClick={handleViewDetails} className="w-full" size="sm">
+              <div className="pt-2">
+                <Button onClick={handleViewDetails} className="w-full text-xs" size="sm">
                   View Full Details
                 </Button>
               </div>
