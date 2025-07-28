@@ -1,12 +1,13 @@
+
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 
-interface UseMapboxInstanceProps {
+interface UseMapInitializerProps {
   mapboxToken: string | null;
   isLoadingApiKey: boolean;
 }
 
-export const useMapboxInstance = ({ mapboxToken, isLoadingApiKey }: UseMapboxInstanceProps) => {
+export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitializerProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
 
@@ -25,7 +26,7 @@ export const useMapboxInstance = ({ mapboxToken, isLoadingApiKey }: UseMapboxIns
 
     const map = new mapboxgl.Map({
       container: mapRef.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
+      style: 'mapbox://styles/mapbox/streets-v12', // Changed from light-v11 to streets-v12
       center: [-71.0589, 42.3601], // Boston center
       zoom: 12
     });
