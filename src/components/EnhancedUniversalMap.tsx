@@ -118,12 +118,6 @@ export const EnhancedUniversalMap = ({
           itemCount={filteredMappableItems.length}
           isEmpty={filteredMappableItems.length === 0 && !isLoadingApiKey}
         />
-        <MapDebugOverlay
-          totalItems={items.length}
-          filteredItems={filteredMappableItems}
-          selectedTypes={selectedTypes}
-          isMapReady={!!mapInstance}
-        />
         <MapItemSidebar 
           selectedItem={selectedItem}
           onClose={() => setSelectedItem(null)}
