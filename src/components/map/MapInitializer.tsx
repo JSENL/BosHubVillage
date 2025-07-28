@@ -31,6 +31,9 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
       zoom: 12
     });
 
+    // Disable double-click zoom to prevent interference with marker double-click
+    map.doubleClickZoom.disable();
+
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     map.on('load', () => {
