@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Navigation, ChevronUp, ChevronDown, X, Move } from 'lucide-react';
+import { Navigation, ChevronUp, ChevronDown, X, Move, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useRef, useCallback, useEffect } from 'react';
 
 interface TurnByTurnDirectionsProps {
@@ -13,10 +13,12 @@ interface TurnByTurnDirectionsProps {
 
 export const TurnByTurnDirections = ({ directions, route, isVisible, onClose }: TurnByTurnDirectionsProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [position, setPosition] = useState({ x: 16, y: 16 }); // bottom-left by default
+  const [position, setPosition] = useState({ x: 16, y: 16 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [currentStep, setCurrentStep] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!isVisible || (e.target instanceof Element && e.target.closest('button, input, select, textarea'))) {
@@ -78,6 +80,33 @@ export const TurnByTurnDirections = ({ directions, route, isVisible, onClose }: 
     };
   }, [handleMouseMove, handleMouseUp]);
 
+  // Navigation functions
+  const goToNextStep = () => {
+    if (currentStep < directions.length - 1) {
+      setCurrentStep(currentStep + 1);
+      scrollToStep(currentStep + 1);
+    }
+  };
+
+  const goToPrevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+      scrollToStep(currentStep - 1);
+    }
+  };
+
+  const scrollToStep = (stepIndex: number) => {
+    const stepElement = scrollContainerRef.current?.querySelector(`[data-step="${stepIndex}"]`);
+    if (stepElement) {
+      stepElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  // Reset current step when directions change
+  useEffect(() => {
+    setCurrentStep(0);
+  }, [directions]);
+
   if (!isVisible || !directions || directions.length === 0) {
     return null;
   }
@@ -133,27 +162,75 @@ export const TurnByTurnDirections = ({ directions, route, isVisible, onClose }: 
             </div>
           </div>
           
-          {/* Route Summary */}
-          <div className="flex gap-2 mt-1">
-            <Badge variant="secondary" className="text-xs">
-              {totalDistance} km
-            </Badge>
-            <Badge variant="secondary" className="text-xs">
-              {totalDuration} min
-            </Badge>
+          {/* Route Summary and Navigation */}
+          <div className="flex items-center justify-between mt-1">
+            <div className="flex gap-2">
+              <Badge variant="secondary" className="text-xs">
+                {totalDistance} km
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {totalDuration} min
+              </Badge>
+            </div>
+            
+            {/* Step Navigation */}
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goToPrevStep}
+                disabled={currentStep === 0}
+                className="h-6 w-6 p-0"
+              >
+                <ChevronLeft className="h-3 w-3" />
+              </Button>
+              <span className="text-xs text-gray-500 min-w-[3rem] text-center">
+                {currentStep + 1}/{directions.length}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goToNextStep}
+                disabled={currentStep === directions.length - 1}
+                className="h-6 w-6 p-0"
+              >
+                <ChevronRight className="h-3 w-3" />
+              </Button>
+            </div>
           </div>
         </CardHeader>
         
         {isExpanded && (
-          <CardContent className="px-3 py-2 max-h-64 overflow-y-auto">
-            <div className="space-y-2">
+          <CardContent className="px-3 py-2">
+            <div 
+              ref={scrollContainerRef}
+              className="max-h-64 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
+            >
               {directions.map((step, index) => (
-                <div key={index} className="flex gap-2 p-2 rounded-md bg-gray-50 border">
-                  <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                <div 
+                  key={index} 
+                  data-step={index}
+                  className={`flex gap-2 p-2 rounded-md border transition-all cursor-pointer ${
+                    index === currentStep 
+                      ? 'bg-blue-50 border-blue-200 shadow-sm' 
+                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                  }`}
+                  onClick={() => {
+                    setCurrentStep(index);
+                    scrollToStep(index);
+                  }}
+                >
+                  <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                    index === currentStep 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-gray-400 text-white'
+                  }`}>
                     {index + 1}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-800 leading-relaxed">
+                    <p className={`text-sm leading-relaxed ${
+                      index === currentStep ? 'text-blue-800 font-medium' : 'text-gray-800'
+                    }`}>
                       {step.maneuver?.instruction || 'Continue straight'}
                     </p>
                     {step.distance && (
