@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
-import { createMapboxMarker } from '@/utils/mapMarkerCreator';
+import { validateCoordinates, createPopupContent } from '@/utils/mapMarkerUtils';
 
 interface UseMapMarkersProps {
   map: mapboxgl.Map | null;
@@ -17,7 +17,8 @@ export const useMapMarkers = ({
   onMarkerClick,
   onMarkerDoubleClick
 }: UseMapMarkersProps) => {
-  const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const sourceIdRef = useRef('unified-items');
+  const layerIdRef = useRef('unified-items-layer');
 
   useEffect(() => {
     if (!map || !items || items.length === 0) {
@@ -25,70 +26,163 @@ export const useMapMarkers = ({
       return;
     }
 
-    console.log('🎯 Creating markers for items:', items.length);
+    console.log('🎯 Creating GeoJSON markers for items:', items.length);
 
-    // Clear existing markers
-    markersRef.current.forEach(marker => {
-      try {
-        marker.remove();
-      } catch (error) {
-        console.warn('Error removing marker:', error);
+    const sourceId = sourceIdRef.current;
+    const layerId = layerIdRef.current;
+
+    // Remove existing layer and source if they exist
+    if (map.getLayer(layerId)) {
+      map.removeLayer(layerId);
+    }
+    if (map.getSource(sourceId)) {
+      map.removeSource(sourceId);
+    }
+
+    // Create GeoJSON features from items
+    const features = items
+      .map(item => {
+        const coords = validateCoordinates(item);
+        if (!coords) return null;
+
+        return {
+          type: 'Feature' as const,
+          properties: {
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            type: item.type,
+            address: item.address || '',
+            category: item.category || '',
+            date: item.date || '',
+            price: item.price || 0,
+            originalData: JSON.stringify(item.originalData || {})
+          },
+          geometry: {
+            type: 'Point' as const,
+            coordinates: [coords.lng, coords.lat]
+          }
+        };
+      })
+      .filter(feature => feature !== null);
+
+    console.log(`✅ Created ${features.length} valid GeoJSON features`);
+
+    // Add source
+    map.addSource(sourceId, {
+      type: 'geojson',
+      generateId: true,
+      data: {
+        type: 'FeatureCollection',
+        features: features
       }
     });
-    markersRef.current = [];
 
-    // Create new markers
-    const newMarkers: mapboxgl.Marker[] = [];
-    let validMarkersCount = 0;
-    let invalidCoordinatesCount = 0;
-    
-    items.forEach((item) => {
-      try {
-        const marker = createMapboxMarker(item, map, onMarkerClick, onMarkerDoubleClick);
-        if (marker) {
-          newMarkers.push(marker);
-          validMarkersCount++;
-          console.log(`✅ Created marker ${validMarkersCount}: "${item.title}" (${item.type})`);
-        } else {
-          invalidCoordinatesCount++;
-        }
-      } catch (error) {
-        console.error(`❌ Error creating marker for ${item.type} "${item.title}":`, error);
-        invalidCoordinatesCount++;
+    // Add circle layer
+    map.addLayer({
+      id: layerId,
+      type: 'circle',
+      source: sourceId,
+      paint: {
+        'circle-radius': 10,
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-color': [
+          'case',
+          ['==', ['get', 'type'], 'event'], '#8b5cf6',
+          ['==', ['get', 'type'], 'news'], '#3b82f6',
+          ['==', ['get', 'type'], 'business'], '#10b981',
+          ['==', ['get', 'type'], 'local-service'], '#f59e0b',
+          '#6b7280'
+        ]
       }
     });
 
-    markersRef.current = newMarkers;
-    
-    console.log(`🎯 Marker creation summary:`, {
-      totalItems: items.length,
-      validMarkers: validMarkersCount,
-      invalidCoordinates: invalidCoordinatesCount,
-      successRate: `${((validMarkersCount / items.length) * 100).toFixed(1)}%`
-    });
+    // Click interaction for popups
+    const clickHandler = (e: any) => {
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      const properties = e.features[0].properties;
+      
+      // Reconstruct item from properties
+      const item: UnifiedItem = {
+        id: properties.id,
+        title: properties.title,
+        description: properties.description,
+        type: properties.type,
+        latitude: coordinates[1],
+        longitude: coordinates[0],
+        address: properties.address,
+        category: properties.category,
+        date: properties.date,
+        price: properties.price,
+        originalData: properties.originalData ? JSON.parse(properties.originalData) : null
+      };
+
+      // Create popup
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(createPopupContent(item))
+        .addTo(map);
+
+      // Call click handler if provided
+      if (onMarkerClick) {
+        onMarkerClick(item);
+      }
+    };
+
+    // Double-click interaction for toasts
+    const doubleClickHandler = (e: any) => {
+      e.preventDefault();
+      const properties = e.features[0].properties;
+      const coordinates = e.features[0].geometry.coordinates;
+      
+      const item: UnifiedItem = {
+        id: properties.id,
+        title: properties.title,
+        description: properties.description,
+        type: properties.type,
+        latitude: coordinates[1],
+        longitude: coordinates[0],
+        address: properties.address,
+        category: properties.category,
+        date: properties.date,
+        price: properties.price,
+        originalData: properties.originalData ? JSON.parse(properties.originalData) : null
+      };
+
+      if (onMarkerDoubleClick) {
+        onMarkerDoubleClick(item);
+      }
+    };
+
+    // Add event listeners
+    map.on('click', layerId, clickHandler);
+    map.on('dblclick', layerId, doubleClickHandler);
+
+    // Cursor interactions
+    const mouseEnterHandler = () => {
+      map.getCanvas().style.cursor = 'pointer';
+    };
+
+    const mouseLeaveHandler = () => {
+      map.getCanvas().style.cursor = '';
+    };
+
+    map.on('mouseenter', layerId, mouseEnterHandler);
+    map.on('mouseleave', layerId, mouseLeaveHandler);
 
     // Fit map bounds if we have valid markers
-    if (newMarkers.length > 0) {
+    if (features.length > 0) {
       try {
+        const coordinates = features.map(f => f.geometry.coordinates);
         const bounds = new mapboxgl.LngLatBounds();
-        let boundsCount = 0;
+        coordinates.forEach(coord => bounds.extend(coord as [number, number]));
         
-        items.forEach(item => {
-          const lat = Number(item.latitude);
-          const lng = Number(item.longitude);
-          if (lat && lng && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
-            bounds.extend([lng, lat]);
-            boundsCount++;
-          }
+        map.fitBounds(bounds, {
+          padding: { top: 60, bottom: 60, left: 60, right: 60 },
+          maxZoom: 14
         });
-        
-        if (boundsCount > 0) {
-          map.fitBounds(bounds, { 
-            padding: { top: 60, bottom: 60, left: 60, right: 60 },
-            maxZoom: 14
-          });
-          console.log(`🗺️ Map bounds fitted to ${boundsCount} valid coordinates`);
-        }
+        console.log(`🗺️ Map bounds fitted to ${coordinates.length} valid coordinates`);
       } catch (error) {
         console.warn('Error fitting map bounds:', error);
       }
@@ -96,16 +190,17 @@ export const useMapMarkers = ({
 
     // Cleanup function
     return () => {
-      markersRef.current.forEach(marker => {
-        try {
-          marker.remove();
-        } catch (error) {
-          console.warn('Error cleaning up marker:', error);
-        }
-      });
-      markersRef.current = [];
+      map.off('click', layerId, clickHandler);
+      map.off('dblclick', layerId, doubleClickHandler);
+      map.off('mouseenter', layerId, mouseEnterHandler);
+      map.off('mouseleave', layerId, mouseLeaveHandler);
+      
+      if (map.getLayer(layerId)) {
+        map.removeLayer(layerId);
+      }
+      if (map.getSource(sourceId)) {
+        map.removeSource(sourceId);
+      }
     };
   }, [map, items, onMarkerClick, onMarkerDoubleClick]);
-
-  return markersRef.current;
 };
