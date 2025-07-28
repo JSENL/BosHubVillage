@@ -17,8 +17,7 @@ export const useMapMarkers = ({
   onMarkerClick,
   onMarkerDoubleClick
 }: UseMapMarkersProps) => {
-  const sourceIdRef = useRef('unified-items');
-  const layerIdRef = useRef('unified-items-layer');
+  const markersRef = useRef<mapboxgl.Marker[]>([]);
 
   useEffect(() => {
     if (!map || !items || items.length === 0) {
@@ -26,163 +25,106 @@ export const useMapMarkers = ({
       return;
     }
 
-    console.log('🎯 Creating GeoJSON markers for items:', items.length);
+    console.log('🎯 Creating DOM markers for items:', items.length);
 
-    const sourceId = sourceIdRef.current;
-    const layerId = layerIdRef.current;
+    // Clear existing markers
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
 
-    // Remove existing layer and source if they exist
-    if (map.getLayer(layerId)) {
-      map.removeLayer(layerId);
-    }
-    if (map.getSource(sourceId)) {
-      map.removeSource(sourceId);
-    }
+    // Create markers for each item
+    items.forEach(item => {
+      const coords = validateCoordinates(item);
+      if (!coords) return;
 
-    // Create GeoJSON features from items
-    const features = items
-      .map(item => {
-        const coords = validateCoordinates(item);
-        if (!coords) return null;
+      // Create marker element
+      const el = document.createElement('div');
+      el.className = 'marker';
+      el.style.backgroundImage = 'url(https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png)';
+      el.style.backgroundSize = 'cover';
+      el.style.width = '50px';
+      el.style.height = '50px';
+      el.style.borderRadius = '50%';
+      el.style.cursor = 'pointer';
 
-        return {
-          type: 'Feature' as const,
-          properties: {
-            id: item.id,
-            title: item.title,
-            description: item.description,
-            type: item.type,
-            address: item.address || '',
-            category: item.category || '',
-            date: item.date || '',
-            price: item.price || 0,
-            originalData: JSON.stringify(item.originalData || {})
-          },
-          geometry: {
-            type: 'Point' as const,
-            coordinates: [coords.lng, coords.lat]
-          }
-        };
-      })
-      .filter(feature => feature !== null);
+      // Add click handler
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (onMarkerClick) {
+          onMarkerClick(item);
+        }
+      });
 
-    console.log(`✅ Created ${features.length} valid GeoJSON features`);
+      // Add double-click handler
+      el.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        if (onMarkerDoubleClick) {
+          onMarkerDoubleClick(item);
+        }
+      });
 
-    // Add source
-    map.addSource(sourceId, {
-      type: 'geojson',
-      generateId: true,
-      data: {
-        type: 'FeatureCollection',
-        features: features
-      }
-    });
+      // Create popup content with database information
+      const popupHTML = `
+        <div style="padding: 10px; max-width: 250px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${item.title}</h3>
+          <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280;">${item.description || 'No description available'}</p>
+          ${item.type ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>Type:</strong> ${item.type}</div>` : ''}
+          ${item.category ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>Category:</strong> ${item.category}</div>` : ''}
+          ${item.address ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📍 Address:</strong> ${item.address}</div>` : ''}
+          ${item.location ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📍 Location:</strong> ${item.location}</div>` : ''}
+          ${item.date ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>📅 Date:</strong> ${new Date(item.date).toLocaleDateString()}</div>` : ''}
+          ${item.start_time ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>🕒 Time:</strong> ${item.start_time}${item.end_time ? ` - ${item.end_time}` : ''}</div>` : ''}
+          ${item.price && item.price > 0 ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>💰 Price:</strong> $${item.price}</div>` : ''}
+          ${item.villages ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>🏘️ Villages:</strong> ${Array.isArray(item.villages) ? item.villages.join(', ') : item.villages}</div>` : ''}
+          ${item.neighborhoods ? `<div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;"><strong>🏠 Neighborhoods:</strong> ${item.neighborhoods}</div>` : ''}
+          <div style="margin: 8px 0 0 0;">
+            <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
+              background: linear-gradient(to right, #8b5cf6, #3b82f6);
+              color: white;
+              border: none;
+              padding: 6px 12px;
+              border-radius: 6px;
+              font-size: 12px;
+              cursor: pointer;
+              font-weight: 500;
+            ">View Details</button>
+          </div>
+        </div>
+      `;
 
-    // Add circle layer
-    map.addLayer({
-      id: layerId,
-      type: 'circle',
-      source: sourceId,
-      paint: {
-        'circle-radius': 10,
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#ffffff',
-        'circle-color': [
-          'case',
-          ['==', ['get', 'type'], 'event'], '#8b5cf6',
-          ['==', ['get', 'type'], 'news'], '#3b82f6',
-          ['==', ['get', 'type'], 'business'], '#10b981',
-          ['==', ['get', 'type'], 'local-service'], '#f59e0b',
-          '#6b7280'
-        ]
-      }
-    });
-
-    // Click interaction for popups
-    const clickHandler = (e: any) => {
-      const coordinates = e.features[0].geometry.coordinates.slice();
-      const properties = e.features[0].properties;
-      
-      // Reconstruct item from properties
-      const item: UnifiedItem = {
-        id: properties.id,
-        title: properties.title,
-        description: properties.description,
-        type: properties.type,
-        latitude: coordinates[1],
-        longitude: coordinates[0],
-        address: properties.address,
-        category: properties.category,
-        date: properties.date,
-        price: properties.price,
-        originalData: properties.originalData ? JSON.parse(properties.originalData) : null
-      };
-
-      // Create popup
-      new mapboxgl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(createPopupContent(item))
+      // Create marker with popup
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat([coords.lng, coords.lat])
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 })
+            .setHTML(popupHTML)
+        )
         .addTo(map);
 
-      // Call click handler if provided
-      if (onMarkerClick) {
-        onMarkerClick(item);
-      }
-    };
+      markersRef.current.push(marker);
+    });
 
-    // Double-click interaction for toasts
-    const doubleClickHandler = (e: any) => {
-      e.preventDefault();
-      const properties = e.features[0].properties;
-      const coordinates = e.features[0].geometry.coordinates;
-      
-      const item: UnifiedItem = {
-        id: properties.id,
-        title: properties.title,
-        description: properties.description,
-        type: properties.type,
-        latitude: coordinates[1],
-        longitude: coordinates[0],
-        address: properties.address,
-        category: properties.category,
-        date: properties.date,
-        price: properties.price,
-        originalData: properties.originalData ? JSON.parse(properties.originalData) : null
-      };
-
-      if (onMarkerDoubleClick) {
-        onMarkerDoubleClick(item);
-      }
-    };
-
-    // Add event listeners
-    map.on('click', layerId, clickHandler);
-    map.on('dblclick', layerId, doubleClickHandler);
-
-    // Cursor interactions
-    const mouseEnterHandler = () => {
-      map.getCanvas().style.cursor = 'pointer';
-    };
-
-    const mouseLeaveHandler = () => {
-      map.getCanvas().style.cursor = '';
-    };
-
-    map.on('mouseenter', layerId, mouseEnterHandler);
-    map.on('mouseleave', layerId, mouseLeaveHandler);
+    console.log(`✅ Created ${markersRef.current.length} DOM markers`);
 
     // Fit map bounds if we have valid markers
-    if (features.length > 0) {
+    if (markersRef.current.length > 0) {
       try {
-        const coordinates = features.map(f => f.geometry.coordinates);
-        const bounds = new mapboxgl.LngLatBounds();
-        coordinates.forEach(coord => bounds.extend(coord as [number, number]));
+        const coordinates = items
+          .map(item => {
+            const coords = validateCoordinates(item);
+            return coords ? [coords.lng, coords.lat] : null;
+          })
+          .filter(coord => coord !== null) as [number, number][];
         
-        map.fitBounds(bounds, {
-          padding: { top: 60, bottom: 60, left: 60, right: 60 },
-          maxZoom: 14
-        });
-        console.log(`🗺️ Map bounds fitted to ${coordinates.length} valid coordinates`);
+        if (coordinates.length > 0) {
+          const bounds = new mapboxgl.LngLatBounds();
+          coordinates.forEach(coord => bounds.extend(coord));
+          
+          map.fitBounds(bounds, {
+            padding: { top: 60, bottom: 60, left: 60, right: 60 },
+            maxZoom: 14
+          });
+          console.log(`🗺️ Map bounds fitted to ${coordinates.length} valid coordinates`);
+        }
       } catch (error) {
         console.warn('Error fitting map bounds:', error);
       }
@@ -190,17 +132,8 @@ export const useMapMarkers = ({
 
     // Cleanup function
     return () => {
-      map.off('click', layerId, clickHandler);
-      map.off('dblclick', layerId, doubleClickHandler);
-      map.off('mouseenter', layerId, mouseEnterHandler);
-      map.off('mouseleave', layerId, mouseLeaveHandler);
-      
-      if (map.getLayer(layerId)) {
-        map.removeLayer(layerId);
-      }
-      if (map.getSource(sourceId)) {
-        map.removeSource(sourceId);
-      }
+      markersRef.current.forEach(marker => marker.remove());
+      markersRef.current = [];
     };
   }, [map, items, onMarkerClick, onMarkerDoubleClick]);
 };
