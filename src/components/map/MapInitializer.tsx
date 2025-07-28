@@ -26,15 +26,25 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
 
     const map = new mapboxgl.Map({
       container: mapRef.current,
-      style: 'mapbox://styles/mapbox/streets-v12', // Changed from light-v11 to streets-v12
+      style: 'mapbox://styles/mapbox/streets-v12',
       center: [-71.0589, 42.3601], // Boston center
-      zoom: 12
+      zoom: 12,
+      scrollZoom: true, // Enable scroll zoom
+      doubleClickZoom: false, // Disable double-click zoom to prevent interference
+      touchZoomRotate: true, // Enable touch zoom on mobile
+      dragPan: true, // Enable panning
+      keyboard: true // Enable keyboard navigation
     });
 
-    // Disable double-click zoom to prevent interference with marker double-click
-    map.doubleClickZoom.disable();
+    // Add navigation controls (zoom in/out, compass)
+    map.addControl(new mapboxgl.NavigationControl({
+      showCompass: true,
+      showZoom: true,
+      visualizePitch: true
+    }), 'top-right');
 
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    // Add fullscreen control
+    map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
 
     map.on('load', () => {
       console.log('✅ Mapbox map loaded successfully');

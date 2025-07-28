@@ -18,6 +18,7 @@ export const useMapMarkers = ({
   onMarkerDoubleClick
 }: UseMapMarkersProps) => {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const hasFitBoundsRef = useRef(false); // Track if we've already fit bounds initially
 
   useEffect(() => {
     if (!map || !items || items.length === 0) {
@@ -96,8 +97,8 @@ export const useMapMarkers = ({
 
     console.log(`✅ Created ${markersRef.current.length} DOM markers`);
 
-    // Fit map bounds if we have valid markers
-    if (markersRef.current.length > 0) {
+    // Only fit map bounds on initial load, not when user has already interacted with the map
+    if (markersRef.current.length > 0 && !hasFitBoundsRef.current) {
       try {
         const coordinates = items
           .map(item => {
@@ -114,11 +115,15 @@ export const useMapMarkers = ({
             padding: { top: 60, bottom: 60, left: 60, right: 60 },
             maxZoom: 14
           });
-          console.log(`🗺️ Map bounds fitted to ${coordinates.length} valid coordinates`);
+          
+          hasFitBoundsRef.current = true; // Mark that we've fit bounds initially
+          console.log(`🗺️ Map bounds fitted to ${coordinates.length} valid coordinates (initial load)`);
         }
       } catch (error) {
         console.warn('Error fitting map bounds:', error);
       }
+    } else if (markersRef.current.length > 0) {
+      console.log(`🗺️ Skipping fitBounds - user has control of zoom level`);
     }
 
     // Cleanup function
