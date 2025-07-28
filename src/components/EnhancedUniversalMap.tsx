@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMapLoader } from '@/hooks/useMapLoader';
 import { useMapMarkers } from '@/hooks/useMapMarkers';
 import { MapOverlays } from '@/components/map/MapOverlays';
@@ -7,6 +7,8 @@ import { MapDebugOverlay } from '@/components/map/MapDebugOverlay';
 import { useItemFiltering } from '@/components/map/MapItemFiltering';
 import { useMapInitializer } from '@/components/map/MapInitializer';
 import { MapItemSidebar } from '@/components/MapItemSidebar';
+import { DirectionsModal } from '@/components/map/DirectionsModal';
+import { useDirections } from '@/hooks/useDirections';
 import { UnifiedItem } from '@/types/unifiedItem';
 
 interface EnhancedUniversalMapProps {
@@ -23,9 +25,11 @@ export const EnhancedUniversalMap = ({
   onItemClick
 }: EnhancedUniversalMapProps) => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
+  const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
   const { filteredMappableItems } = useItemFiltering({ items, selectedTypes });
   const { mapRef, mapInstance } = useMapInitializer({ mapboxToken, isLoadingApiKey });
+  const { getDirections, clearDirections } = useDirections(mapInstance);
 
   console.log('🗺️ EnhancedUniversalMap Analysis:', {
     totalItems: items.length,
@@ -49,6 +53,25 @@ export const EnhancedUniversalMap = ({
       onItemClick(item);
     }
   };
+
+  // Handle directions request
+  const handleGetDirections = (startLocation: string, transportMode: string, item: UnifiedItem) => {
+    getDirections(startLocation, item, transportMode);
+  };
+
+  // Listen for popup directions button clicks
+  useEffect(() => {
+    const handleDirectionsEvent = (event: CustomEvent) => {
+      const { item } = event.detail;
+      setDirectionsItem(item);
+    };
+
+    window.addEventListener('openDirections', handleDirectionsEvent as EventListener);
+    
+    return () => {
+      window.removeEventListener('openDirections', handleDirectionsEvent as EventListener);
+    };
+  }, []);
 
   // Use the map markers hook with click handler
   useMapMarkers({
@@ -92,7 +115,19 @@ export const EnhancedUniversalMap = ({
         <MapItemSidebar 
           selectedItem={selectedItem}
           onClose={() => setSelectedItem(null)}
+          onGetDirections={handleGetDirections}
         />
+        {directionsItem && (
+          <DirectionsModal 
+            item={directionsItem}
+            open={!!directionsItem}
+            onOpenChange={(open) => !open && setDirectionsItem(null)}
+            onGetDirections={(start, mode) => {
+              handleGetDirections(start, mode, directionsItem);
+              setDirectionsItem(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );

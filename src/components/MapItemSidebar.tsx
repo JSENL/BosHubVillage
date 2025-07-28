@@ -4,13 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { X, MapPin, Calendar, Clock, DollarSign, Building, Tag, ChevronUp, ChevronDown } from 'lucide-react';
+import { DirectionsModal } from './map/DirectionsModal';
 
 interface MapItemSidebarProps {
   selectedItem: UnifiedItem | null;
   onClose: () => void;
+  onGetDirections?: (startLocation: string, transportMode: string, item: UnifiedItem) => void;
 }
 
-export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) => {
+export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapItemSidebarProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
   
   if (!selectedItem) return null;
@@ -143,7 +145,13 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
               )}
             </div>
 
-            <div className="pt-2 border-t">
+            <div className="pt-2 border-t space-y-2">
+              {onGetDirections && selectedItem.latitude && selectedItem.longitude && (
+                <DirectionsModal 
+                  item={selectedItem}
+                  onGetDirections={(start, mode) => onGetDirections(start, mode, selectedItem)}
+                />
+              )}
               <Button onClick={handleViewDetails} className="w-full text-xs" size="sm">
                 View Full Details
               </Button>
@@ -247,7 +255,13 @@ export const MapItemSidebar = ({ selectedItem, onClose }: MapItemSidebarProps) =
                 )}
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
+                {onGetDirections && selectedItem.latitude && selectedItem.longitude && (
+                  <DirectionsModal 
+                    item={selectedItem}
+                    onGetDirections={(start, mode) => onGetDirections(start, mode, selectedItem)}
+                  />
+                )}
                 <Button onClick={handleViewDetails} className="w-full text-xs" size="sm">
                   View Full Details
                 </Button>

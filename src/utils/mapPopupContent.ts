@@ -37,7 +37,7 @@ export const createPopupContent = (item: UnifiedItem): string => {
         ${item.price !== undefined ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">💰</span> ${item.price === 0 ? 'FREE' : `$${item.price}`}</p>` : ''}
       </div>
       
-      <div style="margin-top: 12px; display: flex; gap: 8px;">
+      <div style="margin-top: 12px; display: flex; gap: 6px;">
         <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
           background: linear-gradient(to right, #8b5cf6, #3b82f6);
           color: white;
@@ -49,6 +49,19 @@ export const createPopupContent = (item: UnifiedItem): string => {
           font-weight: 500;
           flex: 1;
         ">View Details</button>
+        ${item.latitude && item.longitude ? `
+        <button onclick="window.dispatchEvent(new CustomEvent('openDirections', { detail: { item: ${JSON.stringify(item).replace(/"/g, '&quot;')} } }))" style="
+          background: #10b981;
+          color: white;
+          border: none;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          cursor: pointer;
+          font-weight: 500;
+          white-space: nowrap;
+        ">📍 Directions</button>
+        ` : ''}
       </div>
       
       <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
