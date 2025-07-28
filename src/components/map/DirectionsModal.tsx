@@ -24,7 +24,14 @@ export const DirectionsModal = ({ item, onGetDirections, open, onOpenChange }: D
     if (!startLocation.trim()) return;
     
     onGetDirections(startLocation, transportMode);
-    if (onOpenChange) onOpenChange(false);
+    
+    // Always close the modal after getting directions
+    if (onOpenChange) {
+      onOpenChange(false);
+    } else {
+      setInternalOpen(false);
+    }
+    
     setStartLocation('');
   };
 
