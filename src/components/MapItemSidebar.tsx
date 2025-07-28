@@ -20,7 +20,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (e.target instanceof Element && e.target.closest('button, input, select, textarea')) {
+    if (!selectedItem || (e.target instanceof Element && e.target.closest('button, input, select, textarea'))) {
       return; // Don't start drag if clicking on interactive elements
     }
     
@@ -95,7 +95,10 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
     window.location.href = `/${path}/${selectedItem.id}`;
   };
 
-  if (!selectedItem) return null;
+  // Don't render anything if no item is selected
+  if (!selectedItem) {
+    return null;
+  }
 
   
 
