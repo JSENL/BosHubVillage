@@ -9,6 +9,7 @@ import { useMapInitializer } from '@/components/map/MapInitializer';
 import { MapItemSidebar } from '@/components/MapItemSidebar';
 import { DirectionsModal } from '@/components/map/DirectionsModal';
 import { ClearDirectionsButton } from '@/components/map/ClearDirectionsButton';
+import { TurnByTurnDirections } from '@/components/map/TurnByTurnDirections';
 import { useDirections } from '@/hooks/useDirections';
 import { UnifiedItem } from '@/types/unifiedItem';
 
@@ -30,7 +31,7 @@ export const EnhancedUniversalMap = ({
   const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
   const { filteredMappableItems } = useItemFiltering({ items, selectedTypes });
   const { mapRef, mapInstance } = useMapInitializer({ mapboxToken, isLoadingApiKey });
-  const { getDirections, clearDirections, route } = useDirections(mapInstance);
+  const { getDirections, clearDirections, route, directions } = useDirections(mapInstance);
 
   console.log('🗺️ EnhancedUniversalMap Analysis:', {
     totalItems: items.length,
@@ -106,6 +107,12 @@ export const EnhancedUniversalMap = ({
         <ClearDirectionsButton 
           onClear={clearDirections}
           isVisible={!!route}
+        />
+        <TurnByTurnDirections
+          directions={directions || []}
+          route={route}
+          isVisible={!!(route && directions)}
+          onClose={clearDirections}
         />
         <MapOverlays 
           itemCount={filteredMappableItems.length}
