@@ -46,6 +46,27 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
     // Add fullscreen control
     map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
 
+    // Custom double-click zoom handler for empty map areas (not markers)
+    map.on('dblclick', (e) => {
+      // Check if the double-click happened on a marker element
+      const clickedElement = e.originalEvent.target as HTMLElement;
+      const isMarkerClick = clickedElement.closest('.marker');
+      
+      if (!isMarkerClick) {
+        // Only zoom if we didn't click on a marker
+        const currentZoom = map.getZoom();
+        const newZoom = Math.min(currentZoom + 1, map.getMaxZoom());
+        
+        map.easeTo({
+          center: e.lngLat,
+          zoom: newZoom,
+          duration: 300
+        });
+        
+        console.log(`🔍 Map double-clicked: zooming from ${currentZoom.toFixed(1)} to ${newZoom.toFixed(1)}`);
+      }
+    });
+
     map.on('load', () => {
       console.log('✅ Mapbox map loaded successfully');
     });
