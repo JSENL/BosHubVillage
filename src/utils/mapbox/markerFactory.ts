@@ -3,26 +3,16 @@ import { getMarkerColor } from '@/utils/mapMarkerUtils';
 
 export const createMarkerElement = (item: UnifiedItem): HTMLDivElement => {
   const markerElement = document.createElement('div');
-  markerElement.className = 'custom-marker';
+  markerElement.className = 'marker';
   markerElement.style.cssText = `
-    width: 24px;
-    height: 24px;
+    background-image: url('https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png');
+    background-size: cover;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background-color: ${getMarkerColor(item.type)};
-    border: 2px solid white;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    color: white;
-    text-transform: uppercase;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     transition: transform 0.2s ease;
   `;
-  
-  markerElement.textContent = item.type.charAt(0);
   
   // Add hover effect
   markerElement.addEventListener('mouseenter', () => {
