@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { X, MapPin, Calendar, Clock, DollarSign, Building, Tag, ChevronUp, ChevronDown } from 'lucide-react';
+import { X, MapPin, Calendar, Clock, DollarSign, Building, Tag, ChevronUp, ChevronDown, Move } from 'lucide-react';
 import { DirectionsModal } from './map/DirectionsModal';
 
 interface MapItemSidebarProps {
@@ -14,8 +14,73 @@ interface MapItemSidebarProps {
 
 export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapItemSidebarProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [position, setPosition] = useState({ x: 16, y: 16 }); // top-right by default
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  
   
   if (!selectedItem) return null;
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.target instanceof Element && e.target.closest('button, input, select, textarea')) {
+      return; // Don't start drag if clicking on interactive elements
+    }
+    
+    setIsDragging(true);
+    const rect = sidebarRef.current?.getBoundingClientRect();
+    if (rect) {
+      setDragStart({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+    }
+  }, []);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging || !sidebarRef.current) return;
+    
+    const mapContainer = sidebarRef.current.closest('.relative');
+    if (!mapContainer) return;
+    
+    const mapRect = mapContainer.getBoundingClientRect();
+    const sidebarRect = sidebarRef.current.getBoundingClientRect();
+    
+    const newX = Math.max(0, Math.min(
+      e.clientX - mapRect.left - dragStart.x,
+      mapRect.width - sidebarRect.width
+    ));
+    const newY = Math.max(0, Math.min(
+      e.clientY - mapRect.top - dragStart.y,
+      mapRect.height - sidebarRect.height
+    ));
+    
+    setPosition({ x: newX, y: newY });
+  }, [isDragging, dragStart]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  // Add event listeners for drag
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [handleMouseMove, handleMouseUp]);
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -34,16 +99,28 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
 
   return (
     <>
-      {/* Desktop Sidebar - Right side */}
-      <div className="hidden lg:block absolute top-4 right-4 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-2rem)] overflow-y-auto">
+      {/* Desktop Sidebar - Draggable */}
+      <div 
+        ref={sidebarRef}
+        className={`hidden lg:block absolute w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-2rem)] overflow-y-auto ${isDragging ? 'cursor-grabbing' : 'cursor-default'}`}
+        style={{ 
+          left: position.x, 
+          top: position.y,
+          userSelect: isDragging ? 'none' : 'auto'
+        }}
+      >
         <Card className="border-0 shadow-none">
-          <CardHeader className="pb-2">
+          <CardHeader 
+            className="pb-2 cursor-grab active:cursor-grabbing"
+            onMouseDown={handleMouseDown}
+          >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <Badge className={`${getTypeColor(selectedItem.type)} text-xs`}>
                     {selectedItem.type.replace('-', ' ')}
                   </Badge>
+                  <Move className="h-3 w-3 text-gray-400" />
                 </div>
                 <CardTitle className="text-base leading-tight">{selectedItem.title}</CardTitle>
               </div>
