@@ -6,7 +6,7 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { EventsSidebar } from './map/EventsSidebar';
 import { useEventHighlight } from '@/hooks/useEventHighlight';
 import { useMapLoader } from '@/hooks/useMapLoader';
-import { useMapboxMap } from '@/hooks/useMapboxMap';
+import { useMapboxInstance } from '@/hooks/useMapboxInstance';
 import { useMapMarkers } from '@/hooks/useMapMarkers';
 
 interface EventsMapProps {
@@ -49,7 +49,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   }, [filteredEvents]);
 
   // Initialize Mapbox map
-  const { mapRef, mapInstance } = useMapboxMap({ 
+  const { mapRef, mapInstance } = useMapboxInstance({ 
     mapboxToken, 
     isLoadingApiKey 
   });

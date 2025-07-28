@@ -1,24 +1,24 @@
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
+import { validateCoordinates } from '@/utils/mapMarkerUtils';
 import { createMarkerElement, addMarkerEventListeners } from '@/utils/mapbox/markerFactory';
 import { createPopup } from '@/utils/mapbox/popupFactory';
-import { validateCoordinates } from '@/utils/mapMarkerUtils';
 import { fitMapToItems } from '@/utils/mapbox/mapUtils';
 
-interface UseMapMarkersProps {
+interface MapMarkersProps {
   map: mapboxgl.Map | null;
   items: UnifiedItem[];
   onMarkerClick?: (item: UnifiedItem) => void;
   onMarkerDoubleClick?: (item: UnifiedItem) => void;
 }
 
-export const useMapMarkers = ({
+export const MapMarkers = ({
   map,
   items,
   onMarkerClick,
   onMarkerDoubleClick
-}: UseMapMarkersProps) => {
+}: MapMarkersProps) => {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
 
   useEffect(() => {
@@ -80,4 +80,6 @@ export const useMapMarkers = ({
       markersRef.current = [];
     };
   }, [map, items, onMarkerClick, onMarkerDoubleClick]);
+
+  return null; // This component doesn't render anything
 };
