@@ -18,9 +18,6 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const sidebarRef = useRef<HTMLDivElement>(null);
-  
-  
-  if (!selectedItem) return null;
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.target instanceof Element && e.target.closest('button, input, select, textarea')) {
@@ -35,10 +32,10 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
         y: e.clientY - rect.top
       });
     }
-  }, []);
+  }, [selectedItem]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging || !sidebarRef.current) return;
+    if (!isDragging || !sidebarRef.current || !selectedItem) return;
     
     const mapContainer = sidebarRef.current.closest('.relative');
     if (!mapContainer) return;
@@ -56,7 +53,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
     ));
     
     setPosition({ x: newX, y: newY });
-  }, [isDragging, dragStart]);
+  }, [isDragging, dragStart, selectedItem]);
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
@@ -64,7 +61,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
 
   // Add event listeners for drag
   useEffect(() => {
-    if (isDragging) {
+    if (isDragging && selectedItem) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
       return () => {
@@ -72,7 +69,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
         document.removeEventListener('mouseup', handleMouseUp);
       };
     }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handleMouseMove, handleMouseUp, selectedItem]);
 
   // Clean up on unmount
   useEffect(() => {
@@ -93,9 +90,14 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
   };
 
   const handleViewDetails = () => {
+    if (!selectedItem) return;
     const path = selectedItem.type === 'local-service' ? 'local-service' : selectedItem.type;
     window.location.href = `/${path}/${selectedItem.id}`;
   };
+
+  if (!selectedItem) return null;
+
+  
 
   return (
     <>
