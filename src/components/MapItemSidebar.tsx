@@ -14,7 +14,7 @@ interface MapItemSidebarProps {
 
 export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapItemSidebarProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [position, setPosition] = useState({ x: 16, y: 16 }); // top-right by default
+  const [position, setPosition] = useState({ x: 16, y: 16 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -104,66 +104,67 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
 
   return (
     <>
-      {/* Desktop Sidebar - Draggable */}
+      {/* Desktop Sidebar - Compact & Draggable */}
       <div 
         ref={sidebarRef}
-        className={`hidden lg:block absolute w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-2rem)] overflow-y-auto ${isDragging ? 'cursor-grabbing' : 'cursor-default'}`}
+        className={`hidden md:block absolute w-64 lg:w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-8rem)] overflow-y-auto ${isDragging ? 'cursor-grabbing' : 'cursor-default'}`}
         style={{ 
           left: position.x, 
           top: position.y,
-          userSelect: isDragging ? 'none' : 'auto'
+          userSelect: isDragging ? 'none' : 'auto',
+          maxWidth: 'calc(100vw - 2rem)'
         }}
       >
         <Card className="border-0 shadow-none">
           <CardHeader 
-            className="pb-2 cursor-grab active:cursor-grabbing"
+            className="pb-1 px-3 py-2 cursor-grab active:cursor-grabbing"
             onMouseDown={handleMouseDown}
           >
             <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <Badge className={`${getTypeColor(selectedItem.type)} text-xs`}>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1 mb-1">
+                  <Badge className={`${getTypeColor(selectedItem.type)} text-xs px-1 py-0`}>
                     {selectedItem.type.replace('-', ' ')}
                   </Badge>
-                  <Move className="h-3 w-3 text-gray-400" />
+                  <Move className="h-3 w-3 text-gray-400 flex-shrink-0" />
                 </div>
-                <CardTitle className="text-base leading-tight">{selectedItem.title}</CardTitle>
+                <CardTitle className="text-sm leading-tight truncate pr-2">{selectedItem.title}</CardTitle>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onClose}
-                className="h-6 w-6 p-0 hover:bg-gray-100"
+                className="h-5 w-5 p-0 hover:bg-gray-100 flex-shrink-0"
               >
                 <X className="h-3 w-3" />
               </Button>
             </div>
           </CardHeader>
           
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 px-3 py-2">
             {selectedItem.description && (
               <div>
-                <p className="text-xs text-gray-600 leading-relaxed">
+                <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
                   {selectedItem.description}
                 </p>
               </div>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-1">{/* Reduced spacing */}
               {selectedItem.category && (
-                <div className="flex items-center gap-2 text-xs">
-                  <Tag className="h-3 w-3 text-gray-500" />
+                <div className="flex items-center gap-1 text-xs">
+                  <Tag className="h-3 w-3 text-gray-500 flex-shrink-0" />
                   <span className="font-medium">Category:</span>
-                  <span className="text-gray-600">{selectedItem.category}</span>
+                  <span className="text-gray-600 truncate">{selectedItem.category}</span>
                 </div>
               )}
 
               {(selectedItem.address || selectedItem.location) && (
-                <div className="flex items-start gap-2 text-xs">
-                  <MapPin className="h-3 w-3 text-gray-500 mt-0.5" />
-                  <div>
+                <div className="flex items-start gap-1 text-xs">
+                  <MapPin className="h-3 w-3 text-gray-500 mt-0.5 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
                     <span className="font-medium">Location:</span>
-                    <div className="text-gray-600">
+                    <div className="text-gray-600 break-words">
                       {selectedItem.address || selectedItem.location}
                     </div>
                   </div>
@@ -171,20 +172,20 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
               )}
 
               {selectedItem.date && (
-                <div className="flex items-center gap-2 text-xs">
-                  <Calendar className="h-3 w-3 text-gray-500" />
+                <div className="flex items-center gap-1 text-xs">
+                  <Calendar className="h-3 w-3 text-gray-500 flex-shrink-0" />
                   <span className="font-medium">Date:</span>
-                  <span className="text-gray-600">
+                  <span className="text-gray-600 truncate">
                     {new Date(selectedItem.date).toLocaleDateString()}
                   </span>
                 </div>
               )}
 
               {(selectedItem.start_time || selectedItem.end_time) && (
-                <div className="flex items-center gap-2 text-xs">
-                  <Clock className="h-3 w-3 text-gray-500" />
+                <div className="flex items-center gap-1 text-xs">
+                  <Clock className="h-3 w-3 text-gray-500 flex-shrink-0" />
                   <span className="font-medium">Time:</span>
-                  <span className="text-gray-600">
+                  <span className="text-gray-600 truncate">
                     {selectedItem.start_time && selectedItem.end_time 
                       ? `${selectedItem.start_time} - ${selectedItem.end_time}`
                       : selectedItem.start_time || selectedItem.end_time
@@ -194,19 +195,19 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
               )}
 
               {selectedItem.price && selectedItem.price > 0 && (
-                <div className="flex items-center gap-2 text-xs">
-                  <DollarSign className="h-3 w-3 text-gray-500" />
+                <div className="flex items-center gap-1 text-xs">
+                  <DollarSign className="h-3 w-3 text-gray-500 flex-shrink-0" />
                   <span className="font-medium">Price:</span>
                   <span className="text-gray-600">${selectedItem.price}</span>
                 </div>
               )}
 
               {selectedItem.villages && (
-                <div className="flex items-start gap-2 text-xs">
-                  <Building className="h-3 w-3 text-gray-500 mt-0.5" />
-                  <div>
+                <div className="flex items-start gap-1 text-xs">
+                  <Building className="h-3 w-3 text-gray-500 mt-0.5 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
                     <span className="font-medium">Villages:</span>
-                    <div className="text-gray-600">
+                    <div className="text-gray-600 break-words">
                       {Array.isArray(selectedItem.villages) 
                         ? selectedItem.villages.join(', ') 
                         : selectedItem.villages
@@ -217,54 +218,54 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
               )}
 
               {selectedItem.neighborhoods && (
-                <div className="flex items-start gap-2 text-xs">
-                  <Building className="h-3 w-3 text-gray-500 mt-0.5" />
-                  <div>
+                <div className="flex items-start gap-1 text-xs">
+                  <Building className="h-3 w-3 text-gray-500 mt-0.5 flex-shrink-0" />
+                  <div className="min-w-0 flex-1">
                     <span className="font-medium">Neighborhoods:</span>
-                    <div className="text-gray-600">{selectedItem.neighborhoods}</div>
+                    <div className="text-gray-600 break-words">{selectedItem.neighborhoods}</div>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="pt-2 border-t space-y-2">
+            <div className="pt-1 border-t space-y-1">{/* Reduced spacing and padding */}
               {onGetDirections && selectedItem.latitude && selectedItem.longitude && (
                 <DirectionsModal 
                   item={selectedItem}
                   onGetDirections={(start, mode) => onGetDirections(start, mode, selectedItem)}
                 />
               )}
-              <Button onClick={handleViewDetails} className="w-full text-xs" size="sm">
-                View Full Details
+              <Button onClick={handleViewDetails} className="w-full text-xs h-7" size="sm">
+                View Details
               </Button>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Mobile Bottom Sheet */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg">
+      {/* Mobile Bottom Sheet - Responsive */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-lg max-h-[70vh] overflow-hidden">
         {/* Collapsed Header */}
         <div 
-          className="flex items-center justify-between p-3 cursor-pointer"
+          className="flex items-center justify-between p-2 cursor-pointer"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <div className="flex items-center gap-2">
-            <Badge className={`${getTypeColor(selectedItem.type)} text-xs`} variant="secondary">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <Badge className={`${getTypeColor(selectedItem.type)} text-xs flex-shrink-0`} variant="secondary">
               {selectedItem.type.replace('-', ' ')}
             </Badge>
-            <div>
-              <h3 className="font-semibold text-xs truncate max-w-[180px]">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-sm truncate">
                 {selectedItem.title}
               </h3>
               {(selectedItem.address || selectedItem.location) && (
-                <p className="text-xs text-gray-500 truncate max-w-[180px]">
+                <p className="text-xs text-gray-500 truncate">
                   {selectedItem.address || selectedItem.location}
                 </p>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
@@ -286,17 +287,17 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
 
         {/* Expanded Content */}
         {isExpanded && (
-          <div className="px-3 pb-3 max-h-[50vh] overflow-y-auto">
-            <div className="space-y-2">
+          <div className="px-2 pb-2 max-h-[50vh] overflow-y-auto">{/* Reduced padding */}
+            <div className="space-y-1">
               {selectedItem.description && (
                 <div>
-                  <p className="text-xs text-gray-600 leading-relaxed">
+                  <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
                     {selectedItem.description}
                   </p>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 gap-1 text-xs">
+              <div className="grid grid-cols-1 gap-1 text-xs">{/* Reduced spacing */}
                 {selectedItem.category && (
                   <div className="flex items-center gap-2">
                     <Tag className="h-3 w-3 text-gray-500" />
@@ -337,15 +338,15 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
                 )}
               </div>
 
-              <div className="pt-2 space-y-2">
+              <div className="pt-1 space-y-1">{/* Reduced spacing */}
                 {onGetDirections && selectedItem.latitude && selectedItem.longitude && (
                   <DirectionsModal 
                     item={selectedItem}
                     onGetDirections={(start, mode) => onGetDirections(start, mode, selectedItem)}
                   />
                 )}
-                <Button onClick={handleViewDetails} className="w-full text-xs" size="sm">
-                  View Full Details
+                <Button onClick={handleViewDetails} className="w-full text-xs h-7" size="sm">
+                  View Details
                 </Button>
               </div>
             </div>
