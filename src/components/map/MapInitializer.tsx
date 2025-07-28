@@ -48,22 +48,50 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
 
     // Custom double-click zoom handler for empty map areas (not markers)
     map.on('dblclick', (e) => {
-      // Check if the double-click happened on a marker element
-      const clickedElement = e.originalEvent.target as HTMLElement;
-      const isMarkerClick = clickedElement.closest('.marker');
-      
-      if (!isMarkerClick) {
-        // Only zoom if we didn't click on a marker
+      try {
+        // Check if the double-click happened on a marker element
+        const clickedElement = e.originalEvent?.target as HTMLElement;
+        
+        if (!clickedElement) {
+          console.log('🔍 No target element found, zooming anyway');
+          performZoom();
+          return;
+        }
+        
+        // Check if we clicked on a marker or its child elements
+        const isMarkerClick = clickedElement.classList?.contains('marker') || 
+                             clickedElement.closest?.('.marker') !== null;
+        
+        if (!isMarkerClick) {
+          performZoom();
+        } else {
+          console.log('🎯 Double-clicked on marker, skipping zoom');
+        }
+        
+        function performZoom() {
+          const currentZoom = map.getZoom();
+          const maxZoom = map.getMaxZoom();
+          const newZoom = Math.min(currentZoom + 1, maxZoom);
+          
+          map.easeTo({
+            center: e.lngLat,
+            zoom: newZoom,
+            duration: 300
+          });
+          
+          console.log(`🔍 Map double-clicked: zooming from ${currentZoom.toFixed(1)} to ${newZoom.toFixed(1)}`);
+        }
+        
+      } catch (error) {
+        console.error('❌ Error in double-click handler:', error);
+        // Fallback: just zoom in without checking for markers
         const currentZoom = map.getZoom();
         const newZoom = Math.min(currentZoom + 1, map.getMaxZoom());
-        
         map.easeTo({
           center: e.lngLat,
           zoom: newZoom,
           duration: 300
         });
-        
-        console.log(`🔍 Map double-clicked: zooming from ${currentZoom.toFixed(1)} to ${newZoom.toFixed(1)}`);
       }
     });
 
