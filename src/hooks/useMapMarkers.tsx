@@ -36,15 +36,37 @@ export const useMapMarkers = ({
       const coords = validateCoordinates(item);
       if (!coords) return;
 
-      // Create marker element
+      // Get marker color based on item type
+      const getMarkerColor = (type: string) => {
+        switch (type) {
+          case 'event': return '#ef4444'; // Red
+          case 'local-service': return '#eab308'; // Yellow  
+          case 'business': return '#3b82f6'; // Blue
+          case 'news': return '#10b981'; // Green (keeping this for news)
+          default: return '#6b7280'; // Gray
+        }
+      };
+
+      // Create marker element with custom color
       const el = document.createElement('div');
       el.className = 'marker';
-      el.style.backgroundImage = 'url(https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png)';
-      el.style.backgroundSize = 'cover';
-      el.style.width = '50px';
-      el.style.height = '50px';
+      el.style.width = '24px';
+      el.style.height = '24px';
       el.style.borderRadius = '50%';
       el.style.cursor = 'pointer';
+      el.style.backgroundColor = getMarkerColor(item.type);
+      el.style.border = '3px solid white';
+      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.fontSize = '12px';
+      el.style.fontWeight = 'bold';
+      el.style.color = 'white';
+      
+      // Add type indicator
+      const typeIndicator = item.type.charAt(0).toUpperCase();
+      el.textContent = typeIndicator;
 
       // Add click handler
       el.addEventListener('click', (e) => {
