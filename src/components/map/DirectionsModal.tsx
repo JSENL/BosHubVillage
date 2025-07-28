@@ -17,7 +17,8 @@ interface DirectionsModalProps {
 export const DirectionsModal = ({ item, onGetDirections, open, onOpenChange }: DirectionsModalProps) => {
   const [startLocation, setStartLocation] = useState('');
   const [transportMode, setTransportMode] = useState('driving');
-  const isOpen = open !== undefined ? open : false;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = open !== undefined ? open : internalOpen;
 
   const handleGetDirections = () => {
     if (!startLocation.trim()) return;
@@ -30,6 +31,8 @@ export const DirectionsModal = ({ item, onGetDirections, open, onOpenChange }: D
   const handleOpenChange = (newOpen: boolean) => {
     if (onOpenChange) {
       onOpenChange(newOpen);
+    } else {
+      setInternalOpen(newOpen);
     }
   };
 
