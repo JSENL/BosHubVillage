@@ -198,8 +198,8 @@ const Index = () => {
     return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
   });
 
-  // Create filtered items for map (excluding news)
-  const mapItems = filteredItems.filter(item => item.type !== 'news');
+  // Create filtered items for map (including all item types)
+  const mapItems = filteredItems;
 
   // Geocode items that need geocoding
   useEffect(() => {
@@ -263,12 +263,10 @@ const Index = () => {
     }
   };
 
-  // Determine selected types for the map (excluding news)
+  // Determine selected types for the map (including all types)
   const selectedTypesForMap = selectedType === 'all' 
-    ? ['event', 'business', 'local-service'] 
-    : selectedType === 'news' 
-      ? [] 
-      : [selectedType];
+    ? ['event', 'business', 'local-service', 'news'] 
+    : [selectedType];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
