@@ -51,7 +51,7 @@ export const useNewsSubmissionOperations = () => {
         console.log('News created successfully');
       }
 
-      // Update the submission status
+      // Update the submission status and delete if approved
       const { error } = await supabase
         .from('news_submissions')
         .update({
@@ -63,6 +63,19 @@ export const useNewsSubmissionOperations = () => {
         .eq('id', submissionId);
 
       if (error) throw error;
+
+      // If approved, delete the submission since it's now in the main news table
+      if (status === 'approved') {
+        const { error: deleteError } = await supabase
+          .from('news_submissions')
+          .delete()
+          .eq('id', submissionId);
+
+        if (deleteError) {
+          console.error('Error deleting approved submission:', deleteError);
+          // Don't throw here as the main operation succeeded
+        }
+      }
 
       console.log(`News ${status} successfully!`);
       toast.success(`News ${status} successfully!`);

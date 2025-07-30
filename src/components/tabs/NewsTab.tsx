@@ -4,15 +4,15 @@ import { SectionMap } from "@/components/SectionMap";
 import { UniversalFilters } from "@/components/UniversalFilters";
 import NewsCard from "@/components/NewsCard";
 import { useNews } from "@/hooks/useNews";
-import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
+
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { geocodeNewsItems } from "@/utils/geocodeNewsItems";
 import { News } from "@/types/news";
-import { NewsSubmission } from "@/types/submissions";
+
 
 export const NewsTab = () => {
   const { data: news, isLoading: newsLoading, error: newsError } = useNews();
-  const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
+  
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedNews, setHasGeocodedNews] = useState(false);
   
@@ -23,17 +23,15 @@ export const NewsTab = () => {
   const [selectedVillage, setSelectedVillage] = useState("all");
   
   console.log('NewsTab - news:', news);
-  console.log('NewsTab - newsSubmissions:', newsSubmissions);
+  
   console.log('NewsTab - newsError:', newsError);
   
-  const allNews: (News | NewsSubmission)[] = [
-    ...(news || []),
-    ...(newsSubmissions || [])
-  ];
+  // Only show published news, not submissions (submissions are handled separately in admin)
+  const allNews: News[] = news || [];
 
   console.log('NewsTab - allNews:', allNews);
 
-  const isNewsLoading = newsLoading || newsSubmissionsLoading;
+  const isNewsLoading = newsLoading;
 
   // Only geocode if we have news items without coordinates and geocoding is ready
   useEffect(() => {
@@ -86,7 +84,7 @@ export const NewsTab = () => {
       <SectionMap height="400px" />
       
       <div className="mb-4 text-sm text-gray-500">
-        Total news items: {allNews.length} (Published: {news?.length || 0}, Submissions: {newsSubmissions?.length || 0})
+        Total news items: {allNews.length}
       </div>
       
       {newsError && (

@@ -10,7 +10,7 @@ export const useNewsSubmissions = () => {
       const { data, error } = await supabase
         .from('news_submissions')
         .select('*')
-        .eq('status', 'approved')
+        .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

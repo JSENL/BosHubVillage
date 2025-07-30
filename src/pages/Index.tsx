@@ -9,7 +9,7 @@ import BusinessCard from "@/components/BusinessCard";
 import LocalServiceCard from "@/components/LocalServiceCard";
 import { useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
-import { useNewsSubmissions } from "@/hooks/useNewsSubmissions";
+
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
 import { useLocalServices } from "@/hooks/useLocalServices";
@@ -36,7 +36,7 @@ const Index = () => {
   // Data hooks - using correct property names based on actual hook implementations
   const { events, loading: eventsLoading } = useEvents();
   const { data: news, isLoading: newsLoading } = useNews();
-  const { data: newsSubmissions, isLoading: newsSubmissionsLoading } = useNewsSubmissions();
+  
   const { data: businesses, isLoading: businessLoading } = useBusiness();
   const { submissions: businessSubmissions, loading: businessSubmissionsLoading } = useBusinessSubmissions();
   const { data: localServices, isLoading: localServicesLoading } = useLocalServices();
@@ -79,21 +79,6 @@ const Index = () => {
       villages: newsItem.villages,
       date: newsItem.date_posted,
       originalData: newsItem
-    })),
-    ...(newsSubmissions || []).map(newsSubmission => ({
-      id: newsSubmission.id,
-      title: newsSubmission.title,
-      description: newsSubmission.content || '',
-      latitude: newsSubmission.latitude,
-      longitude: newsSubmission.longitude,
-      type: 'news' as const,
-      location: newsSubmission.location,
-      address: newsSubmission.Address || newsSubmission.location,
-      content: newsSubmission.content,
-      source: newsSubmission.source,
-      villages: newsSubmission.villages,
-      date: newsSubmission.date_posted,
-      originalData: newsSubmission
     })),
     ...(businesses || []).map(business => ({
       id: business.id,
@@ -152,7 +137,7 @@ const Index = () => {
     }))
   ];
 
-  const isLoading = eventsLoading || newsLoading || newsSubmissionsLoading || 
+  const isLoading = eventsLoading || newsLoading || 
                    businessLoading || businessSubmissionsLoading ||
                    localServicesLoading || localServiceSubmissionsLoading;
 
