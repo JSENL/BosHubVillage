@@ -1,6 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useCategoryNames } from './useUnifiedCategories';
 
 export interface FilterOptions {
   categories: string[];
@@ -19,7 +20,7 @@ export const useDatabaseFilterOptions = () => {
       console.log('Fetching filter options from database...');
       
       try {
-        // Fetch categories from the categories table
+        // Fetch categories from the categories table only
         const { data: categories, error: categoriesError } = await supabase
           .from('categories')
           .select('name, type');
@@ -32,8 +33,7 @@ export const useDatabaseFilterOptions = () => {
         // Fetch business data from Supabase
         const { data: businesses, error: businessError } = await supabase
           .from('business')
-          .select('business_type, neighborhood, villages')
-          .not('business_type', 'is', null)
+          .select('neighborhood, villages')
           .not('neighborhood', 'is', null);
 
         if (businessError) {
@@ -41,11 +41,10 @@ export const useDatabaseFilterOptions = () => {
           throw businessError;
         }
 
-        // Fetch event categories and locations
+        // Fetch event locations
         const { data: events, error: eventsError } = await supabase
           .from('events')
-          .select('category, neighborhoods, villages')
-          .not('category', 'is', null)
+          .select('neighborhoods, villages')
           .not('neighborhoods', 'is', null);
 
         if (eventsError) {
@@ -53,11 +52,10 @@ export const useDatabaseFilterOptions = () => {
           throw eventsError;
         }
 
-        // Fetch news sources and locations
+        // Fetch news locations
         const { data: news, error: newsError } = await supabase
           .from('news')
-          .select('source, location, villages')
-          .not('source', 'is', null)
+          .select('location, villages')
           .not('location', 'is', null);
 
         if (newsError) {
@@ -65,11 +63,10 @@ export const useDatabaseFilterOptions = () => {
           throw newsError;
         }
 
-        // Fetch local resource categories and locations
+        // Fetch local resource locations
         const { data: localResources, error: localResourcesError } = await supabase
           .from('local_resources')
-          .select('category, neighborhood, village')
-          .not('category', 'is', null)
+          .select('neighborhood, village')
           .not('neighborhood', 'is', null);
 
         if (localResourcesError) {
@@ -78,12 +75,10 @@ export const useDatabaseFilterOptions = () => {
         }
 
         // Process business data
-        const businessTypes = new Set<string>();
         const businessNeighborhoods = new Set<string>();
         const businessVillages = new Set<string>();
 
         businesses?.forEach(business => {
-          if (business.business_type) businessTypes.add(business.business_type);
           if (business.neighborhood) businessNeighborhoods.add(business.neighborhood);
           if (business.villages) {
             // Handle both string and array formats
@@ -97,12 +92,10 @@ export const useDatabaseFilterOptions = () => {
         });
 
         // Process events data
-        const eventCategories = new Set<string>();
         const eventNeighborhoods = new Set<string>();
         const eventVillages = new Set<string>();
 
         events?.forEach(event => {
-          if (event.category) eventCategories.add(event.category);
           if (event.neighborhoods) {
             const neighborhoods = event.neighborhoods.split(',').map(n => n.trim());
             neighborhoods.forEach(neighborhood => eventNeighborhoods.add(neighborhood));
@@ -114,12 +107,10 @@ export const useDatabaseFilterOptions = () => {
         });
 
         // Process news data
-        const newsSources = new Set<string>();
         const newsLocations = new Set<string>();
         const newsVillages = new Set<string>();
 
         news?.forEach(item => {
-          if (item.source) newsSources.add(item.source);
           if (item.location) newsLocations.add(item.location);
           if (item.villages) {
             const villageList = item.villages.split(',').map(v => v.trim());
@@ -128,12 +119,10 @@ export const useDatabaseFilterOptions = () => {
         });
 
         // Process local resources data
-        const localResourceCategories = new Set<string>();
         const localResourceNeighborhoods = new Set<string>();
         const localResourceVillages = new Set<string>();
 
         localResources?.forEach(resource => {
-          if (resource.category) localResourceCategories.add(resource.category);
           if (resource.neighborhood) localResourceNeighborhoods.add(resource.neighborhood);
           if (resource.village) localResourceVillages.add(resource.village);
         });
@@ -142,13 +131,14 @@ export const useDatabaseFilterOptions = () => {
         const dbBusinessTypes = categories?.filter(c => c.type === 'business').map(c => c.name) || [];
         const dbEventCategories = categories?.filter(c => c.type === 'event').map(c => c.name) || [];
         const dbLocalServiceCategories = categories?.filter(c => c.type === 'local_service').map(c => c.name) || [];
-        const dbNewsSources = categories?.filter(c => c.type === 'news').map(c => c.name) || [];
+        const dbNewsCategories = categories?.filter(c => c.type === 'news').map(c => c.name) || [];
 
         // Combine all categories from database
         const allCategories = new Set([
           ...dbBusinessTypes,
           ...dbEventCategories,
-          ...dbLocalServiceCategories
+          ...dbLocalServiceCategories,
+          ...dbNewsCategories
         ]);
 
         // Combine all locations (neighborhoods)
@@ -174,7 +164,7 @@ export const useDatabaseFilterOptions = () => {
           villages: Array.from(allVillages).filter(Boolean).sort(),
           neighborhoods: Array.from(allLocations).filter(Boolean).sort(),
           eventCategories: dbEventCategories.filter(Boolean).sort(),
-          sources: dbNewsSources.filter(Boolean).sort()
+          sources: dbNewsCategories.filter(Boolean).sort()
         };
 
         console.log('Successfully fetched filter options:', filterOptions);
@@ -233,5 +223,34 @@ export const useLocalServiceFilterOptions = () => {
     categories: data?.categories || [],
     neighborhoods: data?.neighborhoods || [],
     villages: data?.villages || []
+  };
+};
+
+// New unified filter options hook
+export const useUnifiedFilterOptions = (selectedType?: string) => {
+  const { data } = useDatabaseFilterOptions();
+  const categoryNames = useCategoryNames(selectedType);
+  
+  if (!data) {
+    return {
+      categories: [],
+      neighborhoods: [],
+      villages: []
+    };
+  }
+
+  // Return appropriate categories based on selected type
+  let categories: string[] = [];
+  
+  if (selectedType === 'all' || !selectedType) {
+    categories = data.categories;
+  } else {
+    categories = categoryNames;
+  }
+
+  return {
+    categories: categories.filter(Boolean).sort(),
+    neighborhoods: data.neighborhoods.filter(Boolean).sort(),
+    villages: data.villages.filter(Boolean).sort()
   };
 };

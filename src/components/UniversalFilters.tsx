@@ -4,11 +4,7 @@ import { Filter } from 'lucide-react';
 import { CategoryFilter } from '@/components/filters/CategoryFilter';
 import { LocationFilter } from '@/components/filters/LocationFilter';
 import { DateTimeFilter } from '@/components/filters/DateTimeFilter';
-import { 
-  useEventFilterOptions, 
-  useNewsFilterOptions, 
-  useBusinessFilterOptions 
-} from '@/hooks/useDatabaseFilterOptions';
+import { useUnifiedFilterOptions } from '@/hooks/useDatabaseFilterOptions';
 
 interface UniversalFiltersProps {
   selectedType: string;
@@ -43,30 +39,8 @@ export const UniversalFilters = ({
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
-  const eventOptions = useEventFilterOptions();
-  const newsOptions = useNewsFilterOptions();
-  const businessOptions = useBusinessFilterOptions();
-  
-
-  const getFilterOptions = () => {
-    switch (selectedType) {
-      case 'event':
-        return eventOptions;
-      case 'news':
-        return newsOptions;
-      case 'business':
-        return businessOptions;
-      default:
-        // For 'all' type, combine all options
-        return {
-          categories: [...eventOptions.categories, ...newsOptions.categories, ...businessOptions.categories],
-          neighborhoods: [...eventOptions.neighborhoods, ...newsOptions.neighborhoods, ...businessOptions.neighborhoods],
-          villages: [...eventOptions.villages, ...newsOptions.villages, ...businessOptions.villages]
-        };
-    }
-  };
-
-  const { categories, neighborhoods, villages } = getFilterOptions();
+  // Use unified filter options that properly handle database categories
+  const { categories, neighborhoods, villages } = useUnifiedFilterOptions(selectedType);
 
   const typeOptions = [
     { value: 'all', label: 'All Types' },

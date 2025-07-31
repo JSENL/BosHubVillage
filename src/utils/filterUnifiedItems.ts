@@ -1,6 +1,7 @@
 
 import { UnifiedItem } from '@/types/unifiedItem';
 import { parseVillages } from './villageUtils';
+import { matchesCategory } from '@/hooks/useUnifiedCategories';
 
 interface FilterCriteria {
   selectedTypes: string[];
@@ -39,10 +40,8 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
       item.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.address?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // Category filter
-    const matchesCategory = selectedCategory === 'all' || 
-      item.category === selectedCategory ||
-      item.business_type === selectedCategory;
+    // Category filter - using unified category matching
+    const matchesCategoryFilter = matchesCategory(item, selectedCategory);
 
     // Neighborhood filter
     const matchesNeighborhood = selectedNeighborhood === 'all' || 
@@ -80,6 +79,6 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
       }
     })();
 
-    return matchesUnifiedType && matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
+    return matchesUnifiedType && matchesType && matchesSearch && matchesCategoryFilter && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
   });
 };
