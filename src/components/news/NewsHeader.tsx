@@ -16,7 +16,7 @@ const NewsHeader = () => {
           
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 mb-2">
-              LocalHub News
+              HubVillage News
             </h1>
             <p className="text-lg text-gray-600">Your Community's Voice</p>
           </div>

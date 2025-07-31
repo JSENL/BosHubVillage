@@ -323,7 +323,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
-      <HeroSection title="Welcome to LocalEvents" subtitle="Discover amazing events, businesses, and news in your area" />
+      <HeroSection title="Welcome to HubVillage" subtitle="Discover amazing events, businesses, and news in your area" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">

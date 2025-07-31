@@ -119,7 +119,7 @@ const Auth = () => {
               <Calendar className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-yelp-gray">
-              LocalEvents
+              HubVillage
             </h1>
           </div>
           <CardDescription>
