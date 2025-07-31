@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { DateRange } from 'react-day-picker';
 import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
 import { UniversalFilters } from "@/components/UniversalFilters";
@@ -30,8 +31,8 @@ const Index = () => {
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [dateFilter, setDateFilter] = useState("");
-  const [timeFilter, setTimeFilter] = useState("all");
+  const [eventDateRange, setEventDateRange] = useState<DateRange | undefined>();
+  const [selectedEventDates, setSelectedEventDates] = useState<Date[]>([]);
 
   // Data hooks - using correct property names based on actual hook implementations
   const { events, loading: eventsLoading } = useEvents();
@@ -174,28 +175,32 @@ const Index = () => {
       );
     })();
 
-    // Date filter (only for events)
-    const matchesDate = item.type !== 'event' || dateFilter === '' || item.date === dateFilter;
-
-    // Time filter (only for events)
-    const matchesTime = item.type !== 'event' || timeFilter === 'all' || (() => {
-      if (!item.start_time) return timeFilter === 'all';
+    // Event date filter (only for events)
+    const matchesEventDate = item.type !== 'event' || (() => {
+      if (!item.date) return false;
       
-      const eventHour = parseInt(item.start_time.split(':')[0]);
+      const itemDate = new Date(item.date);
       
-      switch (timeFilter) {
-        case 'morning':
-          return eventHour >= 6 && eventHour < 12;
-        case 'afternoon':
-          return eventHour >= 12 && eventHour < 18;
-        case 'evening':
-          return eventHour >= 18 || eventHour < 6;
-        default:
-          return true;
+      // Check if any individual dates are selected
+      if (selectedEventDates.length > 0) {
+        return selectedEventDates.some(selectedDate => 
+          selectedDate.toDateString() === itemDate.toDateString()
+        );
       }
+      
+      // Check if date range is selected
+      if (eventDateRange?.from) {
+        const fromDate = eventDateRange.from;
+        const toDate = eventDateRange.to || fromDate;
+        
+        return itemDate >= fromDate && itemDate <= toDate;
+      }
+      
+      // If no date filters selected, show all events
+      return true;
     })();
 
-    return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
+    return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesEventDate;
   });
 
   // Create filtered items for map (including all item types)
@@ -302,10 +307,10 @@ const Index = () => {
             onNeighborhoodChange={setSelectedNeighborhood}
             selectedVillage={selectedVillage}
             onVillageChange={setSelectedVillage}
-            dateFilter={dateFilter}
-            onDateFilterChange={setDateFilter}
-            timeFilter={timeFilter}
-            onTimeFilterChange={setTimeFilter}
+            eventDateRange={eventDateRange}
+            onEventDateRangeChange={setEventDateRange}
+            selectedEventDates={selectedEventDates}
+            onSelectedEventDatesChange={setSelectedEventDates}
             filteredItemsCount={filteredItems.length}
             itemType="events"
           />

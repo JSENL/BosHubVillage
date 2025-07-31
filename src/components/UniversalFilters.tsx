@@ -3,8 +3,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Filter } from 'lucide-react';
 import { CategoryFilter } from '@/components/filters/CategoryFilter';
 import { LocationFilter } from '@/components/filters/LocationFilter';
-import { DateTimeFilter } from '@/components/filters/DateTimeFilter';
 import { useUnifiedFilterOptions } from '@/hooks/useDatabaseFilterOptions';
+import { EventDateFilter } from '@/components/filters/EventDateFilter';
 import { DateRange } from 'react-day-picker';
 
 interface UniversalFiltersProps {
@@ -16,14 +16,10 @@ interface UniversalFiltersProps {
   onNeighborhoodChange: (neighborhood: string) => void;
   selectedVillage: string;
   onVillageChange: (village: string) => void;
-  dateFilter?: string;
-  onDateFilterChange?: (date: string) => void;
-  timeFilter?: string;
-  onTimeFilterChange?: (time: string) => void;
-  dateRange?: DateRange;
-  onDateRangeChange?: (dateRange: DateRange | undefined) => void;
-  selectedDates?: Date[];
-  onSelectedDatesChange?: (dates: Date[]) => void;
+  eventDateRange?: DateRange;
+  onEventDateRangeChange?: (dateRange: DateRange | undefined) => void;
+  selectedEventDates?: Date[];
+  onSelectedEventDatesChange?: (dates: Date[]) => void;
   filteredItemsCount: number;
   itemType: 'events' | 'business' | 'news';
 }
@@ -37,14 +33,10 @@ export const UniversalFilters = ({
   onNeighborhoodChange,
   selectedVillage,
   onVillageChange,
-  dateFilter = '',
-  onDateFilterChange,
-  timeFilter = 'all',
-  onTimeFilterChange,
-  dateRange,
-  onDateRangeChange,
-  selectedDates,
-  onSelectedDatesChange,
+  eventDateRange,
+  onEventDateRangeChange,
+  selectedEventDates,
+  onSelectedEventDatesChange,
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
@@ -66,19 +58,6 @@ export const UniversalFilters = ({
         <span className="text-xs sm:text-sm font-medium text-gray-600">Filters:</span>
       </div>
 
-      {onDateFilterChange && onTimeFilterChange && (
-        <DateTimeFilter
-          dateFilter={dateFilter}
-          onDateFilterChange={onDateFilterChange}
-          timeFilter={timeFilter}
-          onTimeFilterChange={onTimeFilterChange}
-          selectedDates={selectedDates}
-          onSelectedDatesChange={onSelectedDatesChange}
-          dateRange={dateRange}
-          onDateRangeChange={onDateRangeChange}
-        />
-      )}
-      
       <Select value={selectedType} onValueChange={onTypeChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
           <SelectValue placeholder="Type" />
@@ -91,6 +70,15 @@ export const UniversalFilters = ({
           ))}
         </SelectContent>
       </Select>
+
+      {(selectedType === 'event' || selectedType === 'all') && (
+        <EventDateFilter
+          eventDateRange={eventDateRange}
+          onEventDateRangeChange={onEventDateRangeChange}
+          selectedEventDates={selectedEventDates}
+          onSelectedEventDatesChange={onSelectedEventDatesChange}
+        />
+      )}
       
       <CategoryFilter
         selectedCategory={selectedCategory}
