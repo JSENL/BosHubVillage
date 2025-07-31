@@ -30,7 +30,7 @@ export const geocodeLocalServices = async (services: any[], geocode: (address: s
           console.error('Error updating local resource coordinates:', error);
         } else {
           console.log('Successfully updated local resource coordinates for:', service.name);
-          // Update the local service immediately
+          // Update the local resource immediately
           service.latitude = result.latitude;
           service.longitude = result.longitude;
         }

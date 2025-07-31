@@ -7,7 +7,7 @@ interface LocalResourcesMapProps {
 }
 
 export const LocalResourcesMap = ({ localServices }: LocalResourcesMapProps) => {
-  // Convert local services to unified items for map display
+  // Convert local resources to unified items for map display
   const unifiedItems: UnifiedItem[] = localServices.map(service => ({
     id: service.id,
     title: service.name,

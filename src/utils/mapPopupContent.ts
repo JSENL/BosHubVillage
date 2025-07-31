@@ -6,7 +6,7 @@ export const createPopupContent = (item: UnifiedItem): string => {
     event: 'Event',
     news: 'News',
     business: 'Business',
-    'local-service': 'Local Service'
+    'local-service': 'Local Resource'
   }[item.type];
 
   const getMarkerColor = (type: string): string => {

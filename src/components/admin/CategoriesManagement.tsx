@@ -139,7 +139,7 @@ export const CategoriesManagement = () => {
     { value: 'business', label: 'Business' },
     { value: 'event', label: 'Event' },
     { value: 'news', label: 'News' },
-    { value: 'local_service', label: 'Local Service' }
+    { value: 'local_service', label: 'Local Resource' }
   ];
 
   if (isLoading) {

@@ -60,7 +60,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       event: 'Event',
       news: 'News',
       business: 'Business',
-      'local-service': 'Local Service'
+      'local-service': 'Local Resource'
     };
     return labels[item.type] || 'Item';
   };

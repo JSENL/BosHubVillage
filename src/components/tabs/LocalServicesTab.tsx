@@ -14,7 +14,7 @@ export const LocalServicesTab = () => {
     return (
       <div className="text-center py-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-        <p className="text-gray-600">Loading local services...</p>
+        <p className="text-gray-600">Loading local resources...</p>
       </div>
     );
   }
@@ -22,7 +22,7 @@ export const LocalServicesTab = () => {
   if (!localServices || localServices.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        <p>No local services found.</p>
+        <p>No local resources found.</p>
       </div>
     );
   }
@@ -30,7 +30,7 @@ export const LocalServicesTab = () => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Local Services & Resources</h2>
+        <h2 className="text-xl font-semibold">Local Resources</h2>
         <ViewToggle viewMode={viewMode} onViewModeChange={setViewMode} />
       </div>
 

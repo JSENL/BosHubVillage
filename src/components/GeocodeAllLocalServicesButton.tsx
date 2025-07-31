@@ -37,7 +37,7 @@ export const GeocodeAllLocalServicesButton = () => {
       ) : (
         <MapPin className="h-4 w-4" />
       )}
-      {isGeocoding ? 'Geocoding...' : 'Geocode All Local Services'}
+      {isGeocoding ? 'Geocoding...' : 'Geocode All Local Resources'}
     </Button>
   );
 };

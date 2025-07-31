@@ -146,7 +146,7 @@ export const useMapMarkers = ({
               return `
                 <div style="${baseStyle}">
                   <h3 style="${titleStyle} color: #eab308;">${item.title}</h3>
-                  <div style="${badgeStyle} background: #eab308;">Local Service</div>
+                  <div style="${badgeStyle} background: #eab308;">Local Resource</div>
                   ${item.category ? `<p style="${categoryStyle}">${item.category}</p>` : ''}
                   <p style="${descStyle}">${item.description || 'Service information not available'}</p>
                   ${item.address ? `<p style="${addressStyle}"><span>🏢</span> ${item.address}</p>` : ''}

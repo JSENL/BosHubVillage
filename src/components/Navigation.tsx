@@ -91,7 +91,7 @@ export const Navigation = () => {
                    <DropdownMenuItem asChild>
                      <Link to="/submit-local-service" className="cursor-pointer">
                        <Heart className="h-4 w-4 mr-2" />
-                       Submit Local Service
+                       Submit Local Resource
                      </Link>
                    </DropdownMenuItem>
                   {isAdmin && (

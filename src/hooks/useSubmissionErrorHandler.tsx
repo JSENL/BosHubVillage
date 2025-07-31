@@ -2,7 +2,7 @@
 import { toast } from 'sonner';
 
 export const useSubmissionErrorHandler = () => {
-  const handleSubmissionError = (error: any, submissionType: 'news' | 'business' | 'local service') => {
+  const handleSubmissionError = (error: any, submissionType: 'news' | 'business' | 'local resource') => {
     console.error(`${submissionType} submission error:`, error);
     
     let errorMessage = `Failed to submit ${submissionType}.`;
