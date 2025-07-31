@@ -25,10 +25,10 @@ const UnifiedIndexContent = () => {
     selectedType,
     setSelectedType,
     toggleType,
-    dateFilter,
-    setDateFilter,
-    timeFilter,
-    setTimeFilter
+    eventDateRange,
+    setEventDateRange,
+    selectedEventDates,
+    setSelectedEventDates
   } = useFilters();
 
   const { allItems, mappableItems, loading, refetch } = useUnifiedFiltering({
@@ -37,8 +37,6 @@ const UnifiedIndexContent = () => {
     selectedVillage,
     selectedTypes: selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType],
     searchTerm,
-    dateFilter,
-    timeFilter,
     selectedType
   });
 
@@ -117,6 +115,10 @@ const UnifiedIndexContent = () => {
           onNeighborhoodChange={setSelectedNeighborhood}
           selectedVillage={selectedVillage}
           onVillageChange={setSelectedVillage}
+          eventDateRange={eventDateRange}
+          onEventDateRangeChange={setEventDateRange}
+          selectedEventDates={selectedEventDates}
+          onSelectedEventDatesChange={setSelectedEventDates}
           filteredItemsCount={allItems.length}
           itemType="events"
         />

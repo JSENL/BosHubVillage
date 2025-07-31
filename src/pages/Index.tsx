@@ -143,6 +143,16 @@ const Index = () => {
                    localServicesLoading || localServiceSubmissionsLoading;
 
   // Filter items based on criteria
+  console.log('🔍 Index.tsx filtering - available variables:', { 
+    selectedType, 
+    searchTerm, 
+    selectedCategory, 
+    selectedNeighborhood, 
+    selectedVillage, 
+    eventDateRange, 
+    selectedEventDates 
+  });
+  
   const filteredItems = allItems.filter(item => {
     // Type filter
     const matchesType = selectedType === 'all' || item.type === selectedType;

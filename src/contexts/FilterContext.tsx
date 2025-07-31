@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { DateRange } from 'react-day-picker';
 
 interface FilterContextType {
   // Common filters
@@ -18,11 +19,11 @@ interface FilterContextType {
   selectedType: string;
   setSelectedType: (type: string) => void;
   
-  // Event-specific filters
-  dateFilter: string;
-  setDateFilter: (date: string) => void;
-  timeFilter: string;
-  setTimeFilter: (time: string) => void;
+  // Event date filters (new system)
+  eventDateRange?: DateRange;
+  setEventDateRange: (dateRange: DateRange | undefined) => void;
+  selectedEventDates: Date[];
+  setSelectedEventDates: (dates: Date[]) => void;
   
   // Clear all filters
   clearAllFilters: () => void;
@@ -52,8 +53,8 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
   const [selectedVillage, setSelectedVillage] = useState('all');
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['event', 'news', 'business', 'local-service']);
   const [selectedType, setSelectedType] = useState('all');
-  const [dateFilter, setDateFilter] = useState('');
-  const [timeFilter, setTimeFilter] = useState('all');
+  const [eventDateRange, setEventDateRange] = useState<DateRange | undefined>();
+  const [selectedEventDates, setSelectedEventDates] = useState<Date[]>([]);
 
   const clearAllFilters = () => {
     setSearchTerm('');
@@ -61,8 +62,8 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     setSelectedNeighborhood('all');
     setSelectedVillage('all');
     setSelectedType('all');
-    setDateFilter('');
-    setTimeFilter('all');
+    setEventDateRange(undefined);
+    setSelectedEventDates([]);
   };
 
   const toggleType = (type: string) => {
@@ -86,10 +87,10 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({ children }) => {
     setSelectedTypes,
     selectedType,
     setSelectedType,
-    dateFilter,
-    setDateFilter,
-    timeFilter,
-    setTimeFilter,
+    eventDateRange,
+    setEventDateRange,
+    selectedEventDates,
+    setSelectedEventDates,
     clearAllFilters,
     toggleType
   };
