@@ -106,6 +106,7 @@ const Index = () => {
       category: businessSubmission.business_type,
       business_type: businessSubmission.business_type,
       neighborhoods: businessSubmission.neighborhood,
+      villages: undefined, // business_submissions table doesn't have villages column
       originalData: businessSubmission
     })),
     ...(localServices || []).map(localService => ({
@@ -175,14 +176,33 @@ const Index = () => {
       (item.location && item.location.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase())) ||
       (item.address && item.address.toLowerCase().includes(selectedNeighborhood.replace('-', ' ').toLowerCase()));
 
-    // Village filter
+    // Village filter (enhanced for all item types)
     const matchesVillage = selectedVillage === 'all' || (() => {
+      // Debug logging for village filtering
+      if (selectedVillage !== 'all') {
+        console.log(`🏘️ Village filter check for ${item.title}:`, {
+          selectedVillage,
+          itemType: item.type,
+          itemVillages: item.villages,
+          hasVillages: !!item.villages
+        });
+      }
+      
       if (!item.villages) return false;
+      
+      // Handle both single village string and array of villages
       const itemVillages = Array.isArray(item.villages) ? item.villages : [item.villages];
-      return itemVillages.some(village => 
-        village.toLowerCase().replace(/\s+/g, '-') === selectedVillage ||
-        village.toLowerCase() === selectedVillage.replace('-', ' ').toLowerCase()
-      );
+      
+      return itemVillages.some(village => {
+        const normalized = village.toLowerCase().replace(/\s+/g, '-');
+        const selectedNormalized = selectedVillage.toLowerCase();
+        const selectedWithSpaces = selectedVillage.replace('-', ' ').toLowerCase();
+        
+        return normalized === selectedNormalized ||
+               village.toLowerCase() === selectedWithSpaces ||
+               village.toLowerCase().includes(selectedWithSpaces) ||
+               selectedWithSpaces.includes(village.toLowerCase());
+      });
     })();
 
     // Event date filter (only for events)
@@ -212,6 +232,23 @@ const Index = () => {
 
     return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesEventDate;
   });
+
+  // Debug logging for filtering results
+  if (selectedVillage !== 'all') {
+    const villageDebug = {
+      selectedVillage,
+      totalItems: allItems.length,
+      filteredItems: filteredItems.length,
+      itemsWithVillages: allItems.filter(item => !!item.villages).length,
+      villageBreakdown: allItems.reduce((acc, item) => {
+        if (item.villages) {
+          acc[item.type] = (acc[item.type] || 0) + 1;
+        }
+        return acc;
+      }, {} as Record<string, number>)
+    };
+    console.log('🏘️ Village filtering summary:', villageDebug);
+  }
 
   // Create filtered items for map (including all item types)
   const mapItems = filteredItems;
