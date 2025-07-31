@@ -1,7 +1,9 @@
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Building, Check, X, Clock } from 'lucide-react';
 import { LocalResourceSubmission } from '@/types/localServices';
 import { SubmissionStatusBadge } from '@/components/SubmissionStatusBadge';
@@ -16,6 +18,8 @@ interface LocalServiceSubmissionCardProps {
 
 const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmissionCardProps) => {
   const { isAdmin, user } = useAuth();
+  const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
+  const [adminNotes, setAdminNotes] = useState('');
 
   const handleApprove = async () => {
     try {
@@ -63,12 +67,15 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
           status: 'rejected',
           reviewed_by: user?.id,
           reviewed_at: new Date().toISOString(),
+          admin_notes: adminNotes
         })
         .eq('id', submission.id);
 
       if (error) throw error;
 
       toast.success('Local resource rejected successfully!');
+      setSelectedSubmission(null);
+      setAdminNotes('');
       onUpdate();
     } catch (error: any) {
       console.error('Error rejecting local resource:', error);
@@ -117,25 +124,64 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
         </div>
 
         {isAdmin && submission.status === 'pending' && (
-          <div className="flex space-x-2 pt-3 border-t">
-            <Button
-              onClick={handleApprove}
-              size="sm"
-              className="flex-1 bg-green-600 hover:bg-green-700"
-            >
-              <Check className="h-4 w-4 mr-1" />
-              Approve
-            </Button>
-            <Button
-              onClick={handleReject}
-              size="sm"
-              variant="destructive"
-              className="flex-1"
-            >
-              <X className="h-4 w-4 mr-1" />
-              Reject
-            </Button>
-          </div>
+          selectedSubmission === submission.id ? (
+            <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Rejection Message / Admin Notes
+                </label>
+                <p className="text-xs text-gray-500 mb-2">
+                  If rejecting, please explain why to help the submitter understand what needs to be improved.
+                </p>
+                <Textarea
+                  value={adminNotes}
+                  onChange={(e) => setAdminNotes(e.target.value)}
+                  placeholder="For rejections: Please explain why this submission cannot be approved (e.g., incorrect category, incomplete information, duplicate resource, etc.)&#10;&#10;For approvals: Add any optional notes or feedback."
+                  rows={4}
+                  className="resize-none"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <Button
+                  onClick={handleApprove}
+                  size="sm"
+                  className="flex-1 bg-green-600 hover:bg-green-700"
+                >
+                  <Check className="h-4 w-4 mr-1" />
+                  Approve
+                </Button>
+                <Button
+                  onClick={handleReject}
+                  size="sm"
+                  variant="destructive"
+                  className="flex-1"
+                >
+                  <X className="h-4 w-4 mr-1" />
+                  Reject
+                </Button>
+                <Button
+                  onClick={() => {
+                    setSelectedSubmission(null);
+                    setAdminNotes('');
+                  }}
+                  size="sm"
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex space-x-2 pt-3 border-t">
+              <Button
+                onClick={() => setSelectedSubmission(submission.id)}
+                size="sm"
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+              >
+                Review
+              </Button>
+            </div>
+          )
         )}
       </CardContent>
     </Card>

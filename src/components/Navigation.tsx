@@ -22,7 +22,8 @@ import {
   CheckSquare,
   Heart,
   MessageCircle,
-  ArrowLeft
+  ArrowLeft,
+  FileText
 } from 'lucide-react';
 
 export const Navigation = () => {
@@ -129,6 +130,12 @@ export const Navigation = () => {
                     <Link to="/my-messages" className="cursor-pointer">
                       <MessageCircle className="h-4 w-4 mr-2" />
                       My Messages
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/my-submissions" className="cursor-pointer">
+                      <FileText className="h-4 w-4 mr-2" />
+                      My Submissions
                     </Link>
                   </DropdownMenuItem>
                   {isAdmin && (

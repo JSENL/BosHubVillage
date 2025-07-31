@@ -80,13 +80,17 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
         <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Admin Notes (Optional)
+              Rejection Message / Admin Notes
             </label>
+            <p className="text-xs text-gray-500 mb-2">
+              If rejecting, please explain why to help the submitter understand what needs to be improved.
+            </p>
             <Textarea
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder="Add any notes for the submitter..."
-              rows={3}
+              placeholder="For rejections: Please explain why this submission cannot be approved (e.g., inappropriate content, inaccurate information, duplicate news, etc.)&#10;&#10;For approvals: Add any optional notes or feedback."
+              rows={4}
+              className="resize-none"
             />
           </div>
           <div className="flex space-x-2">
