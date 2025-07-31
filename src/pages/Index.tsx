@@ -369,7 +369,7 @@ const Index = () => {
             <p className="mt-2 text-gray-600">Loading content...</p>
           </div>
         ) : filteredItems.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mt-6">
             {filteredItems.map(renderItem)}
           </div>
         ) : (

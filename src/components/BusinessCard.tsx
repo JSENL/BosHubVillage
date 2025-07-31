@@ -11,31 +11,31 @@ interface BusinessCardProps {
 const BusinessCard = ({ business }: BusinessCardProps) => {
   return (
     <Link to={`/business/${business.id}`}>
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-        <CardHeader>
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+        <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-lg font-semibold line-clamp-2">
+              <CardTitle className="text-base font-semibold line-clamp-2">
                 {business.title}
               </CardTitle>
-              <Badge variant="secondary" className="mb-2">
+              <Badge variant="secondary" className="mb-2 text-xs">
                 <Building className="h-3 w-3 mr-1" />
                 {business.business_type}
               </Badge>
             </div>
           </div>
-          <div className="flex items-center text-gray-600 mb-2">
-            <MapPin className="h-4 w-4 mr-1" />
-            {business.address}, {business.neighborhood}
+          <div className="flex items-center text-gray-600 mb-1">
+            <MapPin className="h-3 w-3 mr-1" />
+            <span className="text-xs truncate">{business.address}, {business.neighborhood}</span>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-2">
           {business.short_description && (
-            <p className="text-gray-700 line-clamp-2 mb-2">
+            <p className="text-gray-700 line-clamp-1 mb-1 text-xs">
               {business.short_description}
             </p>
           )}
-          <p className="text-gray-700 line-clamp-3">
+          <p className="text-gray-700 line-clamp-2 text-xs">
             {business.description}
           </p>
         </CardContent>

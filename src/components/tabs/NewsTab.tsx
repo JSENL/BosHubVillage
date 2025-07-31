@@ -99,7 +99,7 @@ export const NewsTab = () => {
           <p className="mt-2 text-gray-600">Loading news...</p>
         </div>
       ) : allNews && allNews.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
           {allNews.map((newsItem) => (
             <NewsCard key={newsItem.id} news={newsItem} />
           ))}

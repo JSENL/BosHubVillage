@@ -11,30 +11,38 @@ interface NewsCardProps {
 }
 
 const NewsCard = ({ news }: NewsCardProps) => {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   return (
     <Link to={`/news/${news.id}`}>
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold line-clamp-2">
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold line-clamp-2">
             {news.title}
           </CardTitle>
-          <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+          <div className="flex flex-col gap-1 text-xs text-gray-600">
             <div className="flex items-center">
               <Calendar className="h-3 w-3 mr-1" />
-              {format(new Date(news.date_posted), 'MMM d, yyyy')}
+              {formatDate(news.date_posted)}
             </div>
             <div className="flex items-center">
               <MapPin className="h-3 w-3 mr-1" />
-              {news.location}
+              <span className="truncate">{news.location}</span>
             </div>
             <div className="flex items-center">
               <ExternalLink className="h-3 w-3 mr-1" />
-              {news.source}
+              <span className="truncate">{news.source}</span>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <p className="text-gray-700 line-clamp-3">
+        <CardContent className="pt-2">
+          <p className="text-gray-700 line-clamp-2 text-xs">
             {news.content}
           </p>
         </CardContent>
