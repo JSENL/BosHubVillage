@@ -1,11 +1,13 @@
 
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
+import { Calendar as CalendarIcon, X } from 'lucide-react';
+import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { DateRange } from 'react-day-picker';
 
@@ -14,8 +16,8 @@ interface DateTimeFilterProps {
   onDateFilterChange: (date: string) => void;
   timeFilter: string;
   onTimeFilterChange: (time: string) => void;
-  dateRange?: DateRange;
-  onDateRangeChange?: (dateRange: DateRange | undefined) => void;
+  selectedDates?: Date[];
+  onSelectedDatesChange?: (dates: Date[]) => void;
 }
 
 export const DateTimeFilter = ({ 
@@ -23,9 +25,11 @@ export const DateTimeFilter = ({
   onDateFilterChange, 
   timeFilter, 
   onTimeFilterChange,
-  dateRange,
-  onDateRangeChange
+  selectedDates = [],
+  onSelectedDatesChange
 }: DateTimeFilterProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const useMultipleMode = onSelectedDatesChange !== undefined;
   const timeFilters = [
     { value: 'all', label: 'Any Time' },
     { value: 'morning', label: 'Morning (6AM-12PM)' },
@@ -33,9 +37,8 @@ export const DateTimeFilter = ({
     { value: 'evening', label: 'Evening (6PM-12AM)' },
   ];
 
-  // Handle both single date (legacy) and date range
+  // Handle both single date (legacy) and multiple dates
   const selectedDate = dateFilter ? new Date(dateFilter) : undefined;
-  const useRangeMode = onDateRangeChange !== undefined;
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
@@ -46,74 +49,170 @@ export const DateTimeFilter = ({
     }
   };
 
-  const handleDateRangeSelect = (range: DateRange | undefined) => {
-    if (onDateRangeChange) {
-      onDateRangeChange(range);
+  const handleMultipleDateSelect = (date: Date | undefined) => {
+    if (!date || !onSelectedDatesChange) return;
+    
+    const dateStr = date.toDateString();
+    const isSelected = selectedDates.some(d => d.toDateString() === dateStr);
+    
+    if (isSelected) {
+      // Remove date if already selected
+      const newDates = selectedDates.filter(d => d.toDateString() !== dateStr);
+      onSelectedDatesChange(newDates);
+    } else {
+      // Add date if not selected
+      onSelectedDatesChange([...selectedDates, date]);
     }
   };
 
-  const formatDateRange = (range: DateRange | undefined) => {
-    if (!range?.from) return "Pick date range";
-    if (!range.to) return format(range.from, "MMM dd, yyyy");
-    return `${format(range.from, "MMM dd")} - ${format(range.to, "MMM dd, yyyy")}`;
+  const removeDate = (dateToRemove: Date) => {
+    if (!onSelectedDatesChange) return;
+    const newDates = selectedDates.filter(d => d.toDateString() !== dateToRemove.toDateString());
+    onSelectedDatesChange(newDates);
+  };
+
+  const clearAllDates = () => {
+    if (useMultipleMode && onSelectedDatesChange) {
+      onSelectedDatesChange([]);
+    } else {
+      handleDateSelect(undefined);
+    }
+  };
+
+  const formatDateLabel = (date: Date) => {
+    if (isToday(date)) return 'Today';
+    if (isTomorrow(date)) return 'Tomorrow';
+    if (isYesterday(date)) return 'Yesterday';
+    return format(date, 'MMM dd');
+  };
+
+  const getButtonText = () => {
+    if (useMultipleMode) {
+      if (selectedDates.length === 0) return 'Pick dates';
+      if (selectedDates.length === 1) return formatDateLabel(selectedDates[0]);
+      return `${selectedDates.length} dates selected`;
+    } else {
+      return selectedDate ? format(selectedDate, "MMM dd, yyyy") : "Pick a date";
+    }
   };
 
   return (
     <>
-      <div className="flex items-center space-x-2">
-        <Popover>
-          <PopoverTrigger asChild>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center space-x-2">
+          <Popover open={isOpen} onOpenChange={setIsOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-44 sm:w-52 h-8 sm:h-10 text-xs sm:text-sm justify-start text-left font-normal",
+                  (!selectedDate && selectedDates.length === 0) && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {getButtonText()}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <div className="p-3">
+                {useMultipleMode && selectedDates.length > 0 && (
+                  <div className="mb-3 p-2 bg-muted rounded-md">
+                    <div className="text-xs font-medium text-muted-foreground mb-2">
+                      Selected Dates ({selectedDates.length}):
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {selectedDates
+                        .sort((a, b) => a.getTime() - b.getTime())
+                        .map((date) => (
+                        <Badge
+                          key={date.toDateString()}
+                          variant="secondary"
+                          className="text-xs px-2 py-1 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={() => removeDate(date)}
+                        >
+                          {formatDateLabel(date)}
+                          <X className="h-3 w-3 ml-1" />
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                <Calendar
+                  mode="single"
+                  selected={useMultipleMode ? undefined : selectedDate}
+                  onSelect={useMultipleMode ? handleMultipleDateSelect : handleDateSelect}
+                  initialFocus
+                  className={cn("pointer-events-auto")}
+                  modifiers={{
+                    selected: useMultipleMode ? selectedDates : undefined,
+                  }}
+                  modifiersStyles={{
+                    selected: {
+                      backgroundColor: 'hsl(var(--primary))',
+                      color: 'hsl(var(--primary-foreground))',
+                      fontWeight: 'bold'
+                    }
+                  }}
+                />
+                
+                {useMultipleMode && (
+                  <div className="mt-3 pt-3 border-t flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearAllDates}
+                      className="flex-1 text-xs"
+                    >
+                      Clear All
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => setIsOpen(false)}
+                      className="flex-1 text-xs"
+                    >
+                      Done
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+          
+          {(selectedDate || selectedDates.length > 0) && (
             <Button
-              variant="outline"
-              className={cn(
-                "w-44 sm:w-52 h-8 sm:h-10 text-xs sm:text-sm justify-start text-left font-normal",
-                (!selectedDate && !dateRange?.from) && "text-muted-foreground"
-              )}
+              variant="ghost"
+              size="sm"
+              onClick={clearAllDates}
+              className="h-8 px-2 text-xs"
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {useRangeMode 
-                ? formatDateRange(dateRange)
-                : (selectedDate ? format(selectedDate, "MMM dd, yyyy") : "Pick a date")
-              }
+              Clear
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            {useRangeMode ? (
-              <Calendar
-                mode="range"
-                selected={dateRange}
-                onSelect={handleDateRangeSelect}
-                initialFocus
-                className={cn("p-3 pointer-events-auto")}
-                numberOfMonths={2}
-              />
-            ) : (
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={handleDateSelect}
-                initialFocus
-                className={cn("p-3 pointer-events-auto")}
-              />
-            )}
-          </PopoverContent>
-        </Popover>
+          )}
+        </div>
         
-        {(selectedDate || dateRange?.from) && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              if (useRangeMode) {
-                handleDateRangeSelect(undefined);
-              } else {
-                handleDateSelect(undefined);
-              }
-            }}
-            className="h-8 px-2 text-xs"
-          >
-            Clear
-          </Button>
+        {useMultipleMode && selectedDates.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            {selectedDates
+              .sort((a, b) => a.getTime() - b.getTime())
+              .slice(0, 3)
+              .map((date) => (
+              <Badge
+                key={date.toDateString()}
+                variant="outline"
+                className="text-xs px-2 py-1 cursor-pointer hover:bg-muted"
+                onClick={() => removeDate(date)}
+              >
+                {formatDateLabel(date)}
+                <X className="h-3 w-3 ml-1" />
+              </Badge>
+            ))}
+            {selectedDates.length > 3 && (
+              <Badge variant="outline" className="text-xs px-2 py-1">
+                +{selectedDates.length - 3} more
+              </Badge>
+            )}
+          </div>
         )}
       </div>
 

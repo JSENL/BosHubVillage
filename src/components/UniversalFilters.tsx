@@ -22,6 +22,8 @@ interface UniversalFiltersProps {
   onTimeFilterChange?: (time: string) => void;
   dateRange?: DateRange;
   onDateRangeChange?: (dateRange: DateRange | undefined) => void;
+  selectedDates?: Date[];
+  onSelectedDatesChange?: (dates: Date[]) => void;
   filteredItemsCount: number;
   itemType: 'events' | 'business' | 'news';
 }
@@ -41,6 +43,8 @@ export const UniversalFilters = ({
   onTimeFilterChange,
   dateRange,
   onDateRangeChange,
+  selectedDates,
+  onSelectedDatesChange,
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
@@ -68,8 +72,8 @@ export const UniversalFilters = ({
           onDateFilterChange={onDateFilterChange}
           timeFilter={timeFilter}
           onTimeFilterChange={onTimeFilterChange}
-          dateRange={dateRange}
-          onDateRangeChange={onDateRangeChange}
+          selectedDates={selectedDates}
+          onSelectedDatesChange={onSelectedDatesChange}
         />
       )}
       
