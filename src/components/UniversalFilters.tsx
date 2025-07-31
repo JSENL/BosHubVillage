@@ -74,6 +74,8 @@ export const UniversalFilters = ({
           onTimeFilterChange={onTimeFilterChange}
           selectedDates={selectedDates}
           onSelectedDatesChange={onSelectedDatesChange}
+          dateRange={dateRange}
+          onDateRangeChange={onDateRangeChange}
         />
       )}
       
