@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Event } from '@/hooks/useEvents';
@@ -95,22 +94,13 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
 
           <div>
             <Label htmlFor="category">Category</Label>
-            <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Community">Community</SelectItem>
-                <SelectItem value="Sports">Sports</SelectItem>
-                <SelectItem value="Arts">Arts</SelectItem>
-                <SelectItem value="Education">Education</SelectItem>
-                <SelectItem value="Food">Food</SelectItem>
-                <SelectItem value="Entertainment">Entertainment</SelectItem>
-                <SelectItem value="Business">Business</SelectItem>
-                <SelectItem value="Health">Health</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+            <Input
+              id="category"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              placeholder="e.g., Community, Sports, Arts, Education..."
+              required
+            />
           </div>
 
           <div>
