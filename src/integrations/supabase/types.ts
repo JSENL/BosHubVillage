@@ -480,6 +480,7 @@ export type Database = {
           submitted_by: string
           title: string
           updated_at: string
+          villages: string | null
         }
         Insert: {
           admin_notes?: string | null
@@ -505,6 +506,7 @@ export type Database = {
           submitted_by: string
           title: string
           updated_at?: string
+          villages?: string | null
         }
         Update: {
           admin_notes?: string | null
@@ -530,6 +532,7 @@ export type Database = {
           submitted_by?: string
           title?: string
           updated_at?: string
+          villages?: string | null
         }
         Relationships: []
       }
