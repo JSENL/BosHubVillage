@@ -75,15 +75,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       >
         <CardContent className="p-0">
           <div className="flex">
-            {/* Event Image Placeholder */}
-            <div className="w-60 h-48 bg-gradient-to-br from-yelp-red to-yelp-orange flex items-center justify-center flex-shrink-0">
-              <div className="text-white text-center">
-                <Calendar className="h-12 w-12 mx-auto mb-2" />
-                <div className="text-sm font-medium">
-                  {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                </div>
-              </div>
-            </div>
             
             {/* Event Details */}
             <div className="flex-1 p-6">
@@ -140,19 +131,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   return (
     <Card 
       id={`event-${event.id}`}
-      className={cardClassName}
+      className={`${cardClassName} h-full`}
       onClick={handleViewDetails}
     >
-      {/* Event Image Placeholder */}
-      <div className="h-32 bg-gradient-to-br from-yelp-red to-yelp-orange flex items-center justify-center">
-        <div className="text-white text-center">
-          <Calendar className="h-8 w-8 mx-auto mb-1" />
-          <div className="text-xs font-medium">
-            {new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-          </div>
-        </div>
-      </div>
-      
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between mb-1">
           <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray text-xs">

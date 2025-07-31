@@ -25,7 +25,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   };
 
   return (
-    <Card className="h-full hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={handleClick}>
+    <Card className="h-full hover:shadow-lg transition-shadow duration-200 cursor-pointer min-h-[200px]" onClick={handleClick}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2">

@@ -11,7 +11,7 @@ interface BusinessCardProps {
 const BusinessCard = ({ business }: BusinessCardProps) => {
   return (
     <Link to={`/business/${business.id}`}>
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full min-h-[200px]">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div>
