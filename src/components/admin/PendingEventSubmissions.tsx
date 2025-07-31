@@ -26,6 +26,14 @@ export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventS
   const [adminNotes, setAdminNotes] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   const pendingSubmissions = submissions.filter(s => s.status === 'pending');
 
   const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', notes: string) => {
@@ -138,16 +146,16 @@ export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventS
             <p className="text-gray-600">No pending submissions to review.</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             {pendingSubmissions.map((submission) => (
-              <div key={submission.id} className="border border-gray-200 rounded-lg p-4 shadow-sm">
+              <div key={submission.id} className="border border-gray-200 rounded-lg p-3 shadow-sm w-full">
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">{submission.title}</h3>
                     <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(submission.date).toLocaleDateString()}
+                        {formatDate(submission.date)}
                       </div>
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />

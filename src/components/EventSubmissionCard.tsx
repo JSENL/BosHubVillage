@@ -41,43 +41,61 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
   };
 
   const formatTimeRange = (startTime: string | null, endTime: string | null) => {
+    const formatTime = (time: string) => {
+      const [hours, minutes] = time.split(':');
+      const hour = parseInt(hours);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour % 12 || 12;
+      return `${hour12}:${minutes} ${ampm}`;
+    };
+
     if (!startTime && !endTime) return '';
     if (startTime && endTime) {
-      return ` from ${startTime} to ${endTime}`;
+      return ` from ${formatTime(startTime)} to ${formatTime(endTime)}`;
     }
-    return startTime ? ` at ${startTime}` : endTime ? ` until ${endTime}` : '';
+    return startTime ? ` at ${formatTime(startTime)}` : endTime ? ` until ${formatTime(endTime)}` : '';
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div className="border border-gray-200 rounded-lg p-3 shadow-sm w-full">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">{submission.title}</h3>
-          <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
-            <Badge variant="secondary">{submission.category}</Badge>
+          <h3 className="text-base font-bold text-gray-900 line-clamp-2">{submission.title}</h3>
+          <div className="flex flex-col gap-1 text-xs text-gray-600 mt-1">
+            <Badge variant="secondary" className="w-fit text-xs">{submission.category}</Badge>
             <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-1" />
-              {new Date(submission.date).toLocaleDateString()}
+              <Calendar className="h-3 w-3 mr-1" />
+              {formatDate(submission.date)}
               {formatTimeRange(submission.start_time, submission.end_time)}
             </div>
           </div>
-          <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+          <div className="flex flex-col gap-1 text-xs text-gray-600 mt-1">
             <div className="flex items-center">
-              <MapPin className="h-4 w-4 mr-1" />
-              {submission.location}
+              <MapPin className="h-3 w-3 mr-1" />
+              <span className="truncate">{submission.location}</span>
             </div>
-            {submission.price && submission.price > 0 && (
-              <div className="flex items-center">
-                <DollarSign className="h-4 w-4 mr-1" />
-                ${submission.price}
-              </div>
-            )}
-            {submission.max_attendees && (
-              <div className="flex items-center">
-                <Users className="h-4 w-4 mr-1" />
-                Max: {submission.max_attendees}
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              {submission.price && submission.price > 0 && (
+                <div className="flex items-center">
+                  <DollarSign className="h-3 w-3 mr-1" />
+                  ${submission.price}
+                </div>
+              )}
+              {submission.max_attendees && (
+                <div className="flex items-center">
+                  <Users className="h-3 w-3 mr-1" />
+                  Max: {submission.max_attendees}
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <Badge variant="outline" className="text-orange-600 border-orange-600">
@@ -87,7 +105,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
       </div>
       
       {submission.description && (
-        <p className="text-gray-600 mb-4 line-clamp-3">{submission.description}</p>
+        <p className="text-gray-600 mb-3 line-clamp-2 text-xs">{submission.description}</p>
       )}
       
       {selectedSubmission === submission.id ? (

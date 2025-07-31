@@ -60,14 +60,14 @@ export const PendingNewsSubmissions = ({ submissions, onUpdate }: PendingNewsSub
             <p className="text-gray-600">No pending news submissions to review.</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             {pendingSubmissions.map((submission) => (
               <div key={submission.id} className="relative">
                 <NewsSubmissionCard
                   submission={submission}
                   onUpdate={onUpdate}
                 />
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-3 right-3">
                   <Button
                     onClick={() => handleDeleteSubmission(submission.id)}
                     disabled={actionLoading}

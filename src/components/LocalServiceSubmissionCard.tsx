@@ -21,6 +21,14 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   const handleApprove = async () => {
     try {
       // First, insert into the main local_resources table
@@ -85,13 +93,13 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
 
   return (
     <Card className="h-full hover:shadow-lg transition-shadow duration-200">
-      <CardHeader>
+      <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-2">
+          <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2">
             {submission.name}
           </CardTitle>
-          <div className="flex flex-col items-end space-y-2">
-            <Badge variant="secondary" className="flex-shrink-0">
+          <div className="flex flex-col items-end space-y-1">
+            <Badge variant="secondary" className="flex-shrink-0 text-xs">
               <Building className="h-3 w-3 mr-1" />
               {submission.category}
             </Badge>
@@ -99,11 +107,11 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2 pt-2">
         <div className="flex items-start text-gray-600">
-          <MapPin className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
-          <div className="text-sm">
-            <p>{submission.address}</p>
+          <MapPin className="h-3 w-3 mr-2 mt-0.5 flex-shrink-0" />
+          <div className="text-xs">
+            <p className="truncate">{submission.address}</p>
             <p className="text-xs text-gray-500">
               {submission.neighborhood}
               {submission.village && `, ${submission.village}`}
@@ -112,14 +120,14 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
         </div>
         
         {submission.description && (
-          <p className="text-sm text-gray-600 line-clamp-3">
+          <p className="text-xs text-gray-600 line-clamp-2">
             {submission.description}
           </p>
         )}
         
-        <div className="pt-2 border-t">
+        <div className="pt-1 border-t">
           <p className="text-xs text-gray-500">
-            Submitted {new Date(submission.created_at).toLocaleDateString()}
+            Submitted {formatDate(submission.created_at)}
           </p>
         </div>
 

@@ -24,6 +24,14 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
   const [adminNotes, setAdminNotes] = useState('');
   const { updateSubmissionStatus, actionLoading } = useNewsSubmissionOperations();
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   const handleStatusUpdate = async (status: 'approved' | 'rejected') => {
     try {
       await updateSubmissionStatus(submission.id, status, adminNotes);
@@ -36,32 +44,34 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div className="border border-gray-200 rounded-lg p-3 shadow-sm w-full">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">{submission.title}</h3>
-          <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+          <h3 className="text-base font-bold text-gray-900 line-clamp-2">{submission.title}</h3>
+          <div className="flex flex-col gap-1 text-xs text-gray-600 mt-1">
             <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-1" />
-              {new Date(submission.date_posted).toLocaleDateString()}
+              <Calendar className="h-3 w-3 mr-1" />
+              {formatDate(submission.date_posted)}
             </div>
             <div className="flex items-center">
-              <MapPin className="h-4 w-4 mr-1" />
-              {submission.location}
+              <MapPin className="h-3 w-3 mr-1" />
+              <span className="truncate">{submission.location}</span>
             </div>
           </div>
           {submission.Address && (
-            <div className="flex items-center text-sm text-gray-600 mt-1">
-              <Building2 className="h-4 w-4 mr-1" />
-              <span className="font-medium">Address:</span> {submission.Address}
+            <div className="flex items-center text-xs text-gray-600 mt-1">
+              <Building2 className="h-3 w-3 mr-1" />
+              <span className="font-medium">Address:</span> 
+              <span className="truncate ml-1">{submission.Address}</span>
             </div>
           )}
           {submission.villages && submission.villages.length > 0 && (
-            <div className="flex items-center text-sm text-gray-600 mt-1">
-              <span className="font-medium">Villages:</span> {submission.villages.join(', ')}
+            <div className="flex items-center text-xs text-gray-600 mt-1">
+              <span className="font-medium">Villages:</span> 
+              <span className="truncate ml-1">{submission.villages.join(', ')}</span>
             </div>
           )}
-          <p className="text-sm text-gray-600 mt-1">Source: {submission.source}</p>
+          <p className="text-xs text-gray-600 mt-1">Source: {submission.source}</p>
           {submission.latitude && submission.longitude && (
             <p className="text-xs text-green-600 mt-1">
               📍 Geocoded: {submission.latitude}, {submission.longitude}
@@ -74,7 +84,7 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
         </Badge>
       </div>
       
-      <p className="text-gray-600 mb-4 line-clamp-3">{submission.content}</p>
+      <p className="text-gray-600 mb-3 line-clamp-2 text-xs">{submission.content}</p>
       
       {selectedSubmission === submission.id ? (
         <div className="space-y-3 bg-gray-50 p-4 rounded-lg">

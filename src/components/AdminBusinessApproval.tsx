@@ -45,7 +45,7 @@ const AdminBusinessApproval = () => {
               No pending business submissions
             </p>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
               {pendingSubmissions.map((submission) => (
                 <BusinessSubmissionCard
                   key={submission.id}
@@ -73,7 +73,7 @@ const AdminBusinessApproval = () => {
             <h3 className="text-xl font-semibold mb-4">
               Recently Reviewed ({recentlyReviewed.length})
             </h3>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
               {recentlyReviewed.slice(0, 5).map((submission) => (
                 <BusinessSubmissionCard
                   key={submission.id}

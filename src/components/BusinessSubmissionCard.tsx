@@ -21,6 +21,14 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
   const [adminNotes, setAdminNotes] = useState('');
   const { updateSubmissionStatus, actionLoading } = useBusinessSubmissionOperations();
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+  };
+
   const handleStatusUpdate = async (status: 'approved' | 'rejected') => {
     try {
       await updateSubmissionStatus(submission.id, status, adminNotes);
@@ -59,18 +67,18 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div className="border border-gray-200 rounded-lg p-3 shadow-sm w-full">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">{submission.title}</h3>
-          <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
-            <Badge variant="secondary">{submission.business_type}</Badge>
+          <h3 className="text-base font-bold text-gray-900 line-clamp-2">{submission.title}</h3>
+          <div className="flex flex-col gap-1 text-xs text-gray-600 mt-1">
+            <Badge variant="secondary" className="w-fit text-xs">{submission.business_type}</Badge>
             <div className="flex items-center">
-              <MapPin className="h-4 w-4 mr-1" />
-              {submission.neighborhood}
+              <MapPin className="h-3 w-3 mr-1" />
+              <span className="truncate">{submission.neighborhood}</span>
             </div>
           </div>
-          <p className="text-sm text-gray-600 mt-1">{submission.address}</p>
+          <p className="text-xs text-gray-600 mt-1 truncate">{submission.address}</p>
           {submission.latitude && submission.longitude && (
             <p className="text-xs text-gray-500 mt-1">
               Coordinates: {Number(submission.latitude).toFixed(6)}, {Number(submission.longitude).toFixed(6)}
@@ -81,9 +89,9 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
       </div>
       
       {submission.short_description && (
-        <p className="text-gray-600 mb-2 font-medium">{submission.short_description}</p>
+        <p className="text-gray-600 mb-2 font-medium text-xs line-clamp-1">{submission.short_description}</p>
       )}
-      <p className="text-gray-600 mb-4 line-clamp-3">{submission.description}</p>
+      <p className="text-gray-600 mb-3 line-clamp-2 text-xs">{submission.description}</p>
 
       {submission.admin_notes && (
         <div className="bg-gray-50 p-3 rounded-md mb-4">
