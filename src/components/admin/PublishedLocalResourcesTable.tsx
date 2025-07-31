@@ -23,8 +23,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Heart, Trash2, MapPin, Building2 } from 'lucide-react';
+import { Heart, Trash2, MapPin, Building2, Edit } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
+import { EditLocalResourceDialog } from './EditLocalResourceDialog';
 
 interface PublishedLocalResourcesTableProps {
   localResources: LocalResource[];
@@ -36,6 +37,7 @@ export const PublishedLocalResourcesTable = ({
   onUpdate 
 }: PublishedLocalResourcesTableProps) => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingResource, setEditingResource] = useState<LocalResource | null>(null);
 
   const handleDelete = async (id: string) => {
     setDeletingId(id);
@@ -124,39 +126,49 @@ export const PublishedLocalResourcesTable = ({
                       {formatDate(resource.created_at)}
                     </TableCell>
                     <TableCell>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button 
-                            variant="destructive" 
-                            size="sm"
-                            disabled={deletingId === resource.id}
-                          >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            Delete
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Local Resource</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete "{resource.name}"? 
-                              This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel disabled={deletingId === resource.id}>
-                              Cancel
-                            </AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => handleDelete(resource.id)}
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => setEditingResource(resource)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="destructive" 
+                              size="sm"
                               disabled={deletingId === resource.id}
-                              className="bg-red-600 hover:bg-red-700"
                             >
-                              {deletingId === resource.id ? 'Deleting...' : 'Delete'}
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Local Resource</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete "{resource.name}"? 
+                                This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel disabled={deletingId === resource.id}>
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleDelete(resource.id)}
+                                disabled={deletingId === resource.id}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                {deletingId === resource.id ? 'Deleting...' : 'Delete'}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -165,6 +177,15 @@ export const PublishedLocalResourcesTable = ({
           </div>
         )}
       </CardContent>
+      
+      {editingResource && (
+        <EditLocalResourceDialog
+          localResource={editingResource}
+          open={!!editingResource}
+          onOpenChange={(open) => !open && setEditingResource(null)}
+          onUpdate={onUpdate}
+        />
+      )}
     </Card>
   );
 };

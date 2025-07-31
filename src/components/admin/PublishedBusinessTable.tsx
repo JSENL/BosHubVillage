@@ -12,11 +12,13 @@ import {
 import { 
   Building,
   MapPin,
-  Trash2
+  Trash2,
+  Edit
 } from 'lucide-react';
 import { Business } from '@/types/business';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { EditBusinessDialog } from './EditBusinessDialog';
 
 interface PublishedBusinessTableProps {
   businesses: Business[];
@@ -25,6 +27,7 @@ interface PublishedBusinessTableProps {
 
 export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusinessTableProps) => {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
 
   const handleDeleteBusiness = async (businessId: string) => {
     if (!confirm('Are you sure you want to delete this business? This action cannot be undone.')) {
@@ -105,15 +108,25 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Button
-                      onClick={() => handleDeleteBusiness(business.id)}
-                      disabled={actionLoading === business.id}
-                      variant="destructive"
-                      size="sm"
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      {actionLoading === business.id ? 'Deleting...' : 'Delete'}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => setEditingBusiness(business)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={() => handleDeleteBusiness(business.id)}
+                        disabled={actionLoading === business.id}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        {actionLoading === business.id ? 'Deleting...' : 'Delete'}
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -121,6 +134,15 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
           </Table>
         )}
       </CardContent>
+      
+      {editingBusiness && (
+        <EditBusinessDialog
+          business={editingBusiness}
+          open={!!editingBusiness}
+          onOpenChange={(open) => !open && setEditingBusiness(null)}
+          onUpdate={onUpdate}
+        />
+      )}
     </Card>
   );
 };
