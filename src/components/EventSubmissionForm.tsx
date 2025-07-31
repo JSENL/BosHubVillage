@@ -215,27 +215,21 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
 
             <div>
               <Label htmlFor="neighborhoods" className="text-sm font-medium text-gray-700">
-                Neighborhoods (Select all that apply)
+                Neighborhoods
               </Label>
-              <div className="mt-2 grid grid-cols-2 md:grid-cols-3 gap-2 max-h-32 overflow-y-auto border border-purple-200 rounded-md p-3">
-                {neighborhoods.map((neighborhood) => (
-                  <label key={neighborhood.value} className="flex items-center space-x-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={formData.neighborhoods.includes(neighborhood.value)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          handleInputChange('neighborhoods', [...formData.neighborhoods, neighborhood.value]);
-                        } else {
-                          handleInputChange('neighborhoods', formData.neighborhoods.filter(n => n !== neighborhood.value));
-                        }
-                      }}
-                      className="rounded border-purple-300 text-purple-600 focus:ring-purple-500"
-                    />
-                    <span>{neighborhood.label}</span>
-                  </label>
-                ))}
-              </div>
+              <Input
+                id="neighborhoods"
+                placeholder="Enter neighborhoods separated by commas (e.g., Back Bay, Cambridge, South End)"
+                value={formData.neighborhoods.join(', ')}
+                onChange={(e) => {
+                  const neighborhoods = e.target.value.split(',').map(n => n.trim()).filter(n => n.length > 0);
+                  handleInputChange('neighborhoods', neighborhoods);
+                }}
+                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Enter multiple neighborhoods separated by commas
+              </p>
             </div>
           </div>
 

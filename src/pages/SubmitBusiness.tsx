@@ -192,20 +192,13 @@ const SubmitBusiness = () => {
 
                 <div>
                   <Label htmlFor="neighborhood">Neighborhood *</Label>
-                  <Select
+                  <Input
+                    id="neighborhood"
                     value={formData.neighborhood}
-                    onValueChange={(value) => setFormData({ ...formData, neighborhood: value })}
+                    onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
+                    placeholder="Enter neighborhood (e.g., Back Bay, Cambridge, etc.)"
                     required
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select neighborhood" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {neighborhoods.map((neighborhood) => (
-                        <SelectItem key={neighborhood} value={neighborhood}>{neighborhood}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  />
                 </div>
 
                 <div>
