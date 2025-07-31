@@ -179,6 +179,7 @@ export type Database = {
           submitted_by: string
           title: string
           updated_at: string
+          villages: string | null
         }
         Insert: {
           address: string
@@ -197,6 +198,7 @@ export type Database = {
           submitted_by: string
           title: string
           updated_at?: string
+          villages?: string | null
         }
         Update: {
           address?: string
@@ -215,6 +217,7 @@ export type Database = {
           submitted_by?: string
           title?: string
           updated_at?: string
+          villages?: string | null
         }
         Relationships: [
           {

@@ -18,6 +18,7 @@ interface CreateEventSubmissionData {
   is_recurring: boolean;
   recurring_pattern: string | null;
   neighborhoods: string[] | null;
+  villages: string | null;
   latitude: number | null;
   longitude: number | null;
 }

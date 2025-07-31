@@ -32,6 +32,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     is_recurring: false,
     recurring_pattern: '',
     neighborhoods: [] as string[],
+    villages: '',
   });
 
   const { submitEvent } = useEventSubmissions();
@@ -98,6 +99,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         is_recurring: formData.is_recurring,
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
         neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods : null,
+        villages: formData.villages || null,
         latitude: coordinates?.latitude || null,
         longitude: coordinates?.longitude || null,
       });
@@ -117,6 +119,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         is_recurring: false,
         recurring_pattern: '',
         neighborhoods: [],
+        villages: '',
       });
       
       if (onClose) onClose();
@@ -229,6 +232,22 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               />
               <p className="text-xs text-gray-500 mt-1">
                 Enter multiple neighborhoods separated by commas
+              </p>
+            </div>
+
+            <div>
+              <Label htmlFor="villages" className="text-sm font-medium text-gray-700">
+                Villages
+              </Label>
+              <Input
+                id="villages"
+                placeholder="Enter villages (e.g., Beacon Hill Village, Cambridge Village, etc.)"
+                value={formData.villages}
+                onChange={(e) => handleInputChange('villages', e.target.value)}
+                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Enter villages where this event is relevant
               </p>
             </div>
           </div>

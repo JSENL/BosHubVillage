@@ -25,6 +25,7 @@ const SubmitBusiness = () => {
     business_type: '',
     address: '',
     neighborhood: '',
+    villages: '',
     description: '',
     short_description: ''
   });
@@ -76,6 +77,7 @@ const SubmitBusiness = () => {
           business_type: formData.business_type,
           address: formData.address,
           neighborhood: formData.neighborhood,
+          villages: formData.villages || null,
           description: formData.description,
           short_description: formData.short_description || null,
           latitude,
@@ -96,6 +98,7 @@ const SubmitBusiness = () => {
         business_type: '',
         address: '',
         neighborhood: '',
+        villages: '',
         description: '',
         short_description: ''
       });
@@ -198,6 +201,16 @@ const SubmitBusiness = () => {
                     onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
                     placeholder="Enter neighborhood (e.g., Back Bay, Cambridge, etc.)"
                     required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="villages">Villages</Label>
+                  <Input
+                    id="villages"
+                    value={formData.villages}
+                    onChange={(e) => setFormData({ ...formData, villages: e.target.value })}
+                    placeholder="Enter villages (e.g., Beacon Hill Village, Cambridge Village, etc.)"
                   />
                 </div>
 
