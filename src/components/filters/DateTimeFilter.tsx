@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
-import { Calendar as CalendarIcon, X } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar as CalendarIcon, X, CalendarDays, CalendarRange } from 'lucide-react';
 import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { DateRange } from 'react-day-picker';
@@ -18,6 +19,8 @@ interface DateTimeFilterProps {
   onTimeFilterChange: (time: string) => void;
   selectedDates?: Date[];
   onSelectedDatesChange?: (dates: Date[]) => void;
+  dateRange?: DateRange;
+  onDateRangeChange?: (dateRange: DateRange | undefined) => void;
 }
 
 export const DateTimeFilter = ({ 
@@ -26,10 +29,16 @@ export const DateTimeFilter = ({
   timeFilter, 
   onTimeFilterChange,
   selectedDates = [],
-  onSelectedDatesChange
+  onSelectedDatesChange,
+  dateRange,
+  onDateRangeChange
 }: DateTimeFilterProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'individual' | 'range'>('individual');
+  
   const useMultipleMode = onSelectedDatesChange !== undefined;
+  const useRangeMode = onDateRangeChange !== undefined;
+  const hasAdvancedMode = useMultipleMode || useRangeMode;
   const timeFilters = [
     { value: 'all', label: 'Any Time' },
     { value: 'morning', label: 'Morning (6AM-12PM)' },
@@ -71,9 +80,17 @@ export const DateTimeFilter = ({
     onSelectedDatesChange(newDates);
   };
 
+  const handleDateRangeSelect = (range: DateRange | undefined) => {
+    if (onDateRangeChange) {
+      onDateRangeChange(range);
+    }
+  };
+
   const clearAllDates = () => {
     if (useMultipleMode && onSelectedDatesChange) {
       onSelectedDatesChange([]);
+    } else if (useRangeMode && onDateRangeChange) {
+      onDateRangeChange(undefined);
     } else {
       handleDateSelect(undefined);
     }
@@ -86,8 +103,23 @@ export const DateTimeFilter = ({
     return format(date, 'MMM dd');
   };
 
+  const formatDateRange = (range: DateRange | undefined) => {
+    if (!range?.from) return "Pick date range";
+    if (!range.to) return format(range.from, "MMM dd, yyyy");
+    return `${format(range.from, "MMM dd")} - ${format(range.to, "MMM dd, yyyy")}`;
+  };
+
   const getButtonText = () => {
-    if (useMultipleMode) {
+    if (hasAdvancedMode) {
+      if (activeTab === 'range' && useRangeMode) {
+        return formatDateRange(dateRange);
+      } else if (activeTab === 'individual' && useMultipleMode) {
+        if (selectedDates.length === 0) return 'Pick dates';
+        if (selectedDates.length === 1) return formatDateLabel(selectedDates[0]);
+        return `${selectedDates.length} dates selected`;
+      }
+      return 'Pick dates';
+    } else if (useMultipleMode) {
       if (selectedDates.length === 0) return 'Pick dates';
       if (selectedDates.length === 1) return formatDateLabel(selectedDates[0]);
       return `${selectedDates.length} dates selected`;
@@ -104,82 +136,188 @@ export const DateTimeFilter = ({
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={cn(
-                  "w-44 sm:w-52 h-8 sm:h-10 text-xs sm:text-sm justify-start text-left font-normal",
-                  (!selectedDate && selectedDates.length === 0) && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {getButtonText()}
+              className={cn(
+                "w-48 sm:w-56 h-8 sm:h-10 text-xs sm:text-sm justify-start text-left font-normal",
+                (!selectedDate && selectedDates.length === 0 && !dateRange?.from) && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {getButtonText()}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <div className="p-3">
-                {useMultipleMode && selectedDates.length > 0 && (
-                  <div className="mb-3 p-2 bg-muted rounded-md">
-                    <div className="text-xs font-medium text-muted-foreground mb-2">
-                      Selected Dates ({selectedDates.length}):
+                {hasAdvancedMode ? (
+                  <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'individual' | 'range')} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 mb-3">
+                      <TabsTrigger value="individual" className="flex items-center gap-2 text-xs">
+                        <CalendarDays className="h-3 w-3" />
+                        Individual Dates
+                      </TabsTrigger>
+                      <TabsTrigger value="range" className="flex items-center gap-2 text-xs">
+                        <CalendarRange className="h-3 w-3" />
+                        Date Range
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="individual" className="space-y-3">
+                      {selectedDates.length > 0 && (
+                        <div className="p-2 bg-muted rounded-md">
+                          <div className="text-xs font-medium text-muted-foreground mb-2">
+                            Selected Dates ({selectedDates.length}):
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {selectedDates
+                              .sort((a, b) => a.getTime() - b.getTime())
+                              .map((date) => (
+                              <Badge
+                                key={date.toDateString()}
+                                variant="secondary"
+                                className="text-xs px-2 py-1 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                                onClick={() => removeDate(date)}
+                              >
+                                {formatDateLabel(date)}
+                                <X className="h-3 w-3 ml-1" />
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <Calendar
+                        mode="single"
+                        selected={undefined}
+                        onSelect={handleMultipleDateSelect}
+                        initialFocus
+                        className="pointer-events-auto"
+                        modifiers={{
+                          selected: selectedDates,
+                        }}
+                        modifiersStyles={{
+                          selected: {
+                            backgroundColor: 'hsl(var(--primary))',
+                            color: 'hsl(var(--primary-foreground))',
+                            fontWeight: 'bold'
+                          }
+                        }}
+                      />
+                    </TabsContent>
+
+                    <TabsContent value="range" className="space-y-3">
+                      {dateRange?.from && (
+                        <div className="p-2 bg-muted rounded-md">
+                          <div className="text-xs font-medium text-muted-foreground mb-1">
+                            Selected Range:
+                          </div>
+                          <div className="text-sm font-medium">
+                            {formatDateRange(dateRange)}
+                          </div>
+                        </div>
+                      )}
+                      
+                      <Calendar
+                        mode="range"
+                        selected={dateRange}
+                        onSelect={handleDateRangeSelect}
+                        initialFocus
+                        className="pointer-events-auto"
+                        numberOfMonths={2}
+                      />
+                    </TabsContent>
+
+                    <div className="mt-3 pt-3 border-t flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearAllDates}
+                        className="flex-1 text-xs"
+                      >
+                        Clear All
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => setIsOpen(false)}
+                        className="flex-1 text-xs"
+                      >
+                        Done
+                      </Button>
                     </div>
-                    <div className="flex flex-wrap gap-1">
-                      {selectedDates
-                        .sort((a, b) => a.getTime() - b.getTime())
-                        .map((date) => (
-                        <Badge
-                          key={date.toDateString()}
-                          variant="secondary"
-                          className="text-xs px-2 py-1 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
-                          onClick={() => removeDate(date)}
-                        >
-                          {formatDateLabel(date)}
-                          <X className="h-3 w-3 ml-1" />
-                        </Badge>
-                      ))}
+                  </Tabs>
+                ) : useMultipleMode ? (
+                  <>
+                    {selectedDates.length > 0 && (
+                      <div className="mb-3 p-2 bg-muted rounded-md">
+                        <div className="text-xs font-medium text-muted-foreground mb-2">
+                          Selected Dates ({selectedDates.length}):
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {selectedDates
+                            .sort((a, b) => a.getTime() - b.getTime())
+                            .map((date) => (
+                            <Badge
+                              key={date.toDateString()}
+                              variant="secondary"
+                              className="text-xs px-2 py-1 cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
+                              onClick={() => removeDate(date)}
+                            >
+                              {formatDateLabel(date)}
+                              <X className="h-3 w-3 ml-1" />
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <Calendar
+                      mode="single"
+                      selected={undefined}
+                      onSelect={handleMultipleDateSelect}
+                      initialFocus
+                      className="pointer-events-auto"
+                      modifiers={{
+                        selected: selectedDates,
+                      }}
+                      modifiersStyles={{
+                        selected: {
+                          backgroundColor: 'hsl(var(--primary))',
+                          color: 'hsl(var(--primary-foreground))',
+                          fontWeight: 'bold'
+                        }
+                      }}
+                    />
+                    
+                    <div className="mt-3 pt-3 border-t flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={clearAllDates}
+                        className="flex-1 text-xs"
+                      >
+                        Clear All
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => setIsOpen(false)}
+                        className="flex-1 text-xs"
+                      >
+                        Done
+                      </Button>
                     </div>
-                  </div>
-                )}
-                
-                <Calendar
-                  mode="single"
-                  selected={useMultipleMode ? undefined : selectedDate}
-                  onSelect={useMultipleMode ? handleMultipleDateSelect : handleDateSelect}
-                  initialFocus
-                  className={cn("pointer-events-auto")}
-                  modifiers={{
-                    selected: useMultipleMode ? selectedDates : undefined,
-                  }}
-                  modifiersStyles={{
-                    selected: {
-                      backgroundColor: 'hsl(var(--primary))',
-                      color: 'hsl(var(--primary-foreground))',
-                      fontWeight: 'bold'
-                    }
-                  }}
-                />
-                
-                {useMultipleMode && (
-                  <div className="mt-3 pt-3 border-t flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearAllDates}
-                      className="flex-1 text-xs"
-                    >
-                      Clear All
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => setIsOpen(false)}
-                      className="flex-1 text-xs"
-                    >
-                      Done
-                    </Button>
-                  </div>
+                  </>
+                ) : (
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={handleDateSelect}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
                 )}
               </div>
             </PopoverContent>
           </Popover>
           
-          {(selectedDate || selectedDates.length > 0) && (
+          {(selectedDate || selectedDates.length > 0 || dateRange?.from) && (
             <Button
               variant="ghost"
               size="sm"
@@ -188,10 +326,18 @@ export const DateTimeFilter = ({
             >
               Clear
             </Button>
-          )}
+        )}
+        
+        {(useRangeMode && dateRange?.from && !useMultipleMode) && (
+          <div className="flex flex-wrap gap-1 mt-1">
+            <Badge variant="outline" className="text-xs px-2 py-1">
+              {formatDateRange(dateRange)}
+            </Badge>
+          </div>
+        )}
         </div>
         
-        {useMultipleMode && selectedDates.length > 0 && (
+        {(useMultipleMode && selectedDates.length > 0) && (
           <div className="flex flex-wrap gap-1 mt-1">
             {selectedDates
               .sort((a, b) => a.getTime() - b.getTime())
