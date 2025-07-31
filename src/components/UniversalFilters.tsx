@@ -5,6 +5,7 @@ import { CategoryFilter } from '@/components/filters/CategoryFilter';
 import { LocationFilter } from '@/components/filters/LocationFilter';
 import { DateTimeFilter } from '@/components/filters/DateTimeFilter';
 import { useUnifiedFilterOptions } from '@/hooks/useDatabaseFilterOptions';
+import { DateRange } from 'react-day-picker';
 
 interface UniversalFiltersProps {
   selectedType: string;
@@ -19,6 +20,8 @@ interface UniversalFiltersProps {
   onDateFilterChange?: (date: string) => void;
   timeFilter?: string;
   onTimeFilterChange?: (time: string) => void;
+  dateRange?: DateRange;
+  onDateRangeChange?: (dateRange: DateRange | undefined) => void;
   filteredItemsCount: number;
   itemType: 'events' | 'business' | 'news';
 }
@@ -36,6 +39,8 @@ export const UniversalFilters = ({
   onDateFilterChange,
   timeFilter = 'all',
   onTimeFilterChange,
+  dateRange,
+  onDateRangeChange,
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
@@ -56,6 +61,17 @@ export const UniversalFilters = ({
         <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
         <span className="text-xs sm:text-sm font-medium text-gray-600">Filters:</span>
       </div>
+
+      {onDateFilterChange && onTimeFilterChange && (
+        <DateTimeFilter
+          dateFilter={dateFilter}
+          onDateFilterChange={onDateFilterChange}
+          timeFilter={timeFilter}
+          onTimeFilterChange={onTimeFilterChange}
+          dateRange={dateRange}
+          onDateRangeChange={onDateRangeChange}
+        />
+      )}
       
       <Select value={selectedType} onValueChange={onTypeChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
@@ -84,15 +100,6 @@ export const UniversalFilters = ({
         availableNeighborhoods={neighborhoods}
         availableVillages={villages}
       />
-
-      {onDateFilterChange && onTimeFilterChange && selectedType === 'event' && (
-        <DateTimeFilter
-          dateFilter={dateFilter}
-          onDateFilterChange={onDateFilterChange}
-          timeFilter={timeFilter}
-          onTimeFilterChange={onTimeFilterChange}
-        />
-      )}
 
       <div className="text-xs sm:text-sm text-gray-600">
         {filteredItemsCount} {selectedType === 'all' ? 'items' : selectedType === 'business' ? 'businesses' : itemType} found
