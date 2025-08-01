@@ -10,6 +10,7 @@ import { MapItemSidebar } from '@/components/MapItemSidebar';
 import { DirectionsModal } from '@/components/map/DirectionsModal';
 import { ClearDirectionsButton } from '@/components/map/ClearDirectionsButton';
 import { TurnByTurnDirections } from '@/components/map/TurnByTurnDirections';
+import { MapLegend } from '@/components/map/MapLegend';
 import { useDirections } from '@/hooks/useDirections';
 import { UnifiedItem } from '@/types/unifiedItem';
 
@@ -104,6 +105,7 @@ export const EnhancedUniversalMap = ({
     <div className="space-y-4">      
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
         <div ref={mapRef} className="w-full h-full" />
+        <MapLegend />
         <ClearDirectionsButton 
           onClear={clearDirections}
           isVisible={!!route}
