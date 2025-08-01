@@ -48,7 +48,8 @@ export const UniversalFilters = ({
     { value: 'event', label: 'Events' },
     { value: 'business', label: 'Business' },
     { value: 'news', label: 'News' },
-    { value: 'local-service', label: 'Local Resources' }
+    { value: 'local-service', label: 'Local Resources' },
+    { value: 'past-event', label: 'Past Events' }
   ];
 
   return (
@@ -71,7 +72,7 @@ export const UniversalFilters = ({
         </SelectContent>
       </Select>
 
-      {(selectedType === 'event' || selectedType === 'all') && (
+      {(selectedType === 'event' || selectedType === 'past-event' || selectedType === 'all') && (
         <EventDateFilter
           eventDateRange={eventDateRange}
           onEventDateRangeChange={onEventDateRangeChange}

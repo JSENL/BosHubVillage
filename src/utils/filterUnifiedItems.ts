@@ -12,6 +12,8 @@ interface FilterCriteria {
   selectedVillage: string;
   dateFilter: string;
   timeFilter: string;
+  eventDateRange?: any; // DateRange from react-day-picker
+  selectedEventDates?: Date[];
 }
 
 export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteria): UnifiedItem[] => {
@@ -23,7 +25,9 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
     selectedNeighborhood,
     selectedVillage,
     dateFilter,
-    timeFilter
+    timeFilter,
+    eventDateRange,
+    selectedEventDates = []
   } = criteria;
 
   return items.filter(item => {
@@ -58,8 +62,47 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
       );
     })();
 
-    // Date filter (only for events and past events)
-    const matchesDate = (item.type !== 'event' && item.type !== 'past-event') || dateFilter === '' || item.date === dateFilter;
+    // Date filter (handles individual dates, date ranges, and legacy exact match)
+    const matchesDate = (item.type !== 'event' && item.type !== 'past-event') || (() => {
+      // If no date filters are set, show all events
+      if (!dateFilter || dateFilter === '' || dateFilter === 'all') {
+        if (selectedEventDates.length === 0 && !eventDateRange?.from) {
+          return true;
+        }
+      }
+
+      // Legacy exact date match
+      if (dateFilter && dateFilter !== '' && dateFilter !== 'all') {
+        return item.date === dateFilter;
+      }
+
+      const itemDate = item.date ? new Date(item.date) : null;
+      if (!itemDate) return false;
+
+      // Check individual selected dates
+      if (selectedEventDates.length > 0) {
+        return selectedEventDates.some(selectedDate => {
+          const selectedDateStr = selectedDate.toISOString().split('T')[0];
+          const itemDateStr = itemDate.toISOString().split('T')[0];
+          return selectedDateStr === itemDateStr;
+        });
+      }
+
+      // Check date range
+      if (eventDateRange?.from) {
+        const rangeStart = new Date(eventDateRange.from);
+        const rangeEnd = eventDateRange.to ? new Date(eventDateRange.to) : rangeStart;
+        
+        // Set times to compare just dates
+        rangeStart.setHours(0, 0, 0, 0);
+        rangeEnd.setHours(23, 59, 59, 999);
+        itemDate.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
+        
+        return itemDate >= rangeStart && itemDate <= rangeEnd;
+      }
+
+      return true;
+    })();
 
     // Time filter (only for events and past events)
     const matchesTime = (item.type !== 'event' && item.type !== 'past-event') || timeFilter === 'all' || (() => {

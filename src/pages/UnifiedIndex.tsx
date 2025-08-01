@@ -37,14 +37,16 @@ const UnifiedIndexContent = () => {
     selectedVillage,
     selectedTypes: selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType],
     searchTerm,
-    selectedType
+    selectedType,
+    eventDateRange,
+    selectedEventDates
   });
 
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null);
 
   // Use the unified type filter to determine which types to show
-  const typesToShow = selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType];
+  const typesToShow = selectedType === 'all' ? ['event', 'news', 'business', 'local-service', 'past-event'] : [selectedType];
   
   console.log('🔍 UnifiedIndex - Filter Analysis:', {
     selectedType,

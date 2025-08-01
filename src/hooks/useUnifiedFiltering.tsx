@@ -13,6 +13,8 @@ interface UseUnifiedFilteringProps {
   searchTerm?: string;
   dateFilter?: string;
   timeFilter?: string;
+  eventDateRange?: any; // DateRange from react-day-picker
+  selectedEventDates?: Date[];
 }
 
 export const useUnifiedFiltering = ({
@@ -23,7 +25,9 @@ export const useUnifiedFiltering = ({
   selectedType = 'all',
   searchTerm = '',
   dateFilter = 'all',
-  timeFilter = 'all'
+  timeFilter = 'all',
+  eventDateRange,
+  selectedEventDates = []
 }: UseUnifiedFilteringProps) => {
   const [allItems, setAllItems] = useState<UnifiedItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +85,9 @@ export const useUnifiedFiltering = ({
     selectedType,
     searchTerm,
     dateFilter,
-    timeFilter
+    timeFilter,
+    eventDateRange,
+    selectedEventDates
   });
 
   // Get mappable items (items with valid coordinates)
