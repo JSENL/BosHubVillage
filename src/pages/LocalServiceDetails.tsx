@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Building } from 'lucide-react';
+import { MapPin, Building, ExternalLink } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { CommentForm } from '@/components/comments/CommentForm';
 import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
@@ -81,6 +81,21 @@ const LocalServiceDetails = () => {
               {resource.address}, {resource.neighborhood}
               {resource.village && ` - ${resource.village}`}
             </div>
+
+            {/* Website Link */}
+            {resource.website_link && (
+              <div className="mb-4">
+                <a
+                  href={resource.website_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Visit Website
+                </a>
+              </div>
+            )}
           </CardHeader>
           <CardContent>
             <div className="space-y-4">

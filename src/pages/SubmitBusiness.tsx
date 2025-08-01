@@ -28,6 +28,7 @@ const SubmitBusiness = () => {
     address: '',
     neighborhood: '',
     villages: '',
+    website_link: '',
     description: '',
     short_description: ''
   });
@@ -80,6 +81,7 @@ const SubmitBusiness = () => {
           address: formData.address,
           neighborhood: formData.neighborhood,
           villages: formData.villages || null,
+          website_link: formData.website_link || null,
           description: formData.description,
           short_description: formData.short_description || null,
           latitude,
@@ -109,6 +111,7 @@ const SubmitBusiness = () => {
       address: '',
       neighborhood: '',
       villages: '',
+      website_link: '',
       description: '',
       short_description: ''
     });
@@ -213,6 +216,17 @@ const SubmitBusiness = () => {
                     value={formData.villages}
                     onChange={(e) => setFormData({ ...formData, villages: e.target.value })}
                     placeholder="Enter villages (e.g., Beacon Hill Village, Cambridge Village, etc.)"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="website_link">Website Link (Optional)</Label>
+                  <Input
+                    id="website_link"
+                    type="url"
+                    value={formData.website_link}
+                    onChange={(e) => setFormData({ ...formData, website_link: e.target.value })}
+                    placeholder="https://example.com"
                   />
                 </div>
 

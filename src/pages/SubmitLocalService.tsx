@@ -29,6 +29,7 @@ const formSchema = z.object({
     message: 'Neighborhood must be at least 2 characters.',
   }),
   village: z.string().optional(),
+  website_link: z.string().optional(),
   description: z.string().optional(),
 });
 
@@ -49,6 +50,7 @@ const SubmitLocalService = () => {
       address: '',
       neighborhood: '',
       village: '',
+      website_link: '',
       description: '',
     },
   });
@@ -84,6 +86,7 @@ const SubmitLocalService = () => {
           address: data.address,
           neighborhood: data.neighborhood,
           village: data.village || null,
+          website_link: data.website_link || null,
           description: data.description || null,
           latitude,
           longitude,
@@ -198,6 +201,22 @@ const SubmitLocalService = () => {
                 <FormControl>
                   <Input placeholder="Village" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="website_link"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Website Link (Optional)</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://example.com" type="url" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Add a website link for more information about this resource.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

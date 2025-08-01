@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Business } from '@/types/business';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, MapPin, Building, Clock } from 'lucide-react';
+import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
 
 const BusinessDetails = () => {
@@ -101,6 +101,21 @@ const BusinessDetails = () => {
                 <p className="text-lg text-gray-700 font-medium">
                   {business.short_description}
                 </p>
+              )}
+
+              {/* Website Link */}
+              {business.website_link && (
+                <div className="mb-4">
+                  <a
+                    href={business.website_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Visit Website
+                  </a>
+                </div>
               )}
             </CardHeader>
 

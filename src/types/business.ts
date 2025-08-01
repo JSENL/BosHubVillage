@@ -6,6 +6,7 @@ export interface Business {
   neighborhood: string;
   description: string;
   short_description?: string;
+  website_link?: string;
   villages?: string[] | string | null;
   latitude?: number;
   longitude?: number;
