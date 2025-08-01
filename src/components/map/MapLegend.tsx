@@ -4,9 +4,9 @@ import { Badge } from '@/components/ui/badge';
 export const MapLegend = () => {
   const legendItems = [
     { letter: 'E', label: 'Event', color: '#ef4444' },
-    { letter: 'B', label: 'Business', color: '#22c55e' },
+    { letter: 'B', label: 'Business', color: '#3b82f6' },
     { letter: 'L', label: 'Local Resource', color: '#eab308' },
-    { letter: 'N', label: 'News', color: '#3b82f6' }
+    { letter: 'N', label: 'News', color: '#22c55e' }
   ];
 
   return (
