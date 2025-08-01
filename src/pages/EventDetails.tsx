@@ -8,6 +8,7 @@ import { useEvents } from '@/hooks/useEvents';
 import EventComments from '@/components/EventComments';
 import { Navigation } from '@/components/Navigation';
 import { SocialShare } from '@/components/SocialShare';
+import { CalendarShare } from '@/components/CalendarShare';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -122,9 +123,14 @@ const EventDetails = () => {
                   url={window.location.href}
                   hashtags={[event.category.toLowerCase().replace(/\s+/g, ''), 'event', 'community']}
                 />
-                <Button variant="outline" size="lg" className="border-purple-200 text-purple-600 hover:bg-purple-50">
-                  Add to Calendar
-                </Button>
+                <CalendarShare
+                  title={event.title}
+                  description={event.description || `Join us for ${event.title}`}
+                  startDate={event.date}
+                  startTime={event.start_time}
+                  endTime={event.end_time}
+                  location={event.location}
+                />
               </div>
             </CardContent>
           </Card>
