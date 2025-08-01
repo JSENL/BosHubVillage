@@ -14,6 +14,7 @@ export interface Event {
   end_time: string;
   location: string;
   address?: string;
+  website_link?: string;
   price: number;
   max_attendees: number | null;
   is_recurring: boolean;

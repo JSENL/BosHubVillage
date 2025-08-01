@@ -27,6 +27,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     start_time: '',
     end_time: '',
     location: '',
+    website_link: '',
     price: '',
     max_attendees: '',
     is_recurring: false,
@@ -95,6 +96,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         start_time: formData.start_time || '00:00',
         end_time: formData.end_time || '00:00',
         location: formData.location,
+        website_link: formData.website_link || null,
         price: parseFloat(formData.price) || 0,
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
@@ -116,6 +118,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         start_time: '',
         end_time: '',
         location: '',
+        website_link: '',
         price: '',
         max_attendees: '',
         is_recurring: false,
@@ -319,6 +322,24 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
             />
             <p className="text-xs text-gray-500 mt-1">
               Address will be automatically converted to map coordinates
+            </p>
+          </div>
+
+          {/* Website Link */}
+          <div>
+            <Label htmlFor="website_link" className="text-sm font-medium text-gray-700">
+              Website Link (Optional)
+            </Label>
+            <Input
+              id="website_link"
+              type="url"
+              placeholder="https://example.com"
+              value={formData.website_link}
+              onChange={(e) => handleInputChange('website_link', e.target.value)}
+              className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Add a website link for more information about this event
             </p>
           </div>
 

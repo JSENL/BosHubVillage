@@ -65,6 +65,7 @@ export type Database = {
           title: string
           updated_at: string
           villages: string | null
+          website_link: string | null
         }
         Insert: {
           address: string
@@ -80,6 +81,7 @@ export type Database = {
           title: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Update: {
           address?: string
@@ -95,6 +97,7 @@ export type Database = {
           title?: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Relationships: [
           {
@@ -180,6 +183,7 @@ export type Database = {
           title: string
           updated_at: string
           villages: string | null
+          website_link: string | null
         }
         Insert: {
           address: string
@@ -199,6 +203,7 @@ export type Database = {
           title: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Update: {
           address?: string
@@ -218,6 +223,7 @@ export type Database = {
           title?: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Relationships: [
           {
@@ -530,6 +536,7 @@ export type Database = {
           title: string
           updated_at: string
           villages: string | null
+          website_link: string | null
         }
         Insert: {
           admin_notes?: string | null
@@ -557,6 +564,7 @@ export type Database = {
           title: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Update: {
           admin_notes?: string | null
@@ -584,6 +592,7 @@ export type Database = {
           title?: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Relationships: []
       }
@@ -611,6 +620,7 @@ export type Database = {
           title: string
           updated_at: string
           villages: string | null
+          website_link: string | null
         }
         Insert: {
           address?: string | null
@@ -635,6 +645,7 @@ export type Database = {
           title: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Update: {
           address?: string | null
@@ -659,6 +670,7 @@ export type Database = {
           title?: string
           updated_at?: string
           villages?: string | null
+          website_link?: string | null
         }
         Relationships: [
           {
@@ -683,6 +695,7 @@ export type Database = {
           neighborhood: string
           updated_at: string
           village: string | null
+          website_link: string | null
         }
         Insert: {
           address: string
@@ -696,6 +709,7 @@ export type Database = {
           neighborhood: string
           updated_at?: string
           village?: string | null
+          website_link?: string | null
         }
         Update: {
           address?: string
@@ -709,6 +723,7 @@ export type Database = {
           neighborhood?: string
           updated_at?: string
           village?: string | null
+          website_link?: string | null
         }
         Relationships: []
       }
@@ -785,6 +800,7 @@ export type Database = {
           submitted_by: string
           updated_at: string
           village: string | null
+          website_link: string | null
         }
         Insert: {
           address: string
@@ -803,6 +819,7 @@ export type Database = {
           submitted_by: string
           updated_at?: string
           village?: string | null
+          website_link?: string | null
         }
         Update: {
           address?: string
@@ -821,6 +838,7 @@ export type Database = {
           submitted_by?: string
           updated_at?: string
           village?: string | null
+          website_link?: string | null
         }
         Relationships: [
           {

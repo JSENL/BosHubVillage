@@ -1,6 +1,6 @@
 
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, Users, DollarSign } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -114,6 +114,21 @@ const EventDetails = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Website Link */}
+              {event.website_link && (
+                <div className="mb-6">
+                  <a
+                    href={event.website_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Visit Event Website
+                  </a>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-4">
