@@ -4,6 +4,7 @@ import { Filter } from 'lucide-react';
 import { CategoryFilter } from '@/components/filters/CategoryFilter';
 import { LocationFilter } from '@/components/filters/LocationFilter';
 import { useUnifiedFilterOptions } from '@/hooks/useDatabaseFilterOptions';
+import { useFilteredVillages } from '@/hooks/useFilteredVillages';
 import { EventDateFilter } from '@/components/filters/EventDateFilter';
 import { DateRange } from 'react-day-picker';
 
@@ -42,14 +43,16 @@ export const UniversalFilters = ({
 }: UniversalFiltersProps) => {
   // Use unified filter options that properly handle database categories
   const { categories, neighborhoods, villages } = useUnifiedFilterOptions(selectedType);
+  
+  // Filter villages based on selected neighborhood
+  const filteredVillages = useFilteredVillages(selectedNeighborhood, villages);
 
   const typeOptions = [
     { value: 'all', label: 'All Types' },
     { value: 'event', label: 'Events' },
     { value: 'business', label: 'Business' },
     { value: 'news', label: 'News' },
-    { value: 'local-service', label: 'Local Resources' },
-    { value: 'past-event', label: 'Past Events' }
+    { value: 'local-service', label: 'Local Resources' }
   ];
 
   return (
@@ -93,7 +96,7 @@ export const UniversalFilters = ({
         selectedVillage={selectedVillage}
         onVillageChange={onVillageChange}
         availableNeighborhoods={neighborhoods}
-        availableVillages={villages}
+        availableVillages={filteredVillages}
       />
 
       <div className="text-xs sm:text-sm text-gray-600">
