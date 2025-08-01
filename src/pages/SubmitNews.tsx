@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Navigation } from '@/components/Navigation';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -20,6 +21,7 @@ const SubmitNews = () => {
   const { geocode, isGeocoding } = useGeocoding();
   const { handleSubmissionError, handleValidationError } = useSubmissionErrorHandler();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { data: newsCategories = [] } = useNewsCategories();
   const [formData, setFormData] = useState({
@@ -119,27 +121,36 @@ const SubmitNews = () => {
 
       if (error) throw error;
 
-      toast.success('News submitted successfully!', {
-        description: 'Your news article will be reviewed by our admin team.',
-        duration: 5000
-      });
-      
-      // Reset form
-      setFormData({
-        title: '',
-        content: '',
-        location: '',
-        address: '',
-        villages: '',
-        source: '',
-        date_posted: new Date().toISOString().split('T')[0]
-      });
-      setValidationErrors([]);
+      // Show success dialog instead of toast and form reset
+      setShowSuccessDialog(true);
     } catch (error: any) {
       handleSubmissionError(error, 'news');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleAddAnother = () => {
+    setFormData({
+      title: '',
+      content: '',
+      location: '',
+      address: '',
+      villages: '',
+      source: '',
+      date_posted: new Date().toISOString().split('T')[0]
+    });
+    setValidationErrors([]);
+    setShowSuccessDialog(false);
+    toast.success('Form cleared. You can now submit another news article.');
+  };
+
+  const handleFinish = () => {
+    setShowSuccessDialog(false);
+    toast.success('News submitted successfully!', {
+      description: 'Your news article will be reviewed by our admin team.',
+      duration: 5000
+    });
   };
 
   if (!user) {
@@ -305,6 +316,22 @@ const SubmitNews = () => {
               </form>
             </CardContent>
           </Card>
+
+          <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>News Article Submitted Successfully!</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Your news article has been submitted and will be reviewed by our admin team. 
+                  Would you like to submit another news article?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={handleFinish}>Done</AlertDialogCancel>
+                <AlertDialogAction onClick={handleAddAnother}>Submit Another</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </>

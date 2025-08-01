@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { useBusinessCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
@@ -19,6 +20,7 @@ const SubmitBusiness = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { geocode, isGeocoding } = useGeocoding();
   const [formData, setFormData] = useState({
     title: '',
@@ -90,26 +92,34 @@ const SubmitBusiness = () => {
         throw error;
       }
 
-      toast.success('Business submitted successfully! It will be reviewed by our admin team.');
-      
-      // Reset form after successful submission
-      setFormData({
-        title: '',
-        business_type: '',
-        address: '',
-        neighborhood: '',
-        villages: '',
-        description: '',
-        short_description: ''
-      });
-      
-      navigate('/');
+      // Show success dialog instead of toast and navigation
+      setShowSuccessDialog(true);
     } catch (error: any) {
       console.error('Error submitting business:', error);
       toast.error('Failed to submit business. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddAnother = () => {
+    setFormData({
+      title: '',
+      business_type: '',
+      address: '',
+      neighborhood: '',
+      villages: '',
+      description: '',
+      short_description: ''
+    });
+    setShowSuccessDialog(false);
+    toast.success('Form cleared. You can now submit another business.');
+  };
+
+  const handleFinish = () => {
+    setShowSuccessDialog(false);
+    toast.success('Business submitted successfully! It will be reviewed by our admin team.');
+    navigate('/');
   };
 
   if (!user) {
@@ -251,6 +261,22 @@ const SubmitBusiness = () => {
               </form>
             </CardContent>
           </Card>
+
+          <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Business Submitted Successfully!</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Your business has been submitted and will be reviewed by our admin team. 
+                  Would you like to submit another business?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={handleFinish}>Done</AlertDialogCancel>
+                <AlertDialogAction onClick={handleAddAnother}>Submit Another</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </>

@@ -8,6 +8,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -36,6 +37,7 @@ type FormData = z.infer<typeof formSchema>;
 const SubmitLocalService = () => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { geocode, isReady } = useGeocoding();
   const { data: localServiceCategories = [] } = useLocalServiceCategories();
 
@@ -90,15 +92,25 @@ const SubmitLocalService = () => {
 
       if (error) throw error;
 
-      // Show success message with proper toast type
-      toast.success('Local resource submitted successfully! It will be reviewed by our team.');
-      form.reset();
+      // Show success dialog instead of just toast
+      setShowSuccessDialog(true);
     } catch (error: any) {
       console.error('Error submitting local resource:', error);
       toast.error('Failed to submit local resource: ' + error.message);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleAddAnother = () => {
+    form.reset();
+    setShowSuccessDialog(false);
+    toast.success('Form cleared. You can now submit another local resource.');
+  };
+
+  const handleFinish = () => {
+    setShowSuccessDialog(false);
+    toast.success('Local resource submitted successfully! It will be reviewed by our team.');
   };
 
   return (
@@ -215,6 +227,22 @@ const SubmitLocalService = () => {
           </Button>
         </form>
       </Form>
+
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Local Resource Submitted Successfully!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your local resource has been submitted and will be reviewed by our team. 
+              Would you like to submit another local resource?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleFinish}>Done</AlertDialogCancel>
+            <AlertDialogAction onClick={handleAddAnother}>Submit Another</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
     </>
   );
