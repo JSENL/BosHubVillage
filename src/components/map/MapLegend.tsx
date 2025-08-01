@@ -6,8 +6,7 @@ export const MapLegend = () => {
     { letter: 'E', label: 'Event', color: 'bg-blue-500' },
     { letter: 'B', label: 'Business', color: 'bg-green-500' },
     { letter: 'L', label: 'Local Resource', color: 'bg-purple-500' },
-    { letter: 'N', label: 'News', color: 'bg-orange-500' },
-    { letter: 'P', label: 'Past Event', color: 'bg-gray-500' }
+    { letter: 'N', label: 'News', color: 'bg-orange-500' }
   ];
 
   return (

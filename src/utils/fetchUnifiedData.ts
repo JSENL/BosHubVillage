@@ -85,37 +85,7 @@ export const fetchAllUnifiedData = async (
     });
   }
 
-  // Process past events with enhanced coordinate validation and address support
-  console.log('🕐 includePastEvents flag:', includePastEvents);
-  console.log('🕐 pastEventsRes.data exists:', !!pastEventsRes.data);
-  console.log('🕐 pastEventsRes.data length:', pastEventsRes.data?.length || 0);
-  if (pastEventsRes.data && includePastEvents) {
-    console.log('📅 Processing past events:', pastEventsRes.data.length);
-    pastEventsRes.data.forEach((event, index) => {
-      const lat = event.latitude ? Number(event.latitude) : null;
-      const lng = event.longitude ? Number(event.longitude) : null;
-      
-      console.log(`Past Event ${index + 1} "${event.title}": lat=${lat}, lng=${lng}, location=${event.location}, address=${event.address}`);
-      
-      items.push({
-        id: event.id,
-        title: event.title,
-        description: event.description || '',
-        latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,
-        longitude: (lng !== null && !isNaN(lng) && lng !== 0) ? lng : null,
-        type: 'past-event',
-        location: event.location,
-        address: event.address || event.location,
-        category: event.category,
-        date: event.date,
-        start_time: event.start_time,
-        end_time: event.end_time,
-        price: Number(event.price || 0),
-        neighborhoods: event.neighborhoods,
-        villages: event.villages
-      });
-    });
-  }
+  // Past events are kept in database but not displayed on map or UI
 
   // Process news with enhanced geocoding and coordinate validation
   if (newsRes.data) {

@@ -37,6 +37,9 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
   });
 
   const filteredItems = items.filter(item => {
+    // Exclude past events from display
+    if (item.type === 'past-event') return false;
+    
     // Type filter (new unified type filter)
     const matchesUnifiedType = selectedType === 'all' || item.type === selectedType;
     
@@ -69,7 +72,7 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
     })();
 
     // Date filter (handles individual dates, date ranges, and legacy exact match)
-    const matchesDate = (item.type !== 'event' && item.type !== 'past-event') || (() => {
+    const matchesDate = item.type !== 'event' || (() => {
       // If no date filters are set, show all events
       if (!dateFilter || dateFilter === '' || dateFilter === 'all') {
         if (selectedEventDates.length === 0 && !eventDateRange?.from) {
@@ -110,8 +113,8 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
       return true;
     })();
 
-    // Time filter (only for events and past events)
-    const matchesTime = (item.type !== 'event' && item.type !== 'past-event') || timeFilter === 'all' || (() => {
+    // Time filter (only for events)
+    const matchesTime = item.type !== 'event' || timeFilter === 'all' || (() => {
       if (!item.start_time) return timeFilter === 'all';
       
       const eventHour = parseInt(item.start_time.split(':')[0]);
