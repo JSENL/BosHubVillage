@@ -38,7 +38,7 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/submit-event" element={<SubmitEvent />} />
             <Route path="/submit-business" element={<SubmitBusiness />} />
-            <Route path="/submit-local-service" element={<SubmitLocalService />} />
+            <Route path="/submit-local-resource" element={<SubmitLocalService />} />
             <Route path="/submit-news" element={<SubmitNews />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/approval" element={<AdminApproval />} />
@@ -46,7 +46,7 @@ const App = () => (
             <Route path="/business/:businessId" element={<BusinessDetails />} />
             <Route path="/news/:newsId" element={<NewsDetails />} />
             <Route path="/news-page" element={<NewsPage />} />
-            <Route path="/local-service/:serviceId" element={<LocalServiceDetails />} />
+            <Route path="/local-resource/:serviceId" element={<LocalServiceDetails />} />
         <Route path="/contact-admin" element={<ContactAdmin />} />
         <Route path="/my-messages" element={<MyMessages />} />
         <Route path="/my-submissions" element={<MySubmissions />} />

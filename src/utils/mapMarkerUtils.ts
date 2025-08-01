@@ -85,7 +85,7 @@ export const createPopupContent = (item: UnifiedItem): string => {
         ${specificContent}
       </div>
       <div style="margin-top: 16px;">
-        <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-service' : item.type}/${item.id}'" style="
+        <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-resource' : item.type}/${item.id}'" style="
           background: linear-gradient(135deg, ${markerColor}cc 0%, ${markerColor} 100%);
           color: white;
           border: none;

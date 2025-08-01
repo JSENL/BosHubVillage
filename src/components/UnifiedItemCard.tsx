@@ -17,7 +17,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   isHighlighted = false 
 }) => {
   const handleViewDetails = () => {
-    const routePath = item.type === 'local-service' ? 'local-service' : 
+    const routePath = item.type === 'local-service' ? 'local-resource' : 
                      item.type === 'business' ? 'business' : item.type;
     window.location.href = `/${routePath}/${item.id}`;
   };

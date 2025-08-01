@@ -91,7 +91,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
 
   const handleViewDetails = () => {
     if (!selectedItem) return;
-    const path = selectedItem.type === 'local-service' ? 'local-service' : selectedItem.type;
+    const path = selectedItem.type === 'local-service' ? 'local-resource' : selectedItem.type;
     window.location.href = `/${path}/${selectedItem.id}`;
   };
 

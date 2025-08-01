@@ -90,7 +90,7 @@ export const Navigation = () => {
                      </Link>
                    </DropdownMenuItem>
                    <DropdownMenuItem asChild>
-                     <Link to="/submit-local-service" className="cursor-pointer">
+                     <Link to="/submit-local-resource" className="cursor-pointer">
                        <Heart className="h-4 w-4 mr-2" />
                        Submit Local Resource
                      </Link>

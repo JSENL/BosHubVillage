@@ -21,7 +21,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   };
 
   const handleClick = () => {
-    navigate(`/local-service/${localService.id}`);
+    navigate(`/local-resource/${localService.id}`);
   };
 
   return (
