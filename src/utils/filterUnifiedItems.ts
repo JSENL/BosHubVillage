@@ -30,7 +30,13 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
     selectedEventDates = []
   } = criteria;
 
-  return items.filter(item => {
+  console.log('🔍 Filtering items:', {
+    totalItems: items.length,
+    selectedType,
+    pastEventItems: items.filter(item => item.type === 'past-event').length
+  });
+
+  const filteredItems = items.filter(item => {
     // Type filter (new unified type filter)
     const matchesUnifiedType = selectedType === 'all' || item.type === selectedType;
     
@@ -124,4 +130,11 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
 
     return matchesUnifiedType && matchesType && matchesSearch && matchesCategoryFilter && matchesNeighborhood && matchesVillage && matchesDate && matchesTime;
   });
+  
+  console.log('✅ Filtering complete:', {
+    filteredItems: filteredItems.length,
+    pastEventItems: filteredItems.filter(item => item.type === 'past-event').length
+  });
+  
+  return filteredItems;
 };

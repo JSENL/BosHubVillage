@@ -86,6 +86,9 @@ export const fetchAllUnifiedData = async (
   }
 
   // Process past events with enhanced coordinate validation and address support
+  console.log('🕐 includePastEvents flag:', includePastEvents);
+  console.log('🕐 pastEventsRes.data exists:', !!pastEventsRes.data);
+  console.log('🕐 pastEventsRes.data length:', pastEventsRes.data?.length || 0);
   if (pastEventsRes.data && includePastEvents) {
     console.log('📅 Processing past events:', pastEventsRes.data.length);
     pastEventsRes.data.forEach((event, index) => {
