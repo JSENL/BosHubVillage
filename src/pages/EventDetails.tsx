@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useEvents } from '@/hooks/useEvents';
 import EventComments from '@/components/EventComments';
 import { Navigation } from '@/components/Navigation';
+import { SocialShare } from '@/components/SocialShare';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -115,9 +116,12 @@ const EventDetails = () => {
                 <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
                   Register for Event
                 </Button>
-                <Button variant="outline" size="lg" className="border-purple-200 text-purple-600 hover:bg-purple-50">
-                  Share Event
-                </Button>
+                <SocialShare 
+                  title={event.title}
+                  description={event.description || `Join us for ${event.title} on ${new Date(event.date).toLocaleDateString()}`}
+                  url={window.location.href}
+                  hashtags={[event.category.toLowerCase().replace(/\s+/g, ''), 'event', 'community']}
+                />
                 <Button variant="outline" size="lg" className="border-purple-200 text-purple-600 hover:bg-purple-50">
                   Add to Calendar
                 </Button>
