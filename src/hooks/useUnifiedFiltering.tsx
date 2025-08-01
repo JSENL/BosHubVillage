@@ -41,8 +41,9 @@ export const useUnifiedFiltering = ({
       setError(null);
       
       console.log('🔄 Fetching unified data...');
-      // The function only expects one argument - the geocoding function
-      const data = await fetchAllUnifiedData(mockGeocode);
+      // Include past events if the selected type is 'past-event' or 'all'
+      const includePastEvents = selectedType === 'past-event' || selectedType === 'all';
+      const data = await fetchAllUnifiedData(mockGeocode, includePastEvents);
       
       console.log('📊 Raw data fetched:', {
         total: data.length,
@@ -69,7 +70,7 @@ export const useUnifiedFiltering = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedType]); // Re-fetch when selectedType changes to include/exclude past events
 
   // Filter items based on criteria
   const filteredItems = filterUnifiedItems(allItems, {

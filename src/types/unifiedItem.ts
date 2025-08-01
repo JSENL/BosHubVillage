@@ -5,7 +5,7 @@ export interface UnifiedItem {
   description: string;
   latitude: number | null;
   longitude: number | null;
-  type: 'event' | 'news' | 'business' | 'local-service';
+  type: 'event' | 'news' | 'business' | 'local-service' | 'past-event';
   address?: string;
   location?: string;
   category?: string;

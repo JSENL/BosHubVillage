@@ -86,10 +86,12 @@ export const EventDateFilter = ({
     }
   };
 
-  // Create modifiers for highlighting event dates
+  // Create modifiers for highlighting event dates and today
+  const today = new Date();
   const eventDateModifiers = {
     hasEvent: eventDates,
     selected: activeTab === 'individual' ? selectedEventDates : undefined,
+    today: [today],
   };
 
   const eventDateModifiersStyles = {
@@ -102,6 +104,12 @@ export const EventDateFilter = ({
     selected: {
       backgroundColor: 'hsl(var(--primary))',
       color: 'hsl(var(--primary-foreground))',
+      fontWeight: 'bold' as const,
+    },
+    today: {
+      backgroundColor: 'hsl(var(--accent))',
+      color: 'hsl(var(--accent-foreground))',
+      border: '3px solid hsl(var(--accent-foreground))',
       fontWeight: 'bold' as const,
     }
   };
@@ -202,13 +210,19 @@ export const EventDateFilter = ({
                     initialFocus
                     className="pointer-events-auto"
                     numberOfMonths={2}
-                    modifiers={{ hasEvent: eventDates }}
+                    modifiers={{ hasEvent: eventDates, today: [today] }}
                     modifiersStyles={{
                       hasEvent: {
                         backgroundColor: 'hsl(var(--primary) / 0.1)',
                         color: 'hsl(var(--primary))',
                         fontWeight: 'bold',
                         border: '2px solid hsl(var(--primary) / 0.3)',
+                      },
+                      today: {
+                        backgroundColor: 'hsl(var(--accent))',
+                        color: 'hsl(var(--accent-foreground))',
+                        border: '3px solid hsl(var(--accent-foreground))',
+                        fontWeight: 'bold',
                       }
                     }}
                   />

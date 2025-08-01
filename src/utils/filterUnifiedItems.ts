@@ -58,11 +58,11 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
       );
     })();
 
-    // Date filter (only for events)
-    const matchesDate = item.type !== 'event' || dateFilter === '' || item.date === dateFilter;
+    // Date filter (only for events and past events)
+    const matchesDate = (item.type !== 'event' && item.type !== 'past-event') || dateFilter === '' || item.date === dateFilter;
 
-    // Time filter (only for events)
-    const matchesTime = item.type !== 'event' || timeFilter === 'all' || (() => {
+    // Time filter (only for events and past events)
+    const matchesTime = (item.type !== 'event' && item.type !== 'past-event') || timeFilter === 'all' || (() => {
       if (!item.start_time) return timeFilter === 'all';
       
       const eventHour = parseInt(item.start_time.split(':')[0]);

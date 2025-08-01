@@ -15,7 +15,8 @@ export const TypeFilter = ({
     { value: 'event', label: 'Events' },
     { value: 'business', label: 'Business' },
     { value: 'news', label: 'News' },
-    { value: 'local-service', label: 'Local Resources' }
+    { value: 'local-service', label: 'Local Resources' },
+    { value: 'past-event', label: 'Past Events' }
   ];
 
   return (

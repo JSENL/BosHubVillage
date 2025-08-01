@@ -974,6 +974,78 @@ export type Database = {
           },
         ]
       }
+      past_events: {
+        Row: {
+          address: string | null
+          category: string
+          created_at: string
+          created_by: string
+          date: string
+          description: string | null
+          end_time: string | null
+          event_type: string | null
+          id: string
+          is_recurring: boolean | null
+          latitude: number | null
+          location: string
+          longitude: number | null
+          max_attendees: number | null
+          neighborhoods: string | null
+          price: number | null
+          recurring_pattern: string | null
+          start_time: string | null
+          title: string
+          updated_at: string
+          villages: string | null
+        }
+        Insert: {
+          address?: string | null
+          category: string
+          created_at?: string
+          created_by: string
+          date: string
+          description?: string | null
+          end_time?: string | null
+          event_type?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          latitude?: number | null
+          location: string
+          longitude?: number | null
+          max_attendees?: number | null
+          neighborhoods?: string | null
+          price?: number | null
+          recurring_pattern?: string | null
+          start_time?: string | null
+          title: string
+          updated_at?: string
+          villages?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string
+          created_at?: string
+          created_by?: string
+          date?: string
+          description?: string | null
+          end_time?: string | null
+          event_type?: string | null
+          id?: string
+          is_recurring?: boolean | null
+          latitude?: number | null
+          location?: string
+          longitude?: number | null
+          max_attendees?: number | null
+          neighborhoods?: string | null
+          price?: number | null
+          recurring_pattern?: string | null
+          start_time?: string | null
+          title?: string
+          updated_at?: string
+          villages?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

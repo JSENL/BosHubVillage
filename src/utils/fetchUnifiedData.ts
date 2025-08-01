@@ -3,11 +3,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { geocodeNewsItems } from './geocodeNewsItems';
 
-export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<any>): Promise<UnifiedItem[]> => {
+export const fetchAllUnifiedData = async (
+  geocode: (address: string) => Promise<any>,
+  includePastEvents = false
+): Promise<UnifiedItem[]> => {
   console.log('🔄 Starting unified data fetch...');
   
-  const [eventsRes, newsRes, localResourcesRes, businessRes] = await Promise.all([
+  const [eventsRes, pastEventsRes, newsRes, localResourcesRes, businessRes] = await Promise.all([
     supabase.from('events').select('*').order('created_at', { ascending: false }),
+    includePastEvents ? supabase.from('past_events').select('*').order('date', { ascending: false }) : Promise.resolve({ data: [], error: null }),
     supabase.from('news').select('*').order('date_posted', { ascending: false }),
     supabase.from('local_resources').select('*').order('created_at', { ascending: false }),
     supabase.from('business').select('*').order('created_at', { ascending: false })
@@ -15,6 +19,7 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
 
   console.log('📊 Database fetch results:', {
     events: { count: eventsRes.data?.length || 0, error: eventsRes.error },
+    pastEvents: { count: pastEventsRes.data?.length || 0, error: pastEventsRes.error },
     news: { count: newsRes.data?.length || 0, error: newsRes.error },
     business: { count: businessRes.data?.length || 0, error: businessRes.error },
     localResources: { count: localResourcesRes.data?.length || 0, error: localResourcesRes.error }
@@ -36,6 +41,9 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
   if (eventsRes.error) {
     console.error('❌ Error fetching events:', eventsRes.error);
   }
+  if (pastEventsRes.error) {
+    console.error('❌ Error fetching past events:', pastEventsRes.error);
+  }
   if (newsRes.error) {
     console.error('❌ Error fetching news:', newsRes.error);
   }
@@ -48,7 +56,7 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
 
   const items: UnifiedItem[] = [];
 
-  // Process events with enhanced coordinate validation and address support
+  // Process current events with enhanced coordinate validation and address support
   if (eventsRes.data) {
     console.log('📅 Processing events:', eventsRes.data.length);
     eventsRes.data.forEach((event, index) => {
@@ -64,6 +72,35 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
         latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,
         longitude: (lng !== null && !isNaN(lng) && lng !== 0) ? lng : null,
         type: 'event',
+        location: event.location,
+        address: event.address || event.location,
+        category: event.category,
+        date: event.date,
+        start_time: event.start_time,
+        end_time: event.end_time,
+        price: Number(event.price || 0),
+        neighborhoods: event.neighborhoods,
+        villages: event.villages
+      });
+    });
+  }
+
+  // Process past events with enhanced coordinate validation and address support
+  if (pastEventsRes.data && includePastEvents) {
+    console.log('📅 Processing past events:', pastEventsRes.data.length);
+    pastEventsRes.data.forEach((event, index) => {
+      const lat = event.latitude ? Number(event.latitude) : null;
+      const lng = event.longitude ? Number(event.longitude) : null;
+      
+      console.log(`Past Event ${index + 1} "${event.title}": lat=${lat}, lng=${lng}, location=${event.location}, address=${event.address}`);
+      
+      items.push({
+        id: event.id,
+        title: event.title,
+        description: event.description || '',
+        latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,
+        longitude: (lng !== null && !isNaN(lng) && lng !== 0) ? lng : null,
+        type: 'past-event',
         location: event.location,
         address: event.address || event.location,
         category: event.category,
@@ -182,12 +219,14 @@ export const fetchAllUnifiedData = async (geocode: (address: string) => Promise<
     validItemsWithCoords: validItems.length,
     byType: {
       events: items.filter(item => item.type === 'event').length,
+      pastEvents: items.filter(item => item.type === 'past-event').length,
       news: items.filter(item => item.type === 'news').length,
       business: items.filter(item => item.type === 'business').length,
       localServices: items.filter(item => item.type === 'local-service').length
     },
     validCoordsByType: {
       events: validItems.filter(item => item.type === 'event').length,
+      pastEvents: validItems.filter(item => item.type === 'past-event').length,
       news: validItems.filter(item => item.type === 'news').length,
       business: validItems.filter(item => item.type === 'business').length,
       localServices: validItems.filter(item => item.type === 'local-service').length
