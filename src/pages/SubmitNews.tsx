@@ -170,14 +170,6 @@ const SubmitNews = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-2xl mx-auto px-4">
           <div className="mb-6">
-            <Button
-              variant="ghost"
-              onClick={() => window.location.href = '/'}
-              className="mb-4"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Home
-            </Button>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit News</h1>
             <p className="text-gray-600">Share local news with the community</p>
           </div>

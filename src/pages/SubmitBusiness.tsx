@@ -137,14 +137,6 @@ const SubmitBusiness = () => {
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-2xl mx-auto px-4">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/')}
-            className="mb-6"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Button>
 
           <Card>
             <CardHeader>

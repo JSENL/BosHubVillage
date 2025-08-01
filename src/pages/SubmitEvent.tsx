@@ -4,14 +4,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Navigation } from '@/components/Navigation';
 import EventSubmissionForm from '@/components/EventSubmissionForm';
 import AdminEventApproval from '@/components/AdminEventApproval';
 import { SubmissionsTable } from '@/components/SubmissionsTable';
 import { 
   Send, 
   Clock, 
-  Shield,
-  ArrowLeft
+  Shield
 } from 'lucide-react';
 
 const SubmitEvent = () => {
@@ -35,25 +35,28 @@ const SubmitEvent = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-yelp-light-gray py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <Card>
-            <CardContent className="p-8 text-center">
-              <div className="text-yelp-red mb-4">
-                <Send className="h-16 w-16 mx-auto" />
-              </div>
-              <h3 className="text-xl font-semibold text-yelp-gray mb-2">Authentication Required</h3>
-              <p className="text-gray-600 mb-4">You need to sign in to submit events for approval.</p>
-              <Button 
-                onClick={() => window.location.href = '/auth'}
-                className="yelp-gradient hover:opacity-90 text-white"
-              >
-                Sign In
-              </Button>
-            </CardContent>
-          </Card>
+      <>
+        <Navigation />
+        <div className="min-h-screen bg-yelp-light-gray py-8">
+          <div className="max-w-4xl mx-auto px-4">
+            <Card>
+              <CardContent className="p-8 text-center">
+                <div className="text-yelp-red mb-4">
+                  <Send className="h-16 w-16 mx-auto" />
+                </div>
+                <h3 className="text-xl font-semibold text-yelp-gray mb-2">Authentication Required</h3>
+                <p className="text-gray-600 mb-4">You need to sign in to submit events for approval.</p>
+                <Button 
+                  onClick={() => window.location.href = '/auth'}
+                  className="yelp-gradient hover:opacity-90 text-white"
+                >
+                  Sign In
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -64,17 +67,11 @@ const SubmitEvent = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-yelp-light-gray py-8">
+    <>
+      <Navigation />
+      <div className="min-h-screen bg-yelp-light-gray py-8">
       <div className="max-w-6xl mx-auto px-4">
         <div className="mb-8">
-          <Button
-            variant="ghost"
-            onClick={() => window.location.href = '/'}
-            className="mb-4"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Button>
           <h1 className="text-4xl font-bold text-yelp-gray mb-2">
             Event Management
           </h1>
@@ -138,7 +135,8 @@ const SubmitEvent = () => {
           {activeTab === 'admin' && isAdmin && <AdminEventApproval />}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
