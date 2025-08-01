@@ -20,6 +20,7 @@ export const useSampleEvents = () => {
       max_attendees: sampleEvent.max_attendees,
       is_recurring: sampleEvent.is_recurring,
       recurring_pattern: sampleEvent.recurring_pattern,
+      registration_required: false, // Default to false for sample events
       created_by: 'sample-user',
       latitude: sampleEvent.latitude,
       longitude: sampleEvent.longitude,

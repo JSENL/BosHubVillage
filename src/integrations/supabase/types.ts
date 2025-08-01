@@ -455,6 +455,54 @@ export type Database = {
           },
         ]
       }
+      event_registrations: {
+        Row: {
+          additional_info: string | null
+          admin_notes: string | null
+          created_at: string
+          event_id: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          user_email: string
+          user_id: string
+          user_name: string
+          user_phone: string | null
+        }
+        Insert: {
+          additional_info?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_email: string
+          user_id: string
+          user_name: string
+          user_phone?: string | null
+        }
+        Update: {
+          additional_info?: string | null
+          admin_notes?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_email?: string
+          user_id?: string
+          user_name?: string
+          user_phone?: string | null
+        }
+        Relationships: []
+      }
       event_submissions: {
         Row: {
           admin_notes: string | null
@@ -473,6 +521,7 @@ export type Database = {
           neighborhoods: string[] | null
           price: number | null
           recurring_pattern: string | null
+          registration_required: boolean | null
           reviewed_at: string | null
           reviewed_by: string | null
           start_time: string | null
@@ -499,6 +548,7 @@ export type Database = {
           neighborhoods?: string[] | null
           price?: number | null
           recurring_pattern?: string | null
+          registration_required?: boolean | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           start_time?: string | null
@@ -525,6 +575,7 @@ export type Database = {
           neighborhoods?: string[] | null
           price?: number | null
           recurring_pattern?: string | null
+          registration_required?: boolean | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           start_time?: string | null
@@ -555,6 +606,7 @@ export type Database = {
           neighborhoods: string | null
           price: number | null
           recurring_pattern: string | null
+          registration_required: boolean | null
           start_time: string | null
           title: string
           updated_at: string
@@ -578,6 +630,7 @@ export type Database = {
           neighborhoods?: string | null
           price?: number | null
           recurring_pattern?: string | null
+          registration_required?: boolean | null
           start_time?: string | null
           title: string
           updated_at?: string
@@ -601,6 +654,7 @@ export type Database = {
           neighborhoods?: string | null
           price?: number | null
           recurring_pattern?: string | null
+          registration_required?: boolean | null
           start_time?: string | null
           title?: string
           updated_at?: string

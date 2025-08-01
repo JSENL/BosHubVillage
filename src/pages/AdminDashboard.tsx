@@ -24,8 +24,10 @@ import {
   MessageCircle,
   Users,
   Tag,
-  Megaphone
+  Megaphone,
+  UserCheck
 } from 'lucide-react';
+import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -89,10 +91,14 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-9 mb-8">
+            <TabsList className="grid w-full grid-cols-10 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
+              </TabsTrigger>
+              <TabsTrigger value="event-registrations" className="flex items-center">
+                <UserCheck className="h-4 w-4 mr-2" />
+                Registrations
               </TabsTrigger>
               <TabsTrigger value="local-services" className="flex items-center">
                 <Heart className="h-4 w-4 mr-2" />
@@ -130,6 +136,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="events">
               <AdminEventApproval />
+            </TabsContent>
+            
+            <TabsContent value="event-registrations">
+              <AdminEventRegistrations />
             </TabsContent>
             
             <TabsContent value="local-services">

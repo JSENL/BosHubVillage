@@ -73,6 +73,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
+        registration_required: false, // Default to false for admin-created events
         latitude: coordinates.latitude,
         longitude: coordinates.longitude,
         neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods.join(',') : null,

@@ -9,11 +9,14 @@ import EventComments from '@/components/EventComments';
 import { Navigation } from '@/components/Navigation';
 import { SocialShare } from '@/components/SocialShare';
 import { CalendarShare } from '@/components/CalendarShare';
+import { EventRegistrationForm } from '@/components/EventRegistrationForm';
+import { useState } from 'react';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { events, loading } = useEvents();
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   if (loading) {
     return (
@@ -114,9 +117,19 @@ const EventDetails = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                  Register for Event
-                </Button>
+                {event.registration_required ? (
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                    onClick={() => setShowRegistrationForm(true)}
+                  >
+                    Register for Event
+                  </Button>
+                ) : (
+                  <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+                    Join Event
+                  </Button>
+                )}
                 <SocialShare 
                   title={event.title}
                   description={event.description || `Join us for ${event.title} on ${new Date(event.date).toLocaleDateString()}`}
@@ -141,6 +154,16 @@ const EventDetails = () => {
               <EventComments eventId={event.id} />
             </CardContent>
           </Card>
+          
+          {/* Registration Form Modal */}
+          {event.registration_required && (
+            <EventRegistrationForm
+              eventId={event.id}
+              eventTitle={event.title}
+              isOpen={showRegistrationForm}
+              onClose={() => setShowRegistrationForm(false)}
+            />
+          )}
         </div>
       </main>
     </div>

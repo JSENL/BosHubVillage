@@ -31,6 +31,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     max_attendees: '',
     is_recurring: false,
     recurring_pattern: '',
+    registration_required: false,
     neighborhoods: [] as string[],
     villages: '',
   });
@@ -98,6 +99,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
         is_recurring: formData.is_recurring,
         recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
+        registration_required: formData.registration_required,
         neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods : null,
         villages: formData.villages || null,
         latitude: coordinates?.latitude || null,
@@ -118,6 +120,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         max_attendees: '',
         is_recurring: false,
         recurring_pattern: '',
+        registration_required: false,
         neighborhoods: [],
         villages: '',
       });
@@ -379,6 +382,24 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 </SelectContent>
               </Select>
             )}
+          </div>
+
+          {/* Registration Required */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="registration"
+                checked={formData.registration_required}
+                onCheckedChange={(checked) => handleInputChange('registration_required', checked)}
+              />
+              <Label htmlFor="registration" className="flex items-center text-sm font-medium text-gray-700">
+                <Users className="h-4 w-4 mr-1" />
+                Registration Required
+              </Label>
+            </div>
+            <p className="text-xs text-gray-500">
+              If enabled, users will need to register for this event and admin approval will be required.
+            </p>
           </div>
 
           {/* Submit Button */}

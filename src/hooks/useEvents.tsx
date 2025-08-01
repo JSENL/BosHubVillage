@@ -18,6 +18,7 @@ export interface Event {
   max_attendees: number | null;
   is_recurring: boolean;
   recurring_pattern: string | null;
+  registration_required: boolean;
   created_by: string;
   latitude: number | null;
   longitude: number | null;
