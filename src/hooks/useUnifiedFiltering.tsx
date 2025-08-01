@@ -45,8 +45,10 @@ export const useUnifiedFiltering = ({
       setError(null);
       
       console.log('🔄 Fetching unified data...');
+      console.log('🎯 Selected type:', selectedType);
       // Include past events if the selected type is 'past-event' or 'all'
       const includePastEvents = selectedType === 'past-event' || selectedType === 'all';
+      console.log('🕐 Including past events:', includePastEvents);
       const data = await fetchAllUnifiedData(mockGeocode, includePastEvents);
       
       console.log('📊 Raw data fetched:', {

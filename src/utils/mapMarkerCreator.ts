@@ -25,7 +25,7 @@ export const createMarkerElement = (item: UnifiedItem): HTMLDivElement => {
     transform-origin: center center;
   `;
 
-  const typeIndicator = item.type.charAt(0).toUpperCase();
+  const typeIndicator = item.type === 'past-event' ? 'P' : item.type.charAt(0).toUpperCase();
   markerElement.textContent = typeIndicator;
 
   // Add hover effects that don't affect positioning

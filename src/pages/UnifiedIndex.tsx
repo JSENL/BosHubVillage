@@ -35,7 +35,7 @@ const UnifiedIndexContent = () => {
     selectedCategory,
     selectedNeighborhood,
     selectedVillage,
-    selectedTypes: selectedType === 'all' ? ['event', 'news', 'business', 'local-service'] : [selectedType],
+    selectedTypes: selectedType === 'all' ? ['event', 'news', 'business', 'local-service', 'past-event'] : [selectedType],
     searchTerm,
     selectedType,
     eventDateRange,

@@ -41,6 +41,7 @@ export const validateCoordinates = (item: UnifiedItem) => {
 export const getMarkerColor = (type: string): string => {
   switch (type) {
     case 'event': return '#ef4444'; // red
+    case 'past-event': return '#6b7280'; // gray
     case 'news': return '#3b82f6'; // blue
     case 'business': return '#22c55e'; // green
     case 'local-service': return '#eab308'; // yellow
@@ -54,11 +55,12 @@ export const createPopupContent = (item: UnifiedItem): string => {
   // Enhanced content based on item type
   let specificContent = '';
   
-  if (item.type === 'event') {
+  if (item.type === 'event' || item.type === 'past-event') {
     specificContent = `
       ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${item.date}</p>` : ''}
       ${item.start_time ? `<p style="margin: 4px 0;"><strong>⏰ Time:</strong> ${item.start_time}${item.end_time ? ` - ${item.end_time}` : ''}</p>` : ''}
       ${item.price && item.price > 0 ? `<p style="margin: 4px 0;"><strong>💰 Price:</strong> $${item.price}</p>` : ''}
+      ${item.type === 'past-event' ? `<p style="margin: 4px 0; color: #6b7280; font-style: italic;"><strong>⏰ Status:</strong> Past Event</p>` : ''}
     `;
   } else if (item.type === 'business') {
     specificContent = `
