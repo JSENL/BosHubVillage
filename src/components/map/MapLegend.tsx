@@ -3,10 +3,10 @@ import { Badge } from '@/components/ui/badge';
 
 export const MapLegend = () => {
   const legendItems = [
-    { letter: 'E', label: 'Event', color: 'bg-blue-500' },
-    { letter: 'B', label: 'Business', color: 'bg-green-500' },
-    { letter: 'L', label: 'Local Resource', color: 'bg-purple-500' },
-    { letter: 'N', label: 'News', color: 'bg-orange-500' }
+    { letter: 'E', label: 'Event', color: '#ef4444' },
+    { letter: 'B', label: 'Business', color: '#22c55e' },
+    { letter: 'L', label: 'Local Resource', color: '#eab308' },
+    { letter: 'N', label: 'News', color: '#3b82f6' }
   ];
 
   return (
@@ -18,7 +18,8 @@ export const MapLegend = () => {
             <div key={item.letter} className="flex items-center gap-2">
               <Badge 
                 variant="secondary" 
-                className={`${item.color} text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs p-0`}
+                className="text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs p-0"
+                style={{ backgroundColor: item.color }}
               >
                 {item.letter}
               </Badge>
