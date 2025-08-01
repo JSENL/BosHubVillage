@@ -117,17 +117,13 @@ const EventDetails = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-4">
-                {event.registration_required ? (
+                {event.registration_required && (
                   <Button 
                     size="lg" 
                     className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                     onClick={() => setShowRegistrationForm(true)}
                   >
                     Register for Event
-                  </Button>
-                ) : (
-                  <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
-                    Join Event
                   </Button>
                 )}
                 <SocialShare 
