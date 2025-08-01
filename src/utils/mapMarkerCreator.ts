@@ -127,5 +127,33 @@ export const createMapboxMarker = (
     }
   });
 
+  // Add hover functionality to show popup on hover
+  markerElement.addEventListener('mouseenter', () => {
+    if (!popup.isOpen()) {
+      popup.addTo(map);
+    }
+  });
+
+  markerElement.addEventListener('mouseleave', () => {
+    // Only close popup on mouse leave if it wasn't explicitly opened by click
+    // We'll add a flag to track this
+    setTimeout(() => {
+      if (popup.isOpen() && !markerElement.dataset.clickOpened) {
+        popup.remove();
+      }
+    }, 100); // Small delay to prevent flickering when moving between marker and popup
+  });
+
+  // Update click handler to track when popup is explicitly opened
+  const originalClickHandler = markerElement.onclick;
+  markerElement.addEventListener('click', (e) => {
+    if (popup.isOpen()) {
+      markerElement.dataset.clickOpened = '';
+      delete markerElement.dataset.clickOpened;
+    } else {
+      markerElement.dataset.clickOpened = 'true';
+    }
+  }, true); // Use capture phase to run before other click handlers
+
   return marker;
 };
