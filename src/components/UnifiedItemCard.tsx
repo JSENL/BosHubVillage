@@ -67,7 +67,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
 
   const cardClassName = `
     bg-white border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer
-    ${isHighlighted ? 'ring-2 ring-purple-500 ring-opacity-75' : ''}
+    ${isHighlighted ? 'ring-2 ring-caribbean-teal ring-opacity-75' : ''}
   `;
 
   // Generate random rating for consistent appearance
@@ -104,7 +104,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             <div className="flex-1 p-6">
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 hover:text-purple-600 mb-1">
+                  <h3 className="text-xl font-bold text-gray-900 hover:text-caribbean-teal mb-1">
                     {item.title}
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
@@ -122,7 +122,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                     {displayCategory}
                   </Badge>
                   {item.price !== undefined && (
-                    <div className="text-lg font-bold text-purple-600">
+                    <div className="text-lg font-bold text-caribbean-teal">
                       {item.price === 0 ? 'Free' : `$${item.price}`}
                     </div>
                   )}
@@ -134,13 +134,13 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 {item.date && (
                   <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-2 text-purple-500" />
+                    <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70" />
                     <span>{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
                   </div>
                 )}
                 {displayLocation && (
                   <div className="flex items-center">
-                    <MapPin className="h-4 w-4 mr-2 text-purple-500" />
+                    <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70" />
                     <span className="truncate">{displayLocation}</span>
                   </div>
                 )}
@@ -177,12 +177,12 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             {displayCategory}
           </Badge>
           {item.price !== undefined && (
-            <div className="text-lg font-bold text-purple-600">
+            <div className="text-lg font-bold text-caribbean-teal">
               {item.price === 0 ? 'Free' : `$${item.price}`}
             </div>
           )}
         </div>
-        <CardTitle className="text-lg text-gray-900 hover:text-purple-600 line-clamp-2">
+        <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal line-clamp-2">
           {item.title}
         </CardTitle>
         <div className="flex items-center space-x-1">
@@ -203,13 +203,13 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
         <div className="space-y-2 text-sm">
           {item.date && (
             <div className="flex items-center text-gray-600">
-              <Calendar className="h-4 w-4 mr-2 text-purple-500" />
+              <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70" />
               <span>{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
             </div>
           )}
           {displayLocation && (
             <div className="flex items-center text-gray-600">
-              <MapPin className="h-4 w-4 mr-2 text-purple-500" />
+              <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70" />
               <span className="truncate">{displayLocation}</span>
             </div>
           )}

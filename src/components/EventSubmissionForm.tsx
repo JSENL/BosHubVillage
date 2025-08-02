@@ -144,8 +144,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
   return (
     <Card className="border-0 shadow-none">
       <CardHeader>
-        <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent flex items-center">
-          <Send className="h-6 w-6 mr-2 text-purple-600" />
+        <CardTitle className="text-2xl bg-gradient-to-r from-caribbean-teal to-grass-green bg-clip-text text-transparent flex items-center">
+          <Send className="h-6 w-6 mr-2 text-caribbean-teal" />
           Submit Event for Approval
         </CardTitle>
         <p className="text-gray-600">Your event will be reviewed by our admin team before being published.</p>
@@ -166,7 +166,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 placeholder="Enter event title"
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
               />
             </div>
 
@@ -179,7 +179,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 placeholder="Describe your event"
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
                 rows={3}
               />
             </div>
@@ -190,7 +190,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                   Category *
                 </Label>
                 <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                  <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
+                  <SelectTrigger className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal">
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -208,7 +208,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                   Event Type *
                 </Label>
                 <Select value={formData.event_type} onValueChange={(value) => handleInputChange('event_type', value)}>
-                  <SelectTrigger className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400">
+                  <SelectTrigger className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal">
                     <SelectValue placeholder="Select event type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -234,7 +234,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                   const neighborhoods = e.target.value.split(',').map(n => n.trim()).filter(n => n.length > 0);
                   handleInputChange('neighborhoods', neighborhoods);
                 }}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Enter multiple neighborhoods separated by commas
@@ -250,7 +250,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 placeholder="Enter villages (e.g., Beacon Hill Village, Cambridge Village, etc.)"
                 value={formData.villages}
                 onChange={(e) => handleInputChange('villages', e.target.value)}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Enter villages where this event is relevant
@@ -270,7 +270,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 type="date"
                 value={formData.date}
                 onChange={(e) => handleInputChange('date', e.target.value)}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
               />
             </div>
 
@@ -285,7 +285,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                   type="time"
                   value={formData.start_time}
                   onChange={(e) => handleInputChange('start_time', e.target.value)}
-                  className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
                 />
               </div>
 
@@ -299,7 +299,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                   type="time"
                   value={formData.end_time}
                   onChange={(e) => handleInputChange('end_time', e.target.value)}
-                  className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                  className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
                 />
               </div>
             </div>
@@ -317,7 +317,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               placeholder="Enter full address (e.g., 123 Main St, Boston, MA)"
               value={formData.location}
               onChange={(e) => handleInputChange('location', e.target.value)}
-              className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+              className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
               disabled={isGeocoding}
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -336,7 +336,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               placeholder="https://example.com"
               value={formData.website_link}
               onChange={(e) => handleInputChange('website_link', e.target.value)}
-              className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+              className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
             />
             <p className="text-xs text-gray-500 mt-1">
               Add a website link for more information about this event
@@ -356,7 +356,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 placeholder="0.00"
                 value={formData.price}
                 onChange={(e) => handleInputChange('price', e.target.value)}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
               />
             </div>
 
@@ -371,7 +371,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 placeholder="Unlimited"
                 value={formData.max_attendees}
                 onChange={(e) => handleInputChange('max_attendees', e.target.value)}
-                className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
               />
             </div>
           </div>
@@ -392,7 +392,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
 
             {formData.is_recurring && (
               <Select value={formData.recurring_pattern} onValueChange={(value) => handleInputChange('recurring_pattern', value)}>
-                <SelectTrigger className="border-purple-200 focus:border-purple-400 focus:ring-purple-400">
+                <SelectTrigger className="border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal">
                   <SelectValue placeholder="Select recurring pattern" />
                 </SelectTrigger>
                 <SelectContent>
@@ -428,7 +428,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
             <Button
               type="submit"
               disabled={isGeocoding || !isReady}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+              className="w-full bg-gradient-to-r from-caribbean-teal to-grass-green hover:from-caribbean-teal/90 hover:to-grass-green/90 text-white"
             >
               {isGeocoding ? (
                 <>

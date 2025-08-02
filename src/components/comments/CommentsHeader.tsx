@@ -11,7 +11,7 @@ export const CommentsHeader = ({ commentsCount, averageRating }: CommentsHeaderP
   return (
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center space-x-2">
-        <MessageCircle className="h-5 w-5 text-purple-600" />
+        <MessageCircle className="h-5 w-5 text-caribbean-teal" />
         <h3 className="text-lg font-semibold">Comments ({commentsCount})</h3>
       </div>
       {commentsCount > 0 && (

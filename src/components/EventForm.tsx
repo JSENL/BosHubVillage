@@ -105,7 +105,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
   return (
     <Card className="border-0 shadow-none">
       <CardHeader>
-        <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <CardTitle className="text-2xl bg-gradient-to-r from-caribbean-teal to-grass-green bg-clip-text text-transparent">
           Create New Event
         </CardTitle>
         {!isReady && (

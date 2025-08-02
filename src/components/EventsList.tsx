@@ -67,7 +67,7 @@ const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) 
                       {event.category}
                     </Badge>
                     <div className="flex items-center space-x-4">
-                      <span className="text-lg font-bold text-purple-600">${event.price}</span>
+                      <span className="text-lg font-bold text-caribbean-teal">${event.price}</span>
                     </div>
                   </div>
                   <CardTitle className="text-xl mb-2">{event.title}</CardTitle>
@@ -98,11 +98,11 @@ const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) 
                   <div className="flex space-x-3">
                     <Button 
                       onClick={() => handleEventClick(event)}
-                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                      className="bg-gradient-to-r from-caribbean-teal to-grass-green hover:from-caribbean-teal/90 hover:to-grass-green/90 text-white"
                     >
                       View Details
                     </Button>
-                    <Button variant="outline" className="border-purple-200 text-purple-600 hover:bg-purple-50">
+                    <Button variant="outline" className="border-caribbean-teal text-caribbean-teal hover:bg-caribbean-teal/10">
                       Register
                     </Button>
                   </div>

@@ -28,10 +28,10 @@ const EventDetailsModal = ({ event, isOpen, onClose }: EventDetailsModalProps) =
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex justify-between items-start mb-4">
-            <Badge variant="secondary" className="bg-purple-100 text-purple-700">
+            <Badge variant="secondary" className="bg-caribbean-teal/10 text-caribbean-teal">
               {event.category}
             </Badge>
-            <div className="flex items-center text-lg font-bold text-purple-600">
+            <div className="flex items-center text-lg font-bold text-caribbean-teal">
               <DollarSign className="h-5 w-5 mr-1" />
               {event.price}
             </div>
@@ -46,18 +46,18 @@ const EventDetailsModal = ({ event, isOpen, onClose }: EventDetailsModalProps) =
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div className="flex items-center">
-                <Clock className="h-4 w-4 mr-2 text-purple-500" />
+                <Clock className="h-4 w-4 mr-2 text-caribbean-teal/70" />
                 <div>
                   <div className="font-medium">{new Date(event.date).toLocaleDateString()}</div>
                   <div className="text-gray-600">{formatTimeRange(event.start_time, event.end_time)}</div>
                 </div>
               </div>
               <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-2 text-purple-500" />
+                <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70" />
                 <div className="font-medium">{event.location}</div>
               </div>
               <div className="flex items-center">
-                <Users className="h-4 w-4 mr-2 text-purple-500" />
+                <Users className="h-4 w-4 mr-2 text-caribbean-teal/70" />
                 <div>
                   <span className="font-medium">{event.attendees_count || 0}</span>
                   <span className="text-gray-600"> attending</span>
@@ -71,10 +71,10 @@ const EventDetailsModal = ({ event, isOpen, onClose }: EventDetailsModalProps) =
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pb-4 border-b">
-            <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
+            <Button className="bg-gradient-to-r from-caribbean-teal to-grass-green hover:from-caribbean-teal/90 hover:to-grass-green/90 text-white">
               Register for Event
             </Button>
-            <Button variant="outline" className="border-purple-200 text-purple-600 hover:bg-purple-50">
+            <Button variant="outline" className="border-caribbean-teal text-caribbean-teal hover:bg-caribbean-teal/10">
               Share Event
             </Button>
           </div>

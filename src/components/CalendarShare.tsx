@@ -118,7 +118,7 @@ export const CalendarShare: React.FC<CalendarShareProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="lg" className="border-purple-200 text-purple-600 hover:bg-purple-50">
+        <Button variant="outline" size="lg" className="border-caribbean-teal text-caribbean-teal hover:bg-caribbean-teal/10">
           <CalendarPlus className="h-4 w-4 mr-2" />
           Add to Calendar
         </Button>
@@ -137,7 +137,7 @@ export const CalendarShare: React.FC<CalendarShareProps> = ({
           Outlook Calendar
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => openCalendar('yahoo')}>
-          <Calendar className="h-4 w-4 mr-2 text-purple-600" />
+          <Calendar className="h-4 w-4 mr-2 text-caribbean-teal" />
           Yahoo Calendar
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => openCalendar('download')}>
