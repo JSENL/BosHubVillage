@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
-import { useMapLoader } from './useMapLoader';
+import { useMapboxToken } from '@/contexts/MapboxContext';
 import { useGeocoding } from './useGeocoding';
 import { toast } from 'sonner';
 
@@ -20,7 +20,7 @@ export const useDirections = (mapInstance: mapboxgl.Map | null) => {
     error: null
   });
 
-  const { apiKey: mapboxToken } = useMapLoader();
+  const { mapboxToken } = useMapboxToken();
   const { geocode } = useGeocoding();
 
   const getDirections = useCallback(async (

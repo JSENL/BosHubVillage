@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from 'react';
-import { useMapLoader } from './useMapLoader';
+import { useMapboxToken } from '@/contexts/MapboxContext';
 import { toast } from 'sonner';
 
 export interface GeocodeResult {
@@ -47,7 +47,7 @@ const geocodeAddressMapbox = async (address: string, apiKey: string): Promise<Ge
 
 export const useGeocoding = () => {
   const [isGeocoding, setIsGeocoding] = useState(false);
-  const { apiKey } = useMapLoader();
+  const { mapboxToken: apiKey } = useMapboxToken();
 
   const geocode = useCallback(async (address: string): Promise<GeocodeResult | null> => {
     if (!apiKey) {

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useMapLoader } from '@/hooks/useMapLoader';
+import { useMapboxToken } from '@/contexts/MapboxContext';
 import { supabase } from '@/integrations/supabase/client';
 import mapboxgl from 'mapbox-gl';
 
@@ -21,7 +21,7 @@ interface UniversalMapProps {
 }
 
 export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
-  const { apiKey, mapLoaded, isLoadingApiKey, error } = useMapLoader();
+  const { mapboxToken: apiKey, isLoadingApiKey, error } = useMapboxToken();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
   const [mapItems, setMapItems] = useState<MapItem[]>([]);
@@ -152,7 +152,7 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
   }, []);
 
   useEffect(() => {
-    if (mapLoaded && apiKey && mapRef.current && !mapInstanceRef.current) {
+    if (!isLoadingApiKey && apiKey && mapRef.current && !mapInstanceRef.current) {
       console.log('Initializing Mapbox map...');
       
       mapboxgl.accessToken = apiKey;
@@ -168,7 +168,7 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
       
       mapInstanceRef.current = map;
     }
-  }, [mapLoaded, apiKey]);
+  }, [isLoadingApiKey, apiKey]);
 
   useEffect(() => {
     if (mapInstanceRef.current && mapItems.length > 0) {
@@ -208,7 +208,7 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
         mapInstanceRef.current!.fitBounds(bounds, { padding: 50 });
       }
     }
-  }, [mapItems, mapLoaded]);
+  }, [mapItems, isLoadingApiKey]);
 
   if (error) {
     return (
@@ -221,7 +221,7 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
     );
   }
 
-  if (isLoadingApiKey || !mapLoaded) {
+  if (isLoadingApiKey) {
     return (
       <div className="flex items-center justify-center" style={{ height, width: '100%' }}>
         <div className="text-center p-8">

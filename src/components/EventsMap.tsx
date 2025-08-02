@@ -5,7 +5,7 @@ import { Event } from '@/hooks/useEvents';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { EventsSidebar } from './map/EventsSidebar';
 import { useEventHighlight } from '@/hooks/useEventHighlight';
-import { useMapLoader } from '@/hooks/useMapLoader';
+import { useMapboxToken } from '@/contexts/MapboxContext';
 import { useMapboxMap } from '@/hooks/useMapboxMap';
 import { useMapMarkers } from '@/hooks/useMapMarkers';
 
@@ -20,7 +20,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const navigate = useNavigate();
   const { highlightedEventId, highlightEvent } = useEventHighlight();
-  const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
+  const { mapboxToken, isLoadingApiKey, error } = useMapboxToken();
 
   // Use the filtered events passed from parent instead of filtering here
   const filteredEvents = events.filter(event => {

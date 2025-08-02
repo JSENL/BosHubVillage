@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useMapLoader } from '@/hooks/useMapLoader';
+import { useMapboxToken } from '@/contexts/MapboxContext';
 import { useMapMarkers } from '@/hooks/useMapMarkers';
 import { MapOverlays } from '@/components/map/MapOverlays';
 import { MapDebugOverlay } from '@/components/map/MapDebugOverlay';
@@ -29,7 +29,7 @@ export const EnhancedUniversalMap = ({
 }: EnhancedUniversalMapProps) => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
-  const { apiKey: mapboxToken, isLoadingApiKey, error } = useMapLoader();
+  const { mapboxToken, isLoadingApiKey, error } = useMapboxToken();
   const { filteredMappableItems } = useItemFiltering({ items, selectedTypes });
   const { mapRef, mapInstance } = useMapInitializer({ mapboxToken, isLoadingApiKey });
   const { getDirections, clearDirections, route, directions } = useDirections(mapInstance);
