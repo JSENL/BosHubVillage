@@ -22,6 +22,11 @@ export const useDynamicUnifiedFilterOptions = ({
 }: UseDynamicUnifiedFilterOptionsProps) => {
   
   const availableCategories = useMemo(() => {
+    // Safety check - return empty array if allItems is not available
+    if (!allItems || !Array.isArray(allItems)) {
+      return [];
+    }
+    
     // Filter items based on all criteria EXCEPT category
     const filteredItems = allItems.filter(item => {
       // Type filter
@@ -74,6 +79,11 @@ export const useDynamicUnifiedFilterOptions = ({
   }, [allItems, selectedType, selectedNeighborhood, selectedVillage, searchTerm, eventDateRange, selectedEventDates]);
 
   const availableNeighborhoods = useMemo(() => {
+    // Safety check - return empty array if allItems is not available
+    if (!allItems || !Array.isArray(allItems)) {
+      return [];
+    }
+    
     // Filter items based on all criteria EXCEPT neighborhood
     const filteredItems = allItems.filter(item => {
       const matchesType = selectedType === 'all' || item.type === selectedType;
@@ -115,6 +125,11 @@ export const useDynamicUnifiedFilterOptions = ({
   }, [allItems, selectedType, selectedVillage, searchTerm, eventDateRange, selectedEventDates]);
 
   const availableVillages = useMemo(() => {
+    // Safety check - return empty array if allItems is not available
+    if (!allItems || !Array.isArray(allItems)) {
+      return [];
+    }
+    
     // Filter items based on all criteria EXCEPT village
     const filteredItems = allItems.filter(item => {
       const matchesType = selectedType === 'all' || item.type === selectedType;
