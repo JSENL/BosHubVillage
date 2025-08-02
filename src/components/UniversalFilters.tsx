@@ -3,12 +3,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Filter } from 'lucide-react';
 import { CategoryFilter } from '@/components/filters/CategoryFilter';
 import { LocationFilter } from '@/components/filters/LocationFilter';
-import { useUnifiedFilterOptions } from '@/hooks/useDatabaseFilterOptions';
-import { useFilteredVillages } from '@/hooks/useFilteredVillages';
+import { useDynamicUnifiedFilterOptions } from '@/hooks/useDynamicUnifiedFilterOptions';
 import { EventDateFilter } from '@/components/filters/EventDateFilter';
 import { DateRange } from 'react-day-picker';
+import { UnifiedItem } from '@/types/unifiedItem';
 
 interface UniversalFiltersProps {
+  allItems: UnifiedItem[];
+  searchTerm: string;
   selectedType: string;
   onTypeChange: (type: string) => void;
   selectedCategory: string;
@@ -26,6 +28,8 @@ interface UniversalFiltersProps {
 }
 
 export const UniversalFilters = ({
+  allItems,
+  searchTerm,
   selectedType,
   onTypeChange,
   selectedCategory,
@@ -41,11 +45,16 @@ export const UniversalFilters = ({
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
-  // Use unified filter options that properly handle database categories
-  const { categories, neighborhoods, villages } = useUnifiedFilterOptions(selectedType);
-  
-  // Filter villages based on selected neighborhood
-  const filteredVillages = useFilteredVillages(selectedNeighborhood, villages);
+  // Use dynamic filter options based on current filters
+  const { availableCategories, availableNeighborhoods, availableVillages } = useDynamicUnifiedFilterOptions({
+    allItems,
+    selectedType,
+    selectedNeighborhood,
+    selectedVillage,
+    searchTerm,
+    eventDateRange,
+    selectedEventDates
+  });
 
   const typeOptions = [
     { value: 'all', label: 'All Types' },
@@ -86,7 +95,7 @@ export const UniversalFilters = ({
       <CategoryFilter
         selectedCategory={selectedCategory}
         onCategoryChange={onCategoryChange}
-        availableCategories={categories}
+        availableCategories={availableCategories}
       />
 
       <LocationFilter
@@ -94,8 +103,8 @@ export const UniversalFilters = ({
         onNeighborhoodChange={onNeighborhoodChange}
         selectedVillage={selectedVillage}
         onVillageChange={onVillageChange}
-        availableNeighborhoods={neighborhoods}
-        availableVillages={filteredVillages}
+        availableNeighborhoods={availableNeighborhoods}
+        availableVillages={availableVillages}
       />
 
       <div className="text-xs sm:text-sm text-gray-600">

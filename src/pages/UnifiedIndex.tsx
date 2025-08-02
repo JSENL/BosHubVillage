@@ -109,6 +109,8 @@ const UnifiedIndexContent = () => {
         />
 
         <UniversalFilters
+          allItems={allItems}
+          searchTerm={searchTerm}
           selectedType={selectedType}
           onTypeChange={setSelectedType}
           selectedCategory={selectedCategory}

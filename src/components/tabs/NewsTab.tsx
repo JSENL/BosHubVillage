@@ -21,6 +21,7 @@ export const NewsTab = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedVillage, setSelectedVillage] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   
   console.log('NewsTab - news:', news);
   
@@ -28,6 +29,21 @@ export const NewsTab = () => {
   
   // Only show published news, not submissions (submissions are handled separately in admin)
   const allNews: News[] = news || [];
+  
+  // Convert news to UnifiedItem format for dynamic filtering
+  const allNewsItems = allNews.map(newsItem => ({
+    id: newsItem.id,
+    title: newsItem.title,
+    description: newsItem.content || '',
+    latitude: newsItem.latitude || null,
+    longitude: newsItem.longitude || null,
+    type: 'news' as const,
+    location: newsItem.location,
+    category: newsItem.source, // Use source as category for news
+    neighborhoods: newsItem.location || '',
+    villages: newsItem.villages || [],
+    originalData: newsItem
+  }));
 
   console.log('NewsTab - allNews:', allNews);
 
@@ -69,6 +85,8 @@ export const NewsTab = () => {
       <h2 className="text-2xl font-bold text-gray-900">Community News</h2>
       
       <UniversalFilters
+        allItems={allNewsItems}
+        searchTerm={searchTerm}
         selectedType={selectedType}
         onTypeChange={setSelectedType}
         selectedCategory={selectedCategory}
