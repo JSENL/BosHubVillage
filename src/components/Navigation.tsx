@@ -95,18 +95,6 @@ export const Navigation = () => {
                        Submit Local Resource
                      </Link>
                    </DropdownMenuItem>
-                  {isAdmin && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin/approval" className="cursor-pointer">
-                          <CheckSquare className="h-4 w-4 mr-2" />
-                          Admin Approvals
-                          <Badge variant="secondary" className="ml-2">Admin</Badge>
-                        </Link>
-                      </DropdownMenuItem>
-                    </>
-                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
