@@ -14,7 +14,7 @@ import SubmitBusiness from "./pages/SubmitBusiness";
 import SubmitLocalService from "./pages/SubmitLocalService";
 import SubmitNews from "./pages/SubmitNews";
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminApproval from "./pages/AdminApproval";
+
 import EventDetails from "./pages/EventDetails";
 import BusinessDetails from "./pages/BusinessDetails";
 import NewsDetails from "./pages/NewsDetails";
@@ -45,7 +45,7 @@ const App = () => (
             <Route path="/submit-local-resource" element={<SubmitLocalService />} />
             <Route path="/submit-news" element={<SubmitNews />} />
             <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/approval" element={<AdminApproval />} />
+            
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/business/:businessId" element={<BusinessDetails />} />
             <Route path="/news/:newsId" element={<NewsDetails />} />
