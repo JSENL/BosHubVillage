@@ -41,8 +41,7 @@ export const validateCoordinates = (item: UnifiedItem) => {
 export const getMarkerColor = (type: string): string => {
   switch (type) {
     case 'event': return '#ef4444'; // red
-    case 'news': return '#3b82f6'; // blue
-    case 'business': return '#22c55e'; // green
+    case 'business': return '#3b82f6'; // blue
     case 'local-service': return '#eab308'; // yellow
     default: return '#6b7280'; // gray
   }

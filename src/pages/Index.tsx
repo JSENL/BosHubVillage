@@ -46,7 +46,7 @@ const Index = () => {
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedItems, setHasGeocodedItems] = useState(false);
 
-  // Combine all data into unified items
+  // Combine all data into unified items (excluding news from map and cards)
   const allItems: UnifiedItem[] = [
     ...(events || []).map(event => ({
       id: event.id,
@@ -65,21 +65,6 @@ const Index = () => {
       neighborhoods: event.neighborhoods,
       villages: event.villages,
       originalData: event
-    })),
-    ...(news || []).map(newsItem => ({
-      id: newsItem.id,
-      title: newsItem.title,
-      description: newsItem.content || '',
-      latitude: newsItem.latitude,
-      longitude: newsItem.longitude,
-      type: 'news' as const,
-      location: newsItem.location,
-      address: newsItem.Address || newsItem.location,
-      content: newsItem.content,
-      source: newsItem.source,
-      villages: newsItem.villages,
-      date: newsItem.date_posted,
-      originalData: newsItem
     })),
     ...(businesses || []).map(business => ({
       id: business.id,
@@ -304,8 +289,6 @@ const Index = () => {
     switch (item.type) {
       case 'event':
         return <EventCard key={item.id} event={item.originalData} viewMode="grid" />;
-      case 'news':
-        return <NewsCard key={item.id} news={item.originalData} />;
       case 'business':
         return <BusinessCard key={item.id} business={item.originalData} />;
       case 'local-service':
@@ -315,9 +298,9 @@ const Index = () => {
     }
   };
 
-  // Determine selected types for the map (including all types)
+  // Determine selected types for the map (excluding news)
   const selectedTypesForMap = selectedType === 'all' 
-    ? ['event', 'business', 'local-service', 'news'] 
+    ? ['event', 'business', 'local-service'] 
     : [selectedType];
 
   return (
