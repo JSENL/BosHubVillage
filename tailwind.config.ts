@@ -63,13 +63,13 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				yelp: {
-					red: 'hsl(var(--yelp-red))',
-					'red-dark': 'hsl(var(--yelp-red-dark))',
-					orange: 'hsl(var(--yelp-orange))',
-					yellow: 'hsl(var(--yelp-yellow))',
-					gray: 'hsl(var(--yelp-gray))',
-					'light-gray': 'hsl(var(--yelp-light-gray))'
+				caribbean: {
+					red: 'hsl(var(--caribbean-red))',
+					yellow: 'hsl(var(--caribbean-yellow))',
+					teal: 'hsl(var(--caribbean-teal))',
+					'grass-green': 'hsl(var(--grass-green))',
+					'sky-gray': 'hsl(var(--sky-gray))',
+					'black-coffee': 'hsl(var(--black-coffee))'
 				}
 			},
 			borderRadius: {
