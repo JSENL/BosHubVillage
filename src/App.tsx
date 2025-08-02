@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { MapboxProvider } from "@/contexts/MapboxContext";
+import { FilterProvider } from "@/contexts/FilterContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import SubmitEvent from "./pages/SubmitEvent";
@@ -32,9 +33,10 @@ const App = () => (
     <TooltipProvider>
       <AuthProvider>
         <MapboxProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+          <FilterProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
@@ -55,6 +57,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+          </FilterProvider>
         </MapboxProvider>
       </AuthProvider>
     </TooltipProvider>
