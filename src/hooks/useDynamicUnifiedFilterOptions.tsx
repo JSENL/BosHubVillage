@@ -84,6 +84,33 @@ export const useDynamicUnifiedFilterOptions = ({
       return [];
     }
     
+    // Define the allowed Boston neighborhoods
+    const allowedNeighborhoods = [
+      'Allston–Brighton',
+      'Back Bay',
+      'Bay Village',
+      'Beacon Hill',
+      'Charlestown',
+      'Chinatown / Leather District',
+      'Dorchester',
+      'Downtown',
+      'East Boston',
+      'Fenway–Kenmore',
+      'Hyde Park',
+      'Jamaica Plain',
+      'Mattapan',
+      'Mission Hill',
+      'North End',
+      'Roslindale',
+      'Roxbury',
+      'South Boston (a.k.a. "Southie")',
+      'South End',
+      'West End',
+      'West Roxbury',
+      'Harbor Islands',
+      'Longwood Medical Area'
+    ];
+    
     // Filter items based on all criteria EXCEPT neighborhood
     const filteredItems = allItems.filter(item => {
       const matchesType = selectedType === 'all' || item.type === selectedType;
@@ -112,16 +139,31 @@ export const useDynamicUnifiedFilterOptions = ({
       return matchesType && matchesSearch && matchesVillage && matchesDate;
     });
     
+    // Extract neighborhoods from filtered items
     const neighborhoodSet = new Set<string>();
     filteredItems.forEach(item => {
       if (item.neighborhoods && Array.isArray(item.neighborhoods)) {
         item.neighborhoods.forEach(neighborhood => neighborhoodSet.add(neighborhood));
+      } else if (item.neighborhoods && typeof item.neighborhoods === 'string') {
+        // Handle comma-separated string neighborhoods
+        item.neighborhoods.split(',').forEach(neighborhood => {
+          const trimmed = neighborhood.trim();
+          if (trimmed) neighborhoodSet.add(trimmed);
+        });
       } else if (item.location) {
         neighborhoodSet.add(item.location);
       }
     });
     
-    return Array.from(neighborhoodSet).sort();
+    // Filter to only include allowed neighborhoods that exist in the data
+    const filteredNeighborhoods = allowedNeighborhoods.filter(allowedNeighborhood => {
+      return Array.from(neighborhoodSet).some(actualNeighborhood => 
+        actualNeighborhood.toLowerCase().includes(allowedNeighborhood.toLowerCase()) ||
+        allowedNeighborhood.toLowerCase().includes(actualNeighborhood.toLowerCase())
+      );
+    });
+    
+    return filteredNeighborhoods.sort();
   }, [allItems, selectedType, selectedVillage, searchTerm, eventDateRange, selectedEventDates]);
 
   const availableVillages = useMemo(() => {
