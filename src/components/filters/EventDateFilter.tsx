@@ -134,16 +134,24 @@ export const EventDateFilter = ({
           <PopoverContent className="w-auto p-0" align="start">
             <div className="p-3">
               <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'individual' | 'range')} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-3">
-                  <TabsTrigger value="individual" className="flex items-center gap-2 text-xs">
-                    <CalendarDays className="h-3 w-3" />
-                    Event Dates
-                  </TabsTrigger>
-                  <TabsTrigger value="range" className="flex items-center gap-2 text-xs">
-                    <CalendarRange className="h-3 w-3" />
-                    Date Range
-                  </TabsTrigger>
-                </TabsList>
+                {eventDateRange?.from || onEventDateRangeChange ? (
+                  <>
+                    <TabsList className="grid w-full grid-cols-2 mb-3">
+                      <TabsTrigger value="individual" className="flex items-center gap-2 text-xs">
+                        <CalendarDays className="h-3 w-3" />
+                        Event Dates
+                      </TabsTrigger>
+                      <TabsTrigger value="range" className="flex items-center gap-2 text-xs">
+                        <CalendarRange className="h-3 w-3" />
+                        Date Range
+                      </TabsTrigger>
+                    </TabsList>
+                  </>
+                ) : (
+                  <div className="mb-3">
+                    <div className="text-sm font-medium text-center">Event Dates</div>
+                  </div>
+                )}
 
                 <TabsContent value="individual" className="space-y-3">
                   {selectedEventDates.length > 0 && (
