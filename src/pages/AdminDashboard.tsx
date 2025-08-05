@@ -14,6 +14,7 @@ import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
 import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
 import BulkDataGenerator from '@/components/admin/BulkDataGenerator';
+import { HuggingFaceBulkGenerator } from '@/components/admin/HuggingFaceBulkGenerator';
 import { 
   Shield, 
   Calendar, 
@@ -162,7 +163,7 @@ const AdminDashboard = () => {
             
             <TabsContent value="data-generator">
               <div className="flex justify-center">
-                <BulkDataGenerator />
+                <HuggingFaceBulkGenerator />
               </div>
             </TabsContent>
             
