@@ -13,8 +13,6 @@ import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
 import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
-import { DeepSeekDataGenerator } from '@/components/admin/DeepSeekDataGenerator';
-
 import { 
   Shield, 
   Calendar, 
@@ -27,8 +25,7 @@ import {
   Users,
   Tag,
   Megaphone,
-  UserCheck,
-  Brain
+  UserCheck
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
 
@@ -86,7 +83,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-11 mb-8">
+            <TabsList className="grid w-full grid-cols-10 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -119,18 +116,14 @@ const AdminDashboard = () => {
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Reported to Admin
               </TabsTrigger>
-              <TabsTrigger value="all-users" className="flex items-center">
-                <Users className="h-4 w-4 mr-2" />
-                All Users
-              </TabsTrigger>
-              <TabsTrigger value="deepseek-generator" className="flex items-center">
-                <Brain className="h-4 w-4 mr-2" />
-                AI Generator
-              </TabsTrigger>
-              <TabsTrigger value="categories" className="flex items-center">
-                <Tag className="h-4 w-4 mr-2" />
-                Categories
-              </TabsTrigger>
+               <TabsTrigger value="all-users" className="flex items-center">
+                 <Users className="h-4 w-4 mr-2" />
+                 All Users
+               </TabsTrigger>
+               <TabsTrigger value="categories" className="flex items-center">
+                 <Tag className="h-4 w-4 mr-2" />
+                 Categories
+               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="events">
@@ -172,12 +165,6 @@ const AdminDashboard = () => {
             
             <TabsContent value="categories">
               <CategoriesManagement />
-            </TabsContent>
-            
-            <TabsContent value="deepseek-generator">
-              <div className="flex justify-center">
-                <DeepSeekDataGenerator />
-              </div>
             </TabsContent>
           </Tabs>
         </div>
