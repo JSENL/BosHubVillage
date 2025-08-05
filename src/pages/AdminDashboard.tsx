@@ -11,6 +11,7 @@ import AdminBusinessApproval from '@/components/AdminBusinessApproval';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
+import { CSVImportTool } from '@/components/admin/CSVImportTool';
 import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
 import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
 import { 
@@ -25,7 +26,8 @@ import {
   Users,
   Tag,
   Megaphone,
-  UserCheck
+  UserCheck,
+  Upload
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
 
@@ -83,7 +85,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-10 mb-8">
+            <TabsList className="grid w-full grid-cols-11 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -119,6 +121,10 @@ const AdminDashboard = () => {
                <TabsTrigger value="all-users" className="flex items-center">
                  <Users className="h-4 w-4 mr-2" />
                  All Users
+               </TabsTrigger>
+               <TabsTrigger value="csv-import" className="flex items-center">
+                 <Upload className="h-4 w-4 mr-2" />
+                 CSV Import
                </TabsTrigger>
                <TabsTrigger value="categories" className="flex items-center">
                  <Tag className="h-4 w-4 mr-2" />
@@ -161,6 +167,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="all-users">
               <AdminUserManagement />
+            </TabsContent>
+            
+            <TabsContent value="csv-import">
+              <CSVImportTool />
             </TabsContent>
             
             <TabsContent value="categories">
