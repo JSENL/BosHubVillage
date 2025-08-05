@@ -6,12 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { pipeline, env } from '@huggingface/transformers';
-import { Loader2 } from 'lucide-react';
-
-// Configure transformers to use browser cache
-env.allowLocalModels = false;
-env.useBrowserCache = true;
+import { Loader2, Database, Sparkles } from 'lucide-react';
 
 interface GeneratedData {
   [key: string]: any;
@@ -21,7 +16,6 @@ export const HuggingFaceBulkGenerator = () => {
   const [dataType, setDataType] = useState<string>('');
   const [count, setCount] = useState<number>(5);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isModelLoading, setIsModelLoading] = useState(false);
 
   const bostonNeighborhoods = [
     'Allston–Brighton', 'Back Bay', 'Bay Village', 'Beacon Hill', 'Charlestown',
@@ -31,79 +25,41 @@ export const HuggingFaceBulkGenerator = () => {
     'South End', 'West End', 'West Roxbury', 'Harbor Islands', 'Longwood Medical Area'
   ];
 
-  const generatePrompt = (type: string, count: number) => {
-    const neighborhoods = bostonNeighborhoods.join(', ');
-    
-    if (type === 'events') {
-      return `Generate ${count} realistic Boston events in JSON format. Each event should have: title, description (2-3 sentences), category (Community/Arts & Culture/Sports & Recreation/Education/Health & Wellness/Business & Networking/Food & Dining/Entertainment/Family/Technology), date (future date YYYY-MM-DD), start_time (HH:MM:SS), end_time (HH:MM:SS), location (specific Boston venue), address (full street address), neighborhood (one of: ${neighborhoods}), price (0-100), max_attendees (10-500). Return only valid JSON array.`;
-    } else if (type === 'businesses') {
-      return `Generate ${count} realistic Boston businesses in JSON format. Each business should have: title, description (2-3 sentences), short_description (one line), business_type (Restaurant/Retail/Service/Healthcare/Technology/Education/Entertainment/Nonprofit/Real Estate/Professional Services), address (full Boston street address), neighborhood (one of: ${neighborhoods}), website_link (https://example.com). Return only valid JSON array.`;
-    } else if (type === 'local_resources') {
-      return `Generate ${count} realistic Boston local resources in JSON format. Each resource should have: name, description (2-3 sentences), category (Healthcare/Education/Government/Community Services/Transportation/Parks & Recreation/Libraries/Emergency Services/Social Services/Housing), address (full Boston street address), neighborhood (one of: ${neighborhoods}), website_link (https://example.com). Return only valid JSON array.`;
-    }
-    return '';
-  };
+  const eventTitles = [
+    'Community Garden Workshop', 'Art in the Park', 'Neighborhood Block Party', 'Health & Wellness Fair',
+    'Local Business Showcase', 'Cultural Heritage Festival', 'Youth Basketball Tournament', 'Senior Center Bingo',
+    'Food Truck Festival', 'Environmental Cleanup Day', 'Job Fair', 'Music in the Square',
+    'Farmers Market', 'Holiday Celebration', 'Technology Workshop', 'Book Club Meeting',
+    'Fitness Class', 'Cooking Class', 'Language Exchange', 'Volunteer Fair'
+  ];
 
-  const parseGeneratedText = (text: string): GeneratedData[] => {
-    try {
-      // Try to extract JSON from the generated text
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
-      }
-      
-      // If no JSON found, try to parse the entire text
-      return JSON.parse(text);
-    } catch (error) {
-      console.error('Failed to parse generated text:', error);
-      throw new Error('Failed to parse generated data. Please try again.');
-    }
-  };
+  const businessNames = [
+    'Corner Cafe', 'Local Pharmacy', 'Community Bank', 'Hair Salon', 'Auto Repair',
+    'Grocery Store', 'Pizza Place', 'Dry Cleaner', 'Hardware Store', 'Flower Shop',
+    'Bakery', 'Barber Shop', 'Laundromat', 'Pet Store', 'Bookstore',
+    'Clothing Store', 'Electronics Store', 'Shoe Repair', 'Deli', 'Ice Cream Shop'
+  ];
+
+  const resourceNames = [
+    'Community Health Center', 'Public Library', 'Senior Center', 'Youth Center', 'Food Pantry',
+    'Homeless Shelter', 'Community College', 'Job Training Center', 'Legal Aid Office', 'Daycare Center',
+    'Mental Health Clinic', 'Emergency Services', 'Parks Department', 'Transportation Hub', 'Housing Authority',
+    'Social Services Office', 'Recreation Center', 'Community Garden', 'Neighborhood Watch', 'Crisis Center'
+  ];
 
   const handleGenerate = async () => {
-    if (!dataType || count < 1 || count > 20) {
-      toast.error('Please select a data type and enter a count between 1 and 20');
+    if (!dataType || count < 1 || count > 50) {
+      toast.error('Please select a data type and enter a count between 1 and 50');
       return;
     }
 
     setIsGenerating(true);
-    setIsModelLoading(true);
 
     try {
-      toast.info('Loading AI model... This may take a moment on first use.');
+      toast.info('Generating realistic data...');
       
-      // Initialize the text generation pipeline
-      const generator = await pipeline(
-        'text-generation',
-        'Xenova/gpt2',
-        { device: 'webgpu' }
-      );
-      
-      setIsModelLoading(false);
-      toast.info('Model loaded! Generating data...');
-
-      const prompt = generatePrompt(dataType, count);
-      
-      // Generate text with the model
-      const result = await generator(prompt, {
-        max_new_tokens: 1000,
-        temperature: 0.8,
-        do_sample: true,
-        return_full_text: false,
-      });
-
-      let generatedText = '';
-      if (Array.isArray(result)) {
-        generatedText = (result[0] as any)?.generated_text || '';
-      } else {
-        generatedText = (result as any)?.generated_text || '';
-      }
-
-      console.log('Generated text:', generatedText);
-
-      // Since GPT-2 might not generate perfect JSON, we'll create structured data manually
-      // This is a fallback approach for the free model
-      const mockData = generateMockData(dataType, count);
+      // Generate realistic data
+      const generatedData = generateRealisticData(dataType, count);
       
       // Get admin user ID
       const { data: adminUsers, error: adminError } = await supabase
@@ -115,7 +71,7 @@ export const HuggingFaceBulkGenerator = () => {
       const adminUserId = adminUsers?.[0]?.user_id;
 
       // Prepare data for insertion
-      const insertData = mockData.map((item: any) => ({
+      const insertData = generatedData.map((item: any) => ({
         ...item,
         created_by: adminUserId,
         created_at: new Date().toISOString(),
@@ -148,7 +104,7 @@ export const HuggingFaceBulkGenerator = () => {
         if (insertError) throw new Error(`Failed to insert data: ${insertError.message}`);
       }
 
-      toast.success(`Successfully generated and inserted ${insertedData.length} ${dataType} records!`);
+      toast.success(`Successfully generated and inserted ${insertedData?.length || 0} ${dataType} records!`);
       
       // Reload the page to show new data
       setTimeout(() => {
@@ -160,58 +116,64 @@ export const HuggingFaceBulkGenerator = () => {
       toast.error(`Failed to generate data: ${error.message}`);
     } finally {
       setIsGenerating(false);
-      setIsModelLoading(false);
     }
   };
 
-  const generateMockData = (type: string, count: number): GeneratedData[] => {
+  const generateRealisticData = (type: string, count: number): GeneratedData[] => {
     const data: GeneratedData[] = [];
     
     for (let i = 0; i < count; i++) {
       const randomNeighborhood = bostonNeighborhoods[Math.floor(Math.random() * bostonNeighborhoods.length)];
       
       if (type === 'events') {
-        const categories = ['Community', 'Arts & Culture', 'Sports & Recreation', 'Education', 'Health & Wellness', 'Business & Networking', 'Food & Dining', 'Entertainment', 'Family', 'Technology'];
+        const categories = ['community', 'arts culture', 'sports recreation', 'education', 'health wellness', 'business networking', 'food dining', 'entertainment', 'family', 'technology'];
         const category = categories[Math.floor(Math.random() * categories.length)];
+        const eventTitle = eventTitles[Math.floor(Math.random() * eventTitles.length)];
+        
+        // Generate future date within next 90 days
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + Math.floor(Math.random() * 90) + 1);
         
         data.push({
-          title: `${category} Event ${i + 1}`,
-          description: `A wonderful ${category.toLowerCase()} event taking place in ${randomNeighborhood}. Join us for an engaging experience that brings the community together.`,
-          category: category.toLowerCase().replace(' & ', ' '),
+          title: `${eventTitle} - ${randomNeighborhood}`,
+          description: `Join us for an exciting ${eventTitle.toLowerCase()} in the heart of ${randomNeighborhood}. This community event brings neighbors together and celebrates our local culture. Don't miss this opportunity to connect with your community!`,
+          category: category,
           event_type: 'event',
-          date: new Date(Date.now() + Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          start_time: '19:00:00',
-          end_time: '21:00:00',
-          location: `Community Center, ${randomNeighborhood}, MA`,
-          address: `${100 + i} Main St, ${randomNeighborhood}, MA 02${100 + Math.floor(Math.random() * 200)}`,
+          date: futureDate.toISOString().split('T')[0],
+          start_time: ['09:00:00', '10:00:00', '14:00:00', '15:00:00', '18:00:00', '19:00:00'][Math.floor(Math.random() * 6)],
+          end_time: ['11:00:00', '12:00:00', '16:00:00', '17:00:00', '20:00:00', '21:00:00'][Math.floor(Math.random() * 6)],
+          location: `${randomNeighborhood} Community Center`,
+          address: `${Math.floor(Math.random() * 900) + 100} ${['Main St', 'Oak Ave', 'Park Rd', 'Center St', 'Washington St'][Math.floor(Math.random() * 5)]}, ${randomNeighborhood}, MA 02${Math.floor(Math.random() * 200) + 100}`,
           neighborhood: randomNeighborhood,
-          price: Math.floor(Math.random() * 50),
-          max_attendees: 50 + Math.floor(Math.random() * 200),
-          is_recurring: false,
+          price: [0, 5, 10, 15, 20, 25][Math.floor(Math.random() * 6)],
+          max_attendees: [25, 50, 75, 100, 150, 200][Math.floor(Math.random() * 6)],
+          is_recurring: Math.random() < 0.3,
           website_link: 'https://example.com'
         });
       } else if (type === 'businesses') {
-        const businessTypes = ['Restaurant', 'Retail', 'Service', 'Healthcare', 'Technology', 'Education', 'Entertainment', 'Nonprofit', 'Real Estate', 'Professional Services'];
+        const businessTypes = ['Restaurant', 'Retail', 'Service', 'Healthcare', 'Technology', 'Education', 'Entertainment', 'Nonprofit', 'Professional Services'];
         const businessType = businessTypes[Math.floor(Math.random() * businessTypes.length)];
+        const businessName = businessNames[Math.floor(Math.random() * businessNames.length)];
         
         data.push({
-          title: `${businessType} Business ${i + 1}`,
-          description: `A local ${businessType.toLowerCase()} business serving the ${randomNeighborhood} community. We pride ourselves on quality service and community involvement.`,
+          title: `${businessName} - ${randomNeighborhood}`,
+          description: `A trusted local ${businessType.toLowerCase()} business proudly serving the ${randomNeighborhood} community for years. We are committed to providing excellent service and supporting our neighbors. Come visit us and experience the difference of local business!`,
           short_description: `Quality ${businessType.toLowerCase()} services in ${randomNeighborhood}`,
           business_type: businessType,
-          address: `${200 + i} Commercial St, ${randomNeighborhood}, MA 02${100 + Math.floor(Math.random() * 200)}`,
+          address: `${Math.floor(Math.random() * 900) + 100} ${['Commercial St', 'Business Ave', 'Market Rd', 'Trade St', 'Commerce Way'][Math.floor(Math.random() * 5)]}, ${randomNeighborhood}, MA 02${Math.floor(Math.random() * 200) + 100}`,
           neighborhood: randomNeighborhood,
           website_link: 'https://example.com'
         });
       } else if (type === 'local_resources') {
         const categories = ['Healthcare', 'Education', 'Government', 'Community Services', 'Transportation', 'Parks & Recreation', 'Libraries', 'Emergency Services', 'Social Services', 'Housing'];
         const category = categories[Math.floor(Math.random() * categories.length)];
+        const resourceName = resourceNames[Math.floor(Math.random() * resourceNames.length)];
         
         data.push({
-          name: `${category} Resource ${i + 1}`,
-          description: `A valuable ${category.toLowerCase()} resource available to residents of ${randomNeighborhood}. This resource provides essential services to the community.`,
+          name: `${randomNeighborhood} ${resourceName}`,
+          description: `An essential ${category.toLowerCase()} resource serving residents of ${randomNeighborhood} and surrounding areas. We provide vital services to strengthen our community and support those in need. Contact us to learn more about our programs and services.`,
           category: category,
-          address: `${300 + i} Service Ave, ${randomNeighborhood}, MA 02${100 + Math.floor(Math.random() * 200)}`,
+          address: `${Math.floor(Math.random() * 900) + 100} ${['Service Blvd', 'Community Ave', 'Public St', 'Civic Rd', 'Municipal Way'][Math.floor(Math.random() * 5)]}, ${randomNeighborhood}, MA 02${Math.floor(Math.random() * 200) + 100}`,
           neighborhood: randomNeighborhood,
           website_link: 'https://example.com'
         });
@@ -224,10 +186,13 @@ export const HuggingFaceBulkGenerator = () => {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>🤗 Free AI Data Generator</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-purple-600" />
+          Smart Data Generator
+        </CardTitle>
         <CardDescription>
-          Generate realistic data using Hugging Face Transformers - completely free and runs in your browser!
-          No API keys required.
+          Generate realistic, diverse data for Boston neighborhoods instantly.
+          No AI models required - optimized for speed and reliability!
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -251,10 +216,10 @@ export const HuggingFaceBulkGenerator = () => {
               id="count"
               type="number"
               min="1"
-              max="20"
+              max="50"
               value={count}
               onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-              placeholder="Enter count (1-20)"
+              placeholder="Enter count (1-50)"
             />
           </div>
         </div>
@@ -267,18 +232,25 @@ export const HuggingFaceBulkGenerator = () => {
           {isGenerating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {isModelLoading ? 'Loading AI Model...' : 'Generating Data...'}
+              Generating Data...
             </>
           ) : (
-            'Generate Data'
+            <>
+              <Database className="mr-2 h-4 w-4" />
+              Generate Data
+            </>
           )}
         </Button>
         
-        <p className="text-sm text-muted-foreground">
-          This generator uses AI to create realistic data for Boston neighborhoods. 
-          The first use may take longer as the AI model downloads to your browser.
-          All data is generated locally - no data leaves your browser!
-        </p>
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <p className="text-sm text-blue-800 font-medium mb-2">✨ What makes this generator special:</p>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• <strong>Instant generation</strong> - No model downloads or delays</li>
+            <li>• <strong>Boston-focused</strong> - Real neighborhoods and realistic addresses</li>
+            <li>• <strong>Diverse content</strong> - Varied categories, names, and descriptions</li>
+            <li>• <strong>Database-ready</strong> - Properly formatted for immediate use</li>
+          </ul>
+        </div>
       </CardContent>
     </Card>
   );
