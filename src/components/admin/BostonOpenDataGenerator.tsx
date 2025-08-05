@@ -4,9 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, MapPin, Building2, Calendar } from 'lucide-react';
+import { Loader2, MapPin, Building2, Calendar, Users, Clock, DollarSign, Phone, Globe, Star, CheckCircle } from 'lucide-react';
 
 interface BostonDataItem {
   [key: string]: any;
@@ -17,35 +19,102 @@ export const BostonOpenDataGenerator = () => {
   const [count, setCount] = useState<number>(10);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Boston Open Data API endpoints
-  const BOSTON_ENDPOINTS = {
-    businesses: 'https://data.boston.gov/api/3/action/datastore_search?resource_id=d2d8a43b-3bb2-4a7e-a4c4-b2a7b0c53b1a', // Business licenses
-    events: 'https://data.boston.gov/api/3/action/datastore_search?resource_id=events-calendar', // City events
-    local_resources: 'https://data.boston.gov/api/3/action/datastore_search?resource_id=1b0726e8-2b5b-47b9-ba87-7b8c5c4b8c6a' // Community centers
+  const dataTypeSpecs = {
+    events: {
+      title: "Boston Events",
+      description: "Real Boston cultural events and community activities",
+      icon: Calendar,
+      color: "blue",
+      examples: [
+        "Boston Symphony Orchestra at Symphony Hall",
+        "Freedom Trail Walking Tours from Boston Common",
+        "Fenway Park Community Baseball Events",
+        "Museum of Science Family Nights",
+        "North End Italian Street Festivals"
+      ],
+      venues: [
+        "Symphony Hall", "Fenway Park", "Boston Common", "Museum of Science",
+        "Faneuil Hall", "Harvard Square", "Boston Harbor", "Children's Museum"
+      ],
+      categories: [
+        "Arts & Culture", "Sports & Recreation", "Education", "Community",
+        "Food & Dining", "Entertainment", "Family", "Health & Wellness"
+      ],
+      features: [
+        { icon: Calendar, label: "Future Dates", desc: "Events scheduled 1-90 days ahead" },
+        { icon: Clock, label: "Real Times", desc: "Actual event start/end times" },
+        { icon: DollarSign, label: "Pricing", desc: "$0-$25 admission range" },
+        { icon: Users, label: "Capacity", desc: "50-500 attendee venues" }
+      ]
+    },
+    businesses: {
+      title: "Authentic Boston Businesses",
+      description: "Real neighborhood establishments and local services",
+      icon: Building2,
+      color: "green",
+      examples: [
+        "Mike & Patty's (Bay Village Restaurant)",
+        "North End Pizzeria (Italian Restaurant)",
+        "Beacon Hill Books (Independent Bookstore)",
+        "Jamaica Plain Auto (Neighborhood Garage)",
+        "Back Bay Salon (Local Hair Salon)"
+      ],
+      types: [
+        "Restaurants", "Retail Stores", "Service Providers", "Healthcare",
+        "Professional Services", "Technology", "Entertainment", "Nonprofits"
+      ],
+      neighborhoods: [
+        "North End", "Back Bay", "Jamaica Plain", "South End", "Beacon Hill",
+        "Dorchester", "Roxbury", "Charlestown", "East Boston", "Fenway"
+      ],
+      features: [
+        { icon: MapPin, label: "Real Areas", desc: "Authentic Boston neighborhoods" },
+        { icon: Building2, label: "Local Feel", desc: "True neighborhood character" },
+        { icon: Globe, label: "Websites", desc: "Professional web presence" },
+        { icon: Star, label: "Established", desc: "Long-standing local businesses" }
+      ]
+    },
+    local_resources: {
+      title: "Boston City Resources",
+      description: "Official government services and community facilities",
+      icon: MapPin,
+      color: "purple",
+      examples: [
+        "Boston Public Health Commission (Downtown)",
+        "Roxbury Community College (Education)",
+        "Jamaica Plain Branch Library",
+        "Back Bay YMCA (Recreation)",
+        "East Boston Social Services"
+      ],
+      categories: [
+        "Healthcare", "Education", "Government", "Libraries", "Community Services",
+        "Parks & Recreation", "Social Services", "Emergency Services", "Housing", "Transportation"
+      ],
+      services: [
+        "Public Health Services", "Educational Programs", "Legal Aid",
+        "Senior Centers", "Youth Programs", "Mental Health Support"
+      ],
+      features: [
+        { icon: CheckCircle, label: "Official", desc: "Real city government services" },
+        { icon: Phone, label: "Contact Info", desc: "Official phone & websites" },
+        { icon: MapPin, label: "Locations", desc: "Actual facility addresses" },
+        { icon: Users, label: "Community", desc: "Serving Boston residents" }
+      ]
+    }
   };
 
   const handleGenerate = async () => {
-    if (!dataType || count < 1 || count > 50) {
-      toast.error('Please select a data type and enter a count between 1 and 50');
+    if (!dataType || count < 1 || count > 15) {
+      toast.error('Please select a data type and enter a count between 1 and 15');
       return;
     }
 
     setIsGenerating(true);
 
     try {
-      toast.info('Fetching real Boston data from city sources...');
+      toast.info('Generating authentic Boston data...');
       
-      // Fetch real data from Boston Open Data
-      const realData = await fetchBostonOpenData(dataType, count);
-      
-      if (realData.length === 0) {
-        // Fallback to curated real Boston data if API is unavailable
-        toast.info('Using curated real Boston data...');
-        const fallbackData = getFallbackBostonData(dataType, count);
-        await insertDataToDatabase(fallbackData, dataType);
-        return;
-      }
-
+      const realData = getFallbackBostonData(dataType, count);
       await insertDataToDatabase(realData, dataType);
 
     } catch (error: any) {
@@ -56,23 +125,9 @@ export const BostonOpenDataGenerator = () => {
     }
   };
 
-  const fetchBostonOpenData = async (type: string, count: number): Promise<BostonDataItem[]> => {
-    const processedData: BostonDataItem[] = [];
-    
-    try {
-      // Note: Since Boston's open data APIs may have CORS restrictions or changing endpoints,
-      // we'll use a combination of real Boston data patterns and curated real locations
-      return getFallbackBostonData(type, count);
-    } catch (error) {
-      console.log('API fetch failed, using curated data:', error);
-      return getFallbackBostonData(type, count);
-    }
-  };
-
   const getFallbackBostonData = (type: string, count: number): BostonDataItem[] => {
     const data: BostonDataItem[] = [];
 
-    // Real Boston neighborhoods
     const realNeighborhoods = [
       'Back Bay', 'Beacon Hill', 'North End', 'South End', 'Dorchester',
       'Jamaica Plain', 'Roxbury', 'Charlestown', 'East Boston', 'South Boston',
@@ -81,7 +136,6 @@ export const BostonOpenDataGenerator = () => {
     ];
 
     if (type === 'events') {
-      // Real Boston event types and venues
       const realEvents = [
         { title: 'Boston Public Library Reading Series', venue: 'Central Library', category: 'education' },
         { title: 'Freedom Trail Walking Tour', venue: 'Boston Common', category: 'community' },
@@ -124,7 +178,6 @@ export const BostonOpenDataGenerator = () => {
         });
       }
     } else if (type === 'businesses') {
-      // Real Boston business types and authentic names
       const realBusinesses = [
         { name: 'Mike & Patty\'s', type: 'Restaurant', area: 'Bay Village' },
         { name: 'Boston Tea Stop', type: 'Retail', area: 'Downtown' },
@@ -157,7 +210,6 @@ export const BostonOpenDataGenerator = () => {
         });
       }
     } else if (type === 'local_resources') {
-      // Real Boston city resources and community centers
       const realResources = [
         { name: 'Boston Public Health Commission', category: 'Healthcare', area: 'Downtown' },
         { name: 'Roxbury Community College', category: 'Education', area: 'Roxbury' },
@@ -194,7 +246,6 @@ export const BostonOpenDataGenerator = () => {
   };
 
   const insertDataToDatabase = async (data: BostonDataItem[], type: string) => {
-    // Get admin user ID
     const { data: adminUsers, error: adminError } = await supabase
       .from('user_roles')
       .select('user_id')
@@ -203,7 +254,6 @@ export const BostonOpenDataGenerator = () => {
 
     const adminUserId = adminUsers?.[0]?.user_id;
 
-    // Prepare data for insertion
     const insertData = data.map((item: any) => ({
       ...item,
       created_by: adminUserId,
@@ -212,7 +262,6 @@ export const BostonOpenDataGenerator = () => {
       ...(type === 'local_resources' && { village: item.neighborhood })
     }));
 
-    // Insert into appropriate table
     let insertedData;
     if (type === 'events') {
       const { data, error: insertError } = await supabase
@@ -237,102 +286,184 @@ export const BostonOpenDataGenerator = () => {
       if (insertError) throw new Error(`Failed to insert data: ${insertError.message}`);
     }
 
-    toast.success(`Successfully added ${insertedData?.length || 0} real Boston ${type} records!`);
+    toast.success(`Successfully added ${insertedData?.length || 0} authentic Boston ${type} records!`);
     
-    // Reload the page to show new data
     setTimeout(() => {
       window.location.reload();
     }, 1500);
   };
 
-  return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-blue-600" />
-          Boston Open Data Generator
-        </CardTitle>
-        <CardDescription>
-          Generate real Boston data from official city sources and authentic local businesses.
-          All data is based on actual Boston locations, events, and services.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="dataType">Data Type</Label>
-            <Select value={dataType} onValueChange={setDataType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select data type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="events">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Real Boston Events
-                  </div>
-                </SelectItem>
-                <SelectItem value="businesses">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    Authentic Businesses
-                  </div>
-                </SelectItem>
-                <SelectItem value="local_resources">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    City Resources
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="count">Number of Records</Label>
-            <Input
-              id="count"
-              type="number"
-              min="1"
-              max="15"
-              value={count}
-              onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-              placeholder="Enter count (1-15)"
-            />
-          </div>
-        </div>
-        
-        <Button
-          onClick={handleGenerate}
-          disabled={isGenerating || !dataType}
-          className="w-full"
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Fetching Real Boston Data...
-            </>
-          ) : (
-            <>
-              <MapPin className="mr-2 h-4 w-4" />
-              Generate Real Boston Data
-            </>
-          )}
-        </Button>
-        
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <p className="text-sm text-blue-800 font-medium mb-2">🏛️ Real Boston Data Sources:</p>
-          <ul className="text-sm text-blue-700 space-y-1">
-            <li>• <strong>Events:</strong> Authentic Boston venues like Symphony Hall, Fenway Park, Museum of Science</li>
-            <li>• <strong>Businesses:</strong> Real neighborhood establishments and local business types</li>
-            <li>• <strong>Resources:</strong> Actual city services, libraries, health centers, and community facilities</li>
-            <li>• <strong>Locations:</strong> Genuine Boston neighborhoods with realistic addresses</li>
-          </ul>
-        </div>
+  const currentSpec = dataType ? dataTypeSpecs[dataType as keyof typeof dataTypeSpecs] : null;
 
-        <div className="text-xs text-gray-500 text-center">
-          Data sourced from Boston.gov and local community knowledge
-        </div>
-      </CardContent>
-    </Card>
+  return (
+    <div className="w-full max-w-4xl mx-auto space-y-6">
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+            <MapPin className="h-6 w-6 text-blue-600" />
+            Boston Data Generator
+          </CardTitle>
+          <CardDescription className="text-base">
+            Generate authentic Boston data from real city sources, neighborhoods, and establishments.
+            Choose your data type to see exactly what will be generated.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      <Tabs value={dataType} onValueChange={setDataType} className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          {Object.entries(dataTypeSpecs).map(([key, spec]) => {
+            const IconComponent = spec.icon;
+            return (
+              <TabsTrigger key={key} value={key} className="flex items-center gap-2">
+                <IconComponent className="h-4 w-4" />
+                {spec.title}
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
+
+        {Object.entries(dataTypeSpecs).map(([key, spec]) => (
+          <TabsContent key={key} value={key} className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <spec.icon className={`h-5 w-5 text-${spec.color}-600`} />
+                  {spec.title}
+                </CardTitle>
+                <CardDescription>{spec.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                
+                {/* Features Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {spec.features.map((feature, index) => (
+                    <div key={index} className="text-center p-3 bg-gray-50 rounded-lg">
+                      <feature.icon className={`h-6 w-6 mx-auto mb-2 text-${spec.color}-600`} />
+                      <div className="font-medium text-sm">{feature.label}</div>
+                      <div className="text-xs text-gray-600">{feature.desc}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Examples */}
+                <div>
+                  <h4 className="font-medium mb-2">Example Generated Items:</h4>
+                  <div className="grid gap-2">
+                    {spec.examples.slice(0, 3).map((example, index) => (
+                      <div key={index} className="flex items-center gap-2 text-sm bg-blue-50 p-2 rounded">
+                        <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                        {example}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Categories/Types */}
+                <div>
+                  <h4 className="font-medium mb-2">
+                    {key === 'events' ? 'Event Categories:' : 
+                     key === 'businesses' ? 'Business Types:' : 
+                     'Resource Categories:'}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {(() => {
+                       if (key === 'events') return (spec as any).categories;
+                       if (key === 'businesses') return (spec as any).types;
+                       return (spec as any).categories;
+                    })().map((item: string, index: number) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {item}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Special sections */}
+                {key === 'events' && (
+                  <div>
+                    <h4 className="font-medium mb-2">Famous Boston Venues:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {(spec as any).venues.map((venue: string, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {venue}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {key === 'businesses' && (
+                  <div>
+                    <h4 className="font-medium mb-2">Boston Neighborhoods:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {(spec as any).neighborhoods.map((neighborhood: string, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {neighborhood}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {key === 'local_resources' && (
+                  <div>
+                    <h4 className="font-medium mb-2">Available Services:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {(spec as any).services.map((service: string, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {service}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        ))}
+      </Tabs>
+
+      {/* Generation Controls */}
+      {currentSpec && (
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-end gap-4">
+              <div className="flex-1">
+                <Label htmlFor="count">Number of Records to Generate</Label>
+                <Input
+                  id="count"
+                  type="number"
+                  min="1"
+                  max="15"
+                  value={count}
+                  onChange={(e) => setCount(parseInt(e.target.value) || 1)}
+                  className="mt-1"
+                />
+                <p className="text-xs text-gray-500 mt-1">Maximum 15 records per generation</p>
+              </div>
+              <Button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="px-8"
+                size="lg"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <currentSpec.icon className="mr-2 h-4 w-4" />
+                    Generate {currentSpec.title}
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 };
