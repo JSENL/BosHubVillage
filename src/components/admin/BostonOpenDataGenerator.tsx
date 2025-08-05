@@ -170,7 +170,7 @@ export const BostonOpenDataGenerator = () => {
           end_time: ['12:00:00', '16:00:00', '20:00:00', '21:00:00'][Math.floor(Math.random() * 4)],
           location: event.venue,
           address: `${Math.floor(Math.random() * 900) + 100} ${event.venue.includes('Common') ? 'Tremont St' : event.venue.includes('Square') ? 'Massachusetts Ave' : 'Boylston St'}, Boston, MA 02${Math.floor(Math.random() * 200) + 100}`,
-          neighborhood: neighborhood,
+          neighborhoods: neighborhood, // Note: 'neighborhoods' (plural) for events table
           price: [0, 5, 10, 15, 25][Math.floor(Math.random() * 5)],
           max_attendees: [50, 100, 200, 300, 500][Math.floor(Math.random() * 5)],
           is_recurring: Math.random() < 0.4,
