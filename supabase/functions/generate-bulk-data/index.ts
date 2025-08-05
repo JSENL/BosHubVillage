@@ -94,7 +94,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -110,9 +110,17 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('OpenAI API error:', response.status, errorData);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorData}`);
+    }
+
     const data = await response.json();
+    console.log('OpenAI response:', JSON.stringify(data, null, 2));
     
     if (!data.choices?.[0]?.message?.content) {
+      console.error('Invalid OpenAI response structure:', data);
       throw new Error('No content generated from OpenAI');
     }
 
