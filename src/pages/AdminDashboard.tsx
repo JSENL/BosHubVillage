@@ -12,7 +12,6 @@ import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CSVImportTool } from '@/components/admin/CSVImportTool';
-import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
 import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
 import { 
   Shield, 
@@ -174,7 +173,9 @@ const AdminDashboard = () => {
             </TabsContent>
             
             <TabsContent value="categories">
-              <CategoriesManagement />
+              <div className="text-center p-8">
+                <p className="text-gray-600">Categories management will be available soon.</p>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
