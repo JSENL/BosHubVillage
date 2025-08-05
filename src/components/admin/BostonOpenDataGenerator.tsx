@@ -20,11 +20,6 @@ export const BostonOpenDataGenerator = () => {
   const [count, setCount] = useState<number>(10);
   const [isGenerating, setIsGenerating] = useState(false);
   
-  // New targeted generation states
-  const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>('');
-  const [selectedBusinessType, setSelectedBusinessType] = useState<string>('');
-  const [isTargetedGenerating, setIsTargetedGenerating] = useState(false);
-  
   // Combined generation states
   const [combinedNeighborhood, setCombinedNeighborhood] = useState<string>('');
   const [combinedBusinessType, setCombinedBusinessType] = useState<string>('');
@@ -150,50 +145,34 @@ export const BostonOpenDataGenerator = () => {
     }
   };
 
-  // New targeted generation function
-  const handleTargetedGenerate = async (targetType: 'neighborhood' | 'business_type') => {
-    if (targetType === 'neighborhood' && !selectedNeighborhood) {
-      toast.error('Please select a neighborhood');
-      return;
-    }
-    if (targetType === 'business_type' && !selectedBusinessType) {
-      toast.error('Please select a business type');
-      return;
-    }
-
-    setIsTargetedGenerating(true);
-
-    try {
-      if (targetType === 'neighborhood') {
-        toast.info(`Generating data for ${selectedNeighborhood}...`);
-        const neighborhoodData = generateByNeighborhood(selectedNeighborhood);
-        await insertDataToDatabase(neighborhoodData, 'mixed');
-      } else {
-        toast.info(`Generating ${selectedBusinessType} businesses...`);
-        const businessTypeData = generateByBusinessType(selectedBusinessType);
-        await insertDataToDatabase(businessTypeData, 'businesses');
-      }
-    } catch (error: any) {
-      console.error('Error generating targeted data:', error);
-      toast.error(`Failed to generate data: ${error.message}`);
-    } finally {
-      setIsTargetedGenerating(false);
-    }
-  };
-
   // Combined generation function
   const handleCombinedGenerate = async () => {
-    if (!combinedNeighborhood || !combinedBusinessType) {
-      toast.error('Please select both a neighborhood and business type');
+    if (!combinedNeighborhood && !combinedBusinessType) {
+      toast.error('Please select at least a neighborhood or business type');
       return;
     }
 
     setIsCombinedGenerating(true);
 
     try {
-      toast.info(`Generating ${combinedBusinessType} businesses in ${combinedNeighborhood}...`);
-      const combinedData = generateCombinedData(combinedNeighborhood, combinedBusinessType);
-      await insertDataToDatabase(combinedData, 'businesses');
+      let combinedData: BostonDataItem[] = [];
+      
+      if (combinedNeighborhood && combinedBusinessType) {
+        // Generate businesses of specific type in specific neighborhood
+        toast.info(`Generating ${combinedBusinessType} businesses in ${combinedNeighborhood}...`);
+        combinedData = generateCombinedData(combinedNeighborhood, combinedBusinessType);
+        await insertDataToDatabase(combinedData, 'businesses');
+      } else if (combinedNeighborhood && !combinedBusinessType) {
+        // Generate complete neighborhood data (events, businesses, resources)
+        toast.info(`Generating complete data for ${combinedNeighborhood}...`);
+        combinedData = generateByNeighborhood(combinedNeighborhood);
+        await insertDataToDatabase(combinedData, 'mixed');
+      } else if (!combinedNeighborhood && combinedBusinessType) {
+        // Generate businesses of specific type across neighborhoods
+        toast.info(`Generating ${combinedBusinessType} businesses across neighborhoods...`);
+        combinedData = generateByBusinessType(combinedBusinessType);
+        await insertDataToDatabase(combinedData, 'businesses');
+      }
     } catch (error: any) {
       console.error('Error generating combined data:', error);
       toast.error(`Failed to generate data: ${error.message}`);
@@ -721,122 +700,26 @@ export const BostonOpenDataGenerator = () => {
             Targeted Generation
           </CardTitle>
           <CardDescription>
-            Generate data for specific neighborhoods or business types with one click
+            Generate data by neighborhood, business type, or both. Choose one or both parameters to create specific data sets.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           
-          {/* Generate by Neighborhood */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-blue-600" />
-              <h4 className="font-medium">Generate Complete Neighborhood Data</h4>
-            </div>
-            <p className="text-sm text-gray-600">
-              Creates events, businesses, and local resources for a specific neighborhood
-            </p>
-            <div className="flex gap-3">
-              <div className="flex-1">
-                <Select value={selectedNeighborhood} onValueChange={setSelectedNeighborhood}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a Boston neighborhood" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bostonNeighborhoods.map((neighborhood) => (
-                      <SelectItem key={neighborhood} value={neighborhood}>
-                        {neighborhood}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button
-                onClick={() => handleTargetedGenerate('neighborhood')}
-                disabled={isTargetedGenerating || !selectedNeighborhood}
-                variant="outline"
-              >
-                {isTargetedGenerating ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Generate for {selectedNeighborhood || 'Neighborhood'}
-                  </>
-                )}
-              </Button>
-            </div>
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <p className="text-xs text-blue-800">
-                <strong>Will generate:</strong> 2 Community Events + 2 Local Businesses + 1 Community Center
-              </p>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Generate by Business Type */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-green-600" />
-              <h4 className="font-medium">Generate Businesses by Type</h4>
-            </div>
-            <p className="text-sm text-gray-600">
-              Creates multiple businesses of the same type across different neighborhoods
-            </p>
-            <div className="flex gap-3">
-              <div className="flex-1">
-                <Select value={selectedBusinessType} onValueChange={setSelectedBusinessType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a business type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {businessTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button
-                onClick={() => handleTargetedGenerate('business_type')}
-                disabled={isTargetedGenerating || !selectedBusinessType}
-                variant="outline"
-              >
-                {isTargetedGenerating ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <Building2 className="mr-2 h-4 w-4" />
-                    Generate {selectedBusinessType || 'Business Type'}
-                  </>
-                )}
-              </Button>
-            </div>
-            <div className="bg-green-50 p-3 rounded-lg">
-              <p className="text-xs text-green-800">
-                <strong>Will generate:</strong> 4 businesses of this type across Back Bay, North End, Jamaica Plain, and South End
-              </p>
-            </div>
-          </div>
-
-          <Separator />
-
           {/* Combined Generation */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-purple-600" />
-              <h4 className="font-medium">Generate by Neighborhood + Business Type</h4>
+              <h4 className="font-medium">Generate Targeted Data</h4>
             </div>
             <p className="text-sm text-gray-600">
-              Create businesses of a specific type in a specific neighborhood for targeted data generation
+              Select a neighborhood, business type, or both to generate specific data sets
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
               <div>
-                <Label className="text-sm font-medium">Neighborhood</Label>
+                <Label className="text-sm font-medium">Neighborhood (Optional)</Label>
                 <Select value={combinedNeighborhood} onValueChange={setCombinedNeighborhood}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select neighborhood" />
+                    <SelectValue placeholder="Select neighborhood (optional)" />
                   </SelectTrigger>
                   <SelectContent>
                     {bostonNeighborhoods.map((neighborhood) => (
@@ -848,10 +731,10 @@ export const BostonOpenDataGenerator = () => {
                 </Select>
               </div>
               <div>
-                <Label className="text-sm font-medium">Business Type</Label>
+                <Label className="text-sm font-medium">Business Type (Optional)</Label>
                 <Select value={combinedBusinessType} onValueChange={setCombinedBusinessType}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select business type" />
+                    <SelectValue placeholder="Select business type (optional)" />
                   </SelectTrigger>
                   <SelectContent>
                     {businessTypes.map((type) => (
@@ -865,7 +748,7 @@ export const BostonOpenDataGenerator = () => {
             </div>
             <Button
               onClick={handleCombinedGenerate}
-              disabled={isCombinedGenerating || !combinedNeighborhood || !combinedBusinessType}
+              disabled={isCombinedGenerating || (!combinedNeighborhood && !combinedBusinessType)}
               variant="default"
               className="w-full"
             >
@@ -876,15 +759,37 @@ export const BostonOpenDataGenerator = () => {
                 </>
               ) : (
                 <>
-                  <Filter className="mr-2 h-4 w-4" />
-                  Generate {combinedBusinessType || 'Business Type'} in {combinedNeighborhood || 'Neighborhood'}
+                  <Target className="mr-2 h-4 w-4" />
+                  Generate Data
                 </>
               )}
             </Button>
-            <div className="bg-purple-50 p-3 rounded-lg">
-              <p className="text-xs text-purple-800">
-                <strong>Will generate:</strong> 3 {combinedBusinessType || 'businesses'} specifically located in {combinedNeighborhood || 'the selected neighborhood'}
-              </p>
+            
+            {/* Dynamic generation preview */}
+            <div className="bg-purple-50 p-3 rounded-lg space-y-2">
+              <p className="text-xs font-medium text-purple-800">What will be generated:</p>
+              {combinedNeighborhood && combinedBusinessType && (
+                <p className="text-xs text-purple-700">
+                  • 3 {combinedBusinessType} businesses in {combinedNeighborhood}
+                </p>
+              )}
+              {combinedNeighborhood && !combinedBusinessType && (
+                <div className="text-xs text-purple-700 space-y-1">
+                  <p>• 2 Community Events in {combinedNeighborhood}</p>
+                  <p>• 2 Local Businesses in {combinedNeighborhood}</p>
+                  <p>• 1 Community Center in {combinedNeighborhood}</p>
+                </div>
+              )}
+              {!combinedNeighborhood && combinedBusinessType && (
+                <p className="text-xs text-purple-700">
+                  • 4 {combinedBusinessType} businesses across Back Bay, North End, Jamaica Plain, and South End
+                </p>
+              )}
+              {!combinedNeighborhood && !combinedBusinessType && (
+                <p className="text-xs text-purple-600 italic">
+                  Select at least one parameter to see what will be generated
+                </p>
+              )}
             </div>
           </div>
 
