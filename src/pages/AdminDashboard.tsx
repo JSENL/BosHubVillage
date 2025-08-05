@@ -13,7 +13,7 @@ import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
 import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
-import { BostonOpenDataGenerator } from '@/components/admin/BostonOpenDataGenerator';
+
 import { 
   Shield, 
   Calendar, 
@@ -26,8 +26,7 @@ import {
   Users,
   Tag,
   Megaphone,
-  UserCheck,
-  Database
+  UserCheck
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
 
@@ -85,7 +84,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-11 mb-8">
+            <TabsList className="grid w-full grid-cols-10 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -113,10 +112,6 @@ const AdminDashboard = () => {
               <TabsTrigger value="submissions" className="flex items-center">
                 <FileText className="h-4 w-4 mr-2" />
                 All Submissions
-              </TabsTrigger>
-              <TabsTrigger value="data-generator" className="flex items-center">
-                <Database className="h-4 w-4 mr-2" />
-                AI Generator
               </TabsTrigger>
               <TabsTrigger value="reported-to-admin" className="flex items-center">
                 <MessageCircle className="h-4 w-4 mr-2" />
@@ -160,11 +155,6 @@ const AdminDashboard = () => {
               <AdminSubmissionsPanel />
             </TabsContent>
             
-            <TabsContent value="data-generator">
-              <div className="flex justify-center">
-                <BostonOpenDataGenerator />
-              </div>
-            </TabsContent>
             
             <TabsContent value="reported-to-admin">
               <ContactAdminMessages />
