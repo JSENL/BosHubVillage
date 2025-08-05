@@ -461,11 +461,15 @@ export const BostonOpenDataGenerator = () => {
       // Insert resources
       if (resources.length > 0) {
         const resourceData = resources.map((item: any) => ({
-          ...item,
-          created_by: adminUserId,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          village: item.neighborhood
+          name: item.name,
+          category: item.category,
+          description: item.description,
+          address: item.address,
+          neighborhood: item.neighborhood,
+          village: item.neighborhood,
+          website_link: item.website_link,
+          latitude: item.latitude,
+          longitude: item.longitude
         }));
 
         const { data: insertedResources, error: resourceError } = await supabase
@@ -504,11 +508,23 @@ export const BostonOpenDataGenerator = () => {
         insertedData = data;
         if (insertError) throw new Error(`Failed to insert data: ${insertError.message}`);
       } else if (type === 'local_resources') {
-        const { data, error: insertError } = await supabase
+        const resourceInsertData = data.map((item: any) => ({
+          name: item.name,
+          category: item.category,
+          description: item.description,
+          address: item.address,
+          neighborhood: item.neighborhood,
+          village: item.neighborhood,
+          website_link: item.website_link,
+          latitude: item.latitude,
+          longitude: item.longitude
+        }));
+        
+        const { data: resourceResult, error: insertError } = await supabase
           .from('local_resources')
-          .insert(insertData)
+          .insert(resourceInsertData)
           .select();
-        insertedData = data;
+        insertedData = resourceResult;
         if (insertError) throw new Error(`Failed to insert data: ${insertError.message}`);
       }
 
