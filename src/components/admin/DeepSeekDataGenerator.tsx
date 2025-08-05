@@ -52,7 +52,7 @@ export const DeepSeekDataGenerator = () => {
     try {
       // Build the AI prompt based on data type
       let prompt = '';
-      const locationContext = neighborhood ? ` in ${neighborhood}, Boston` : ' in Boston';
+      const locationContext = (neighborhood && neighborhood !== 'all') ? ` in ${neighborhood}, Boston` : ' in Boston';
       
       if (dataType === 'events') {
         prompt = `Generate ${count} realistic and engaging community events${locationContext} with the theme: "${theme}". 
@@ -74,7 +74,7 @@ export const DeepSeekDataGenerator = () => {
         query: prompt,
         type: 'enhance_description',
         context: {
-          neighborhood,
+          neighborhood: neighborhood !== 'all' ? neighborhood : undefined,
           category: theme
         }
       });
@@ -119,7 +119,7 @@ export const DeepSeekDataGenerator = () => {
             created_by: null, // Will be set by admin when inserting
             latitude: 42.3601 + (Math.random() * 0.1 - 0.05), // Boston area coordinates
             longitude: -71.0589 + (Math.random() * 0.1 - 0.05),
-            neighborhoods: baseItem.neighborhoods || neighborhood || 'Downtown',
+            neighborhoods: baseItem.neighborhoods || (neighborhood !== 'all' ? neighborhood : undefined) || 'Downtown',
             price: baseItem.price || 0,
             max_attendees: baseItem.max_attendees || 50,
             is_recurring: baseItem.is_recurring || false,
@@ -131,16 +131,16 @@ export const DeepSeekDataGenerator = () => {
             created_by: null, // Will be set by admin when inserting
             latitude: 42.3601 + (Math.random() * 0.1 - 0.05),
             longitude: -71.0589 + (Math.random() * 0.1 - 0.05),
-            neighborhood: baseItem.neighborhood || neighborhood || 'Downtown',
-            villages: neighborhood
+            neighborhood: baseItem.neighborhood || (neighborhood !== 'all' ? neighborhood : undefined) || 'Downtown',
+            villages: neighborhood !== 'all' ? neighborhood : undefined
           };
         } else if (dataType === 'local_resources') {
           return {
             ...baseItem,
             latitude: 42.3601 + (Math.random() * 0.1 - 0.05),
             longitude: -71.0589 + (Math.random() * 0.1 - 0.05),
-            neighborhood: baseItem.neighborhood || neighborhood || 'Downtown',
-            village: baseItem.village || neighborhood || 'Downtown'
+            neighborhood: baseItem.neighborhood || (neighborhood !== 'all' ? neighborhood : undefined) || 'Downtown',
+            village: baseItem.village || (neighborhood !== 'all' ? neighborhood : undefined) || 'Downtown'
           };
         }
         
@@ -291,7 +291,7 @@ export const DeepSeekDataGenerator = () => {
                   <SelectValue placeholder="Select neighborhood" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All neighborhoods</SelectItem>
+                  <SelectItem value="all">All neighborhoods</SelectItem>
                   {bostonNeighborhoods.map((hood) => (
                     <SelectItem key={hood} value={hood}>
                       {hood}
