@@ -160,15 +160,40 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
       longitude: null,
     };
 
+    console.log(`🔍 Processing row for "${row.title || row.name}":`, {
+      providedLng: row.longitude,
+      providedLat: row.latitude,
+      address: row.address || row.location
+    });
+
     // First, check if longitude and latitude are provided in the CSV
     if (row.longitude && row.latitude) {
-      const lng = parseFloat(row.longitude);
-      const lat = parseFloat(row.latitude);
+      const lng = parseFloat(row.longitude.toString().trim());
+      const lat = parseFloat(row.latitude.toString().trim());
+      
+      console.log(`📊 Parsing coordinates:`, {
+        rawLng: row.longitude,
+        rawLat: row.latitude,
+        parsedLng: lng,
+        parsedLat: lat,
+        lngValid: !isNaN(lng),
+        latValid: !isNaN(lat)
+      });
       
       if (!isNaN(lng) && !isNaN(lat)) {
-        baseTransform.longitude = lng;
-        baseTransform.latitude = lat;
-        console.log(`📍 Using provided coordinates for "${row.title || row.name}":`, { lat, lng });
+        // Validate coordinate ranges
+        if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          baseTransform.longitude = lng;
+          baseTransform.latitude = lat;
+          console.log(`✅ Using provided coordinates for "${row.title || row.name}":`, { lat, lng });
+        } else {
+          console.warn(`❌ Invalid coordinate ranges for "${row.title || row.name}":`, { lat, lng });
+        }
+      } else {
+        console.warn(`❌ Could not parse coordinates for "${row.title || row.name}":`, { 
+          longitude: row.longitude, 
+          latitude: row.latitude 
+        });
       }
     }
     
@@ -176,14 +201,24 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
     if (!baseTransform.latitude || !baseTransform.longitude) {
       const addressField = row.address || row.location;
       if (addressField) {
+        console.log(`🗺️ Attempting to geocode address: "${addressField}"`);
         const coords = await geocodeAddress(addressField);
         if (coords) {
           baseTransform.latitude = coords.latitude;
           baseTransform.longitude = coords.longitude;
-          console.log(`🗺️ Geocoded coordinates for "${row.title || row.name}":`, coords);
+          console.log(`🎯 Geocoded coordinates for "${row.title || row.name}":`, coords);
+        } else {
+          console.warn(`❌ Geocoding failed for "${row.title || row.name}" with address: "${addressField}"`);
         }
+      } else {
+        console.warn(`⚠️ No address available for geocoding "${row.title || row.name}"`);
       }
     }
+
+    console.log(`🏁 Final coordinates for "${row.title || row.name}":`, {
+      latitude: baseTransform.latitude,
+      longitude: baseTransform.longitude
+    });
 
     switch (type) {
       case 'events':
