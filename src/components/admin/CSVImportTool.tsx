@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -38,14 +37,14 @@ export const CSVImportTool = () => {
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
-  // Sample CSV templates for different data types
+  // Sample CSV templates for different data types with longitude/latitude columns
   const csvTemplates = {
-    events: `title,category,date,start_time,end_time,location,address,description,price,max_attendees,registration_required,neighborhoods,villages,website_link
-Sample Community Event,Community,2024-12-25,10:00,12:00,Community Center,123 Main St Boston MA,A wonderful community gathering,0,50,false,Downtown,Back Bay,https://example.com`,
-    business: `title,business_type,address,neighborhood,description,short_description,website_link,villages
-Sample Business,Restaurant,456 Main St Boston MA,Downtown,A great local restaurant,Great food and service,https://restaurant.com,Back Bay`,
-    local_resources: `name,category,address,neighborhood,description,website_link,village
-Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community resource,https://resource.com,Back Bay`
+    events: `title,category,date,start_time,end_time,location,address,description,price,max_attendees,registration_required,neighborhoods,villages,website_link,longitude,latitude
+Sample Community Event,Community,2024-12-25,10:00,12:00,Community Center,123 Main St Boston MA,A wonderful community gathering,0,50,false,Downtown,Back Bay,https://example.com,-71.0589,42.3601`,
+    business: `title,business_type,address,neighborhood,description,short_description,website_link,villages,longitude,latitude
+Sample Business,Restaurant,456 Main St Boston MA,Downtown,A great local restaurant,Great food and service,https://restaurant.com,Back Bay,-71.0589,42.3601`,
+    local_resources: `name,category,address,neighborhood,description,website_link,village,longitude,latitude
+Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community resource,https://resource.com,Back Bay,-71.0589,42.3601`
   };
 
   const downloadTemplate = (type: DataType) => {
@@ -161,13 +160,28 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
       longitude: null,
     };
 
-    // Attempt geocoding if address is provided
-    const addressField = row.address || row.location;
-    if (addressField) {
-      const coords = await geocodeAddress(addressField);
-      if (coords) {
-        baseTransform.latitude = coords.latitude;
-        baseTransform.longitude = coords.longitude;
+    // First, check if longitude and latitude are provided in the CSV
+    if (row.longitude && row.latitude) {
+      const lng = parseFloat(row.longitude);
+      const lat = parseFloat(row.latitude);
+      
+      if (!isNaN(lng) && !isNaN(lat)) {
+        baseTransform.longitude = lng;
+        baseTransform.latitude = lat;
+        console.log(`📍 Using provided coordinates for "${row.title || row.name}":`, { lat, lng });
+      }
+    }
+    
+    // If no valid coordinates provided, attempt geocoding if address is available
+    if (!baseTransform.latitude || !baseTransform.longitude) {
+      const addressField = row.address || row.location;
+      if (addressField) {
+        const coords = await geocodeAddress(addressField);
+        if (coords) {
+          baseTransform.latitude = coords.latitude;
+          baseTransform.longitude = coords.longitude;
+          console.log(`🗺️ Geocoded coordinates for "${row.title || row.name}":`, coords);
+        }
       }
     }
 
@@ -266,7 +280,7 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
           // Track if geocoding was successful
           if (transformedData.latitude && transformedData.longitude) {
             result.geocoded++;
-            console.log(`📍 Geocoded coordinates for "${row.title || row.name}":`, 
+            console.log(`📍 Coordinates available for "${row.title || row.name}":`, 
               { lat: transformedData.latitude, lng: transformedData.longitude });
           }
           
@@ -378,10 +392,11 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
           <div className="flex items-start gap-2">
             <MapPin className="h-5 w-5 text-blue-600 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-blue-800">Automatic Map Integration</p>
+              <p className="text-sm font-medium text-blue-800">Enhanced Map Integration</p>
               <p className="text-sm text-blue-700 mt-1">
-                Items with valid addresses will be automatically geocoded and appear as markers on the Mapbox map. 
-                Make sure your CSV includes accurate address information for best results.
+                The CSV templates now include <strong>longitude</strong> and <strong>latitude</strong> columns. 
+                If you provide coordinates, they will be used directly for map markers. 
+                If coordinates are missing or invalid, the system will automatically geocode addresses using Mapbox.
               </p>
             </div>
           </div>
@@ -472,7 +487,7 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
                   <MapPin className="h-5 w-5 text-blue-600" />
                   <div>
                     <p className="font-semibold text-blue-800">{importResult.geocoded}</p>
-                    <p className="text-sm text-blue-600">Geocoded</p>
+                    <p className="text-sm text-blue-600">With Coordinates</p>
                   </div>
                 </CardContent>
               </Card>
@@ -533,7 +548,7 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
                 <p className="text-sm font-medium text-green-800">Import Successful!</p>
                 <p className="text-sm text-green-700 mt-1">
                   Your data has been imported into the Supabase database. 
-                  {importResult.geocoded > 0 && ` ${importResult.geocoded} items with valid coordinates will now appear on the map.`}
+                  {importResult.geocoded > 0 && ` ${importResult.geocoded} items with coordinates will now appear on the map.`}
                   {' '}Refresh the map view to see your new markers.
                 </p>
               </div>
