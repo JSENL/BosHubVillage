@@ -7,6 +7,7 @@ export interface LocalResource {
   neighborhood: string;
   village?: string;
   description?: string;
+  website_link?: string;
   latitude?: number;
   longitude?: number;
   created_at: string;
