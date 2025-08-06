@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,9 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
     neighborhood: localResource.neighborhood,
     village: localResource.village || '',
     description: localResource.description || '',
+    website_link: localResource.website_link || '',
+    latitude: localResource.latitude?.toString() || '',
+    longitude: localResource.longitude?.toString() || '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,16 +35,44 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
     setLoading(true);
 
     try {
+      const updateData: any = {
+        name: formData.name,
+        category: formData.category,
+        address: formData.address,
+        neighborhood: formData.neighborhood,
+        village: formData.village || null,
+        description: formData.description,
+        website_link: formData.website_link || null,
+      };
+
+      // Handle coordinates - only include if they have values
+      if (formData.latitude && formData.longitude) {
+        const lat = parseFloat(formData.latitude);
+        const lng = parseFloat(formData.longitude);
+        
+        if (!isNaN(lat) && !isNaN(lng)) {
+          if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+            updateData.latitude = lat;
+            updateData.longitude = lng;
+          } else {
+            toast.error('Invalid coordinate ranges. Latitude must be between -90 and 90, longitude between -180 and 180.');
+            setLoading(false);
+            return;
+          }
+        } else {
+          toast.error('Invalid coordinate format. Please enter valid numbers.');
+          setLoading(false);
+          return;
+        }
+      } else if (formData.latitude || formData.longitude) {
+        toast.error('Please provide both latitude and longitude, or leave both empty.');
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('local_resources')
-        .update({
-          name: formData.name,
-          category: formData.category,
-          address: formData.address,
-          neighborhood: formData.neighborhood,
-          village: formData.village,
-          description: formData.description,
-        })
+        .update(updateData)
         .eq('id', localResource.id);
 
       if (error) throw error;
@@ -89,20 +121,21 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={4}
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="address">Address</Label>
+            <Input
+              id="address"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="address">Address</Label>
-              <Input
-                id="address"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                required
-              />
-            </div>
             <div>
               <Label htmlFor="neighborhood">Neighborhood</Label>
               <Input
@@ -112,15 +145,51 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
                 required
               />
             </div>
+            <div>
+              <Label htmlFor="village">Village</Label>
+              <Input
+                id="village"
+                value={formData.village}
+                onChange={(e) => setFormData({ ...formData, village: e.target.value })}
+                placeholder="Optional"
+              />
+            </div>
           </div>
 
           <div>
-            <Label htmlFor="village">Village</Label>
+            <Label htmlFor="website_link">Website Link</Label>
             <Input
-              id="village"
-              value={formData.village}
-              onChange={(e) => setFormData({ ...formData, village: e.target.value })}
+              id="website_link"
+              type="url"
+              value={formData.website_link}
+              onChange={(e) => setFormData({ ...formData, website_link: e.target.value })}
+              placeholder="https://example.com"
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="latitude">Latitude</Label>
+              <Input
+                id="latitude"
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                placeholder="e.g., 42.3601"
+              />
+            </div>
+            <div>
+              <Label htmlFor="longitude">Longitude</Label>
+              <Input
+                id="longitude"
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                placeholder="e.g., -71.0589"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
@@ -128,7 +197,7 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Updating...' : 'Update Resource'}
+              {loading ? 'Updating...' : 'Update Local Resource'}
             </Button>
           </div>
         </form>

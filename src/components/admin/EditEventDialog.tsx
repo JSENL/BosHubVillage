@@ -29,6 +29,8 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
     end_time: event.end_time || '',
     price: event.price || 0,
     max_attendees: event.max_attendees || null,
+    latitude: event.latitude?.toString() || '',
+    longitude: event.longitude?.toString() || '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,20 +38,47 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
     setLoading(true);
 
     try {
+      const updateData: any = {
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        location: formData.location,
+        address: formData.address,
+        date: formData.date,
+        start_time: formData.start_time,
+        end_time: formData.end_time,
+        price: formData.price,
+        max_attendees: formData.max_attendees,
+      };
+
+      // Handle coordinates - only include if they have values
+      if (formData.latitude && formData.longitude) {
+        const lat = parseFloat(formData.latitude);
+        const lng = parseFloat(formData.longitude);
+        
+        if (!isNaN(lat) && !isNaN(lng)) {
+          if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+            updateData.latitude = lat;
+            updateData.longitude = lng;
+          } else {
+            toast.error('Invalid coordinate ranges. Latitude must be between -90 and 90, longitude between -180 and 180.');
+            setLoading(false);
+            return;
+          }
+        } else {
+          toast.error('Invalid coordinate format. Please enter valid numbers.');
+          setLoading(false);
+          return;
+        }
+      } else if (formData.latitude || formData.longitude) {
+        toast.error('Please provide both latitude and longitude, or leave both empty.');
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('events')
-        .update({
-          title: formData.title,
-          description: formData.description,
-          category: formData.category,
-          location: formData.location,
-          address: formData.address,
-          date: formData.date,
-          start_time: formData.start_time,
-          end_time: formData.end_time,
-          price: formData.price,
-          max_attendees: formData.max_attendees,
-        })
+        .update(updateData)
         .eq('id', event.id);
 
       if (error) throw error;
@@ -175,6 +204,31 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
                 value={formData.max_attendees || ''}
                 onChange={(e) => setFormData({ ...formData, max_attendees: e.target.value ? parseInt(e.target.value) : null })}
                 placeholder="No limit"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="latitude">Latitude</Label>
+              <Input
+                id="latitude"
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                placeholder="e.g., 42.3601"
+              />
+            </div>
+            <div>
+              <Label htmlFor="longitude">Longitude</Label>
+              <Input
+                id="longitude"
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                placeholder="e.g., -71.0589"
               />
             </div>
           </div>
