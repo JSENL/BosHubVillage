@@ -12,7 +12,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBusinessCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Building, ArrowLeft, Loader2 } from 'lucide-react';
+import { Building, ArrowLeft, Loader2, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import LocationFields from '@/components/forms/LocationFields';
 
@@ -199,7 +200,19 @@ const SubmitBusiness = () => {
                 />
 
                 <div>
-                  <Label htmlFor="neighborhood">Neighborhood *</Label>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label htmlFor="neighborhood">Neighborhood *</Label>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Neighborhoods in the Boston area are the big areas such as Roxbury, Dorchester, South End, Hyde Park or Mattapan</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                   <Input
                     id="neighborhood"
                     value={formData.neighborhood}
@@ -210,7 +223,19 @@ const SubmitBusiness = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="villages">Villages</Label>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label htmlFor="villages">Villages</Label>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>These are the subneighborhoods of Boston: Fields Corner, Ashmont, Fort Hill, or Grove Hall</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                   <Input
                     id="villages"
                     value={formData.villages}

@@ -7,7 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Send, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Clock, DollarSign, Users, Repeat, Send, Loader2, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { useGeocoding } from '@/hooks/useGeocoding';
@@ -223,9 +224,21 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
             </div>
 
             <div>
-              <Label htmlFor="neighborhoods" className="text-sm font-medium text-gray-700">
-                Neighborhoods
-              </Label>
+              <div className="flex items-center gap-2 mb-2">
+                <Label htmlFor="neighborhoods" className="text-sm font-medium text-gray-700">
+                  Neighborhoods
+                </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Neighborhoods in the Boston area are the big areas such as Roxbury, Dorchester, South End, Hyde Park or Mattapan</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <Input
                 id="neighborhoods"
                 placeholder="Enter neighborhoods separated by commas (e.g., Back Bay, Cambridge, South End)"
@@ -242,9 +255,21 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
             </div>
 
             <div>
-              <Label htmlFor="villages" className="text-sm font-medium text-gray-700">
-                Villages
-              </Label>
+              <div className="flex items-center gap-2 mb-2">
+                <Label htmlFor="villages" className="text-sm font-medium text-gray-700">
+                  Villages
+                </Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>These are the subneighborhoods of Boston: Fields Corner, Ashmont, Fort Hill, or Grove Hall</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <Input
                 id="villages"
                 placeholder="Enter villages (e.g., Beacon Hill Village, Cambridge Village, etc.)"

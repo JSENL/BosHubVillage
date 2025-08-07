@@ -12,7 +12,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Navigation } from '@/components/Navigation';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Newspaper, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Newspaper, ArrowLeft, AlertCircle, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { useSubmissionErrorHandler } from '@/hooks/useSubmissionErrorHandler';
 
@@ -249,7 +250,19 @@ const SubmitNews = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="villages">Villages</Label>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Label htmlFor="villages">Villages</Label>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>These are the subneighborhoods of Boston: Fields Corner, Ashmont, Fort Hill, or Grove Hall</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                   <Input
                     id="villages"
                     value={formData.villages}
