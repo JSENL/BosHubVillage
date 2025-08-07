@@ -190,7 +190,7 @@ const SubmitLocalService = () => {
                   <FormLabel>Neighborhood</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                         <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                       </TooltipTrigger>
                       <TooltipContent>
@@ -215,7 +215,7 @@ const SubmitLocalService = () => {
                   <FormLabel>Village (Optional)</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                         <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                       </TooltipTrigger>
                       <TooltipContent>

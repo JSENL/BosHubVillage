@@ -254,7 +254,7 @@ const SubmitNews = () => {
                     <Label htmlFor="villages">Villages</Label>
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                           <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                         </TooltipTrigger>
                         <TooltipContent>
