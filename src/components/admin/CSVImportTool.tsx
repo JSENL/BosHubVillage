@@ -43,8 +43,8 @@ export const CSVImportTool = () => {
 Sample Community Event,Community,2024-12-25,10:00,12:00,Community Center,123 Main St Boston MA,A wonderful community gathering,0,50,false,Downtown,Back Bay,https://example.com,-71.0589,42.3601`,
     business: `title,business_type,address,neighborhood,description,short_description,website_link,villages,longitude,latitude
 Sample Business,Restaurant,456 Main St Boston MA,Downtown,A great local restaurant,Great food and service,https://restaurant.com,Back Bay,-71.0589,42.3601`,
-    local_resources: `name,category,address,neighborhood,description,website_link,village,longitude,latitude
-Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community resource,https://resource.com,Back Bay,-71.0589,42.3601`
+    local_resources: `name,category,address,neighborhood,village,description,website_link,longitude,latitude
+Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community resource,https://resource.com,-71.0589,42.3601`
   };
 
   const downloadTemplate = (type: DataType) => {
