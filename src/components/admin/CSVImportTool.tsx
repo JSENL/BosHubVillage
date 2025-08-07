@@ -249,7 +249,7 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
           business_type: row.business_type,
           address: row.address,
           neighborhood: row.neighborhood,
-          description: row.description || null,
+          description: row.description || 'No description provided', // Required field, provide default
           short_description: row.short_description || null,
           website_link: row.website_link || null,
           villages: row.villages || null,
