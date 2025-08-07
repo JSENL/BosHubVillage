@@ -219,9 +219,14 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
         console.log(`🗺️ Attempting to geocode enhanced address: "${enhancedAddress}"`);
         const coords = await geocodeAddress(enhancedAddress);
         if (coords) {
-          baseTransform.latitude = coords.latitude;
-          baseTransform.longitude = coords.longitude;
-          console.log(`🎯 Geocoded coordinates for "${row.title || row.name}":`, coords);
+          // Ensure coordinates are properly converted to numbers for database storage
+          baseTransform.latitude = Number(coords.latitude);
+          baseTransform.longitude = Number(coords.longitude);
+          console.log(`🎯 Geocoded coordinates for "${row.title || row.name}":`, {
+            lat: baseTransform.latitude,
+            lng: baseTransform.longitude,
+            type: typeof baseTransform.latitude
+          });
         } else {
           console.warn(`❌ Geocoding failed for "${row.title || row.name}" with address: "${enhancedAddress}"`);
         }
@@ -372,6 +377,12 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
       
       if (result.success > 0) {
         toast.success(`Successfully imported ${result.success} out of ${result.total} records${result.geocoded > 0 ? ` (${result.geocoded} with coordinates for map display)` : ''}`);
+        
+        // If importing local_resources and some don't have coordinates, suggest using geocode button
+        if (dataType === 'local_resources' && result.success > result.geocoded) {
+          const missingCoords = result.success - result.geocoded;
+          toast.info(`${missingCoords} local resources need geocoding. Use the "Geocode All Local Resources" button in the Local Services tab to add map markers.`);
+        }
       }
       
       if (result.errors.length > 0) {
