@@ -206,14 +206,24 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
     if (!baseTransform.latitude || !baseTransform.longitude) {
       const addressField = row.address || row.location;
       if (addressField) {
-        console.log(`🗺️ Attempting to geocode address: "${addressField}"`);
-        const coords = await geocodeAddress(addressField);
+        // Enhance address with neighborhood and city for better geocoding
+        let enhancedAddress = addressField;
+        if (row.neighborhood) {
+          enhancedAddress += `, ${row.neighborhood}`;
+        }
+        // Always add Boston, MA for local resources to ensure correct geocoding
+        if (type === 'local_resources') {
+          enhancedAddress += ', Boston, MA';
+        }
+        
+        console.log(`🗺️ Attempting to geocode enhanced address: "${enhancedAddress}"`);
+        const coords = await geocodeAddress(enhancedAddress);
         if (coords) {
           baseTransform.latitude = coords.latitude;
           baseTransform.longitude = coords.longitude;
           console.log(`🎯 Geocoded coordinates for "${row.title || row.name}":`, coords);
         } else {
-          console.warn(`❌ Geocoding failed for "${row.title || row.name}" with address: "${addressField}"`);
+          console.warn(`❌ Geocoding failed for "${row.title || row.name}" with address: "${enhancedAddress}"`);
         }
       } else {
         console.warn(`⚠️ No address available for geocoding "${row.title || row.name}"`);
