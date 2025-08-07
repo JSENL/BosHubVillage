@@ -126,8 +126,20 @@ Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community res
         break;
       
       case 'local_resources':
-        if (!row.name || !row.category || !row.address || !row.neighborhood) {
-          return 'Missing required fields: name, category, address, or neighborhood';
+        const requiredFields = ['name', 'category', 'address', 'neighborhood', 'village', 'description', 'latitude', 'longitude', 'website_link'];
+        const missingFields = requiredFields.filter(field => !row[field] || row[field].toString().trim() === '');
+        if (missingFields.length > 0) {
+          return `Missing required fields: ${missingFields.join(', ')}`;
+        }
+        
+        // Validate latitude and longitude are valid numbers
+        const lat = parseFloat(row.latitude?.toString() || '');
+        const lng = parseFloat(row.longitude?.toString() || '');
+        if (isNaN(lat) || isNaN(lng)) {
+          return 'Invalid latitude or longitude - must be valid numbers';
+        }
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+          return 'Invalid coordinate ranges - latitude must be -90 to 90, longitude must be -180 to 180';
         }
         break;
       
@@ -282,9 +294,9 @@ Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community res
           category: row.category,
           address: row.address,
           neighborhood: row.neighborhood,
-          description: row.description || null,
-          website_link: row.website_link || null,
-          village: row.village || null,
+          village: row.village,
+          description: row.description,
+          website_link: row.website_link,
         };
     }
   };
