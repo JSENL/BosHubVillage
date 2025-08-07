@@ -11,7 +11,14 @@ export const geocodeLocalServices = async (services: any[], geocode: (address: s
   console.log(`Found ${servicesWithoutCoords.length} local resources without coordinates to geocode`);
   
   for (const service of servicesWithoutCoords) {
-    const addressToGeocode = service.address;
+    let addressToGeocode = service.address;
+    
+    // Enhance address with neighborhood and Boston, MA for better geocoding
+    if (service.neighborhood) {
+      addressToGeocode += `, ${service.neighborhood}`;
+    }
+    addressToGeocode += ', Boston, MA';
+    
     console.log('Geocoding local resource address:', addressToGeocode);
     
     try {
@@ -75,12 +82,18 @@ export const geocodeAllLocalServices = async (geocode: (address: string) => Prom
 
     // Process each service
     for (const service of services) {
-      const addressToGeocode = service.address;
+      let addressToGeocode = service.address;
       
       if (!addressToGeocode) {
         console.log(`Skipping service ${service.id} - no address`);
         continue;
       }
+
+      // Enhance address with neighborhood and Boston, MA for better geocoding
+      if (service.neighborhood) {
+        addressToGeocode += `, ${service.neighborhood}`;
+      }
+      addressToGeocode += ', Boston, MA';
 
       console.log(`Geocoding local resource ${service.id}: ${addressToGeocode}`);
       
