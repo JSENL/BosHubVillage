@@ -154,11 +154,16 @@ Sample Resource,Healthcare,789 Main St Boston MA,Downtown,A helpful community re
   };
 
   const transformRowForDatabase = async (row: CSVRow, type: DataType): Promise<any> => {
-    const baseTransform = {
-      created_by: user?.id,
+    // Base transform - only include created_by for tables that have it
+    const baseTransform: any = {
       latitude: null,
       longitude: null,
     };
+
+    // Only add created_by for tables that have this column
+    if (type !== 'local_resources') {
+      baseTransform.created_by = user?.id;
+    }
 
     console.log(`🔍 Processing row for "${row.title || row.name}":`, {
       providedLng: row.longitude,
