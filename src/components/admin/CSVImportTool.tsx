@@ -301,6 +301,22 @@ Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community res
     }
   };
 
+  
+  // Filter out unwanted fields from CSV data
+  const filterCSVData = (row: CSVRow): CSVRow => {
+    const filteredRow = { ...row };
+    // Remove state and zipcode fields if they exist
+    delete filteredRow.state;
+    delete filteredRow.zipcode;
+    delete filteredRow.zip_code;
+    delete filteredRow.zip;
+    delete filteredRow.State;
+    delete filteredRow.Zipcode;
+    delete filteredRow.ZIP;
+    delete filteredRow.ZIP_CODE;
+    return filteredRow;
+  };
+
   const handleImport = async () => {
     if (!selectedFile) {
       toast.error('Please select a CSV file');
@@ -324,7 +340,8 @@ Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community res
 
       // Process each row with geocoding
       for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
+        const originalRow = rows[i];
+        const row = filterCSVData(originalRow); // Filter out state and zipcode fields
         setUploadProgress(((i + 1) / rows.length) * 100);
 
         console.log(`📝 Processing row ${i + 1}/${rows.length}:`, row);
