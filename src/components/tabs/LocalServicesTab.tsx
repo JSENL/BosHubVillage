@@ -9,6 +9,9 @@ export const LocalServicesTab = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'calendar'>('grid');
 
   console.log('🏪 LocalServicesTab: Rendering with', localServices?.length || 0, 'services');
+  console.log('🏪 LocalServicesTab: Services with coordinates:', 
+    localServices?.filter(service => service.latitude && service.longitude).length || 0
+  );
 
   if (isLoading) {
     return (
