@@ -9,6 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { LocalResource } from '@/types/localServices';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface EditLocalResourceDialogProps {
   localResource: LocalResource;
@@ -19,6 +20,8 @@ interface EditLocalResourceDialogProps {
 
 export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onUpdate }: EditLocalResourceDialogProps) => {
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
+  
   const [formData, setFormData] = useState({
     name: localResource.name,
     category: localResource.category,
@@ -80,6 +83,9 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
 
       if (error) throw error;
 
+      // Invalidate the local resources query to refresh the data
+      queryClient.invalidateQueries({ queryKey: ['local-resources'] });
+      
       toast.success('Local resource updated successfully');
       onUpdate();
       onOpenChange(false);
