@@ -693,6 +693,7 @@ export type Database = {
           longitude: number | null
           name: string
           neighborhood: string
+          permanently_closed: boolean
           updated_at: string
           village: string | null
           website_link: string | null
@@ -707,6 +708,7 @@ export type Database = {
           longitude?: number | null
           name: string
           neighborhood: string
+          permanently_closed?: boolean
           updated_at?: string
           village?: string | null
           website_link?: string | null
@@ -721,6 +723,7 @@ export type Database = {
           longitude?: number | null
           name?: string
           neighborhood?: string
+          permanently_closed?: boolean
           updated_at?: string
           village?: string | null
           website_link?: string | null

@@ -65,6 +65,32 @@ export const useMapMarkers = ({
       el.style.fontWeight = 'bold';
       el.style.color = 'white';
       
+      // Check if permanently closed
+      const isPermanentlyClosed = item.originalData?.permanently_closed;
+      
+      if (isPermanentlyClosed) {
+        // Create permanently closed text
+        const closedText = document.createElement('div');
+        closedText.textContent = 'PERMANENTLY CLOSED';
+        closedText.style.position = 'absolute';
+        closedText.style.top = '-20px';
+        closedText.style.left = '50%';
+        closedText.style.transform = 'translateX(-50%)';
+        closedText.style.fontSize = '8px';
+        closedText.style.fontWeight = 'bold';
+        closedText.style.color = 'red';
+        closedText.style.backgroundColor = 'white';
+        closedText.style.padding = '1px 3px';
+        closedText.style.borderRadius = '2px';
+        closedText.style.whiteSpace = 'nowrap';
+        closedText.style.border = '1px solid red';
+        closedText.style.zIndex = '1000';
+        el.appendChild(closedText);
+        
+        // Make marker semi-transparent for closed businesses
+        el.style.opacity = '0.7';
+      }
+      
       // Add type indicator
       const typeIndicator = item.type.charAt(0).toUpperCase();
       el.textContent = typeIndicator;

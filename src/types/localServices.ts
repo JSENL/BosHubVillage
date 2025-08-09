@@ -10,6 +10,7 @@ export interface LocalResource {
   website_link?: string;
   latitude?: number;
   longitude?: number;
+  permanently_closed?: boolean;
   created_at: string;
   updated_at: string;
 }
