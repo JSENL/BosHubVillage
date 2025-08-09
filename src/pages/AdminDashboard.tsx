@@ -13,6 +13,7 @@ import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CSVImportTool } from '@/components/admin/CSVImportTool';
 import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
+import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
 import { 
   Shield, 
   Calendar, 
@@ -173,9 +174,7 @@ const AdminDashboard = () => {
             </TabsContent>
             
             <TabsContent value="categories">
-              <div className="text-center p-8">
-                <p className="text-gray-600">Categories management will be available soon.</p>
-              </div>
+              <CategoriesManagement />
             </TabsContent>
           </Tabs>
         </div>
