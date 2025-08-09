@@ -11,6 +11,7 @@ import { DirectionsModal } from '@/components/map/DirectionsModal';
 import { ClearDirectionsButton } from '@/components/map/ClearDirectionsButton';
 import { TurnByTurnDirections } from '@/components/map/TurnByTurnDirections';
 import { MapLegend } from '@/components/map/MapLegend';
+import { MapSearchBox } from '@/components/map/MapSearchBox';
 import { useDirections } from '@/hooks/useDirections';
 import { UnifiedItem } from '@/types/unifiedItem';
 
@@ -83,6 +84,17 @@ export const EnhancedUniversalMap = ({
     onMarkerClick: handleMarkerClick
   });
 
+  const handleLocationSearch = (lat: number, lng: number, address: string) => {
+    if (mapInstance) {
+      mapInstance.flyTo({
+        center: [lng, lat],
+        zoom: 16,
+        speed: 1.2,
+        curve: 1.4
+      });
+    }
+  };
+
   if (isLoadingApiKey) {
     return (
       <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
@@ -105,6 +117,7 @@ export const EnhancedUniversalMap = ({
     <div className="space-y-4">      
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
         <div ref={mapRef} className="w-full h-full" />
+        <MapSearchBox onLocationFound={handleLocationSearch} />
         <MapLegend />
         <ClearDirectionsButton 
           onClear={clearDirections}
