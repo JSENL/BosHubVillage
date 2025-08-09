@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { LocalResource } from '@/types/localServices';
@@ -32,7 +31,6 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
     website_link: localResource.website_link || '',
     latitude: localResource.latitude?.toString() || '',
     longitude: localResource.longitude?.toString() || '',
-    permanently_closed: localResource.permanently_closed || false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,7 +46,6 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
         village: formData.village || null,
         description: formData.description,
         website_link: formData.website_link || null,
-        permanently_closed: formData.permanently_closed,
       };
 
       // Handle coordinates - only include if they have values
@@ -199,19 +196,6 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
                 placeholder="e.g., -71.0589"
               />
             </div>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="permanently_closed"
-              checked={formData.permanently_closed}
-              onCheckedChange={(checked) => 
-                setFormData({ ...formData, permanently_closed: checked as boolean })
-              }
-            />
-            <Label htmlFor="permanently_closed" className="text-sm font-medium">
-              Permanently Closed
-            </Label>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
