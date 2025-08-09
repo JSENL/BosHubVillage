@@ -31,7 +31,10 @@ export const EnhancedUniversalMap = ({
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
   const { mapboxToken, isLoadingApiKey, error } = useMapboxToken();
-  const { filteredMappableItems } = useItemFiltering({ items, selectedTypes });
+  const { filteredMappableItems } = useItemFiltering({ 
+    items: items, // Use the pre-filtered items directly 
+    selectedTypes: selectedTypes 
+  });
   const { mapRef, mapInstance } = useMapInitializer({ mapboxToken, isLoadingApiKey });
   const { getDirections, clearDirections, route, directions } = useDirections(mapInstance);
 
@@ -43,6 +46,10 @@ export const EnhancedUniversalMap = ({
     isLoading: isLoadingApiKey,
     error: error || 'None',
     itemsByType: items.reduce((acc, item) => {
+      acc[item.type] = (acc[item.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>),
+    filteredItemsByType: filteredMappableItems.reduce((acc, item) => {
       acc[item.type] = (acc[item.type] || 0) + 1;
       return acc;
     }, {} as Record<string, number>)

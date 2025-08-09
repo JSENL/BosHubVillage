@@ -90,11 +90,20 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
 
       // Check individual selected dates
       if (selectedEventDates.length > 0) {
-        return selectedEventDates.some(selectedDate => {
+        const matches = selectedEventDates.some(selectedDate => {
           const selectedDateStr = selectedDate.toISOString().split('T')[0];
           const itemDateStr = itemDate.toISOString().split('T')[0];
           return selectedDateStr === itemDateStr;
         });
+        
+        console.log('📅 Individual date filtering:', {
+          eventTitle: item.title,
+          itemDate: itemDate.toISOString().split('T')[0],
+          selectedEventDates: selectedEventDates.map(d => d.toISOString().split('T')[0]),
+          matches
+        });
+        
+        return matches;
       }
 
       // Check date range
@@ -107,7 +116,17 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
         rangeEnd.setHours(23, 59, 59, 999);
         itemDate.setHours(12, 0, 0, 0); // Set to noon to avoid timezone issues
         
-        return itemDate >= rangeStart && itemDate <= rangeEnd;
+        const matches = itemDate >= rangeStart && itemDate <= rangeEnd;
+        
+        console.log('📅 Date range filtering:', {
+          eventTitle: item.title,
+          itemDate: itemDate.toISOString().split('T')[0],
+          rangeStart: rangeStart.toISOString().split('T')[0],
+          rangeEnd: rangeEnd.toISOString().split('T')[0],
+          matches
+        });
+        
+        return matches;
       }
 
       return true;
@@ -136,7 +155,15 @@ export const filterUnifiedItems = (items: UnifiedItem[], criteria: FilterCriteri
   
   console.log('✅ Filtering complete:', {
     filteredItems: filteredItems.length,
-    pastEventItems: filteredItems.filter(item => item.type === 'past-event').length
+    pastEventItems: filteredItems.filter(item => item.type === 'past-event').length,
+    eventItems: filteredItems.filter(item => item.type === 'event').length,
+    hasDateFilters: selectedEventDates.length > 0 || !!eventDateRange?.from,
+    selectedEventDatesCount: selectedEventDates.length,
+    hasDateRange: !!eventDateRange?.from,
+    dateRangeInfo: eventDateRange?.from ? {
+      from: eventDateRange.from.toISOString().split('T')[0],
+      to: eventDateRange.to?.toISOString().split('T')[0] || 'same day'
+    } : null
   });
   
   return filteredItems;
