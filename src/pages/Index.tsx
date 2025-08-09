@@ -129,14 +129,19 @@ const Index = () => {
                    localServicesLoading || localServiceSubmissionsLoading;
 
   // Filter items based on criteria
-  console.log('🔍 Index.tsx filtering - available variables:', { 
+  console.log('🔍 Index.tsx filtering - Filter State Analysis:', { 
     selectedType, 
     searchTerm, 
     selectedCategory, 
     selectedNeighborhood, 
     selectedVillage, 
-    eventDateRange, 
-    selectedEventDates 
+    eventDateRange: eventDateRange ? {
+      from: eventDateRange.from?.toDateString(),
+      to: eventDateRange.to?.toDateString()
+    } : null, 
+    selectedEventDatesCount: selectedEventDates.length,
+    totalItemsToFilter: allItems.length,
+    eventItemsCount: allItems.filter(item => item.type === 'event').length
   });
   
   const filteredItems = allItems.filter(item => {
@@ -198,17 +203,40 @@ const Index = () => {
       
       // Check if any individual dates are selected
       if (selectedEventDates.length > 0) {
-        return selectedEventDates.some(selectedDate => 
+        const matches = selectedEventDates.some(selectedDate => 
           selectedDate.toDateString() === itemDate.toDateString()
         );
+        
+        console.log('📅 Index: Individual date filtering for event:', {
+          eventTitle: item.title,
+          itemDate: itemDate.toDateString(),
+          selectedEventDates: selectedEventDates.map(d => d.toDateString()),
+          matches
+        });
+        
+        return matches;
       }
       
       // Check if date range is selected
       if (eventDateRange?.from) {
-        const fromDate = eventDateRange.from;
-        const toDate = eventDateRange.to || fromDate;
+        const fromDate = new Date(eventDateRange.from);
+        const toDate = eventDateRange.to ? new Date(eventDateRange.to) : fromDate;
         
-        return itemDate >= fromDate && itemDate <= toDate;
+        // Set to start/end of day for accurate comparison
+        fromDate.setHours(0, 0, 0, 0);
+        toDate.setHours(23, 59, 59, 999);
+        
+        const matches = itemDate >= fromDate && itemDate <= toDate;
+        
+        console.log('📅 Index: Date range filtering for event:', {
+          eventTitle: item.title,
+          itemDate: itemDate.toDateString(),
+          fromDate: fromDate.toDateString(),
+          toDate: toDate.toDateString(),
+          matches
+        });
+        
+        return matches;
       }
       
       // If no date filters selected, show all events
@@ -237,6 +265,16 @@ const Index = () => {
 
   // Create filtered items for map (including all item types)
   const mapItems = filteredItems;
+
+  console.log('✅ Index.tsx filtering results:', {
+    totalItems: allItems.length,
+    filteredItems: filteredItems.length,
+    eventItems: filteredItems.filter(item => item.type === 'event').length,
+    businessItems: filteredItems.filter(item => item.type === 'business').length,
+    localServiceItems: filteredItems.filter(item => item.type === 'local-service').length,
+    hasDateFilters: selectedEventDates.length > 0 || !!eventDateRange?.from,
+    dateFilterType: selectedEventDates.length > 0 ? 'individual' : eventDateRange?.from ? 'range' : 'none'
+  });
 
   // Geocode items that need geocoding
   useEffect(() => {
