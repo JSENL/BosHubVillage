@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -68,19 +69,65 @@ Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community res
     }
   };
 
+  // Improved CSV parsing function that handles quoted fields and commas within fields
+  const parseCSVLine = (line: string): string[] => {
+    const result: string[] = [];
+    let current = '';
+    let inQuotes = false;
+    let i = 0;
+
+    while (i < line.length) {
+      const char = line[i];
+      const nextChar = line[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          // Handle escaped quotes
+          current += '"';
+          i += 2;
+          continue;
+        } else {
+          // Toggle quote state
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        // Field separator outside of quotes
+        result.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+      i++;
+    }
+
+    // Add the last field
+    result.push(current.trim());
+    return result;
+  };
+
   const previewCSV = async (file: File) => {
     try {
       const text = await file.text();
       const lines = text.split('\n').filter(line => line.trim());
-      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      
+      if (lines.length === 0) {
+        toast.error('CSV file is empty');
+        return;
+      }
+
+      const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, '').trim());
+      
+      console.log('📋 CSV Headers detected:', headers);
       
       // Preview first 5 rows
-      const preview = lines.slice(1, 6).map(line => {
-        const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+      const preview = lines.slice(1, 6).map((line, index) => {
+        const values = parseCSVLine(line).map(v => v.replace(/"/g, '').trim());
         const row: CSVRow = {};
-        headers.forEach((header, index) => {
-          row[header] = values[index] || '';
+        headers.forEach((header, headerIndex) => {
+          row[header] = values[headerIndex] || '';
         });
+        
+        console.log(`📋 Preview row ${index + 1}:`, row);
         return row;
       });
 
@@ -95,14 +142,23 @@ Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community res
   const parseCSV = async (file: File): Promise<CSVRow[]> => {
     const text = await file.text();
     const lines = text.split('\n').filter(line => line.trim());
-    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     
-    return lines.slice(1).map(line => {
-      const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+    if (lines.length === 0) {
+      throw new Error('CSV file is empty');
+    }
+
+    const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, '').trim());
+    
+    console.log('📊 CSV Headers for import:', headers);
+    
+    return lines.slice(1).map((line, index) => {
+      const values = parseCSVLine(line).map(v => v.replace(/"/g, '').trim());
       const row: CSVRow = {};
-      headers.forEach((header, index) => {
-        row[header] = values[index] || '';
+      headers.forEach((header, headerIndex) => {
+        row[header] = values[headerIndex] || '';
       });
+      
+      console.log(`📊 Parsed row ${index + 2}:`, row);
       return row;
     });
   };
