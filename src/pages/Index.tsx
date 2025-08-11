@@ -404,11 +404,13 @@ const Index = () => {
             
             {/* Conditional content based on view mode */}
             {viewMode === 'map' ? (
-              <EnhancedUniversalMap 
-                items={mapItems}
-                height="250px md:400px"
-                selectedTypes={selectedTypesForMap}
-              />
+              <div className="h-80 md:h-96">
+                <EnhancedUniversalMap 
+                  items={mapItems}
+                  height="100%"
+                  selectedTypes={selectedTypesForMap}
+                />
+              </div>
             ) : (
               <div className="p-4">
                 {isLoading ? (
@@ -452,8 +454,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Bottom grid - only show when in map view or on larger screens */}
-        {(viewMode === 'map' || window.innerWidth >= 768) && (
+        {/* Bottom grid - only show when in map view on all screen sizes */}
+        {viewMode === 'map' && (
           <>
             {isLoading ? (
               <div className="text-center py-6 md:py-8">
