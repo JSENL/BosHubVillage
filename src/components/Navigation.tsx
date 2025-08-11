@@ -33,10 +33,10 @@ export const Navigation = () => {
 
   return (
     <nav className="bg-white shadow-lg border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="text-2xl font-bold text-caribbean-teal">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
+          <div className="flex items-center space-x-4 sm:space-x-8">
+            <Link to="/" className="text-lg sm:text-2xl font-bold text-caribbean-teal">
               HubVillage
             </Link>
             
@@ -44,10 +44,11 @@ export const Navigation = () => {
             {!isHomePage && (
               <Link 
                 to="/" 
-                className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+                className="hidden sm:flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
+                <span className="hidden md:inline">Back to Home</span>
+                <span className="sm:inline md:hidden">Back</span>
               </Link>
             )}
             
@@ -61,7 +62,7 @@ export const Navigation = () => {
             </Link>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

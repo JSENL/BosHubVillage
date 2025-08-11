@@ -346,17 +346,23 @@ const Index = () => {
       <Navigation />
       <HeroSection title="Welcome to HubVillage" subtitle="Discover amazing events, businesses, and news in your area" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Local Community</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        <div className="space-y-4 md:space-y-6">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h2>
           
-          <EnhancedUniversalMap 
-            items={mapItems}
-            height="400px"
-            selectedTypes={selectedTypesForMap}
-          />
+          {/* Mobile-optimized search */}
+          <div className="relative md:hidden">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search all content..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-full"
+            />
+          </div>
           
-          <div className="relative">
+          {/* Desktop search */}
+          <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Search all content..."
@@ -365,39 +371,49 @@ const Index = () => {
               className="pl-10 max-w-md"
             />
           </div>
-
-          <UniversalFilters
-            allItems={allItems}
-            searchTerm={searchTerm}
-            selectedType={selectedType}
-            onTypeChange={setSelectedType}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            selectedNeighborhood={selectedNeighborhood}
-            onNeighborhoodChange={setSelectedNeighborhood}
-            selectedVillage={selectedVillage}
-            onVillageChange={setSelectedVillage}
-            eventDateRange={eventDateRange}
-            onEventDateRangeChange={setEventDateRange}
-            selectedEventDates={selectedEventDates}
-            onSelectedEventDatesChange={setSelectedEventDates}
-            filteredItemsCount={filteredItems.length}
-            itemType="events"
+          
+          {/* Mobile-responsive map */}
+          <EnhancedUniversalMap 
+            items={mapItems}
+            height="250px md:400px"
+            selectedTypes={selectedTypesForMap}
           />
+
+          {/* Mobile-optimized filters */}
+          <div className="bg-white rounded-lg border shadow-sm">
+            <UniversalFilters
+              allItems={allItems}
+              searchTerm={searchTerm}
+              selectedType={selectedType}
+              onTypeChange={setSelectedType}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              selectedNeighborhood={selectedNeighborhood}
+              onNeighborhoodChange={setSelectedNeighborhood}
+              selectedVillage={selectedVillage}
+              onVillageChange={setSelectedVillage}
+              eventDateRange={eventDateRange}
+              onEventDateRangeChange={setEventDateRange}
+              selectedEventDates={selectedEventDates}
+              onSelectedEventDatesChange={setSelectedEventDates}
+              filteredItemsCount={filteredItems.length}
+              itemType="events"
+            />
+          </div>
         </div>
 
         {isLoading ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-2 text-gray-600">Loading content...</p>
+          <div className="text-center py-6 md:py-8">
+            <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-2 text-sm md:text-base text-gray-600">Loading content...</p>
           </div>
         ) : filteredItems.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 mt-4 md:mt-6">
             {filteredItems.map(renderItem)}
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            No content found. Try adjusting your filters or be the first to add something!
+          <div className="text-center py-6 md:py-8 text-gray-500">
+            <p className="text-sm md:text-base">No content found. Try adjusting your filters or be the first to add something!</p>
           </div>
         )}
       </div>
