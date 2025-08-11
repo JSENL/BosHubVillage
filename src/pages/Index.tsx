@@ -404,7 +404,7 @@ const Index = () => {
             
             {/* Conditional content based on view mode */}
             {viewMode === 'map' ? (
-              <div className="h-80 md:h-96">
+              <div className="h-[250px] md:h-[600px] w-full">
                 <EnhancedUniversalMap 
                   items={mapItems}
                   height="100%"

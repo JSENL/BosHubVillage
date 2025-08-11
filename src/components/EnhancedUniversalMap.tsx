@@ -133,12 +133,11 @@ export const EnhancedUniversalMap = ({
   }
 
   return (
-    <div className="space-y-4">      
+    <div className="w-full h-full">      
       <div 
-        className="bg-white rounded-lg border shadow-sm overflow-hidden relative"
+        className="bg-white rounded-lg border shadow-sm relative overflow-hidden"
         style={{ 
-          height: height,
-          minHeight: '300px',
+          height: '100%',
           width: '100%'
         }}
       >
@@ -150,17 +149,18 @@ export const EnhancedUniversalMap = ({
           <div>Error: {error || 'None'}</div>
           <div>MapRef: {mapRef.current ? '✅' : '❌'}</div>
           <div>MapInstance: {mapInstance ? '✅' : '❌'}</div>
+          <div>Height: {height}</div>
         </div>
         
         {isLoadingApiKey ? (
-          <div className="flex items-center justify-center h-full bg-gray-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
               <p className="text-sm text-gray-600">Loading map...</p>
             </div>
           </div>
         ) : error ? (
-          <div className="flex items-center justify-center h-full bg-red-50 border border-red-200">
+          <div className="absolute inset-0 flex items-center justify-center bg-red-50 border border-red-200">
             <div className="text-center p-4">
               <p className="text-red-600 font-medium">Map Error</p>
               <p className="text-red-500 text-sm mt-1">{error}</p>
@@ -176,14 +176,10 @@ export const EnhancedUniversalMap = ({
           <>
             <div 
               ref={mapRef} 
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0"
               style={{ 
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: '#e0e0e0' // Visible background to show container bounds
+                width: '100%',
+                height: '100%'
               }}
             />
             <MapSearchBox onLocationFound={handleLocationSearch} />
