@@ -40,10 +40,10 @@ export const validateCoordinates = (item: UnifiedItem) => {
 
 export const getMarkerColor = (type: string): string => {
   switch (type) {
-    case 'event': return '#ef4444'; // red
-    case 'business': return '#3b82f6'; // blue
-    case 'local-service': return '#eab308'; // yellow
-    default: return '#6b7280'; // gray
+    case 'event': return 'hsl(5, 75%, 55%)'; // Warm red from logo
+    case 'business': return 'hsl(210, 75%, 45%)'; // Vibrant blue from logo
+    case 'local-service': return 'hsl(15, 85%, 65%)'; // Coral orange from logo
+    default: return 'hsl(220, 15%, 45%)'; // Muted gray
   }
 };
 
