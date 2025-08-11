@@ -112,7 +112,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
                 <div className="flex items-center min-w-0">
                   <MapPin className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
-                  <span className="truncate">{event.location}</span>
+                  <span className="truncate break-all min-w-0">{event.location}</span>
                 </div>
                 {event.max_attendees && (
                   <div className="flex items-center">
@@ -168,7 +168,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
           </div>
           <div className="flex items-center text-gray-600 min-w-0">
             <MapPin className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
-            <span className="truncate">{event.location}</span>
+            <span className="truncate break-all min-w-0">{event.location}</span>
           </div>
           {event.max_attendees && (
             <div className="flex items-center text-gray-600">

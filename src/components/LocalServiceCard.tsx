@@ -38,11 +38,11 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-2 pt-2">
-        <div className="flex items-start text-gray-600">
+        <div className="flex items-start text-gray-600 min-w-0">
           <MapPin className="h-3 w-3 mr-2 mt-0.5 flex-shrink-0" />
-          <div className="text-xs">
-            <p className="truncate">{localService.address}</p>
-            <p className="text-xs text-gray-500">
+          <div className="text-xs min-w-0 flex-1">
+            <p className="truncate break-all">{localService.address}</p>
+            <p className="text-xs text-gray-500 truncate">
               {localService.neighborhood}
               {localService.village && `, ${localService.village}`}
             </p>

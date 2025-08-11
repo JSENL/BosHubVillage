@@ -141,7 +141,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                 {displayLocation && (
                   <div className="flex items-center min-w-0">
                     <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-                    <span className="truncate">{displayLocation}</span>
+                    <span className="truncate break-all min-w-0">{displayLocation}</span>
                   </div>
                 )}
               </div>
@@ -210,7 +210,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
           {displayLocation && (
             <div className="flex items-center text-gray-600 min-w-0">
               <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-              <span className="truncate">{displayLocation}</span>
+              <span className="truncate break-all min-w-0">{displayLocation}</span>
             </div>
           )}
         </div>

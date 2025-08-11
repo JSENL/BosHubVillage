@@ -33,7 +33,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
             </div>
             <div className="flex items-center min-w-0">
               <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-              <span className="truncate">{news.location}</span>
+              <span className="truncate break-all min-w-0">{news.location}</span>
             </div>
             <div className="flex items-center min-w-0">
               <ExternalLink className="h-3 w-3 mr-1 flex-shrink-0" />

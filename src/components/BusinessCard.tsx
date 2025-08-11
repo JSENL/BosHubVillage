@@ -24,9 +24,9 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
               </Badge>
             </div>
           </div>
-          <div className="flex items-center text-gray-600 mb-1">
+          <div className="flex items-center text-gray-600 mb-1 min-w-0">
             <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-            <span className="text-xs truncate">{business.address}, {business.neighborhood}</span>
+            <span className="text-xs truncate min-w-0 break-all">{business.address}, {business.neighborhood}</span>
           </div>
         </CardHeader>
         <CardContent className="pt-2">
