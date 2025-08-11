@@ -147,6 +147,17 @@ const Index = () => {
   });
   
   const filteredItems = allItems.filter(item => {
+    // Exclude past events
+    if (item.type === 'event' && item.date) {
+      const eventDate = new Date(item.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to start of today
+      
+      if (eventDate < today) {
+        return false; // Exclude past events
+      }
+    }
+
     // Type filter
     const matchesType = selectedType === 'all' || item.type === selectedType;
 
