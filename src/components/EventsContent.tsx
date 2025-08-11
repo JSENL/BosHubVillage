@@ -1,9 +1,9 @@
-import { EventCard } from '@/components/EventCard';
+import { EventsGridView } from '@/components/events/EventsGridView';
+import { EventsListView } from '@/components/events/EventsListView';
 import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
 import EventsCalendar from '@/components/EventsCalendar';
 import { Event } from '@/hooks/useEvents';
 import { UnifiedItem } from '@/types/unifiedItem';
-import { Search } from 'lucide-react';
 
 interface EventsContentProps {
   viewMode: 'grid' | 'list' | 'map' | 'calendar';
@@ -28,8 +28,8 @@ export const EventsContent = ({
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-yelp-red mx-auto mb-4"></div>
-          <p className="text-yelp-gray text-sm sm:text-base">Loading amazing events...</p>
+          <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground text-sm sm:text-base">Loading amazing events...</p>
         </div>
       </div>
     );
@@ -50,7 +50,8 @@ export const EventsContent = ({
       start_time: event.start_time,
       end_time: event.end_time,
       price: event.price,
-      neighborhoods: event.neighborhoods
+      neighborhoods: event.neighborhoods,
+      originalData: event
     }));
 
     return (
@@ -63,38 +64,17 @@ export const EventsContent = ({
   }
 
   if (viewMode === 'calendar') {
-    return (
-      <EventsCalendar 
-        events={filteredEvents}
-        searchQuery={searchTerm}
-        selectedCategory={selectedCategory}
-      />
-    );
+    return <EventsCalendar searchQuery={searchTerm} selectedCategory={selectedCategory} events={filteredEvents} />;
   }
 
-  if (filteredEvents.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <Search className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-yelp-light-gray" />
-        <h3 className="text-lg sm:text-xl font-semibold text-yelp-gray mb-2">No events found</h3>
-        <p className="text-gray-600 text-sm sm:text-base">Try adjusting your search criteria or browse all events.</p>
-      </div>
-    );
+  if (viewMode === 'grid') {
+    return <EventsGridView events={filteredEvents} loading={loading} />;
   }
 
-  return (
-    <div className={`grid gap-4 ${
-      viewMode === 'grid' 
-        ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' 
-        : 'grid-cols-1'
-    }`}>
-      {filteredEvents.map((event) => (
-        <EventCard
-          key={event.id}
-          event={event}
-          viewMode={viewMode as 'grid' | 'list'}
-        />
-      ))}
-    </div>
-  );
+  if (viewMode === 'list') {
+    return <EventsListView events={filteredEvents} loading={loading} />;
+  }
+
+  // Default to grid view
+  return <EventsGridView events={filteredEvents} loading={loading} />;
 };
