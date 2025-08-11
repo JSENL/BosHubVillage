@@ -64,11 +64,11 @@ export const useMapMarkers = ({
       // Get marker color based on item type
       const getMarkerColor = (type: string) => {
         switch (type) {
-          case 'event': return '#ef4444'; // Red
-          case 'local-service': return '#eab308'; // Yellow  
-          case 'business': return '#3b82f6'; // Blue
-          case 'news': return '#10b981'; // Green (keeping this for news)
-          default: return '#6b7280'; // Gray
+          case 'event': return 'hsl(5, 75%, 55%)'; // Warm red from logo
+          case 'local-service': return 'hsl(15, 85%, 65%)'; // Coral orange from logo
+          case 'business': return 'hsl(210, 75%, 45%)'; // Vibrant blue from logo
+          case 'news': return 'hsl(135, 65%, 45%)'; // Forest green from logo
+          default: return 'hsl(220, 15%, 45%)'; // Muted gray
         }
       };
 

@@ -11,12 +11,12 @@ export const createPopupContent = (item: UnifiedItem): string => {
 
   const getMarkerColor = (type: string): string => {
     const colors = {
-      event: '#dc2626',      // Red
-      news: '#2563eb',       // Blue
-      business: '#16a34a',   // Green
-      'local-service': '#eab308'  // Yellow
+      event: 'hsl(5, 75%, 55%)',          // Warm red from logo
+      news: 'hsl(135, 65%, 45%)',         // Forest green from logo
+      business: 'hsl(210, 75%, 45%)',     // Vibrant blue from logo
+      'local-service': 'hsl(15, 85%, 65%)' // Coral orange from logo
     };
-    return colors[type as keyof typeof colors] || '#6b7280';
+    return colors[type as keyof typeof colors] || 'hsl(220, 15%, 45%)';
   };
 
   const displayLocation = item.location || item.address || '';
