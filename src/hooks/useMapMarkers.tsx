@@ -21,8 +21,19 @@ export const useMapMarkers = ({
   const hasFitBoundsRef = useRef(false); // Track if we've already fit bounds initially
 
   useEffect(() => {
-    if (!map || !items || items.length === 0) {
-      console.log('🗺️ MapMarkers: No map or items available');
+    console.log('🎯 useMapMarkers called with:', {
+      hasMap: !!map,
+      itemsCount: items?.length || 0,
+      mapReady: map && map.loaded && map.loaded(),
+    });
+
+    if (!map) {
+      console.log('🗺️ MapMarkers: No map instance available');
+      return;
+    }
+
+    if (!items || items.length === 0) {
+      console.log('🗺️ MapMarkers: No items available');
       return;
     }
 
@@ -33,9 +44,22 @@ export const useMapMarkers = ({
     markersRef.current = [];
 
     // Create markers for each item
-    items.forEach(item => {
+    items.forEach((item, index) => {
+      console.log(`🎯 Processing item ${index + 1}/${items.length}:`, {
+        title: item.title,
+        type: item.type,
+        lat: item.latitude,
+        lng: item.longitude,
+        hasCoords: !!(item.latitude && item.longitude)
+      });
+
       const coords = validateCoordinates(item);
-      if (!coords) return;
+      if (!coords) {
+        console.log('❌ Invalid coordinates for item:', item.title);
+        return;
+      }
+
+      console.log('✅ Valid coordinates for item:', item.title, coords);
 
       // Get marker color based on item type
       const getMarkerColor = (type: string) => {
@@ -92,6 +116,7 @@ export const useMapMarkers = ({
         .setLngLat([coords.lng, coords.lat])
         .addTo(map);
 
+      console.log('🎯 Added marker for:', item.title, 'at', [coords.lng, coords.lat]);
       markersRef.current.push(marker);
     });
 

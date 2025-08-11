@@ -84,7 +84,21 @@ export const EnhancedUniversalMap = ({
     };
   }, []);
 
-  // Use the map markers hook with click handler
+  // Use the map markers hook with click handler - Wait for map to be ready
+  useEffect(() => {
+    if (mapInstance && mapInstance.loaded()) {
+      console.log('🗺️ Map is ready, adding markers...');
+    } else if (mapInstance) {
+      const handleLoad = () => {
+        console.log('🗺️ Map load event fired, will add markers...');
+      };
+      mapInstance.on('load', handleLoad);
+      return () => {
+        mapInstance.off('load', handleLoad);
+      };
+    }
+  }, [mapInstance]);
+
   useMapMarkers({
     map: mapInstance,
     items: filteredMappableItems,
@@ -144,11 +158,13 @@ export const EnhancedUniversalMap = ({
         {/* Debug overlay */}
         <div className="absolute top-2 left-2 bg-black/75 text-white text-xs p-2 rounded z-50">
           <div>Items: {filteredMappableItems.length}</div>
+          <div>Items w/ Coords: {filteredMappableItems.filter(item => item.latitude && item.longitude).length}</div>
           <div>Token: {mapboxToken ? '✅' : '❌'}</div>
           <div>Loading: {isLoadingApiKey ? '⏳' : '✅'}</div>
           <div>Error: {error || 'None'}</div>
           <div>MapRef: {mapRef.current ? '✅' : '❌'}</div>
           <div>MapInstance: {mapInstance ? '✅' : '❌'}</div>
+          <div>Map Loaded: {mapInstance?.loaded?.() ? '✅' : '❌'}</div>
           <div>Height: {height}</div>
         </div>
         
