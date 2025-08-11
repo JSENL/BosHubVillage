@@ -23,26 +23,26 @@ const NewsCard = ({ news }: NewsCardProps) => {
     <Link to={`/news/${news.id}`}>
       <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full min-h-[200px]">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base font-semibold line-clamp-2">
+          <CardTitle className="text-base font-semibold line-clamp-2 break-words">
             {news.title}
           </CardTitle>
           <div className="flex flex-col gap-1 text-xs text-gray-600">
-            <div className="flex items-center">
-              <Calendar className="h-3 w-3 mr-1" />
-              {formatDate(news.date_posted)}
+            <div className="flex items-center min-w-0">
+              <Calendar className="h-3 w-3 mr-1 flex-shrink-0" />
+              <span className="truncate">{formatDate(news.date_posted)}</span>
             </div>
-            <div className="flex items-center">
-              <MapPin className="h-3 w-3 mr-1" />
+            <div className="flex items-center min-w-0">
+              <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
               <span className="truncate">{news.location}</span>
             </div>
-            <div className="flex items-center">
-              <ExternalLink className="h-3 w-3 mr-1" />
+            <div className="flex items-center min-w-0">
+              <ExternalLink className="h-3 w-3 mr-1 flex-shrink-0" />
               <span className="truncate">{news.source}</span>
             </div>
           </div>
         </CardHeader>
         <CardContent className="pt-2">
-          <p className="text-gray-700 line-clamp-2 text-xs">
+          <p className="text-gray-700 line-clamp-2 text-xs break-words">
             {news.content}
           </p>
         </CardContent>

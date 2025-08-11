@@ -28,12 +28,12 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
     <Card className="h-full hover:shadow-lg transition-shadow duration-200 cursor-pointer min-h-[200px]" onClick={handleClick}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2">
+          <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2 break-words flex-1 min-w-0 mr-2">
             {localService.name}
           </CardTitle>
           <Badge variant="secondary" className="ml-2 flex-shrink-0 text-xs">
-            <Building className="h-3 w-3 mr-1" />
-            {localService.category}
+            <Building className="h-3 w-3 mr-1 flex-shrink-0" />
+            <span className="truncate max-w-20">{localService.category}</span>
           </Badge>
         </div>
       </CardHeader>
@@ -50,7 +50,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         </div>
         
         {localService.description && (
-          <p className="text-xs text-gray-600 line-clamp-2">
+          <p className="text-xs text-gray-600 line-clamp-2 break-words">
             {localService.description}
           </p>
         )}

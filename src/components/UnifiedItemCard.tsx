@@ -103,8 +103,8 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             {/* Item Details */}
             <div className="flex-1 p-6">
               <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 hover:text-caribbean-teal mb-1">
+                <div className="flex-1 min-w-0 mr-4">
+                  <h3 className="text-xl font-bold text-gray-900 hover:text-caribbean-teal mb-1 line-clamp-2 break-words">
                     {item.title}
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
@@ -114,12 +114,12 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                         className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
                       />
                     ))}
-                    <span className="text-sm text-gray-600 ml-2">{reviewCount} reviews</span>
+                    <span className="text-sm text-gray-600 ml-2 truncate">{reviewCount} reviews</span>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex-shrink-0">
                   <Badge variant="secondary" className="bg-gray-100 text-gray-700 mb-2">
-                    {displayCategory}
+                    <span className="truncate max-w-24">{displayCategory}</span>
                   </Badge>
                   {item.price !== undefined && (
                     <div className="text-lg font-bold text-caribbean-teal">
@@ -129,18 +129,18 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2">{displayDescription}</p>
+              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{displayDescription}</p>
               
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 {item.date && (
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70" />
-                    <span>{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
+                  <div className="flex items-center min-w-0">
+                    <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
+                    <span className="truncate">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
                   </div>
                 )}
                 {displayLocation && (
-                  <div className="flex items-center">
-                    <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70" />
+                  <div className="flex items-center min-w-0">
+                    <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
                     <span className="truncate">{displayLocation}</span>
                   </div>
                 )}
@@ -182,7 +182,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             </div>
           )}
         </div>
-        <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal line-clamp-2">
+        <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal line-clamp-2 break-words">
           {item.title}
         </CardTitle>
         <div className="flex items-center space-x-1">
@@ -197,19 +197,19 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       </CardHeader>
       
       <CardContent>
-        <CardDescription className="mb-4 line-clamp-3 text-gray-600">
+        <CardDescription className="mb-4 line-clamp-3 text-gray-600 break-words">
           {displayDescription}
         </CardDescription>
         <div className="space-y-2 text-sm">
           {item.date && (
-            <div className="flex items-center text-gray-600">
-              <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70" />
-              <span>{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
+            <div className="flex items-center text-gray-600 min-w-0">
+              <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
+              <span className="truncate">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
             </div>
           )}
           {displayLocation && (
-            <div className="flex items-center text-gray-600">
-              <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70" />
+            <div className="flex items-center text-gray-600 min-w-0">
+              <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
               <span className="truncate">{displayLocation}</span>
             </div>
           )}

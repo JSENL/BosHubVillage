@@ -79,8 +79,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
             {/* Event Details */}
             <div className="flex-1 p-6">
               <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 hover:text-yelp-red mb-1">
+                <div className="flex-1 min-w-0 mr-4">
+                  <h3 className="text-xl font-bold text-gray-900 hover:text-yelp-red mb-1 line-clamp-2 break-words">
                     {event.title}
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
@@ -90,12 +90,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                         className={`h-4 w-4 ${i < rating ? 'text-yelp-orange fill-current' : 'text-gray-300'}`} 
                       />
                     ))}
-                    <span className="text-sm text-gray-600 ml-2">{reviewCount} reviews</span>
+                    <span className="text-sm text-gray-600 ml-2 truncate">{reviewCount} reviews</span>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right flex-shrink-0">
                   <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray mb-2">
-                    {event.category}
+                    <span className="truncate max-w-20">{event.category}</span>
                   </Badge>
                   <div className="text-lg font-bold text-yelp-red">
                     {event.price === 0 ? 'Free' : `$${event.price}`}
@@ -103,15 +103,15 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{event.description}</p>
               
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-                <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2 text-yelp-red" />
-                  <span>{formatDate(event.date)} {formatTimeRange(event.start_time, event.end_time)}</span>
+                <div className="flex items-center min-w-0">
+                  <Calendar className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
+                  <span className="truncate">{formatDate(event.date)} {formatTimeRange(event.start_time, event.end_time)}</span>
                 </div>
-                <div className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-2 text-yelp-red" />
+                <div className="flex items-center min-w-0">
+                  <MapPin className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
                   <span className="truncate">{event.location}</span>
                 </div>
                 {event.max_attendees && (
@@ -143,7 +143,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
             {event.price === 0 ? 'Free' : `$${event.price}`}
           </div>
         </div>
-        <CardTitle className="text-sm text-gray-900 hover:text-yelp-red line-clamp-2">
+        <CardTitle className="text-sm text-gray-900 hover:text-yelp-red line-clamp-2 break-words">
           {event.title}
         </CardTitle>
         <div className="flex items-center space-x-1">
@@ -158,16 +158,16 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       </CardHeader>
       
       <CardContent className="pt-2">
-        <CardDescription className="mb-2 line-clamp-2 text-gray-600 text-xs">
+        <CardDescription className="mb-2 line-clamp-2 text-gray-600 text-xs break-words">
           {event.description}
         </CardDescription>
         <div className="space-y-1 text-xs">
-          <div className="flex items-center text-gray-600">
-            <Calendar className="h-3 w-3 mr-2 text-yelp-red" />
-            <span>{formatDate(event.date)} {formatTimeRange(event.start_time, event.end_time)}</span>
+          <div className="flex items-center text-gray-600 min-w-0">
+            <Calendar className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
+            <span className="truncate">{formatDate(event.date)} {formatTimeRange(event.start_time, event.end_time)}</span>
           </div>
-          <div className="flex items-center text-gray-600">
-            <MapPin className="h-3 w-3 mr-2 text-yelp-red" />
+          <div className="flex items-center text-gray-600 min-w-0">
+            <MapPin className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
             <span className="truncate">{event.location}</span>
           </div>
           {event.max_attendees && (
