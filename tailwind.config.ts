@@ -63,13 +63,15 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				caribbean: {
-					red: 'hsl(var(--caribbean-red))',
-					yellow: 'hsl(var(--caribbean-yellow))',
-					teal: 'hsl(var(--caribbean-teal))',
-					'grass-green': 'hsl(var(--grass-green))',
-					'sky-gray': 'hsl(var(--sky-gray))',
-					'black-coffee': 'hsl(var(--black-coffee))'
+				logo: {
+					'vibrant-blue': 'hsl(var(--vibrant-blue))',
+					'deep-blue': 'hsl(var(--deep-blue))',
+					'coral-orange': 'hsl(var(--coral-orange))',
+					'warm-red': 'hsl(var(--warm-red))',
+					'forest-green': 'hsl(var(--forest-green))',
+					'sage-green': 'hsl(var(--sage-green))',
+					'charcoal': 'hsl(var(--charcoal))',
+					'cream': 'hsl(var(--cream))'
 				}
 			},
 			borderRadius: {

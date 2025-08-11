@@ -7,80 +7,83 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 18%;
+    --foreground: 220 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 18%;
+    --card-foreground: 220 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 18%;
+    --popover-foreground: 220 25% 15%;
 
-    --primary: 125 25% 49%;
+    --primary: 210 75% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 85%;
-    --secondary-foreground: 0 0% 18%;
+    --secondary: 15 85% 65%;
+    --secondary-foreground: 220 25% 15%;
 
-    --muted: 0 0% 85%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 25% 93%;
+    --muted-foreground: 220 15% 45%;
 
-    --accent: 191 58% 43%;
+    --accent: 135 65% 45%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 42% 39%;
+    --destructive: 5 75% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 85%;
-    --input: 0 0% 85%;
-    --ring: 125 25% 49%;
+    --border: 210 25% 88%;
+    --input: 210 25% 88%;
+    --ring: 210 75% 45%;
 
-    --radius: 0.375rem;
+    --radius: 0.5rem;
 
-    --caribbean-red: 0 42% 39%;
-    --caribbean-yellow: 42 87% 58%;
-    --caribbean-teal: 191 58% 43%;
-    --grass-green: 125 25% 49%;
-    --sky-gray: 0 0% 85%;
-    --black-coffee: 0 0% 18%;
+    /* Logo-inspired color palette */
+    --vibrant-blue: 210 75% 45%;
+    --deep-blue: 220 85% 35%;
+    --coral-orange: 15 85% 65%;
+    --warm-red: 5 75% 55%;
+    --forest-green: 135 65% 45%;
+    --sage-green: 90 35% 55%;
+    --charcoal: 220 25% 15%;
+    --cream: 45 25% 95%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 18%;
-    --sidebar-primary: 125 25% 49%;
+    --sidebar-background: 210 25% 98%;
+    --sidebar-foreground: 220 25% 15%;
+    --sidebar-primary: 210 75% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 85%;
-    --sidebar-accent-foreground: 0 0% 18%;
-    --sidebar-border: 0 0% 85%;
-    --sidebar-ring: 125 25% 49%;
+    --sidebar-accent: 210 25% 93%;
+    --sidebar-accent-foreground: 220 25% 15%;
+    --sidebar-border: 210 25% 88%;
+    --sidebar-ring: 210 75% 45%;
   }
 
   .dark {
-    --background: 0 0% 18%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 22%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 18%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 125 25% 55%;
-    --primary-foreground: 0 0% 18%;
-    --secondary: 0 0% 30%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 30%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 191 58% 50%;
-    --accent-foreground: 0 0% 18%;
-    --destructive: 0 42% 45%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 30%;
-    --input: 0 0% 30%;
-    --ring: 125 25% 55%;
-    --sidebar-background: 0 0% 15%;
-    --sidebar-foreground: 0 0% 85%;
-    --sidebar-primary: 125 25% 55%;
-    --sidebar-primary-foreground: 0 0% 18%;
-    --sidebar-accent: 0 0% 25%;
-    --sidebar-accent-foreground: 0 0% 85%;
-    --sidebar-border: 0 0% 25%;
-    --sidebar-ring: 125 25% 55%;
+    --background: 220 25% 8%;
+    --foreground: 45 25% 95%;
+    --card: 220 25% 12%;
+    --card-foreground: 45 25% 95%;
+    --popover: 220 25% 8%;
+    --popover-foreground: 45 25% 95%;
+    --primary: 210 75% 55%;
+    --primary-foreground: 220 25% 8%;
+    --secondary: 15 65% 55%;
+    --secondary-foreground: 220 25% 8%;
+    --muted: 220 25% 20%;
+    --muted-foreground: 210 15% 70%;
+    --accent: 135 65% 55%;
+    --accent-foreground: 220 25% 8%;
+    --destructive: 5 75% 65%;
+    --destructive-foreground: 45 25% 95%;
+    --border: 220 25% 25%;
+    --input: 220 25% 25%;
+    --ring: 210 75% 55%;
+    --sidebar-background: 220 25% 5%;
+    --sidebar-foreground: 210 15% 85%;
+    --sidebar-primary: 210 75% 55%;
+    --sidebar-primary-foreground: 220 25% 8%;
+    --sidebar-accent: 220 25% 15%;
+    --sidebar-accent-foreground: 210 15% 85%;
+    --sidebar-border: 220 25% 20%;
+    --sidebar-ring: 210 75% 55%;
   }
 }
 
@@ -95,19 +98,23 @@
 }
 
 @layer components {
-  .caribbean-gradient {
-    background: linear-gradient(135deg, hsl(var(--grass-green)) 0%, hsl(var(--caribbean-teal)) 100%);
+  .logo-gradient {
+    background: linear-gradient(135deg, hsl(var(--vibrant-blue)) 0%, hsl(var(--forest-green)) 100%);
   }
   
-  .caribbean-warm-gradient {
-    background: linear-gradient(135deg, hsl(var(--caribbean-red)) 0%, hsl(var(--caribbean-yellow)) 100%);
+  .logo-warm-gradient {
+    background: linear-gradient(135deg, hsl(var(--warm-red)) 0%, hsl(var(--coral-orange)) 100%);
   }
   
-  .caribbean-shadow {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  .logo-vibrant-gradient {
+    background: linear-gradient(135deg, hsl(var(--deep-blue)) 0%, hsl(var(--vibrant-blue)) 50%, hsl(var(--forest-green)) 100%);
   }
   
-  .caribbean-shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  .logo-shadow {
+    box-shadow: 0 4px 6px -1px hsla(var(--vibrant-blue), 0.15), 0 2px 4px -1px hsla(var(--vibrant-blue), 0.1);
+  }
+  
+  .logo-shadow-lg {
+    box-shadow: 0 20px 25px -5px hsla(var(--vibrant-blue), 0.15), 0 10px 10px -5px hsla(var(--vibrant-blue), 0.1);
   }
 }
