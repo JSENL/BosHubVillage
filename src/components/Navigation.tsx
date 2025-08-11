@@ -36,8 +36,12 @@ export const Navigation = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16">
           <div className="flex items-center space-x-4 sm:space-x-8">
-            <Link to="/" className="text-lg sm:text-2xl font-bold text-caribbean-teal">
-              HubVillage
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/lovable-uploads/76a583e0-eef3-4167-a87b-ed0504940bdc.png" 
+                alt="HubVillage Logo" 
+                className="h-8 sm:h-10 w-auto"
+              />
             </Link>
             
             {/* Back to Home Button - Hidden on home page */}
