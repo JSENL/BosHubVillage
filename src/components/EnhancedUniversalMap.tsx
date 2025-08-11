@@ -91,6 +91,18 @@ export const EnhancedUniversalMap = ({
     onMarkerClick: handleMarkerClick
   });
 
+  // Force map resize when container dimensions change
+  useEffect(() => {
+    if (mapInstance) {
+      const resizeTimeout = setTimeout(() => {
+        console.log('🔄 Resizing map to fit container...');
+        mapInstance.resize();
+      }, 100);
+      
+      return () => clearTimeout(resizeTimeout);
+    }
+  }, [mapInstance, height]);
+
   const handleLocationSearch = (lat: number, lng: number, address: string) => {
     if (mapInstance) {
       mapInstance.flyTo({
@@ -122,7 +134,14 @@ export const EnhancedUniversalMap = ({
 
   return (
     <div className="space-y-4">      
-      <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
+      <div 
+        className="bg-white rounded-lg border shadow-sm overflow-hidden relative"
+        style={{ 
+          height: height,
+          minHeight: '300px',
+          width: '100%'
+        }}
+      >
         {/* Debug overlay */}
         <div className="absolute top-2 left-2 bg-black/75 text-white text-xs p-2 rounded z-50">
           <div>Items: {filteredMappableItems.length}</div>
@@ -157,9 +176,13 @@ export const EnhancedUniversalMap = ({
           <>
             <div 
               ref={mapRef} 
-              className="w-full h-full"
+              className="absolute inset-0 w-full h-full"
               style={{ 
-                minHeight: '200px',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
                 backgroundColor: '#e0e0e0' // Visible background to show container bounds
               }}
             />

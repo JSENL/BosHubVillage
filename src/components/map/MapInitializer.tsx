@@ -33,7 +33,12 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
       doubleClickZoom: false, // Disable double-click zoom to prevent interference
       touchZoomRotate: true, // Enable touch zoom on mobile
       dragPan: true, // Enable panning
-      keyboard: true // Enable keyboard navigation
+      keyboard: true, // Enable keyboard navigation
+      preserveDrawingBuffer: true, // Better performance
+      antialias: true, // Smoother rendering
+      fitBoundsOptions: {
+        padding: 20
+      }
     });
 
     // Add navigation controls (zoom in/out, compass)
@@ -97,6 +102,11 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
 
     map.on('load', () => {
       console.log('✅ Mapbox map loaded successfully');
+      // Force resize to ensure proper fitting
+      setTimeout(() => {
+        map.resize();
+        console.log('🔄 Map resized after load');
+      }, 100);
     });
 
     map.on('error', (e) => {
