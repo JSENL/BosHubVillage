@@ -123,38 +123,79 @@ export const EnhancedUniversalMap = ({
   return (
     <div className="space-y-4">      
       <div className="bg-white rounded-lg border shadow-sm overflow-hidden relative" style={{ height }}>
-        <div ref={mapRef} className="w-full h-full" />
-        <MapSearchBox onLocationFound={handleLocationSearch} />
-        <MapLegend />
-        <ClearDirectionsButton 
-          onClear={clearDirections}
-          isVisible={!!route}
-        />
-        <TurnByTurnDirections
-          directions={directions || []}
-          route={route}
-          isVisible={!!(route && directions)}
-          onClose={clearDirections}
-        />
-        <MapOverlays 
-          itemCount={filteredMappableItems.length}
-          isEmpty={filteredMappableItems.length === 0 && !isLoadingApiKey}
-        />
-        <MapItemSidebar 
-          selectedItem={selectedItem}
-          onClose={() => setSelectedItem(null)}
-          onGetDirections={handleGetDirections}
-        />
-        {directionsItem && (
-          <DirectionsModal 
-            item={directionsItem}
-            open={!!directionsItem}
-            onOpenChange={(open) => !open && setDirectionsItem(null)}
-            onGetDirections={(start, mode) => {
-              handleGetDirections(start, mode, directionsItem);
-              setDirectionsItem(null);
-            }}
-          />
+        {/* Debug overlay */}
+        <div className="absolute top-2 left-2 bg-black/75 text-white text-xs p-2 rounded z-50">
+          <div>Items: {filteredMappableItems.length}</div>
+          <div>Token: {mapboxToken ? '✅' : '❌'}</div>
+          <div>Loading: {isLoadingApiKey ? '⏳' : '✅'}</div>
+          <div>Error: {error || 'None'}</div>
+          <div>MapRef: {mapRef.current ? '✅' : '❌'}</div>
+          <div>MapInstance: {mapInstance ? '✅' : '❌'}</div>
+        </div>
+        
+        {isLoadingApiKey ? (
+          <div className="flex items-center justify-center h-full bg-gray-100">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+              <p className="text-sm text-gray-600">Loading map...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-full bg-red-50 border border-red-200">
+            <div className="text-center p-4">
+              <p className="text-red-600 font-medium">Map Error</p>
+              <p className="text-red-500 text-sm mt-1">{error}</p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="mt-2 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div 
+              ref={mapRef} 
+              className="w-full h-full"
+              style={{ 
+                minHeight: '200px',
+                backgroundColor: '#e0e0e0' // Visible background to show container bounds
+              }}
+            />
+            <MapSearchBox onLocationFound={handleLocationSearch} />
+            <MapLegend />
+            <ClearDirectionsButton 
+              onClear={clearDirections}
+              isVisible={!!route}
+            />
+            <TurnByTurnDirections
+              directions={directions || []}
+              route={route}
+              isVisible={!!(route && directions)}
+              onClose={clearDirections}
+            />
+            <MapOverlays 
+              itemCount={filteredMappableItems.length}
+              isEmpty={filteredMappableItems.length === 0 && !isLoadingApiKey}
+            />
+            <MapItemSidebar 
+              selectedItem={selectedItem}
+              onClose={() => setSelectedItem(null)}
+              onGetDirections={handleGetDirections}
+            />
+            {directionsItem && (
+              <DirectionsModal 
+                item={directionsItem}
+                open={!!directionsItem}
+                onOpenChange={(open) => !open && setDirectionsItem(null)}
+                onGetDirections={(start, mode) => {
+                  handleGetDirections(start, mode, directionsItem);
+                  setDirectionsItem(null);
+                }}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
