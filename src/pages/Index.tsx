@@ -352,28 +352,6 @@ const Index = () => {
         <div className="space-y-4 md:space-y-6">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h2>
           
-          {/* Mobile-optimized search */}
-          <div className="relative md:hidden">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search all content..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-full"
-            />
-          </div>
-          
-          {/* Desktop search */}
-          <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search all content..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 max-w-md"
-            />
-          </div>
-          
           {/* Mobile-responsive map */}
           <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
             {/* Tab system for Map/List view */}
@@ -429,6 +407,17 @@ const Index = () => {
                 )}
               </div>
             )}
+          </div>
+
+          {/* Search all content - positioned below map and above filters */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Search all content..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-full"
+            />
           </div>
 
           {/* Mobile-optimized filters */}
