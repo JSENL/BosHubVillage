@@ -20,7 +20,8 @@ import { geocodeEvents } from "@/utils/geocodeEvents";
 import { geocodeNewsItems } from "@/utils/geocodeNewsItems";
 import { geocodeBusinesses } from "@/utils/geocodeBusinesses";
 import { Input } from "@/components/ui/input";
-import { Search } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Search, Map, List } from 'lucide-react';
 import { UnifiedItem } from "@/types/unifiedItem";
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 
@@ -33,6 +34,7 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [eventDateRange, setEventDateRange] = useState<DateRange | undefined>();
   const [selectedEventDates, setSelectedEventDates] = useState<Date[]>([]);
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
 
   // Data hooks - using correct property names based on actual hook implementations
   const { events, loading: eventsLoading } = useEvents();
@@ -373,11 +375,59 @@ const Index = () => {
           </div>
           
           {/* Mobile-responsive map */}
-          <EnhancedUniversalMap 
-            items={mapItems}
-            height="250px md:400px"
-            selectedTypes={selectedTypesForMap}
-          />
+          <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
+            {/* Tab system for Map/List view */}
+            <div className="flex border-b bg-gray-50">
+              <button
+                onClick={() => setViewMode('map')}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  viewMode === 'map'
+                    ? 'bg-white text-caribbean-teal border-b-2 border-caribbean-teal'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Map className="h-4 w-4" />
+                Map View
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  viewMode === 'list'
+                    ? 'bg-white text-caribbean-teal border-b-2 border-caribbean-teal'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <List className="h-4 w-4" />
+                List View
+              </button>
+            </div>
+            
+            {/* Conditional content based on view mode */}
+            {viewMode === 'map' ? (
+              <EnhancedUniversalMap 
+                items={mapItems}
+                height="250px md:400px"
+                selectedTypes={selectedTypesForMap}
+              />
+            ) : (
+              <div className="p-4">
+                {isLoading ? (
+                  <div className="text-center py-6">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900 mx-auto"></div>
+                    <p className="mt-2 text-sm text-gray-600">Loading content...</p>
+                  </div>
+                ) : filteredItems.length > 0 ? (
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {filteredItems.map(renderItem)}
+                  </div>
+                ) : (
+                  <div className="text-center py-6 text-gray-500">
+                    <p className="text-sm">No content found. Try adjusting your filters!</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Mobile-optimized filters */}
           <div className="bg-white rounded-lg border shadow-sm">
@@ -402,19 +452,24 @@ const Index = () => {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="text-center py-6 md:py-8">
-            <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-2 text-sm md:text-base text-gray-600">Loading content...</p>
-          </div>
-        ) : filteredItems.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 mt-4 md:mt-6">
-            {filteredItems.map(renderItem)}
-          </div>
-        ) : (
-          <div className="text-center py-6 md:py-8 text-gray-500">
-            <p className="text-sm md:text-base">No content found. Try adjusting your filters or be the first to add something!</p>
-          </div>
+        {/* Bottom grid - only show when in map view or on larger screens */}
+        {(viewMode === 'map' || window.innerWidth >= 768) && (
+          <>
+            {isLoading ? (
+              <div className="text-center py-6 md:py-8">
+                <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-b-2 border-gray-900 mx-auto"></div>
+                <p className="mt-2 text-sm md:text-base text-gray-600">Loading content...</p>
+              </div>
+            ) : filteredItems.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4 mt-4 md:mt-6">
+                {filteredItems.map(renderItem)}
+              </div>
+            ) : (
+              <div className="text-center py-6 md:py-8 text-gray-500">
+                <p className="text-sm md:text-base">No content found. Try adjusting your filters or be the first to add something!</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
