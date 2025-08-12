@@ -3,8 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useEvents } from '@/hooks/useEvents';
 import { useGeocoding } from '@/hooks/useGeocoding';
-import { EventPrivacySelector } from './EventPrivacySelector';
-import { useEventInvitations } from '@/hooks/useEventInvitations';
 import BasicEventInfo from '@/components/forms/BasicEventInfo';
 import DateTimeFields from '@/components/forms/DateTimeFields';
 import LocationFields from '@/components/forms/LocationFields';
@@ -32,14 +30,10 @@ const EventForm = ({ onClose }: EventFormProps) => {
     is_recurring: false,
     recurring_pattern: '',
     neighborhoods: [] as string[],
-    is_private: false,
   });
-  
-  const [invitedUsers, setInvitedUsers] = useState<string[]>([]);
 
   const { createEvent } = useEvents();
   const { geocode, isGeocoding, isReady } = useGeocoding();
-  const { inviteUsers } = useEventInvitations();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +59,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
 
       console.log('Geocoded coordinates:', coordinates);
       
-      const eventData = await createEvent({
+      await createEvent({
         title: formData.title,
         description: formData.description,
         category: formData.category,
@@ -84,13 +78,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
         longitude: coordinates.longitude,
         neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods.join(',') : null,
         villages: null,
-        is_private: formData.is_private,
       });
-      
-      // If private event with invited users, send invitations
-      if (formData.is_private && invitedUsers.length > 0 && eventData?.id) {
-        await inviteUsers(eventData.id, invitedUsers);
-      }
       
       onClose();
     } catch (error) {
@@ -155,13 +143,6 @@ const EventForm = ({ onClose }: EventFormProps) => {
           <RecurringEventFields 
             formData={formData} 
             onInputChange={handleInputChange} 
-          />
-
-          <EventPrivacySelector
-            isPrivate={formData.is_private}
-            onPrivacyChange={(isPrivate) => handleInputChange('is_private', isPrivate)}
-            invitedUsers={invitedUsers}
-            onInvitedUsersChange={setInvitedUsers}
           />
 
           <EventFormButtons 

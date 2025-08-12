@@ -25,7 +25,6 @@ export interface Event {
   longitude: number | null;
   neighborhoods: string | null;
   villages: string | null;
-  is_private: boolean;
   attendees_count?: number;
 }
 
@@ -54,7 +53,6 @@ export const useEvents = () => {
         description: event.description || '',
         event_type: event.event_type || 'event',
         is_recurring: event.is_recurring || false,
-        is_private: event.is_private || false,
         address: event.address || ''
       })) || [];
 
@@ -89,7 +87,6 @@ export const useEvents = () => {
         max_attendees: eventData.max_attendees,
         is_recurring: eventData.is_recurring,
         recurring_pattern: eventData.recurring_pattern,
-        is_private: eventData.is_private,
         latitude: eventData.latitude,
         longitude: eventData.longitude,
         neighborhoods: eventData.neighborhoods,

@@ -26,7 +26,6 @@ export const useSampleEvents = () => {
       longitude: sampleEvent.longitude,
       neighborhoods: 'downtown,back-bay', // Convert array to string format
       villages: null, // Add villages field as null for sample events
-      is_private: false, // Sample events are public
       attendees_count: 0
     }));
   }, []);
