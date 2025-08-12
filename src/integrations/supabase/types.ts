@@ -461,6 +461,44 @@ export type Database = {
           },
         ]
       }
+      event_invitations: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          invited_by: string
+          invited_user_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          invited_by: string
+          invited_user_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          invited_by?: string
+          invited_user_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_invitations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_registrations: {
         Row: {
           additional_info: string | null
@@ -607,6 +645,7 @@ export type Database = {
           end_time: string | null
           event_type: string | null
           id: string
+          is_private: boolean
           is_recurring: boolean | null
           latitude: number | null
           location: string
@@ -632,6 +671,7 @@ export type Database = {
           end_time?: string | null
           event_type?: string | null
           id?: string
+          is_private?: boolean
           is_recurring?: boolean | null
           latitude?: number | null
           location: string
@@ -657,6 +697,7 @@ export type Database = {
           end_time?: string | null
           event_type?: string | null
           id?: string
+          is_private?: boolean
           is_recurring?: boolean | null
           latitude?: number | null
           location?: string
