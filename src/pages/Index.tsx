@@ -24,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import { Search, Map, List } from 'lucide-react';
 import { UnifiedItem } from "@/types/unifiedItem";
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
-import { EventsDebugTest } from "@/components/EventsDebugTest";
 
 const Index = () => {
   // Filter states
@@ -361,7 +360,6 @@ const Index = () => {
       <HeroSection title="Welcome to HubVillage" subtitle="Discover amazing events, businesses, and news in your area" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
-        <EventsDebugTest />
         <div className="space-y-4 md:space-y-6">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h2>
           
