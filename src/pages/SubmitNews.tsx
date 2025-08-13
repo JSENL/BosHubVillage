@@ -16,6 +16,8 @@ import { Newspaper, ArrowLeft, AlertCircle, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { useSubmissionErrorHandler } from '@/hooks/useSubmissionErrorHandler';
+import NewsMediaUpload from '@/components/forms/NewsMediaUpload';
+import { uploadMediaFiles } from '@/services/mediaUploadService';
 
 const SubmitNews = () => {
   const { user } = useAuth();
@@ -25,6 +27,7 @@ const SubmitNews = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { data: newsCategories = [] } = useNewsCategories();
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -41,6 +44,14 @@ const SubmitNews = () => {
     if (validationErrors.length > 0) {
       setValidationErrors([]);
     }
+  };
+
+  const handleFilesSelect = (files: File[]) => {
+    setMediaFiles(files);
+  };
+
+  const handleFileRemove = (index: number) => {
+    setMediaFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const validateForm = () => {
@@ -104,7 +115,7 @@ const SubmitNews = () => {
         ? formData.villages.split(',').map(v => v.trim()).filter(v => v)
         : null;
 
-      const { error } = await supabase
+      const { data: submission, error } = await supabase
         .from('news_submissions')
         .insert({
           title: formData.title,
@@ -118,9 +129,40 @@ const SubmitNews = () => {
           longitude: longitude,
           submitted_by: user.id,
           status: 'pending'
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Upload media files if any
+      if (mediaFiles.length > 0 && submission) {
+        try {
+          const uploadedFiles = await uploadMediaFiles(mediaFiles, user.id);
+          
+          // Save media file records to database
+          const mediaRecords = uploadedFiles.map(file => ({
+            news_submission_id: submission.id,
+            file_path: file.path,
+            file_name: file.name,
+            file_type: file.type,
+            file_size: file.size
+          }));
+
+          const { error: mediaError } = await supabase
+            .from('news_submission_media')
+            .insert(mediaRecords);
+
+          if (mediaError) {
+            console.error('Failed to save media records:', mediaError);
+            // Don't fail the submission if media upload fails
+            toast.error('Media files failed to upload, but your news submission was saved.');
+          }
+        } catch (mediaError) {
+          console.error('Media upload failed:', mediaError);
+          toast.error('Media files failed to upload, but your news submission was saved.');
+        }
+      }
 
       // Show success dialog instead of toast and form reset
       setShowSuccessDialog(true);
@@ -141,6 +183,7 @@ const SubmitNews = () => {
       source: '',
       date_posted: new Date().toISOString().split('T')[0]
     });
+    setMediaFiles([]);
     setValidationErrors([]);
     setShowSuccessDialog(false);
     toast.success('Form cleared. You can now submit another news article.');
@@ -318,6 +361,12 @@ const SubmitNews = () => {
                     className={validationErrors.includes('Article Content') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
+
+                <NewsMediaUpload
+                  mediaFiles={mediaFiles}
+                  onFilesSelect={handleFilesSelect}
+                  onFileRemove={handleFileRemove}
+                />
 
                 <Button
                   type="submit"

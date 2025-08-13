@@ -1012,6 +1012,36 @@ export type Database = {
           },
         ]
       }
+      news_submission_media: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id: string
+          news_submission_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id?: string
+          news_submission_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          news_submission_id?: string
+        }
+        Relationships: []
+      }
       news_submissions: {
         Row: {
           Address: string | null
