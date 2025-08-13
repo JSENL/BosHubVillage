@@ -72,6 +72,11 @@ export default {
 					'sage-green': 'hsl(var(--sage-green))',
 					'charcoal': 'hsl(var(--charcoal))',
 					'cream': 'hsl(var(--cream))'
+				},
+				mbta: {
+					'silver': 'hsl(var(--mbta-silver))',
+					'silver-dark': 'hsl(var(--mbta-silver-dark))',
+					'silver-light': 'hsl(var(--mbta-silver-light))'
 				}
 			},
 			borderRadius: {

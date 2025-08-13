@@ -14,7 +14,7 @@ const EventFormButtons = ({ isGeocoding, isReady, onCancel }: EventFormButtonsPr
       <Button
         type="submit"
         disabled={isGeocoding || !isReady}
-        className="flex-1 bg-gradient-to-r from-caribbean-teal to-grass-green hover:from-caribbean-teal/90 hover:to-grass-green/90 text-white"
+        className="flex-1 bg-mbta-silver hover:bg-mbta-silver-dark text-white transition-colors"
       >
         {isGeocoding ? (
           <>

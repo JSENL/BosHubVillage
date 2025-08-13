@@ -45,6 +45,11 @@
     --sage-green: 90 35% 55%;
     --charcoal: 220 25% 15%;
     --cream: 45 25% 95%;
+    
+    /* MBTA Silver Line inspired grey */
+    --mbta-silver: 210 15% 60%;
+    --mbta-silver-dark: 210 15% 45%;
+    --mbta-silver-light: 210 15% 75%;
 
     --sidebar-background: 210 25% 98%;
     --sidebar-foreground: 220 25% 15%;
