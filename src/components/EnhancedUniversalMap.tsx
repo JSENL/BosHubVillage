@@ -105,12 +105,20 @@ export const EnhancedUniversalMap = ({
     onMarkerClick: handleMarkerClick
   });
 
-  // Force map resize when container dimensions change
+  // Force map resize when container dimensions change or component mounts
   useEffect(() => {
     if (mapInstance) {
       const resizeTimeout = setTimeout(() => {
         console.log('🔄 Resizing map to fit container...');
         mapInstance.resize();
+        
+        // Force a second resize after a short delay to ensure proper rendering
+        setTimeout(() => {
+          if (mapInstance && !mapInstance._removed) {
+            mapInstance.resize();
+            console.log('🔄 Secondary map resize completed');
+          }
+        }, 200);
       }, 100);
       
       return () => clearTimeout(resizeTimeout);

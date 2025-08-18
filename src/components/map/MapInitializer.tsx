@@ -12,6 +12,13 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
 
   useEffect(() => {
+    // Clean up any existing map first
+    if (mapInstanceRef.current) {
+      console.log('🧹 Cleaning up existing map before re-initialization...');
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+    }
+
     if (!mapRef.current || !mapboxToken || isLoadingApiKey) {
       console.log('⏳ Map initialization skipped:', { 
         hasMapRef: !!mapRef.current, 

@@ -395,6 +395,7 @@ const Index = () => {
             {viewMode === 'map' ? (
               <div className="h-[250px] md:h-[600px] w-full">
                 <EnhancedUniversalMap 
+                  key="main-map" // Force re-mount when switching views
                   items={mapItems}
                   height="100%"
                   selectedTypes={selectedTypesForMap}
