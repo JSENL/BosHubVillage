@@ -35,6 +35,8 @@ const Index = () => {
   const [eventDateRange, setEventDateRange] = useState<DateRange | undefined>();
   const [selectedEventDates, setSelectedEventDates] = useState<Date[]>([]);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [mapRefreshKey, setMapRefreshKey] = useState(0);
+  const [isRefreshingMap, setIsRefreshingMap] = useState(false);
 
   // Data hooks - using correct property names based on actual hook implementations
   const { events, loading: eventsLoading } = useEvents();
@@ -336,6 +338,34 @@ const Index = () => {
     geocodeItemsIfNeeded();
   }, [events, news, businesses, isReady, geocode, hasGeocodedItems, isLoading]);
 
+  // Auto-refresh map when switching from list to map view
+  useEffect(() => {
+    if (viewMode === 'map') {
+      console.log('🔄 Switching to map view, initiating auto-refresh...');
+      setIsRefreshingMap(true);
+      
+      // Small delay to ensure DOM cleanup, then refresh map
+      const refreshTimeout = setTimeout(() => {
+        setMapRefreshKey(prev => prev + 1);
+        console.log(`🗺️ Map refresh triggered with key: ${mapRefreshKey + 1}`);
+        
+        // Reset refresh state after a short delay
+        setTimeout(() => {
+          setIsRefreshingMap(false);
+          console.log('✅ Map refresh completed');
+        }, 500);
+      }, 100);
+
+      return () => clearTimeout(refreshTimeout);
+    }
+  }, [viewMode]);
+
+  // Handler for view mode changes with refresh logic
+  const handleViewModeChange = (newViewMode: 'map' | 'list') => {
+    console.log(`🔄 View mode changing from ${viewMode} to ${newViewMode}`);
+    setViewMode(newViewMode);
+  };
+
   const renderItem = (item: UnifiedItem) => {
     switch (item.type) {
       case 'event':
@@ -368,7 +398,7 @@ const Index = () => {
             {/* Tab system for Map/List view */}
             <div className="flex border-b bg-gray-50">
               <button
-                onClick={() => setViewMode('map')}
+                onClick={() => handleViewModeChange('map')}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
                   viewMode === 'map'
                     ? 'bg-white text-caribbean-teal border-b-2 border-caribbean-teal'
@@ -376,10 +406,10 @@ const Index = () => {
                 }`}
               >
                 <Map className="h-4 w-4" />
-                Map View
+                Map View {isRefreshingMap && <span className="text-xs">(Refreshing...)</span>}
               </button>
               <button
-                onClick={() => setViewMode('list')}
+                onClick={() => handleViewModeChange('list')}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
                   viewMode === 'list'
                     ? 'bg-white text-caribbean-teal border-b-2 border-caribbean-teal'
@@ -393,9 +423,17 @@ const Index = () => {
             
             {/* Conditional content based on view mode */}
             {viewMode === 'map' ? (
-              <div className="h-[250px] md:h-[600px] w-full">
+              <div className="h-[250px] md:h-[600px] w-full relative">
+                {isRefreshingMap && (
+                  <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center z-10">
+                    <div className="bg-white p-4 rounded-lg shadow-md flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-caribbean-teal"></div>
+                      <span className="text-sm text-gray-600">Refreshing map...</span>
+                    </div>
+                  </div>
+                )}
                 <EnhancedUniversalMap 
-                  key="main-map" // Force re-mount when switching views
+                  key={`main-map-${mapRefreshKey}`} // Dynamic key for forced refresh
                   items={mapItems}
                   height="100%"
                   selectedTypes={selectedTypesForMap}
