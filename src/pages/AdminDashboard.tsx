@@ -27,9 +27,11 @@ import {
   Tag,
   Megaphone,
   UserCheck,
-  Upload
+  Upload,
+  BarChart3
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
+import { AnalyticsOverview } from '@/components/admin/AnalyticsOverview';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -85,7 +87,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-11 mb-8">
+            <TabsList className="grid w-full grid-cols-12 mb-8">
               <TabsTrigger value="events" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
                 Events
@@ -129,6 +131,10 @@ const AdminDashboard = () => {
                <TabsTrigger value="categories" className="flex items-center">
                  <Tag className="h-4 w-4 mr-2" />
                  Categories
+               </TabsTrigger>
+               <TabsTrigger value="analytics" className="flex items-center">
+                 <BarChart3 className="h-4 w-4 mr-2" />
+                 Analytics
                </TabsTrigger>
             </TabsList>
             
@@ -175,6 +181,10 @@ const AdminDashboard = () => {
             
             <TabsContent value="categories">
               <CategoriesManagement />
+            </TabsContent>
+            
+            <TabsContent value="analytics">
+              <AnalyticsOverview />
             </TabsContent>
           </Tabs>
         </div>
