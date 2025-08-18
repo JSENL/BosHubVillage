@@ -399,6 +399,7 @@ const Index = () => {
                   items={mapItems}
                   height="100%"
                   selectedTypes={selectedTypesForMap}
+                  viewMode={viewMode}
                 />
               </div>
             ) : (

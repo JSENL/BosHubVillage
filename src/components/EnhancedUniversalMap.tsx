@@ -4,6 +4,7 @@ import { useMapboxToken } from '@/contexts/MapboxContext';
 import { useMapMarkers } from '@/hooks/useMapMarkers';
 import { MapOverlays } from '@/components/map/MapOverlays';
 import { MapDebugOverlay } from '@/components/map/MapDebugOverlay';
+import { MapStateDebugger } from '@/components/MapStateDebugger';
 import { useItemFiltering } from '@/components/map/MapItemFiltering';
 import { useMapInitializer } from '@/components/map/MapInitializer';
 import { MapItemSidebar } from '@/components/MapItemSidebar';
@@ -20,13 +21,15 @@ interface EnhancedUniversalMapProps {
   height?: string;
   selectedTypes: string[];
   onItemClick?: (item: UnifiedItem) => void;
+  viewMode?: 'map' | 'list'; // Add viewMode for debugging
 }
 
 export const EnhancedUniversalMap = ({ 
   items, 
   height = "540px", 
   selectedTypes,
-  onItemClick
+  onItemClick,
+  viewMode = 'map'
 }: EnhancedUniversalMapProps) => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
@@ -198,6 +201,15 @@ export const EnhancedUniversalMap = ({
           </div>
         ) : (
           <>
+            {/* Advanced Map State Debugger */}
+            <MapStateDebugger 
+              mapRef={mapRef}
+              mapInstance={mapInstance}
+              mapboxToken={mapboxToken}
+              isLoadingApiKey={isLoadingApiKey}
+              items={filteredMappableItems}
+              viewMode={viewMode}
+            />
             <div 
               ref={mapRef} 
               className="absolute inset-0"
