@@ -2,3 +2,9 @@ project_id = "mecotkulcgdbilaksddu"
 
 [functions.deepseek-ai]
 verify_jwt = false
+
+[functions.recover-username]
+verify_jwt = false
+
+[functions.password-change-notification]
+verify_jwt = false

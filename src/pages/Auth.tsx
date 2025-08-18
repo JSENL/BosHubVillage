@@ -17,6 +17,8 @@ const Auth = () => {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [recoveryLoading, setRecoveryLoading] = useState(false);
   const navigate = useNavigate();
 
   // Password validation helpers
@@ -110,6 +112,51 @@ const Auth = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRecoveryLoading(true);
+    setError('');
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(recoveryEmail, {
+        redirectTo: `${window.location.origin}/auth?tab=reset-password`,
+      });
+
+      if (error) throw error;
+
+      toast.success('Password reset email sent! Check your inbox.');
+      setRecoveryEmail('');
+    } catch (error: any) {
+      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setRecoveryLoading(false);
+    }
+  };
+
+  const handleForgotUsername = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRecoveryLoading(true);
+    setError('');
+
+    try {
+      // Call edge function to send username recovery email
+      const { error } = await supabase.functions.invoke('recover-username', {
+        body: { email: recoveryEmail }
+      });
+
+      if (error) throw error;
+
+      toast.success('If an account exists with this email, we\'ve sent your username.');
+      setRecoveryEmail('');
+    } catch (error: any) {
+      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setRecoveryLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-yelp-light-gray flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -128,9 +175,10 @@ const Auth = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="recovery">Recovery</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
@@ -284,6 +332,102 @@ const Auth = () => {
                   {loading ? 'Creating account...' : 'Create Account'}
                 </Button>
               </form>
+            </TabsContent>
+
+            <TabsContent value="recovery">
+              <div className="space-y-4">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold">Account Recovery</h3>
+                  <p className="text-sm text-gray-600">
+                    Forgot your password or username? We can help you recover your account.
+                  </p>
+                </div>
+
+                <Tabs defaultValue="password" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="password">Reset Password</TabsTrigger>
+                    <TabsTrigger value="username">Find Username</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="password">
+                    <form onSubmit={handleForgotPassword} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="recovery-email">Email Address</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input
+                            id="recovery-email"
+                            type="email"
+                            placeholder="Enter your email"
+                            value={recoveryEmail}
+                            onChange={(e) => setRecoveryEmail(e.target.value)}
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-gray-600">
+                        We'll send you a secure link to reset your password.
+                      </p>
+
+                      {error && (
+                        <Alert variant="destructive">
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                      )}
+
+                      <Button
+                        type="submit"
+                        className="w-full yelp-gradient hover:opacity-90 text-white"
+                        disabled={recoveryLoading}
+                      >
+                        {recoveryLoading ? 'Sending...' : 'Send Password Reset'}
+                      </Button>
+                    </form>
+                  </TabsContent>
+
+                  <TabsContent value="username">
+                    <form onSubmit={handleForgotUsername} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="username-recovery-email">Email Address</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input
+                            id="username-recovery-email"
+                            type="email"
+                            placeholder="Enter your email"
+                            value={recoveryEmail}
+                            onChange={(e) => setRecoveryEmail(e.target.value)}
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-gray-600">
+                        We'll send you your username if an account exists with this email.
+                      </p>
+
+                      {error && (
+                        <Alert variant="destructive">
+                          <AlertCircle className="h-4 w-4" />
+                          <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                      )}
+
+                      <Button
+                        type="submit"
+                        className="w-full yelp-gradient hover:opacity-90 text-white"
+                        disabled={recoveryLoading}
+                      >
+                        {recoveryLoading ? 'Sending...' : 'Send Username'}
+                      </Button>
+                    </form>
+                  </TabsContent>
+                </Tabs>
+              </div>
             </TabsContent>
           </Tabs>
         </CardContent>
