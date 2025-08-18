@@ -86,105 +86,196 @@ const AdminDashboard = () => {
             <p className="text-gray-600">Manage submissions and content approval</p>
           </div>
 
-          <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-12 mb-8">
-              <TabsTrigger value="events" className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2" />
-                Events
+          <Tabs defaultValue="content" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mb-8 h-auto">
+              <TabsTrigger value="content" className="flex flex-col items-center p-4 h-auto">
+                <Calendar className="h-5 w-5 mb-1" />
+                <span className="text-sm">Content Management</span>
               </TabsTrigger>
-              <TabsTrigger value="event-registrations" className="flex items-center">
-                <UserCheck className="h-4 w-4 mr-2" />
-                Registrations
+              <TabsTrigger value="submissions" className="flex flex-col items-center p-4 h-auto">
+                <FileText className="h-5 w-5 mb-1" />
+                <span className="text-sm">Submissions</span>
               </TabsTrigger>
-              <TabsTrigger value="local-services" className="flex items-center">
-                <Heart className="h-4 w-4 mr-2" />
-                Local Resources
+              <TabsTrigger value="users" className="flex flex-col items-center p-4 h-auto">
+                <Users className="h-5 w-5 mb-1" />
+                <span className="text-sm">User Management</span>
               </TabsTrigger>
-              <TabsTrigger value="business" className="flex items-center">
-                <Building className="h-4 w-4 mr-2" />
-                Business
+              <TabsTrigger value="tools" className="flex flex-col items-center p-4 h-auto">
+                <BarChart3 className="h-5 w-5 mb-1" />
+                <span className="text-sm">Tools & Analytics</span>
               </TabsTrigger>
-              <TabsTrigger value="announcements" className="flex items-center">
-                <Megaphone className="h-4 w-4 mr-2" />
-                GNE!
-              </TabsTrigger>
-              <TabsTrigger value="news" className="flex items-center">
-                <Newspaper className="h-4 w-4 mr-2" />
-                News
-              </TabsTrigger>
-              <TabsTrigger value="submissions" className="flex items-center">
-                <FileText className="h-4 w-4 mr-2" />
-                All Submissions
-              </TabsTrigger>
-              <TabsTrigger value="reported-to-admin" className="flex items-center">
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Reported to Admin
-              </TabsTrigger>
-               <TabsTrigger value="all-users" className="flex items-center">
-                 <Users className="h-4 w-4 mr-2" />
-                 All Users
-               </TabsTrigger>
-               <TabsTrigger value="csv-import" className="flex items-center">
-                 <Upload className="h-4 w-4 mr-2" />
-                 CSV Import
-               </TabsTrigger>
-               <TabsTrigger value="categories" className="flex items-center">
-                 <Tag className="h-4 w-4 mr-2" />
-                 Categories
-               </TabsTrigger>
-               <TabsTrigger value="analytics" className="flex items-center">
-                 <BarChart3 className="h-4 w-4 mr-2" />
-                 Analytics
-               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="events">
-              <AdminEventApproval />
+            <TabsContent value="content" className="space-y-6">
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      Content Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="events" className="w-full">
+                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                        <TabsTrigger value="events" className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          Events
+                        </TabsTrigger>
+                        <TabsTrigger value="local-services" className="flex items-center gap-2">
+                          <Heart className="h-4 w-4" />
+                          Local Resources
+                        </TabsTrigger>
+                        <TabsTrigger value="business" className="flex items-center gap-2">
+                          <Building className="h-4 w-4" />
+                          Business
+                        </TabsTrigger>
+                        <TabsTrigger value="news" className="flex items-center gap-2">
+                          <Newspaper className="h-4 w-4" />
+                          News
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="events">
+                        <AdminEventApproval />
+                      </TabsContent>
+                      
+                      <TabsContent value="local-services">
+                        <AdminLocalResourceApprovalWithGeocoding />
+                      </TabsContent>
+                      
+                      <TabsContent value="business">
+                        <AdminBusinessApproval />
+                      </TabsContent>
+                      
+                      <TabsContent value="news">
+                        <AdminNewsApproval />
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
             
-            <TabsContent value="event-registrations">
-              <AdminEventRegistrations />
+            <TabsContent value="submissions" className="space-y-6">
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      Submissions & Approvals
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="all-submissions" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2 mb-6">
+                        <TabsTrigger value="all-submissions" className="flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          All Submissions
+                        </TabsTrigger>
+                        <TabsTrigger value="event-registrations" className="flex items-center gap-2">
+                          <UserCheck className="h-4 w-4" />
+                          Event Registrations
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="all-submissions">
+                        <AdminSubmissionsPanel />
+                      </TabsContent>
+                      
+                      <TabsContent value="event-registrations">
+                        <AdminEventRegistrations />
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
             
-            <TabsContent value="local-services">
-              <AdminLocalResourceApprovalWithGeocoding />
+            <TabsContent value="users" className="space-y-6">
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      User Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="all-users" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2 mb-6">
+                        <TabsTrigger value="all-users" className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          All Users
+                        </TabsTrigger>
+                        <TabsTrigger value="reported-to-admin" className="flex items-center gap-2">
+                          <MessageCircle className="h-4 w-4" />
+                          Admin Messages
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="all-users">
+                        <AdminUserManagement />
+                      </TabsContent>
+                      
+                      <TabsContent value="reported-to-admin">
+                        <ContactAdminMessages />
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
             
-          <TabsContent value="business">
-            <AdminBusinessApproval />
-          </TabsContent>
-
-          <TabsContent value="announcements">
-            <GNEAnnouncements />
-          </TabsContent>
-            
-            <TabsContent value="news">
-              <AdminNewsApproval />
-            </TabsContent>
-            
-            <TabsContent value="submissions">
-              <AdminSubmissionsPanel />
-            </TabsContent>
-            
-            
-            <TabsContent value="reported-to-admin">
-              <ContactAdminMessages />
-            </TabsContent>
-            
-            <TabsContent value="all-users">
-              <AdminUserManagement />
-            </TabsContent>
-            
-            <TabsContent value="csv-import">
-              <CSVImportTool />
-            </TabsContent>
-            
-            <TabsContent value="categories">
-              <CategoriesManagement />
-            </TabsContent>
-            
-            <TabsContent value="analytics">
-              <AnalyticsOverview />
+            <TabsContent value="tools" className="space-y-6">
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5" />
+                      Tools & Analytics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="analytics" className="w-full">
+                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                        <TabsTrigger value="analytics" className="flex items-center gap-2">
+                          <BarChart3 className="h-4 w-4" />
+                          Analytics
+                        </TabsTrigger>
+                        <TabsTrigger value="announcements" className="flex items-center gap-2">
+                          <Megaphone className="h-4 w-4" />
+                          GNE Announcements
+                        </TabsTrigger>
+                        <TabsTrigger value="csv-import" className="flex items-center gap-2">
+                          <Upload className="h-4 w-4" />
+                          CSV Import
+                        </TabsTrigger>
+                        <TabsTrigger value="categories" className="flex items-center gap-2">
+                          <Tag className="h-4 w-4" />
+                          Categories
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="analytics">
+                        <AnalyticsOverview />
+                      </TabsContent>
+                      
+                      <TabsContent value="announcements">
+                        <GNEAnnouncements />
+                      </TabsContent>
+                      
+                      <TabsContent value="csv-import">
+                        <CSVImportTool />
+                      </TabsContent>
+                      
+                      <TabsContent value="categories">
+                        <CategoriesManagement />
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
