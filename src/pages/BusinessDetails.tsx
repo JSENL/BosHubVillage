@@ -107,7 +107,7 @@ const BusinessDetails = () => {
               {business.website_link && (
                 <div className="mb-4">
                   <a
-                    href={business.website_link}
+                    href={business.website_link.startsWith('http') ? business.website_link : `https://${business.website_link}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
