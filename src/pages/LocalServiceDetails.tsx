@@ -87,8 +87,6 @@ const LocalServiceDetails = () => {
               <div className="mb-4">
                 <a
                   href={resource.website_link.startsWith('http') ? resource.website_link : `https://${resource.website_link}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />

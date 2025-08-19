@@ -120,8 +120,6 @@ const EventDetails = () => {
                 <div className="mb-6">
                   <a
                     href={event.website_link.startsWith('http') ? event.website_link : `https://${event.website_link}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
