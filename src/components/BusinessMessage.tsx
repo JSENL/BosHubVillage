@@ -81,6 +81,15 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
       }
 
       // Send message
+      console.log('📤 Sending message to business:', {
+        business_id: businessId,
+        sender_id: user.id,
+        recipient_id: recipientId,
+        message: message.trim(),
+        is_from_owner: false,
+        status: 'unread'
+      });
+      
       const { error } = await supabase
         .from('business_messages')
         .insert({
@@ -91,6 +100,8 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
           is_from_owner: false,
           status: 'unread'
         });
+
+      console.log('📤 Message insert result:', { error });
 
       if (error) throw error;
 
