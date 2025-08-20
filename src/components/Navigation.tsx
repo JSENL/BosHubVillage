@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 export const Navigation = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, isProprietor, signOut } = useAuth();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -131,16 +131,27 @@ export const Navigation = () => {
                       My Submissions
                     </Link>
                   </DropdownMenuItem>
-                  {isAdmin && (
+                  {(isAdmin || isProprietor) && (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin" className="cursor-pointer">
-                          <Settings className="h-4 w-4 mr-2" />
-                          Admin Dashboard
-                          <Badge variant="secondary" className="ml-2">Admin</Badge>
-                        </Link>
-                      </DropdownMenuItem>
+                      {isProprietor && (
+                        <DropdownMenuItem asChild>
+                          <Link to="/business-dashboard" className="cursor-pointer">
+                            <Building className="h-4 w-4 mr-2" />
+                            Business Dashboard
+                            <Badge variant="secondary" className="ml-2">Business</Badge>
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+                      {isAdmin && (
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin" className="cursor-pointer">
+                            <Settings className="h-4 w-4 mr-2" />
+                            Admin Dashboard
+                            <Badge variant="secondary" className="ml-2">Admin</Badge>
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
                     </>
                   )}
                   <DropdownMenuItem onClick={signOut} className="cursor-pointer">
