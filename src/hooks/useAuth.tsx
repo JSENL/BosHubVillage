@@ -9,7 +9,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isAdmin: boolean;
-  isProprietor: boolean;
+  
   signOut: () => Promise<void>;
 }
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isProprietor, setIsProprietor] = useState(false);
+  
 
   useEffect(() => {
     // Set up auth state listener
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check if user is admin or proprietor
+          // Check if user is admin
           setTimeout(async () => {
             try {
               const { data: roles } = await supabase
@@ -40,15 +40,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               
               const userRoles = roles?.map(r => r.role) || [];
               setIsAdmin(userRoles.includes('admin'));
-              setIsProprietor(userRoles.includes('proprietor'));
             } catch (error) {
               setIsAdmin(false);
-              setIsProprietor(false);
             }
           }, 0);
         } else {
           setIsAdmin(false);
-          setIsProprietor(false);
         }
         
         setLoading(false);
@@ -83,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, isProprietor, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, isAdmin, signOut }}>
       {children}
     </AuthContext.Provider>
   );

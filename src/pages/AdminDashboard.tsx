@@ -34,7 +34,7 @@ import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrati
 import { AnalyticsOverview } from '@/components/admin/AnalyticsOverview';
 
 const AdminDashboard = () => {
-  const { user, isAdmin, isProprietor, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
 
   if (loading) {
     return (
@@ -52,24 +52,21 @@ const AdminDashboard = () => {
     );
   }
 
-  if (!user || !isAdmin || isProprietor) {
+  if (!user || !isAdmin) {
     return (
       <>
         <Navigation />
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="max-w-2xl mx-auto px-4">
             <Card>
               <CardContent className="p-8 text-center">
                 <Shield className="h-16 w-16 mx-auto mb-4 text-red-500" />
                 <h3 className="text-xl font-semibold mb-2">Access Denied</h3>
                 <p className="text-gray-600 mb-4">
-                  {isProprietor 
-                    ? "Proprietor users cannot access admin capabilities. Please use the Business Dashboard instead."
-                    : "You need admin privileges to access this page."
-                  }
+                  You need admin privileges to access this page.
                 </p>
-                <Button onClick={() => window.location.href = isProprietor ? '/business-dashboard' : '/'}>
-                  {isProprietor ? 'Go to Business Dashboard' : 'Go Home'}
+                <Button onClick={() => window.location.href = '/'}>
+                  Go Home
                 </Button>
               </CardContent>
             </Card>

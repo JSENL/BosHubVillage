@@ -14,7 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Building, ArrowLeft, Loader2, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { useGeocoding } from '@/hooks/useGeocoding';
 import LocationFields from '@/components/forms/LocationFields';
 
@@ -34,7 +34,7 @@ const SubmitBusiness = () => {
     description: '',
     short_description: ''
   });
-  const [isProprietor, setIsProprietor] = useState(false);
+  
 
   const { data: businessCategories = [] } = useBusinessCategories();
 
@@ -102,65 +102,8 @@ const SubmitBusiness = () => {
       }
       console.log('✅ Business submitted successfully');
 
-      // If user checked proprietor, change their role from user to proprietor
-      if (isProprietor) {
-        console.log('👑 User checked proprietor box, updating role for user:', user.id);
-        
-        // Check current user roles
-        const { data: currentRoles } = await supabase
-          .from('user_roles')
-          .select('*')
-          .eq('user_id', user.id);
-        
-        console.log('📋 Current user roles:', currentRoles);
-        
-        // First, remove the existing 'user' role
-        const { error: deleteError } = await supabase
-          .from('user_roles')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('role', 'user');
-        
-        if (deleteError) {
-          console.warn('❌ Failed to delete user role:', deleteError);
-        } else {
-          console.log('✅ Successfully removed user role');
-        }
-        
-        // Then, add the 'proprietor' role
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert({
-            user_id: user.id,
-            role: 'proprietor'
-          });
-        
-        if (roleError && !roleError.message.includes('duplicate key')) {
-          console.warn('❌ Role update failed:', roleError);
-          // Don't throw error, just log it since business submission was successful
-        } else {
-          console.log('✅ Successfully added proprietor role');
-          
-          // Verify the role was added
-          const { data: newRoles } = await supabase
-            .from('user_roles')
-            .select('*')
-            .eq('user_id', user.id);
-          
-          console.log('📋 Updated user roles:', newRoles);
-          
-          // Show success message and redirect to business dashboard
-          toast.success('Business submitted successfully! You now have proprietor access.');
-          setTimeout(() => {
-            console.log('🚀 Redirecting to business dashboard...');
-            window.location.href = '/business-dashboard';
-          }, 1500);
-          return;
-        }
-      }
-
-      // Show success dialog for non-proprietor submissions
-      console.log('📝 Business submitted without proprietor role change');
+      // Show success dialog
+      console.log('📝 Business submitted successfully');
       setShowSuccessDialog(true);
     } catch (error: any) {
       console.error('❌ Error submitting business:', error);
@@ -181,7 +124,7 @@ const SubmitBusiness = () => {
       description: '',
       short_description: ''
     });
-    setIsProprietor(false);
+    
     setShowSuccessDialog(false);
     toast.success('Form cleared. You can now submit another business.');
   };
@@ -189,12 +132,7 @@ const SubmitBusiness = () => {
   const handleFinish = () => {
     setShowSuccessDialog(false);
     toast.success('Business submitted successfully! It will be reviewed by our admin team.');
-    // If user is now a proprietor, redirect them to business dashboard
-    if (isProprietor) {
-      navigate('/business-dashboard');
-    } else {
-      navigate('/');
-    }
+    navigate('/');
   };
 
   if (!user) {
@@ -349,19 +287,6 @@ const SubmitBusiness = () => {
                   />
                 </div>
 
-                <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg border border-orange-200">
-                  <Checkbox
-                    id="proprietor"
-                    checked={isProprietor}
-                    onCheckedChange={(checked) => setIsProprietor(checked === true)}
-                  />
-                  <Label
-                    htmlFor="proprietor"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Are you the business owner/proprietor?
-                  </Label>
-                </div>
 
                 <Button
                   type="submit"

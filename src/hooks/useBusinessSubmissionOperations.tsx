@@ -50,66 +50,6 @@ export const useBusinessSubmissionOperations = () => {
         }
         
         console.log('✅ Business successfully added to main table');
-
-        // Grant proprietor role to the user who submitted the business
-        console.log('👑 Granting proprietor role to user:', submission.submitted_by);
-        
-        // First, check current user roles
-        const { data: currentRoles } = await supabase
-          .from('user_roles')
-          .select('*')
-          .eq('user_id', submission.submitted_by);
-          
-        console.log('📋 User current roles:', currentRoles);
-        
-        // Check if user already has proprietor role
-        const { data: existingRole } = await supabase
-          .from('user_roles')
-          .select('*')
-          .eq('user_id', submission.submitted_by)
-          .eq('role', 'proprietor')
-          .single();
-
-        if (!existingRole) {
-          console.log('🔄 User does not have proprietor role, adding it...');
-          
-          // Remove existing 'user' role
-          const { error: deleteError } = await supabase
-            .from('user_roles')
-            .delete()
-            .eq('user_id', submission.submitted_by)
-            .eq('role', 'user');
-            
-          if (deleteError) {
-            console.error('⚠️ Error removing user role:', deleteError);
-          } else {
-            console.log('✅ Removed existing user role');
-          }
-
-          // Add proprietor role
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .insert({
-              user_id: submission.submitted_by,
-              role: 'proprietor'
-            });
-
-          if (roleError) {
-            console.error('❌ Error granting proprietor role:', roleError);
-          } else {
-            console.log('✅ Successfully granted proprietor role');
-            
-            // Verify the role was added
-            const { data: newRoles } = await supabase
-              .from('user_roles')
-              .select('*')
-              .eq('user_id', submission.submitted_by);
-              
-            console.log('📋 User updated roles:', newRoles);
-          }
-        } else {
-          console.log('ℹ️ User already has proprietor role');
-        }
       }
 
       // Update submission status (this will trigger deletion if approved)
