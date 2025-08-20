@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Building, ArrowLeft, Loader2, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Checkbox } from '@/components/ui/checkbox';
 
 import { useGeocoding } from '@/hooks/useGeocoding';
 import LocationFields from '@/components/forms/LocationFields';
@@ -32,7 +33,8 @@ const SubmitBusiness = () => {
     villages: '',
     website_link: '',
     description: '',
-    short_description: ''
+    short_description: '',
+    is_owner: false
   });
   
 
@@ -102,6 +104,34 @@ const SubmitBusiness = () => {
       }
       console.log('✅ Business submitted successfully');
 
+      // If user claims ownership, add them to business_owner table
+      if (formData.is_owner) {
+        // Get the business ID from the submission
+        const { data: submissionData } = await supabase
+          .from('business_submissions')
+          .select('id')
+          .eq('title', formData.title)
+          .eq('submitted_by', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (submissionData) {
+          const { error: ownerError } = await supabase
+            .from('business_owner')
+            .insert({
+              business_id: submissionData.id,
+              owner_id: user.id
+            });
+
+          if (ownerError) {
+            console.warn('Failed to add business ownership:', ownerError);
+          } else {
+            console.log('✅ Business ownership added');
+          }
+        }
+      }
+
       // Show success dialog
       console.log('📝 Business submitted successfully');
       setShowSuccessDialog(true);
@@ -122,7 +152,8 @@ const SubmitBusiness = () => {
       villages: '',
       website_link: '',
       description: '',
-      short_description: ''
+      short_description: '',
+      is_owner: false
     });
     
     setShowSuccessDialog(false);
@@ -285,6 +316,20 @@ const SubmitBusiness = () => {
                     rows={4}
                     required
                   />
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="is_owner"
+                    checked={formData.is_owner}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_owner: !!checked })}
+                  />
+                  <Label 
+                    htmlFor="is_owner" 
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Are you the business owner/creator/proprietor?
+                  </Label>
                 </div>
 
 

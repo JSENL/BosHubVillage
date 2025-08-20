@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
+import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { 
   Plus, 
   Calendar, 
@@ -28,8 +29,10 @@ import {
 
 export const Navigation = () => {
   const { user, isAdmin, signOut } = useAuth();
+  const { ownedBusinesses } = useBusinessOwnership();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const hasOwnedBusinesses = ownedBusinesses && ownedBusinesses.length > 0;
 
   return (
     <nav className="bg-white shadow-lg border-b">
@@ -131,6 +134,14 @@ export const Navigation = () => {
                       My Submissions
                     </Link>
                   </DropdownMenuItem>
+                  {hasOwnedBusinesses && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/business-dashboard" className="cursor-pointer">
+                        <Building className="h-4 w-4 mr-2" />
+                        Business Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
