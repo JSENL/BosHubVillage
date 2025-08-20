@@ -69,29 +69,57 @@ const Auth = () => {
       return;
     }
 
-    try {
+    const attemptSignUp = async () => {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            full_name: fullName,
-          },
+          data: { full_name: fullName },
         },
       });
-
       if (error) throw error;
-
       if (data.user) {
         toast.success('Account created successfully! You can now sign in.');
         setEmail('');
         setPassword('');
         setFullName('');
       }
+    };
+
+    try {
+      await attemptSignUp();
     } catch (error: any) {
-      setError(error.message);
-      toast.error(error.message);
+      const msg = (error?.message || '').toLowerCase();
+      // If email already registered, try freeing orphaned auth user then retry
+      if (msg.includes('already') && (msg.includes('registered') || msg.includes('exists'))) {
+        try {
+          toast.message('Email already registered. Checking for orphaned account...');
+          // Clean up any stale auth state and sign out globally
+          try { cleanupAuthState(); await supabase.auth.signOut({ scope: 'global' }); } catch {}
+
+          const { data: fnData, error: fnError } = await supabase.functions.invoke('allow-reregister', {
+            body: { email },
+          });
+
+          if (fnError) {
+            throw new Error(fnError.message || 'Failed to check orphaned account');
+          }
+
+          if (fnData?.action === 'deleted') {
+            toast.success('Previous orphaned account removed. Please complete sign up again.');
+            await attemptSignUp();
+          } else {
+            throw new Error('An account already exists for this email. Try Sign In or Reset Password.');
+          }
+        } catch (innerErr: any) {
+          setError(innerErr.message);
+          toast.error(innerErr.message);
+        }
+      } else {
+        setError(error.message);
+        toast.error(error.message);
+      }
     } finally {
       setLoading(false);
     }
