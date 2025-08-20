@@ -75,18 +75,27 @@ const MyMessages = () => {
     try {
       const { data, error } = await supabase
         .from('business_messages')
-        .select(`
-          *,
-          business:business_id (
-            title
-          )
-        `)
+        .select('*')
         .eq('recipient_id', user?.id)
         .eq('is_from_owner', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setBusinessMessages((data || []) as unknown as BusinessMessage[]);
+      
+      // Get business info for each message
+      const businessIds = [...new Set((data || []).map(msg => msg.business_id))];
+      const { data: businesses } = await supabase
+        .from('business')
+        .select('id, title')
+        .in('id', businessIds);
+
+      // Combine the data
+      const messagesWithBusiness = (data || []).map(message => ({
+        ...message,
+        business: businesses?.find(b => b.id === message.business_id) || null
+      }));
+
+      setBusinessMessages(messagesWithBusiness as unknown as BusinessMessage[]);
     } catch (error) {
       console.error('Error fetching business messages:', error);
       toast({

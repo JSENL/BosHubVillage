@@ -49,22 +49,35 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
     try {
       const { data, error } = await supabase
         .from('business_messages')
-        .select(`
-          *,
-          profiles:sender_id (
-            full_name,
-            email
-          ),
-          business:business_id (
-            title
-          )
-        `)
+        .select('*')
         .eq('business_id', businessId)
         .or(`sender_id.eq.${user?.id},recipient_id.eq.${user?.id}`)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setMessages((data || []) as unknown as BusinessMessage[]);
+      
+      // Get sender profiles separately
+      const senderIds = [...new Set((data || []).map(msg => msg.sender_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', senderIds);
+
+      // Get business info
+      const { data: business } = await supabase
+        .from('business')
+        .select('title')
+        .eq('id', businessId)
+        .single();
+
+      // Combine the data
+      const messagesWithProfiles = (data || []).map(message => ({
+        ...message,
+        profiles: profiles?.find(p => p.id === message.sender_id) || null,
+        business: business || null
+      }));
+
+      setMessages(messagesWithProfiles as unknown as BusinessMessage[]);
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast({
