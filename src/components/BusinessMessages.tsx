@@ -47,35 +47,25 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
 
   const fetchMessages = async () => {
     try {
-      // First check if current user owns this business
-      const { data: ownership } = await supabase
-        .from('business_owner')
-        .select('owner_id')
-        .eq('business_id', businessId)
-        .eq('owner_id', user?.id)
-        .maybeSingle();
-
-      let messagesQuery = supabase
+      // Get all messages for this business
+      const { data, error } = await supabase
         .from('business_messages')
         .select('*')
-        .eq('business_id', businessId);
-
-      // If user owns the business, show all messages for this business
-      // If user doesn't own the business, only show their own messages
-      if (!ownership) {
-        messagesQuery = messagesQuery.or(`sender_id.eq.${user?.id},recipient_id.eq.${user?.id}`);
-      }
-
-      const { data, error } = await messagesQuery.order('created_at', { ascending: true });
+        .eq('business_id', businessId)
+        .order('created_at', { ascending: true });
 
       if (error) throw error;
       
-      // Get sender profiles separately
-      const senderIds = [...new Set((data || []).map(msg => msg.sender_id))];
+      // Get unique user IDs (both senders and recipients)
+      const allUserIds = [...new Set([
+        ...(data || []).map(msg => msg.sender_id),
+        ...(data || []).map(msg => msg.recipient_id)
+      ])].filter(Boolean);
+      
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, full_name, email')
-        .in('id', senderIds);
+        .in('id', allUserIds);
 
       // Get business info
       const { data: business } = await supabase
@@ -87,7 +77,8 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
       // Combine the data
       const messagesWithProfiles = (data || []).map(message => ({
         ...message,
-        profiles: profiles?.find(p => p.id === message.sender_id) || null,
+        sender_profile: profiles?.find(p => p.id === message.sender_id) || null,
+        recipient_profile: profiles?.find(p => p.id === message.recipient_id) || null,
         business: business || null
       }));
 
@@ -190,9 +181,9 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
                     {new Date(message.created_at).toLocaleTimeString()}
                   </span>
                 </div>
-                {message.profiles && (
+                {(message as any).sender_profile && (
                   <p className="text-sm text-muted-foreground">
-                    From: {message.profiles.full_name || message.profiles.email}
+                    From: {(message as any).sender_profile.full_name || (message as any).sender_profile.email}
                   </p>
                 )}
               </div>
