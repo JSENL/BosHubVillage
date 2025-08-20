@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Building, ArrowLeft, Loader2, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import LocationFields from '@/components/forms/LocationFields';
 
@@ -33,6 +34,7 @@ const SubmitBusiness = () => {
     description: '',
     short_description: ''
   });
+  const [isProprietor, setIsProprietor] = useState(false);
 
   const { data: businessCategories = [] } = useBusinessCategories();
 
@@ -95,6 +97,21 @@ const SubmitBusiness = () => {
         throw error;
       }
 
+      // If user checked proprietor, update their role
+      if (isProprietor) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: user.id,
+            role: 'proprietor'
+          });
+        
+        if (roleError && !roleError.message.includes('duplicate key')) {
+          console.warn('Role update failed:', roleError);
+          // Don't throw error, just log it since business submission was successful
+        }
+      }
+
       // Show success dialog instead of toast and navigation
       setShowSuccessDialog(true);
     } catch (error: any) {
@@ -116,6 +133,7 @@ const SubmitBusiness = () => {
       description: '',
       short_description: ''
     });
+    setIsProprietor(false);
     setShowSuccessDialog(false);
     toast.success('Form cleared. You can now submit another business.');
   };
@@ -276,6 +294,20 @@ const SubmitBusiness = () => {
                     rows={4}
                     required
                   />
+                </div>
+
+                <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                  <Checkbox
+                    id="proprietor"
+                    checked={isProprietor}
+                    onCheckedChange={(checked) => setIsProprietor(checked === true)}
+                  />
+                  <Label
+                    htmlFor="proprietor"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Are you the business owner/proprietor?
+                  </Label>
                 </div>
 
                 <Button
