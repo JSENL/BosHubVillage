@@ -38,6 +38,40 @@ export const useBusinessSubmissionOperations = () => {
           });
 
         if (insertError) throw insertError;
+
+        // Grant proprietor role to the user who submitted the business
+        console.log('Granting proprietor role to user:', submission.submitted_by);
+        
+        // First, check if user already has proprietor role
+        const { data: existingRole } = await supabase
+          .from('user_roles')
+          .select('*')
+          .eq('user_id', submission.submitted_by)
+          .eq('role', 'proprietor')
+          .single();
+
+        if (!existingRole) {
+          // Remove existing 'user' role
+          await supabase
+            .from('user_roles')
+            .delete()
+            .eq('user_id', submission.submitted_by)
+            .eq('role', 'user');
+
+          // Add proprietor role
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: submission.submitted_by,
+              role: 'proprietor'
+            });
+
+          if (roleError) {
+            console.error('Error granting proprietor role:', roleError);
+          } else {
+            console.log('Successfully granted proprietor role');
+          }
+        }
       }
 
       // Update submission status (this will trigger deletion if approved)
