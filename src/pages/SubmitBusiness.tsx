@@ -281,7 +281,8 @@ const SubmitBusiness = () => {
                 <Button
                   type="submit"
                   disabled={loading || isGeocoding}
-                  className="w-full bg-purple-600 hover:bg-purple-700"
+                  variant="orange"
+                  className="w-full"
                 >
                   {loading ? (
                     <>

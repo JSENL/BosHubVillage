@@ -368,9 +368,10 @@ const SubmitNews = () => {
                   onFileRemove={handleFileRemove}
                 />
 
-                <Button
+                <Button 
                   type="submit"
                   disabled={isSubmitting || isGeocoding}
+                  variant="orange"
                   className="w-full"
                 >
                   {isSubmitting ? 'Submitting...' : isGeocoding ? 'Processing Address...' : 'Submit News Article'}

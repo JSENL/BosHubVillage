@@ -267,7 +267,7 @@ const SubmitLocalService = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting} variant="orange">
             {isSubmitting ? 'Submitting...' : 'Submit'}
           </Button>
         </form>

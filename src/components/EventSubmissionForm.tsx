@@ -453,7 +453,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
             <Button
               type="submit"
               disabled={isGeocoding || !isReady}
-              className="w-full bg-gradient-to-r from-caribbean-teal to-grass-green hover:from-caribbean-teal/90 hover:to-grass-green/90 text-white"
+              variant="orange"
+              className="w-full"
             >
               {isGeocoding ? (
                 <>
