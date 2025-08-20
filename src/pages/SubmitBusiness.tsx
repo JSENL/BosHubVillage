@@ -99,12 +99,20 @@ const SubmitBusiness = () => {
 
       // If user checked proprietor, change their role from user to proprietor
       if (isProprietor) {
+        console.log('User checked proprietor box, updating role for user:', user.id);
+        
         // First, remove the existing 'user' role
-        await supabase
+        const { error: deleteError } = await supabase
           .from('user_roles')
           .delete()
           .eq('user_id', user.id)
           .eq('role', 'user');
+        
+        if (deleteError) {
+          console.warn('Failed to delete user role:', deleteError);
+        } else {
+          console.log('Successfully removed user role');
+        }
         
         // Then, add the 'proprietor' role
         const { error: roleError } = await supabase
@@ -117,6 +125,8 @@ const SubmitBusiness = () => {
         if (roleError && !roleError.message.includes('duplicate key')) {
           console.warn('Role update failed:', roleError);
           // Don't throw error, just log it since business submission was successful
+        } else {
+          console.log('Successfully added proprietor role');
         }
       }
 
