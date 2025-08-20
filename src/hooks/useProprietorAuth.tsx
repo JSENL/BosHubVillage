@@ -10,21 +10,26 @@ export const useProprietorAuth = () => {
   useEffect(() => {
     const checkProprietorRole = async () => {
       if (!user) {
+        console.log('👤 No user, not checking proprietor role');
         setIsProprietor(false);
         setLoading(false);
         return;
       }
 
+      console.log('🔍 Checking proprietor role for user:', user.id);
+
       try {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', user.id)
           .eq('role', 'proprietor')
           .single();
         
+        console.log('📋 Proprietor role check result:', { data, error });
         setIsProprietor(!!data);
       } catch (error) {
+        console.log('❌ Error checking proprietor role:', error);
         setIsProprietor(false);
       } finally {
         setLoading(false);

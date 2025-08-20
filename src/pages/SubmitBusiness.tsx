@@ -76,30 +76,43 @@ const SubmitBusiness = () => {
       }
 
       // Submit to Supabase business_submissions table
+      const businessData = {
+        title: formData.title,
+        business_type: formData.business_type,
+        address: formData.address,
+        neighborhood: formData.neighborhood,
+        villages: formData.villages || null,
+        website_link: formData.website_link || null,
+        description: formData.description,
+        short_description: formData.short_description || null,
+        latitude,
+        longitude,
+        submitted_by: user.id,
+        status: 'pending'
+      };
+
+      console.log('🏪 Submitting business to database:', businessData);
       const { error } = await supabase
         .from('business_submissions')
-        .insert({
-          title: formData.title,
-          business_type: formData.business_type,
-          address: formData.address,
-          neighborhood: formData.neighborhood,
-          villages: formData.villages || null,
-          website_link: formData.website_link || null,
-          description: formData.description,
-          short_description: formData.short_description || null,
-          latitude,
-          longitude,
-          submitted_by: user.id,
-          status: 'pending'
-        });
+        .insert(businessData);
 
       if (error) {
+        console.error('❌ Business submission error:', error);
         throw error;
       }
+      console.log('✅ Business submitted successfully');
 
       // If user checked proprietor, change their role from user to proprietor
       if (isProprietor) {
-        console.log('User checked proprietor box, updating role for user:', user.id);
+        console.log('👑 User checked proprietor box, updating role for user:', user.id);
+        
+        // Check current user roles
+        const { data: currentRoles } = await supabase
+          .from('user_roles')
+          .select('*')
+          .eq('user_id', user.id);
+        
+        console.log('📋 Current user roles:', currentRoles);
         
         // First, remove the existing 'user' role
         const { error: deleteError } = await supabase
@@ -109,9 +122,9 @@ const SubmitBusiness = () => {
           .eq('role', 'user');
         
         if (deleteError) {
-          console.warn('Failed to delete user role:', deleteError);
+          console.warn('❌ Failed to delete user role:', deleteError);
         } else {
-          console.log('Successfully removed user role');
+          console.log('✅ Successfully removed user role');
         }
         
         // Then, add the 'proprietor' role
@@ -123,17 +136,34 @@ const SubmitBusiness = () => {
           });
         
         if (roleError && !roleError.message.includes('duplicate key')) {
-          console.warn('Role update failed:', roleError);
+          console.warn('❌ Role update failed:', roleError);
           // Don't throw error, just log it since business submission was successful
         } else {
-          console.log('Successfully added proprietor role');
+          console.log('✅ Successfully added proprietor role');
+          
+          // Verify the role was added
+          const { data: newRoles } = await supabase
+            .from('user_roles')
+            .select('*')
+            .eq('user_id', user.id);
+          
+          console.log('📋 Updated user roles:', newRoles);
+          
+          // Show success message and redirect to business dashboard
+          toast.success('Business submitted successfully! You now have proprietor access.');
+          setTimeout(() => {
+            console.log('🚀 Redirecting to business dashboard...');
+            window.location.href = '/business-dashboard';
+          }, 1500);
+          return;
         }
       }
 
-      // Show success dialog instead of toast and navigation
+      // Show success dialog for non-proprietor submissions
+      console.log('📝 Business submitted without proprietor role change');
       setShowSuccessDialog(true);
     } catch (error: any) {
-      console.error('Error submitting business:', error);
+      console.error('❌ Error submitting business:', error);
       toast.error('Failed to submit business. Please try again.');
     } finally {
       setLoading(false);

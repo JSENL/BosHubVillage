@@ -13,6 +13,8 @@ export const useBusinessSubmissionOperations = () => {
     setActionLoading(true);
     try {
       if (status === 'approved') {
+        console.log('🔍 Admin approving business submission:', submissionId);
+        
         // First get the submission data
         const { data: submission, error: fetchError } = await supabase
           .from('business_submissions')
@@ -20,7 +22,12 @@ export const useBusinessSubmissionOperations = () => {
           .eq('id', submissionId)
           .single();
 
-        if (fetchError) throw fetchError;
+        if (fetchError) {
+          console.error('❌ Error fetching submission:', fetchError);
+          throw fetchError;
+        }
+        
+        console.log('📄 Submission data:', submission);
 
         // Insert into business table
         const { error: insertError } = await supabase
@@ -37,12 +44,25 @@ export const useBusinessSubmissionOperations = () => {
             created_by: submission.submitted_by
           });
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error('❌ Error inserting into business table:', insertError);
+          throw insertError;
+        }
+        
+        console.log('✅ Business successfully added to main table');
 
         // Grant proprietor role to the user who submitted the business
-        console.log('Granting proprietor role to user:', submission.submitted_by);
+        console.log('👑 Granting proprietor role to user:', submission.submitted_by);
         
-        // First, check if user already has proprietor role
+        // First, check current user roles
+        const { data: currentRoles } = await supabase
+          .from('user_roles')
+          .select('*')
+          .eq('user_id', submission.submitted_by);
+          
+        console.log('📋 User current roles:', currentRoles);
+        
+        // Check if user already has proprietor role
         const { data: existingRole } = await supabase
           .from('user_roles')
           .select('*')
@@ -51,12 +71,20 @@ export const useBusinessSubmissionOperations = () => {
           .single();
 
         if (!existingRole) {
+          console.log('🔄 User does not have proprietor role, adding it...');
+          
           // Remove existing 'user' role
-          await supabase
+          const { error: deleteError } = await supabase
             .from('user_roles')
             .delete()
             .eq('user_id', submission.submitted_by)
             .eq('role', 'user');
+            
+          if (deleteError) {
+            console.error('⚠️ Error removing user role:', deleteError);
+          } else {
+            console.log('✅ Removed existing user role');
+          }
 
           // Add proprietor role
           const { error: roleError } = await supabase
@@ -67,10 +95,20 @@ export const useBusinessSubmissionOperations = () => {
             });
 
           if (roleError) {
-            console.error('Error granting proprietor role:', roleError);
+            console.error('❌ Error granting proprietor role:', roleError);
           } else {
-            console.log('Successfully granted proprietor role');
+            console.log('✅ Successfully granted proprietor role');
+            
+            // Verify the role was added
+            const { data: newRoles } = await supabase
+              .from('user_roles')
+              .select('*')
+              .eq('user_id', submission.submitted_by);
+              
+            console.log('📋 User updated roles:', newRoles);
           }
+        } else {
+          console.log('ℹ️ User already has proprietor role');
         }
       }
 
