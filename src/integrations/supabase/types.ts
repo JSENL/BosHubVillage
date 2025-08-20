@@ -164,6 +164,45 @@ export type Database = {
           },
         ]
       }
+      business_messages: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          is_from_owner: boolean
+          message: string
+          recipient_id: string
+          sender_id: string
+          status: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          is_from_owner?: boolean
+          message: string
+          recipient_id: string
+          sender_id: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          is_from_owner?: boolean
+          message?: string
+          recipient_id?: string
+          sender_id?: string
+          status?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       business_owner: {
         Row: {
           business_id: string

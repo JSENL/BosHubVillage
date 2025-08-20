@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Navigation } from '@/components/Navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useUserAnnouncements } from '@/hooks/useUserAnnouncements';
-import { Loader2, Megaphone, MessageSquare, Clock, Users } from 'lucide-react';
+import { Loader2, Megaphone, MessageSquare, Clock, Users, Building } from 'lucide-react';
 
 interface ContactAdminMessage {
   id: string;
@@ -21,16 +21,32 @@ interface ContactAdminMessage {
   admin_response: string | null;
 }
 
+interface BusinessMessage {
+  id: string;
+  business_id: string;
+  sender_id: string;
+  recipient_id: string;
+  message: string;
+  is_from_owner: boolean;
+  status: string;
+  created_at: string;
+  business?: {
+    title: string;
+  } | null;
+}
+
 const MyMessages = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [messages, setMessages] = useState<ContactAdminMessage[]>([]);
+  const [businessMessages, setBusinessMessages] = useState<BusinessMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const { announcements, loading: announcementsLoading } = useUserAnnouncements();
 
   useEffect(() => {
     if (!user) return;
     fetchMyMessages();
+    fetchBusinessMessages();
   }, [user]);
 
   const fetchMyMessages = async () => {
@@ -52,6 +68,32 @@ const MyMessages = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBusinessMessages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('business_messages')
+        .select(`
+          *,
+          business:business_id (
+            title
+          )
+        `)
+        .eq('recipient_id', user?.id)
+        .eq('is_from_owner', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setBusinessMessages((data || []) as unknown as BusinessMessage[]);
+    } catch (error) {
+      console.error('Error fetching business messages:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch business messages",
+        variant: "destructive",
+      });
     }
   };
 
@@ -126,14 +168,18 @@ const MyMessages = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="announcements" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="announcements" className="flex items-center">
                 <Megaphone className="h-4 w-4 mr-2" />
-                GNE! Announcements ({announcements.length})
+                Announcements ({announcements.length})
               </TabsTrigger>
               <TabsTrigger value="my-messages" className="flex items-center">
                 <MessageSquare className="h-4 w-4 mr-2" />
-                My Messages ({messages.length})
+                Admin Messages ({messages.length})
+              </TabsTrigger>
+              <TabsTrigger value="business-messages" className="flex items-center">
+                <Building className="h-4 w-4 mr-2" />
+                Business Replies ({businessMessages.length})
               </TabsTrigger>
             </TabsList>
 
@@ -230,6 +276,40 @@ const MyMessages = () => {
                           </p>
                         </div>
                       )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="business-messages" className="mt-6">
+              {businessMessages.length === 0 ? (
+                <div className="text-center py-8">
+                  <Building className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Business Replies</h3>
+                  <p className="text-gray-600">You'll see replies from business owners here.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {businessMessages.map((message) => (
+                    <div key={message.id} className="border rounded-lg p-4 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">
+                              Reply from {message.business?.title}
+                            </h3>
+                            <Badge variant="secondary">Business Owner</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Received on {new Date(message.created_at).toLocaleDateString()} at{' '}
+                            {new Date(message.created_at).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-2 p-3 bg-blue-50 rounded-md">
+                        <p className="text-sm text-blue-900">{message.message}</p>
+                      </div>
                     </div>
                   ))}
                 </div>

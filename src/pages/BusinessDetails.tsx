@@ -8,6 +8,7 @@ import { Business } from '@/types/business';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
+import BusinessMessage from '@/components/BusinessMessage';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -137,6 +138,10 @@ const BusinessDetails = () => {
               <div className="flex items-center text-sm text-gray-500">
                 <Clock className="h-4 w-4 mr-1" />
                 <span>Added {new Date(business.created_at).toLocaleDateString()}</span>
+              </div>
+
+              <div className="mt-4">
+                <BusinessMessage businessId={businessId!} />
               </div>
             </CardContent>
           </Card>

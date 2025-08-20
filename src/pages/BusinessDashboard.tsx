@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { MapPin, Building, Star, MessageCircle, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import BusinessMessages from '@/components/BusinessMessages';
 
 const BusinessDashboard = () => {
   const { user } = useAuth();
@@ -167,6 +168,12 @@ const BusinessDashboard = () => {
                         )}
                       </div>
                     )}
+                  </div>
+
+                  {/* Business Messages Section */}
+                  <Separator />
+                  <div>
+                    <BusinessMessages businessId={business.id} />
                   </div>
                 </CardContent>
               </Card>
