@@ -21,7 +21,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { EditBusinessDialog } from './EditBusinessDialog';
 
 interface PublishedBusinessTableProps {
-  businesses: Business[];
+  businesses: any[];
   onUpdate: () => void;
 }
 
@@ -75,6 +75,7 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
                 <TableHead>Business</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Location</TableHead>
+                <TableHead>Business Owner</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -101,6 +102,20 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
                       </div>
                       <div className="text-xs text-gray-500">{business.address}</div>
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    {business.business_owner && business.business_owner.length > 0 ? (
+                      <div>
+                        <div className="text-sm font-medium">
+                          {business.business_owner[0].profiles?.full_name || 'Unknown'}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {business.business_owner[0].profiles?.email || 'No email'}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-400">No owner assigned</div>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">

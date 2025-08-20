@@ -10,7 +10,16 @@ export const useBusiness = () => {
       
       const { data, error } = await supabase
         .from('business')
-        .select('*')
+        .select(`
+          *,
+          business_owner (
+            owner_id,
+            profiles:owner_id (
+              full_name,
+              email
+            )
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) {
@@ -20,7 +29,7 @@ export const useBusiness = () => {
       
       console.log(`Fetched ${data?.length || 0} business items from Supabase`);
       
-      return (data || []) as Business[];
+      return (data || []) as any[];
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
