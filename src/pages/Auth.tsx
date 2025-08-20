@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Mail, Lock, User, Calendar, Check, X } from 'lucide-react';
+import { AlertCircle, Mail, Lock, User, Calendar, Check, X, Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -20,6 +20,8 @@ const Auth = () => {
   const [error, setError] = useState('');
   const [recoveryEmail, setRecoveryEmail] = useState('');
   const [recoveryLoading, setRecoveryLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
   const navigate = useNavigate();
 
   // Password validation helpers
@@ -220,13 +222,24 @@ const Auth = () => {
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
                       id="signin-password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 pr-10"
                       required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
                   </div>
                 </div>
 
@@ -287,14 +300,25 @@ const Auth = () => {
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
                       id="signup-password"
-                      type="password"
+                      type={showSignUpPassword ? "text" : "password"}
                       placeholder="Create a password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 pr-10"
                       required
                       minLength={8}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowSignUpPassword(!showSignUpPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {showSignUpPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
                   </div>
                   
                   {/* Password requirements */}
