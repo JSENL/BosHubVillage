@@ -47,12 +47,26 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
 
   const fetchMessages = async () => {
     try {
-      const { data, error } = await supabase
+      // First check if current user owns this business
+      const { data: ownership } = await supabase
+        .from('business_owner')
+        .select('owner_id')
+        .eq('business_id', businessId)
+        .eq('owner_id', user?.id)
+        .maybeSingle();
+
+      let messagesQuery = supabase
         .from('business_messages')
         .select('*')
-        .eq('business_id', businessId)
-        .or(`sender_id.eq.${user?.id},recipient_id.eq.${user?.id}`)
-        .order('created_at', { ascending: true });
+        .eq('business_id', businessId);
+
+      // If user owns the business, show all messages for this business
+      // If user doesn't own the business, only show their own messages
+      if (!ownership) {
+        messagesQuery = messagesQuery.or(`sender_id.eq.${user?.id},recipient_id.eq.${user?.id}`);
+      }
+
+      const { data, error } = await messagesQuery.order('created_at', { ascending: true });
 
       if (error) throw error;
       
