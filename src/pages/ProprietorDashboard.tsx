@@ -1,9 +1,12 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useProprietorAuth } from '@/hooks/useProprietorAuth';
+import { useProprietorBusinesses } from '@/hooks/useProprietorBusinesses';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { Navigation } from '@/components/Navigation';
+import BusinessCard from '@/components/BusinessCard';
 import { 
   Building2, 
   BarChart3, 
@@ -12,15 +15,23 @@ import {
   Users,
   TrendingUp,
   Calendar,
-  MapPin
+  MapPin,
+  Clock,
+  CheckCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ProprietorDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { isProprietor, loading: proprietorLoading } = useProprietorAuth();
+  const { data: businessData, isLoading: businessLoading } = useProprietorBusinesses();
 
   const loading = authLoading || proprietorLoading;
+  const businesses = businessData?.businesses || [];
+  const submissions = businessData?.submissions || [];
+  const pendingSubmissions = submissions.filter(s => s.status === 'pending');
+  const approvedSubmissions = submissions.filter(s => s.status === 'approved');
+  const rejectedSubmissions = submissions.filter(s => s.status === 'rejected');
 
   if (loading) {
     return (
@@ -110,7 +121,7 @@ const ProprietorDashboard = () => {
                 <Building2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{businesses.length}</div>
                 <p className="text-xs text-muted-foreground">Active listings</p>
               </CardContent>
             </Card>
@@ -143,7 +154,7 @@ const ProprietorDashboard = () => {
                 <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{pendingSubmissions.length}</div>
                 <p className="text-xs text-muted-foreground">Awaiting approval</p>
               </CardContent>
             </Card>
@@ -171,27 +182,123 @@ const ProprietorDashboard = () => {
             </TabsList>
 
             <TabsContent value="businesses" className="space-y-6">
+              {/* Active Businesses */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Building2 className="h-5 w-5" />
-                    Business Listings
+                    Active Business Listings
+                    <Badge variant="secondary">{businesses.length}</Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-12">
-                    <Building2 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                    <h3 className="text-lg font-semibold mb-2">No businesses yet</h3>
-                    <p className="text-gray-600 mb-6">Start building your business presence by adding your first listing.</p>
-                    <Button asChild className="bg-logo-bright-orange hover:bg-logo-bright-orange/90">
-                      <Link to="/submit-business">
-                        <Building2 className="h-4 w-4 mr-2" />
-                        Add Your First Business
-                      </Link>
-                    </Button>
-                  </div>
+                  {businessLoading ? (
+                    <div className="text-center py-8">
+                      <Building2 className="h-8 w-8 animate-spin mx-auto mb-4 text-logo-bright-orange" />
+                      <p>Loading your businesses...</p>
+                    </div>
+                  ) : businesses.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {businesses.map((business) => (
+                        <BusinessCard key={business.id} business={business} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <Building2 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                      <h3 className="text-lg font-semibold mb-2">No active businesses yet</h3>
+                      <p className="text-gray-600 mb-6">Your approved business listings will appear here.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
+
+              {/* Pending Submissions */}
+              {pendingSubmissions.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Clock className="h-5 w-5" />
+                      Pending Submissions
+                      <Badge variant="outline">{pendingSubmissions.length}</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {pendingSubmissions.map((submission) => (
+                        <div key={submission.id} className="p-4 border rounded-lg bg-yellow-50 border-yellow-200">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-semibold">{submission.title}</h4>
+                              <p className="text-sm text-gray-600 mb-2">{submission.business_type}</p>
+                              <p className="text-sm text-gray-700 line-clamp-2">{submission.description}</p>
+                            </div>
+                            <Badge variant="outline" className="ml-4">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Pending
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Rejected Submissions */}
+              {rejectedSubmissions.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="h-5 w-5" />
+                      Rejected Submissions
+                      <Badge variant="destructive">{rejectedSubmissions.length}</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {rejectedSubmissions.map((submission) => (
+                        <div key={submission.id} className="p-4 border rounded-lg bg-red-50 border-red-200">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-semibold">{submission.title}</h4>
+                              <p className="text-sm text-gray-600 mb-2">{submission.business_type}</p>
+                              {submission.admin_notes && (
+                                <p className="text-sm text-red-700 mb-2">
+                                  <strong>Admin notes:</strong> {submission.admin_notes}
+                                </p>
+                              )}
+                              <p className="text-sm text-gray-700 line-clamp-2">{submission.description}</p>
+                            </div>
+                            <Badge variant="destructive" className="ml-4">
+                              Rejected
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Empty state when no businesses or submissions */}
+              {businesses.length === 0 && submissions.length === 0 && !businessLoading && (
+                <Card>
+                  <CardContent>
+                    <div className="text-center py-12">
+                      <Building2 className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                      <h3 className="text-lg font-semibold mb-2">No businesses yet</h3>
+                      <p className="text-gray-600 mb-6">Start building your business presence by adding your first listing.</p>
+                      <Button asChild className="bg-logo-bright-orange hover:bg-logo-bright-orange/90">
+                        <Link to="/submit-business">
+                          <Building2 className="h-4 w-4 mr-2" />
+                          Add Your First Business
+                        </Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">
