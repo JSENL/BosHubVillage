@@ -93,6 +93,12 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
       )}
       <p className="text-gray-600 mb-3 line-clamp-2 text-xs">{submission.description}</p>
 
+      {submission.status === 'approved' && submission.is_owner && (
+        <Button variant="secondary" disabled className="mt-2">
+          Submitter is Owner
+        </Button>
+      )}
+
       {submission.admin_notes && (
         <div className="bg-gray-50 p-3 rounded-md mb-4">
           <p className="text-sm text-gray-700">

@@ -29,8 +29,8 @@ export const useBusinessSubmissionOperations = () => {
         
         console.log('📄 Submission data:', submission);
 
-        // Insert into business table
-        const { error: insertError } = await supabase
+        // Insert into business table and get new business id
+        const { data: insertedBusiness, error: insertError } = await supabase
           .from('business')
           .insert({
             title: submission.title,
@@ -41,15 +41,36 @@ export const useBusinessSubmissionOperations = () => {
             short_description: submission.short_description,
             latitude: submission.latitude,
             longitude: submission.longitude,
+            website_link: submission.website_link,
+            villages: submission.villages,
             created_by: submission.submitted_by
-          });
+          })
+          .select('id')
+          .single();
 
         if (insertError) {
           console.error('❌ Error inserting into business table:', insertError);
           throw insertError;
         }
         
-        console.log('✅ Business successfully added to main table');
+        console.log('✅ Business successfully added to main table with id:', insertedBusiness?.id);
+
+        // If the submitter indicated ownership, create ownership record
+        if (submission.is_owner && insertedBusiness?.id) {
+          const { error: ownerInsertError } = await supabase
+            .from('business_owner')
+            .insert({
+              business_id: insertedBusiness.id,
+              owner_id: submission.submitted_by
+            });
+
+          if (ownerInsertError) {
+            console.error('❌ Error creating business ownership:', ownerInsertError);
+            throw ownerInsertError;
+          }
+
+          console.log('👤 Ownership recorded: submitter is the business owner');
+        }
       }
 
       // Update submission status (this will trigger deletion if approved)

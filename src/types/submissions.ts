@@ -10,6 +10,7 @@ export interface BusinessSubmission {
   villages?: string[];
   latitude?: number;
   longitude?: number;
+  is_owner?: boolean;
   status: 'pending' | 'approved' | 'rejected';
   submitted_by: string;
   reviewed_by?: string;

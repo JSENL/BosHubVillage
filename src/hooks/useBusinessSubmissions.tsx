@@ -20,6 +20,7 @@ export interface BusinessSubmission {
   updated_at: string;
   latitude: number | null;
   longitude: number | null;
+  is_owner: boolean | null;
 }
 
 export const useBusinessSubmissions = () => {

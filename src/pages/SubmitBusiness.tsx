@@ -90,7 +90,8 @@ const SubmitBusiness = () => {
         latitude,
         longitude,
         submitted_by: user.id,
-        status: 'pending'
+        status: 'pending',
+        is_owner: formData.is_owner
       };
 
       console.log('🏪 Submitting business to database:', businessData);
@@ -103,34 +104,6 @@ const SubmitBusiness = () => {
         throw error;
       }
       console.log('✅ Business submitted successfully');
-
-      // If user claims ownership, add them to business_owner table
-      if (formData.is_owner) {
-        // Get the business ID from the submission
-        const { data: submissionData } = await supabase
-          .from('business_submissions')
-          .select('id')
-          .eq('title', formData.title)
-          .eq('submitted_by', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
-
-        if (submissionData) {
-          const { error: ownerError } = await supabase
-            .from('business_owner')
-            .insert({
-              business_id: submissionData.id,
-              owner_id: user.id
-            });
-
-          if (ownerError) {
-            console.warn('Failed to add business ownership:', ownerError);
-          } else {
-            console.log('✅ Business ownership added');
-          }
-        }
-      }
 
       // Show success dialog
       console.log('📝 Business submitted successfully');

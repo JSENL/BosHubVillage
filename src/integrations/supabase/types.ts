@@ -204,6 +204,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          is_owner: boolean | null
           latitude: number | null
           longitude: number | null
           neighborhood: string
@@ -224,6 +225,7 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          is_owner?: boolean | null
           latitude?: number | null
           longitude?: number | null
           neighborhood: string
@@ -244,6 +246,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          is_owner?: boolean | null
           latitude?: number | null
           longitude?: number | null
           neighborhood?: string
