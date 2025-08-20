@@ -97,8 +97,16 @@ const SubmitBusiness = () => {
         throw error;
       }
 
-      // If user checked proprietor, update their role
+      // If user checked proprietor, change their role from user to proprietor
       if (isProprietor) {
+        // First, remove the existing 'user' role
+        await supabase
+          .from('user_roles')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('role', 'user');
+        
+        // Then, add the 'proprietor' role
         const { error: roleError } = await supabase
           .from('user_roles')
           .insert({
