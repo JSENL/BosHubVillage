@@ -2,6 +2,7 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { cleanupAuthState } from '@/utils/authCleanup';
 
 interface AuthContextType {
   user: User | null;
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -66,11 +67,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
-      setUser(null);
-      setSession(null);
-      setIsAdmin(false);
-      setIsProprietor(false);
+      // Clean up auth state first
+      cleanupAuthState();
+      // Attempt global sign out
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Ignore errors from global sign out
+      }
+      // Hard refresh to ensure clean state
+      window.location.href = '/auth';
     } catch (error) {
       console.error('Error signing out:', error);
     }

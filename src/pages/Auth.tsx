@@ -10,6 +10,7 @@ import { AlertCircle, Mail, Lock, User, Calendar, Check, X } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { cleanupAuthState } from '@/utils/authCleanup';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -38,11 +39,17 @@ const Auth = () => {
   const passwordValidation = validatePassword(password);
 
   useEffect(() => {
-    // Check if user is already logged in
+    // Check if user is already logged in and session is valid
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        navigate('/');
+        const { data: userData } = await supabase.auth.getUser();
+        if (userData?.user) {
+          navigate('/');
+          return;
+        }
+        // Stale/invalid session - clean it up
+        cleanupAuthState();
       }
     };
     checkUser();
@@ -65,6 +72,7 @@ const Auth = () => {
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: fullName,
           },
@@ -93,6 +101,12 @@ const Auth = () => {
     setError('');
 
     try {
+      // Clean up any stale auth state before signing in
+      cleanupAuthState();
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch {}
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -102,7 +116,8 @@ const Auth = () => {
 
       if (data.user) {
         toast.success('Welcome back!');
-        navigate('/');
+        // Hard refresh to avoid limbo states
+        window.location.href = '/';
       }
     } catch (error: any) {
       setError(error.message);
