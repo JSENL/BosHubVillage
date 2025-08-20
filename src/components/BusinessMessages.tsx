@@ -46,6 +46,7 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
   }, [user, businessId]);
 
   const fetchMessages = async () => {
+    console.log('🔍 Fetching messages for business ID:', businessId, 'User ID:', user?.id);
     try {
       // Simple query to get all messages for this business
       const { data, error } = await supabase
@@ -54,7 +55,18 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         .eq('business_id', businessId)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
+      console.log('📬 Messages query result:', { 
+        data, 
+        error, 
+        count: data?.length,
+        businessId,
+        messages: data?.map(m => ({ id: m.id, message: m.message, sender: m.sender_id }))
+      });
+
+      if (error) {
+        console.error('❌ Error fetching messages:', error);
+        throw error;
+      }
       
       // Get unique user IDs (both senders and recipients)
       const allUserIds = [...new Set([
@@ -62,10 +74,14 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         ...(data || []).map(msg => msg.recipient_id)
       ])].filter(Boolean);
       
+      console.log('👥 Fetching profiles for user IDs:', allUserIds);
+      
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, full_name, email')
         .in('id', allUserIds);
+
+      console.log('👤 Profiles fetched:', profiles);
 
       // Get business info
       const { data: business } = await supabase
@@ -73,6 +89,8 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         .select('title')
         .eq('id', businessId)
         .single();
+
+      console.log('🏢 Business info:', business);
 
       // Combine the data
       const messagesWithProfiles = (data || []).map(message => ({
@@ -82,6 +100,7 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         business: business || null
       }));
 
+      console.log('📧 Final messages with profiles:', messagesWithProfiles);
       setMessages(messagesWithProfiles as unknown as BusinessMessage[]);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -152,9 +171,12 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
             Business Messages
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">No messages yet.</p>
-        </CardContent>
+      <CardContent>
+        <p className="text-muted-foreground">No messages for this business yet.</p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Messages from customers will appear here when they use the "Message" button on your business page.
+        </p>
+      </CardContent>
       </Card>
     );
   }
