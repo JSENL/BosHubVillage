@@ -46,7 +46,6 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
   }, [user, businessId]);
 
   const fetchMessages = async () => {
-    console.log('🔍 Fetching messages for business:', businessId, 'current user:', user?.id);
     try {
       const { data, error } = await supabase
         .from('business_messages')
@@ -55,20 +54,14 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         .or(`sender_id.eq.${user?.id},recipient_id.eq.${user?.id}`)
         .order('created_at', { ascending: true });
 
-      console.log('📬 Messages query result:', { data, error, businessId, userId: user?.id });
-
       if (error) throw error;
       
       // Get sender profiles separately
       const senderIds = [...new Set((data || []).map(msg => msg.sender_id))];
-      console.log('👤 Sender IDs to fetch:', senderIds);
-      
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, full_name, email')
         .in('id', senderIds);
-
-      console.log('👤 Profiles fetched:', profiles);
 
       // Get business info
       const { data: business } = await supabase
@@ -77,8 +70,6 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         .eq('id', businessId)
         .single();
 
-      console.log('🏢 Business info:', business);
-
       // Combine the data
       const messagesWithProfiles = (data || []).map(message => ({
         ...message,
@@ -86,7 +77,6 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         business: business || null
       }));
 
-      console.log('📧 Final messages with profiles:', messagesWithProfiles);
       setMessages(messagesWithProfiles as unknown as BusinessMessage[]);
     } catch (error) {
       console.error('Error fetching messages:', error);

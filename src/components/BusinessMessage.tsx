@@ -24,19 +24,17 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
     setSending(true);
     try {
       // Get business owner info
-      console.log('Looking for business owner for business ID:', businessId);
       const { data: businessOwner, error: ownerError } = await supabase
         .from('business_owner')
         .select('owner_id')
         .eq('business_id', businessId)
         .maybeSingle();
 
-      console.log('Business owner query result:', { businessOwner, ownerError });
-
       if (ownerError) throw ownerError;
       
+      let recipientId: string;
+      
       if (!businessOwner) {
-        console.log('No business owner found for business ID:', businessId);
         // Check if this business has a created_by field we can use
         const { data: businessData } = await supabase
           .from('business')
@@ -44,11 +42,8 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
           .eq('id', businessId)
           .single();
         
-        console.log('Business data:', businessData);
-        
         if (businessData?.created_by) {
-          // Create business ownership record
-          console.log('Creating business ownership record...');
+          // Business ownership should have been created by the trigger, but let's ensure it
           const { error: ownershipError } = await supabase
             .from('business_owner')
             .insert({
@@ -56,7 +51,7 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
               owner_id: businessData.created_by
             });
           
-          if (ownershipError) {
+          if (ownershipError && !ownershipError.message.includes('duplicate')) {
             console.error('Error creating business ownership:', ownershipError);
             toast({
               title: "Unable to send message",
@@ -66,8 +61,7 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
             return;
           }
           
-          // Use the created_by as the recipient
-          var recipientId = businessData.created_by;
+          recipientId = businessData.created_by;
         } else {
           toast({
             title: "Unable to send message",
@@ -77,19 +71,10 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
           return;
         }
       } else {
-        var recipientId = businessOwner.owner_id;
+        recipientId = businessOwner.owner_id;
       }
 
       // Send message
-      console.log('📤 Sending message to business:', {
-        business_id: businessId,
-        sender_id: user.id,
-        recipient_id: recipientId,
-        message: message.trim(),
-        is_from_owner: false,
-        status: 'unread'
-      });
-      
       const { error } = await supabase
         .from('business_messages')
         .insert({
@@ -100,8 +85,6 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
           is_from_owner: false,
           status: 'unread'
         });
-
-      console.log('📤 Message insert result:', { error });
 
       if (error) throw error;
 
