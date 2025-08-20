@@ -67,6 +67,7 @@ export default {
 					'vibrant-blue': 'hsl(var(--vibrant-blue))',
 					'deep-blue': 'hsl(var(--deep-blue))',
 					'coral-orange': 'hsl(var(--coral-orange))',
+					'bright-orange': 'hsl(var(--bright-orange))',
 					'warm-red': 'hsl(var(--warm-red))',
 					'forest-green': 'hsl(var(--forest-green))',
 					'sage-green': 'hsl(var(--sage-green))',

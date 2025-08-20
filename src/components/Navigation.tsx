@@ -70,7 +70,7 @@ export const Navigation = () => {
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button className="bg-caribbean-teal hover:bg-caribbean-teal/90 text-white">
+                  <Button className="bg-logo-bright-orange hover:bg-logo-bright-orange/90 text-white">
                     <Plus className="h-4 w-4 mr-2" />
                     Submit
                   </Button>
