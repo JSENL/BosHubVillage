@@ -46,27 +46,26 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
   }, [user, businessId]);
 
   const fetchMessages = async () => {
+    console.log('🔍 Fetching messages for business ID:', businessId, 'User ID:', user?.id);
     try {
-      // Get all messages for this business
+      // Simple query to get all messages for this business
       const { data, error } = await supabase
         .from('business_messages')
-        .select('*')
+        .select(`
+          *,
+          sender_profile:profiles!business_messages_sender_id_fkey(id, full_name, email),
+          recipient_profile:profiles!business_messages_recipient_id_fkey(id, full_name, email)
+        `)
         .eq('business_id', businessId)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      
-      // Get unique user IDs (both senders and recipients)
-      const allUserIds = [...new Set([
-        ...(data || []).map(msg => msg.sender_id),
-        ...(data || []).map(msg => msg.recipient_id)
-      ])].filter(Boolean);
-      
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, full_name, email')
-        .in('id', allUserIds);
+      console.log('📬 Messages query result:', { data, error, count: data?.length });
 
+      if (error) {
+        console.error('❌ Error fetching messages:', error);
+        throw error;
+      }
+      
       // Get business info
       const { data: business } = await supabase
         .from('business')
@@ -74,15 +73,16 @@ const BusinessMessages = ({ businessId }: BusinessMessagesProps) => {
         .eq('id', businessId)
         .single();
 
+      console.log('🏢 Business info:', business);
+
       // Combine the data
-      const messagesWithProfiles = (data || []).map(message => ({
+      const messagesWithBusiness = (data || []).map(message => ({
         ...message,
-        sender_profile: profiles?.find(p => p.id === message.sender_id) || null,
-        recipient_profile: profiles?.find(p => p.id === message.recipient_id) || null,
         business: business || null
       }));
 
-      setMessages(messagesWithProfiles as unknown as BusinessMessage[]);
+      console.log('📧 Final messages with business:', messagesWithBusiness);
+      setMessages(messagesWithBusiness as unknown as BusinessMessage[]);
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast({
