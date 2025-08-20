@@ -24,21 +24,60 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
     setSending(true);
     try {
       // Get business owner info
+      console.log('Looking for business owner for business ID:', businessId);
       const { data: businessOwner, error: ownerError } = await supabase
         .from('business_owner')
         .select('owner_id')
         .eq('business_id', businessId)
         .maybeSingle();
 
+      console.log('Business owner query result:', { businessOwner, ownerError });
+
       if (ownerError) throw ownerError;
       
       if (!businessOwner) {
-        toast({
-          title: "Unable to send message",
-          description: "This business doesn't have an owner yet.",
-          variant: "destructive",
-        });
-        return;
+        console.log('No business owner found for business ID:', businessId);
+        // Check if this business has a created_by field we can use
+        const { data: businessData } = await supabase
+          .from('business')
+          .select('created_by, title')
+          .eq('id', businessId)
+          .single();
+        
+        console.log('Business data:', businessData);
+        
+        if (businessData?.created_by) {
+          // Create business ownership record
+          console.log('Creating business ownership record...');
+          const { error: ownershipError } = await supabase
+            .from('business_owner')
+            .insert({
+              business_id: businessId,
+              owner_id: businessData.created_by
+            });
+          
+          if (ownershipError) {
+            console.error('Error creating business ownership:', ownershipError);
+            toast({
+              title: "Unable to send message",
+              description: "Could not establish business ownership.",
+              variant: "destructive",
+            });
+            return;
+          }
+          
+          // Use the created_by as the recipient
+          var recipientId = businessData.created_by;
+        } else {
+          toast({
+            title: "Unable to send message",
+            description: "This business doesn't have an owner yet.",
+            variant: "destructive",
+          });
+          return;
+        }
+      } else {
+        var recipientId = businessOwner.owner_id;
       }
 
       // Send message
@@ -47,7 +86,7 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
         .insert({
           business_id: businessId,
           sender_id: user.id,
-          recipient_id: businessOwner.owner_id,
+          recipient_id: recipientId,
           message: message.trim(),
           is_from_owner: false,
           status: 'unread'
