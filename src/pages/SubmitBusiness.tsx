@@ -141,7 +141,12 @@ const SubmitBusiness = () => {
   const handleFinish = () => {
     setShowSuccessDialog(false);
     toast.success('Business submitted successfully! It will be reviewed by our admin team.');
-    navigate('/');
+    // If user is now a proprietor, redirect them to business dashboard
+    if (isProprietor) {
+      navigate('/business-dashboard');
+    } else {
+      navigate('/');
+    }
   };
 
   if (!user) {
