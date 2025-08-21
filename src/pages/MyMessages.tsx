@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Navigation } from '@/components/Navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useUserAnnouncements } from '@/hooks/useUserAnnouncements';
-import { Loader2, Megaphone, MessageSquare, Clock, Users, Building, Reply, Send, X } from 'lucide-react';
+import { Loader2, Megaphone, MessageSquare, Clock, Users, Building, Reply, Send, X, Paperclip, Image, Video } from 'lucide-react';
+import { BusinessMessageMedia } from '@/components/business/BusinessMessageMedia';
+import { uploadBusinessMessageMedia, saveMediaRecord } from '@/services/businessMessageMediaService';
 
 interface ContactAdminMessage {
   id: string;
@@ -43,6 +45,13 @@ interface BusinessMessage {
     full_name: string | null;
     email: string;
   } | null;
+  media?: Array<{
+    id: string;
+    file_name: string;
+    file_path: string;
+    file_type: string;
+    file_size: number;
+  }>;
 }
 
 const MyMessages = () => {
@@ -54,6 +63,9 @@ const MyMessages = () => {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyMessage, setReplyMessage] = useState('');
   const [sendingReply, setSendingReply] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { announcements, loading: announcementsLoading } = useUserAnnouncements();
 
   useEffect(() => {
@@ -89,7 +101,16 @@ const MyMessages = () => {
       // Fetch all business messages where user is involved (both sent and received)
       const { data, error } = await supabase
         .from('business_messages')
-        .select('*')
+        .select(`
+          *,
+          business_message_media (
+            id,
+            file_name,
+            file_path,
+            file_type,
+            file_size
+          )
+        `)
         .or(`recipient_id.eq.${user?.id},sender_id.eq.${user?.id}`)
         .order('created_at', { ascending: false });
 
@@ -118,7 +139,8 @@ const MyMessages = () => {
         ...message,
         business: businesses?.find(b => b.id === message.business_id) || null,
         sender_profile: profiles?.find(p => p.id === message.sender_id) || null,
-        recipient_profile: profiles?.find(p => p.id === message.recipient_id) || null
+        recipient_profile: profiles?.find(p => p.id === message.recipient_id) || null,
+        media: message.business_message_media || []
       }));
 
       setBusinessMessages(messagesWithDetails as unknown as BusinessMessage[]);
@@ -136,8 +158,11 @@ const MyMessages = () => {
     if (!user || !replyMessage.trim()) return;
 
     setSendingReply(true);
+    setUploading(selectedFiles.length > 0);
+    
     try {
-      const { error } = await supabase
+      // Insert the message first
+      const { data: messageData, error: messageError } = await supabase
         .from('business_messages')
         .insert({
           business_id: businessId,
@@ -146,9 +171,28 @@ const MyMessages = () => {
           message: replyMessage.trim(),
           is_from_owner: false,
           status: 'unread'
-        });
+        })
+        .select('id')
+        .single();
 
-      if (error) throw error;
+      if (messageError) throw messageError;
+
+      // Upload and save media files if any
+      if (selectedFiles.length > 0 && messageData) {
+        for (const file of selectedFiles) {
+          try {
+            const mediaData = await uploadBusinessMessageMedia(file, user.id);
+            await saveMediaRecord(messageData.id, mediaData);
+          } catch (mediaError) {
+            console.error('Error uploading media:', mediaError);
+            toast({
+              title: "Media upload failed",
+              description: `Failed to upload ${file.name}`,
+              variant: "destructive",
+            });
+          }
+        }
+      }
 
       toast({
         title: "Reply sent!",
@@ -157,6 +201,7 @@ const MyMessages = () => {
 
       setReplyMessage('');
       setReplyingTo(null);
+      setSelectedFiles([]);
       fetchBusinessMessages(); // Refresh messages
     } catch (error) {
       console.error('Error sending reply:', error);
@@ -167,7 +212,42 @@ const MyMessages = () => {
       });
     } finally {
       setSendingReply(false);
+      setUploading(false);
     }
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    const validFiles = files.filter(file => {
+      const isValidType = file.type.startsWith('image/') || 
+                         file.type.startsWith('video/') || 
+                         file.type === 'application/pdf';
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB limit
+      
+      if (!isValidType) {
+        toast({
+          title: "Invalid file type",
+          description: `${file.name} is not a supported file type.`,
+          variant: "destructive",
+        });
+      }
+      
+      if (!isValidSize) {
+        toast({
+          title: "File too large",
+          description: `${file.name} is larger than 10MB.`,
+          variant: "destructive",
+        });
+      }
+      
+      return isValidType && isValidSize;
+    });
+
+    setSelectedFiles(prev => [...prev, ...validFiles]);
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const getPriorityColor = (priority: string) => {
@@ -418,6 +498,9 @@ const MyMessages = () => {
                               )}
                             </div>
                             <p className="text-sm text-gray-700">{message.message}</p>
+                            {message.media && message.media.length > 0 && (
+                              <BusinessMessageMedia media={message.media} />
+                            )}
                           </div>
                         ))}
                       </div>
@@ -447,34 +530,87 @@ const MyMessages = () => {
                               onChange={(e) => setReplyMessage(e.target.value)}
                               rows={3}
                             />
-                            <div className="flex justify-end gap-2">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => {
-                                  setReplyingTo(null);
-                                  setReplyMessage('');
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                              <Button 
-                                size="sm"
-                                onClick={() => handleReplyToBusiness(businessId)}
-                                disabled={!replyMessage.trim() || sendingReply}
-                              >
-                                {sendingReply ? (
-                                  <>
-                                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                                    Sending...
-                                  </>
-                                ) : (
-                                  <>
-                                    <Send className="h-3 w-3 mr-1" />
-                                    Send Reply
-                                  </>
-                                )}
-                              </Button>
+                            
+                            {/* File attachments */}
+                            {selectedFiles.length > 0 && (
+                              <div className="space-y-2">
+                                <p className="text-sm font-medium">Attachments:</p>
+                                {selectedFiles.map((file, index) => (
+                                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                    <div className="flex items-center gap-2">
+                                      {file.type.startsWith('image/') && <Image className="h-4 w-4" />}
+                                      {file.type.startsWith('video/') && <Video className="h-4 w-4" />}
+                                      <span className="text-sm truncate">{file.name}</span>
+                                    </div>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => removeFile(index)}
+                                    >
+                                      <X className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            
+                            <div className="flex justify-between items-center">
+                              <div className="flex gap-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => fileInputRef.current?.click()}
+                                  disabled={sendingReply || uploading}
+                                >
+                                  <Paperclip className="h-4 w-4 mr-1" />
+                                  Attach
+                                </Button>
+                                <input
+                                  ref={fileInputRef}
+                                  type="file"
+                                  multiple
+                                  accept="image/*,video/*,.pdf"
+                                  onChange={handleFileSelect}
+                                  style={{ display: 'none' }}
+                                />
+                              </div>
+                              
+                              <div className="flex justify-end gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => {
+                                    setReplyingTo(null);
+                                    setReplyMessage('');
+                                    setSelectedFiles([]);
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button 
+                                  size="sm"
+                                  onClick={() => handleReplyToBusiness(businessId)}
+                                  disabled={!replyMessage.trim() || sendingReply || uploading}
+                                >
+                                  {uploading ? (
+                                    <>
+                                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                      Uploading...
+                                    </>
+                                  ) : sendingReply ? (
+                                    <>
+                                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                      Sending...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Send className="h-3 w-3 mr-1" />
+                                      Send Reply
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>
