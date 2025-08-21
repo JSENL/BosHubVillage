@@ -164,6 +164,44 @@ export type Database = {
           },
         ]
       }
+      business_message_media: {
+        Row: {
+          business_message_id: string
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id: string
+        }
+        Insert: {
+          business_message_id: string
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id?: string
+        }
+        Update: {
+          business_message_id?: string
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_message_media_business_message_id_fkey"
+            columns: ["business_message_id"]
+            isOneToOne: false
+            referencedRelation: "business_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_messages: {
         Row: {
           business_id: string
