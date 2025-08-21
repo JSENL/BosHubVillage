@@ -15,7 +15,6 @@ import { MapLegend } from '@/components/map/MapLegend';
 import { MapSearchBox } from '@/components/map/MapSearchBox';
 import { useDirections } from '@/hooks/useDirections';
 import { UnifiedItem } from '@/types/unifiedItem';
-import { useAuth } from '@/hooks/useAuth';
 
 interface EnhancedUniversalMapProps {
   items: UnifiedItem[];
@@ -35,7 +34,6 @@ export const EnhancedUniversalMap = ({
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
   const { mapboxToken, isLoadingApiKey, error } = useMapboxToken();
-  const { isAdmin } = useAuth();
   const { filteredMappableItems } = useItemFiltering({ 
     items: items, // Use the pre-filtered items directly 
     selectedTypes: selectedTypes 
@@ -168,20 +166,18 @@ export const EnhancedUniversalMap = ({
           width: '100%'
         }}
       >
-        {/* Debug overlay - Admin only */}
-        {isAdmin && (
-          <div className="absolute top-2 left-2 bg-black/75 text-white text-xs p-2 rounded z-50">
-            <div>Items: {filteredMappableItems.length}</div>
-            <div>Items w/ Coords: {filteredMappableItems.filter(item => item.latitude && item.longitude).length}</div>
-            <div>Token: {mapboxToken ? '✅' : '❌'}</div>
-            <div>Loading: {isLoadingApiKey ? '⏳' : '✅'}</div>
-            <div>Error: {error || 'None'}</div>
-            <div>MapRef: {mapRef.current ? '✅' : '❌'}</div>
-            <div>MapInstance: {mapInstance ? '✅' : '❌'}</div>
-            <div>Map Loaded: {mapInstance?.loaded?.() ? '✅' : '❌'}</div>
-            <div>Height: {height}</div>
-          </div>
-        )}
+        {/* Debug overlay */}
+        <div className="absolute top-2 left-2 bg-black/75 text-white text-xs p-2 rounded z-50">
+          <div>Items: {filteredMappableItems.length}</div>
+          <div>Items w/ Coords: {filteredMappableItems.filter(item => item.latitude && item.longitude).length}</div>
+          <div>Token: {mapboxToken ? '✅' : '❌'}</div>
+          <div>Loading: {isLoadingApiKey ? '⏳' : '✅'}</div>
+          <div>Error: {error || 'None'}</div>
+          <div>MapRef: {mapRef.current ? '✅' : '❌'}</div>
+          <div>MapInstance: {mapInstance ? '✅' : '❌'}</div>
+          <div>Map Loaded: {mapInstance?.loaded?.() ? '✅' : '❌'}</div>
+          <div>Height: {height}</div>
+        </div>
         
         {isLoadingApiKey ? (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -205,17 +201,15 @@ export const EnhancedUniversalMap = ({
           </div>
         ) : (
           <>
-            {/* Advanced Map State Debugger - Admin only */}
-            {isAdmin && (
-              <MapStateDebugger 
-                mapRef={mapRef}
-                mapInstance={mapInstance}
-                mapboxToken={mapboxToken}
-                isLoadingApiKey={isLoadingApiKey}
-                items={filteredMappableItems}
-                viewMode={viewMode}
-              />
-            )}
+            {/* Advanced Map State Debugger */}
+            <MapStateDebugger 
+              mapRef={mapRef}
+              mapInstance={mapInstance}
+              mapboxToken={mapboxToken}
+              isLoadingApiKey={isLoadingApiKey}
+              items={filteredMappableItems}
+              viewMode={viewMode}
+            />
             <div 
               ref={mapRef} 
               className="absolute inset-0"
