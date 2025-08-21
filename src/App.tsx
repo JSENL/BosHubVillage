@@ -14,9 +14,10 @@ import SubmitBusiness from "./pages/SubmitBusiness";
 import SubmitLocalService from "./pages/SubmitLocalService";
 import SubmitNews from "./pages/SubmitNews";
 import AdminDashboard from "./pages/AdminDashboard";
-
-
-import EventDetails from "./pages/EventDetails";
+import AdminRoute from "./components/routing/AdminRoute";
+ 
+ 
+ import EventDetails from "./pages/EventDetails";
 import BusinessDetails from "./pages/BusinessDetails";
 import BusinessDashboard from "./pages/BusinessDashboard";
 import NewsDetails from "./pages/NewsDetails";
@@ -46,7 +47,7 @@ const App = () => (
             <Route path="/submit-business" element={<SubmitBusiness />} />
             <Route path="/submit-local-resource" element={<SubmitLocalService />} />
             <Route path="/submit-news" element={<SubmitNews />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             
             
             <Route path="/event/:eventId" element={<EventDetails />} />
