@@ -134,14 +134,22 @@ export const Navigation = () => {
                       My Submissions
                     </Link>
                   </DropdownMenuItem>
-                  {(hasOwnedBusinesses || isAdmin) && (
+                  {hasOwnedBusinesses && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/business-dashboard" className="cursor-pointer">
+                        <Building className="h-4 w-4 mr-2" />
+                        Business Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link to="/admin" className="cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
-                          {isAdmin ? 'Admin Dashboard' : 'Business Dashboard'}
-                          {isAdmin && <Badge variant="secondary" className="ml-2">Admin</Badge>}
+                          Admin Dashboard
+                          <Badge variant="secondary" className="ml-2">Admin</Badge>
                         </Link>
                       </DropdownMenuItem>
                     </>

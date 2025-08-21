@@ -2,13 +2,11 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { NewsSubmissionCard } from '@/components/NewsSubmissionCard';
 import { 
   CheckCircle, 
   Newspaper,
-  Trash2,
-  XCircle
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
