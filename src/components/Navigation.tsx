@@ -115,13 +115,17 @@ export const Navigation = () => {
                     Account
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link to="/contact-admin" className="cursor-pointer">
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Contact Admin
-                    </Link>
-                  </DropdownMenuItem>
+                 <DropdownMenuContent align="end">
+                   <div className="px-3 py-2 border-b">
+                     <p className="text-sm font-medium text-gray-900">{user.user_metadata?.full_name || user.user_metadata?.name || 'User'}</p>
+                     <p className="text-xs text-gray-500">{user.email}</p>
+                   </div>
+                   <DropdownMenuItem asChild>
+                     <Link to="/contact-admin" className="cursor-pointer">
+                       <MessageCircle className="h-4 w-4 mr-2" />
+                       Contact Admin
+                     </Link>
+                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/my-messages" className="cursor-pointer">
                       <MessageCircle className="h-4 w-4 mr-2" />
