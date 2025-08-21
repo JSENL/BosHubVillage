@@ -18,7 +18,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 import EventDetails from "./pages/EventDetails";
 import BusinessDetails from "./pages/BusinessDetails";
-import BusinessDashboard from "./pages/BusinessDashboard";
 import NewsDetails from "./pages/NewsDetails";
 import LocalServiceDetails from "./pages/LocalServiceDetails";
 import NewsPage from "./pages/NewsPage";
@@ -51,7 +50,6 @@ const App = () => (
             
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/business/:businessId" element={<BusinessDetails />} />
-            <Route path="/business-dashboard" element={<BusinessDashboard />} />
             <Route path="/news/:newsId" element={<NewsDetails />} />
             <Route path="/news-page" element={<NewsPage />} />
             <Route path="/local-resource/:serviceId" element={<LocalServiceDetails />} />

@@ -7,7 +7,7 @@ import { Navigation } from '@/components/Navigation';
 import AdminEventApproval from '@/components/AdminEventApproval';
 import AdminNewsApproval from '@/components/AdminNewsApproval';
 import AdminLocalResourceApprovalWithGeocoding from '@/components/AdminLocalServiceApprovalWithGeocoding';
-import AdminBusinessApproval from '@/components/AdminBusinessApproval';
+import AdminBusinessManagement from '@/components/admin/AdminBusinessManagement';
 import AdminSubmissionsPanel from '@/components/AdminSubmissionsPanel';
 import ContactAdminMessages from '@/components/admin/ContactAdminMessages';
 import AdminUserManagement from '@/components/admin/AdminUserManagement';
@@ -147,7 +147,7 @@ const AdminDashboard = () => {
                       </TabsContent>
                       
                       <TabsContent value="business">
-                        <AdminBusinessApproval />
+                        <AdminBusinessManagement />
                       </TabsContent>
                       
                       <TabsContent value="news">
