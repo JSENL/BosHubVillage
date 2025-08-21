@@ -166,18 +166,7 @@ export const EnhancedUniversalMap = ({
           width: '100%'
         }}
       >
-        {/* Debug overlay */}
-        <div className="absolute top-2 left-2 bg-black/75 text-white text-xs p-2 rounded z-50">
-          <div>Items: {filteredMappableItems.length}</div>
-          <div>Items w/ Coords: {filteredMappableItems.filter(item => item.latitude && item.longitude).length}</div>
-          <div>Token: {mapboxToken ? '✅' : '❌'}</div>
-          <div>Loading: {isLoadingApiKey ? '⏳' : '✅'}</div>
-          <div>Error: {error || 'None'}</div>
-          <div>MapRef: {mapRef.current ? '✅' : '❌'}</div>
-          <div>MapInstance: {mapInstance ? '✅' : '❌'}</div>
-          <div>Map Loaded: {mapInstance?.loaded?.() ? '✅' : '❌'}</div>
-          <div>Height: {height}</div>
-        </div>
+        {/* Debug overlay - hidden by default */}
         
         {isLoadingApiKey ? (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -201,15 +190,7 @@ export const EnhancedUniversalMap = ({
           </div>
         ) : (
           <>
-            {/* Advanced Map State Debugger */}
-            <MapStateDebugger 
-              mapRef={mapRef}
-              mapInstance={mapInstance}
-              mapboxToken={mapboxToken}
-              isLoadingApiKey={isLoadingApiKey}
-              items={filteredMappableItems}
-              viewMode={viewMode}
-            />
+            {/* Map State Debugger - hidden by default, can be enabled when needed */}
             <div 
               ref={mapRef} 
               className="absolute inset-0"
