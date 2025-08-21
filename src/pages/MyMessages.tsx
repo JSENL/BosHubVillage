@@ -33,6 +33,14 @@ interface BusinessMessage {
   business?: {
     title: string;
   } | null;
+  sender_profile?: {
+    full_name: string | null;
+    email: string;
+  } | null;
+  recipient_profile?: {
+    full_name: string | null;
+    email: string;
+  } | null;
 }
 
 const MyMessages = () => {
@@ -73,11 +81,11 @@ const MyMessages = () => {
 
   const fetchBusinessMessages = async () => {
     try {
+      // Fetch all business messages where user is involved (both sent and received)
       const { data, error } = await supabase
         .from('business_messages')
         .select('*')
-        .eq('recipient_id', user?.id)
-        .eq('is_from_owner', true)
+        .or(`recipient_id.eq.${user?.id},sender_id.eq.${user?.id}`)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -89,13 +97,26 @@ const MyMessages = () => {
         .select('id, title')
         .in('id', businessIds);
 
+      // Get unique user IDs (both senders and recipients) for profiles
+      const allUserIds = [...new Set([
+        ...(data || []).map(msg => msg.sender_id),
+        ...(data || []).map(msg => msg.recipient_id)
+      ])].filter(Boolean);
+      
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', allUserIds);
+
       // Combine the data
-      const messagesWithBusiness = (data || []).map(message => ({
+      const messagesWithDetails = (data || []).map(message => ({
         ...message,
-        business: businesses?.find(b => b.id === message.business_id) || null
+        business: businesses?.find(b => b.id === message.business_id) || null,
+        sender_profile: profiles?.find(p => p.id === message.sender_id) || null,
+        recipient_profile: profiles?.find(p => p.id === message.recipient_id) || null
       }));
 
-      setBusinessMessages(messagesWithBusiness as unknown as BusinessMessage[]);
+      setBusinessMessages(messagesWithDetails as unknown as BusinessMessage[]);
     } catch (error) {
       console.error('Error fetching business messages:', error);
       toast({
@@ -295,29 +316,54 @@ const MyMessages = () => {
               {businessMessages.length === 0 ? (
                 <div className="text-center py-8">
                   <Building className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Business Replies</h3>
-                  <p className="text-gray-600">You'll see replies from business owners here.</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Business Messages</h3>
+                  <p className="text-gray-600">Your conversations with businesses will appear here.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {businessMessages.map((message) => (
-                    <div key={message.id} className="border rounded-lg p-4 space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold">
-                              Reply from {message.business?.title}
-                            </h3>
-                            <Badge variant="secondary">Business Owner</Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Received on {new Date(message.created_at).toLocaleDateString()} at{' '}
-                            {new Date(message.created_at).toLocaleTimeString()}
-                          </p>
-                        </div>
+                <div className="space-y-6">
+                  {/* Group messages by business */}
+                  {Object.entries(
+                    businessMessages.reduce((acc, message) => {
+                      const businessId = message.business_id;
+                      if (!acc[businessId]) {
+                        acc[businessId] = [];
+                      }
+                      acc[businessId].push(message);
+                      return acc;
+                    }, {} as Record<string, BusinessMessage[]>)
+                  ).map(([businessId, messages]) => (
+                    <div key={businessId} className="border rounded-lg p-4 space-y-4">
+                      <div className="border-b pb-2 mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          Conversation with {messages[0].business?.title || 'Unknown Business'}
+                        </h3>
                       </div>
-                      <div className="mt-2 p-3 bg-blue-50 rounded-md">
-                        <p className="text-sm text-blue-900">{message.message}</p>
+                      
+                      <div className="space-y-3">
+                        {messages
+                          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+                          .map((message) => (
+                          <div 
+                            key={message.id} 
+                            className={`p-3 rounded-lg max-w-[80%] ${
+                              message.sender_id === user?.id 
+                                ? 'ml-auto bg-blue-50 border border-blue-200' 
+                                : 'mr-auto bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge variant={message.sender_id === user?.id ? "default" : "secondary"}>
+                                {message.sender_id === user?.id ? "You" : 
+                                 message.is_from_owner ? "Business Owner" : "Customer"}
+                              </Badge>
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(message.created_at).toLocaleDateString()} at{' '}
+                                {new Date(message.created_at).toLocaleTimeString()}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-700">{message.message}</p>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
