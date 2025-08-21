@@ -8,6 +8,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Trash2, Users, Shield, User } from 'lucide-react';
+import { AdminMessageUserDialog } from './AdminMessageUserDialog';
 
 interface UserProfile {
   id: string;
@@ -229,6 +230,12 @@ const AdminUserManagement = () => {
                         <SelectItem value="admin">Admin</SelectItem>
                       </SelectContent>
                     </Select>
+
+                    <AdminMessageUserDialog
+                      userId={userProfile.id}
+                      userName={userProfile.full_name}
+                      userEmail={userProfile.email}
+                    />
 
                     {userProfile.id !== user?.id && (
                       <AlertDialog>

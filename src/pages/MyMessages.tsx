@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Navigation } from '@/components/Navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useUserAnnouncements } from '@/hooks/useUserAnnouncements';
-import { Loader2, Megaphone, MessageSquare, Clock, Users, Building, Reply, Send, X, Paperclip, Image, Video } from 'lucide-react';
+import { Loader2, Megaphone, MessageSquare, Clock, Users, Building, Reply, Send, X, Paperclip, Image, Video, Shield } from 'lucide-react';
 import { BusinessMessageMedia } from '@/components/business/BusinessMessageMedia';
 import { uploadBusinessMessageMedia, saveMediaRecord } from '@/services/businessMessageMediaService';
 
@@ -54,11 +54,26 @@ interface BusinessMessage {
   }>;
 }
 
+interface AdminMessage {
+  id: string;
+  admin_id: string;
+  user_id: string;
+  subject: string | null;
+  message: string;
+  status: string;
+  created_at: string;
+  admin_profile?: {
+    full_name: string | null;
+    email: string;
+  } | null;
+}
+
 const MyMessages = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [messages, setMessages] = useState<ContactAdminMessage[]>([]);
   const [businessMessages, setBusinessMessages] = useState<BusinessMessage[]>([]);
+  const [adminMessages, setAdminMessages] = useState<AdminMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyMessage, setReplyMessage] = useState('');
@@ -72,6 +87,7 @@ const MyMessages = () => {
     if (!user) return;
     fetchMyMessages();
     fetchBusinessMessages();
+    fetchAdminMessages();
   }, [user]);
 
   const fetchMyMessages = async () => {
@@ -149,6 +165,51 @@ const MyMessages = () => {
       toast({
         title: "Error",
         description: "Failed to fetch business messages",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchAdminMessages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_user_messages')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Get admin profiles
+      const adminIds = [...new Set((data || []).map(msg => msg.admin_id))];
+      const { data: adminProfiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', adminIds);
+
+      // Combine the data
+      const messagesWithProfiles = (data || []).map(message => ({
+        ...message,
+        admin_profile: adminProfiles?.find(p => p.id === message.admin_id) || null
+      }));
+
+      setAdminMessages(messagesWithProfiles);
+
+      // Mark messages as read
+      if (data && data.length > 0) {
+        const unreadIds = data.filter(msg => msg.status === 'unread').map(msg => msg.id);
+        if (unreadIds.length > 0) {
+          await supabase
+            .from('admin_user_messages')
+            .update({ status: 'read' })
+            .in('id', unreadIds);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching admin messages:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch admin messages",
         variant: "destructive",
       });
     }
@@ -321,14 +382,18 @@ const MyMessages = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="announcements" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="announcements" className="flex items-center">
                 <Megaphone className="h-4 w-4 mr-2" />
                 Announcements ({announcements.length})
               </TabsTrigger>
+              <TabsTrigger value="admin-messages" className="flex items-center">
+                <Shield className="h-4 w-4 mr-2" />
+                Admin Messages ({adminMessages.length})
+              </TabsTrigger>
               <TabsTrigger value="my-messages" className="flex items-center">
                 <MessageSquare className="h-4 w-4 mr-2" />
-                Admin Messages ({messages.length})
+                Contact Admin ({messages.length})
               </TabsTrigger>
               <TabsTrigger value="business-messages" className="flex items-center">
                 <Building className="h-4 w-4 mr-2" />
@@ -377,6 +442,52 @@ const MyMessages = () => {
                       <div className="mt-4 text-sm text-gray-500">
                         Sent on {new Date(announcement.sent_at!).toLocaleDateString()} at{' '}
                         {new Date(announcement.sent_at!).toLocaleTimeString()}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="admin-messages" className="mt-6">
+              {adminMessages.length === 0 ? (
+                <div className="text-center py-8">
+                  <Shield className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Admin Messages</h3>
+                  <p className="text-gray-600">Messages from administrators will appear here.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {adminMessages.map((message) => (
+                    <div key={message.id} className="border rounded-lg p-4 space-y-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-100 rounded-full">
+                            <Shield className="h-5 w-5 text-blue-600" />
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              {message.subject && (
+                                <h3 className="font-semibold text-gray-900">{message.subject}</h3>
+                              )}
+                              <Badge variant={message.status === 'read' ? 'secondary' : 'default'}>
+                                {message.status}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              From: {message.admin_profile?.full_name || message.admin_profile?.email || 'Administrator'}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Sent on {new Date(message.created_at).toLocaleDateString()} at{' '}
+                              {new Date(message.created_at).toLocaleTimeString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-blue-100">
+                        <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
+                          {message.message}
+                        </div>
                       </div>
                     </div>
                   ))}
