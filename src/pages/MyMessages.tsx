@@ -3,11 +3,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Navigation } from '@/components/Navigation';
 import { useToast } from '@/hooks/use-toast';
 import { useUserAnnouncements } from '@/hooks/useUserAnnouncements';
-import { Loader2, Megaphone, MessageSquare, Clock, Users, Building } from 'lucide-react';
+import { Loader2, Megaphone, MessageSquare, Clock, Users, Building, Reply, Send, X } from 'lucide-react';
 
 interface ContactAdminMessage {
   id: string;
@@ -49,6 +51,9 @@ const MyMessages = () => {
   const [messages, setMessages] = useState<ContactAdminMessage[]>([]);
   const [businessMessages, setBusinessMessages] = useState<BusinessMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const [sendingReply, setSendingReply] = useState(false);
   const { announcements, loading: announcementsLoading } = useUserAnnouncements();
 
   useEffect(() => {
@@ -124,6 +129,44 @@ const MyMessages = () => {
         description: "Failed to fetch business messages",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleReplyToBusiness = async (businessId: string) => {
+    if (!user || !replyMessage.trim()) return;
+
+    setSendingReply(true);
+    try {
+      const { error } = await supabase
+        .from('business_messages')
+        .insert({
+          business_id: businessId,
+          sender_id: user.id,
+          recipient_id: replyingTo,
+          message: replyMessage.trim(),
+          is_from_owner: false,
+          status: 'unread'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Reply sent!",
+        description: "Your reply has been sent to the business.",
+      });
+
+      setReplyMessage('');
+      setReplyingTo(null);
+      fetchBusinessMessages(); // Refresh messages
+    } catch (error) {
+      console.error('Error sending reply:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send reply. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setSendingReply(false);
     }
   };
 
@@ -345,26 +388,97 @@ const MyMessages = () => {
                           .map((message) => (
                           <div 
                             key={message.id} 
-                            className={`p-3 rounded-lg max-w-[80%] ${
+                          className={`p-3 rounded-lg max-w-[80%] ${
                               message.sender_id === user?.id 
                                 ? 'ml-auto bg-blue-50 border border-blue-200' 
                                 : 'mr-auto bg-gray-50 border border-gray-200'
                             }`}
                           >
-                            <div className="flex items-center gap-2 mb-2">
-                              <Badge variant={message.sender_id === user?.id ? "default" : "secondary"}>
-                                {message.sender_id === user?.id ? "You" : 
-                                 message.is_from_owner ? "Business Owner" : "Customer"}
-                              </Badge>
-                              <span className="text-xs text-muted-foreground">
-                                {new Date(message.created_at).toLocaleDateString()} at{' '}
-                                {new Date(message.created_at).toLocaleTimeString()}
-                              </span>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <Badge variant={message.sender_id === user?.id ? "default" : "secondary"}>
+                                  {message.sender_id === user?.id ? "You" : 
+                                   message.is_from_owner ? "Business Owner" : "Customer"}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(message.created_at).toLocaleDateString()} at{' '}
+                                  {new Date(message.created_at).toLocaleTimeString()}
+                                </span>
+                              </div>
+                              {message.sender_id !== user?.id && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setReplyingTo(message.sender_id)}
+                                  className="h-6 px-2"
+                                >
+                                  <Reply className="h-3 w-3 mr-1" />
+                                  Reply
+                                </Button>
+                              )}
                             </div>
                             <p className="text-sm text-gray-700">{message.message}</p>
                           </div>
                         ))}
                       </div>
+                      
+                      {/* Reply Form */}
+                      {replyingTo && (
+                        <Card className="mt-4 border-blue-200">
+                          <CardHeader className="pb-2">
+                            <div className="flex items-center justify-between">
+                              <CardTitle className="text-sm">Reply to {messages[0].business?.title}</CardTitle>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setReplyingTo(null);
+                                  setReplyMessage('');
+                                }}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <Textarea
+                              placeholder="Type your reply..."
+                              value={replyMessage}
+                              onChange={(e) => setReplyMessage(e.target.value)}
+                              rows={3}
+                            />
+                            <div className="flex justify-end gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => {
+                                  setReplyingTo(null);
+                                  setReplyMessage('');
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button 
+                                size="sm"
+                                onClick={() => handleReplyToBusiness(businessId)}
+                                disabled={!replyMessage.trim() || sendingReply}
+                              >
+                                {sendingReply ? (
+                                  <>
+                                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                    Sending...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Send className="h-3 w-3 mr-1" />
+                                    Send Reply
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
                     </div>
                   ))}
                 </div>
