@@ -10,16 +10,7 @@ export const useBusiness = () => {
       
       const { data, error } = await supabase
         .from('business')
-        .select(`
-          *,
-          business_owner (
-            owner_id,
-            profiles:owner_id (
-              full_name,
-              email
-            )
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
       
       if (error) {
