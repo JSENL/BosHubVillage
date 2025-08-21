@@ -43,29 +43,12 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
           .single();
         
         if (businessData?.created_by) {
-          // Business ownership should have been created by the trigger, but let's ensure it
-          const { error: ownershipError } = await supabase
-            .from('business_owner')
-            .insert({
-              business_id: businessId,
-              owner_id: businessData.created_by
-            });
-          
-          if (ownershipError && !ownershipError.message.includes('duplicate')) {
-            console.error('Error creating business ownership:', ownershipError);
-            toast({
-              title: "Unable to send message",
-              description: "Could not establish business ownership.",
-              variant: "destructive",
-            });
-            return;
-          }
-          
+          // Fallback to the business creator as the owner (no client-side ownership creation)
           recipientId = businessData.created_by;
         } else {
           toast({
             title: "Unable to send message",
-            description: "This business doesn't have an owner yet.",
+            description: "This business doesn't have an owner on record yet.",
             variant: "destructive",
           });
           return;
