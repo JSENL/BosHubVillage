@@ -57,19 +57,36 @@ export const useBusinessSubmissionOperations = () => {
 
         // If the submitter indicated ownership, create ownership record
         if (submission.is_owner && insertedBusiness?.id) {
-          const { error: ownerInsertError } = await supabase
+          // Check if ownership record already exists
+          const { data: existingOwnership } = await supabase
             .from('business_owner')
-            .insert({
-              business_id: insertedBusiness.id,
-              owner_id: submission.submitted_by
-            });
+            .select('id')
+            .eq('business_id', insertedBusiness.id)
+            .eq('owner_id', submission.submitted_by)
+            .single();
 
-          if (ownerInsertError) {
-            console.error('❌ Error creating business ownership:', ownerInsertError);
-            throw ownerInsertError;
+          if (!existingOwnership) {
+            const { error: ownerInsertError } = await supabase
+              .from('business_owner')
+              .insert({
+                business_id: insertedBusiness.id,
+                owner_id: submission.submitted_by
+              });
+
+            if (ownerInsertError) {
+              // If it's a duplicate key error, that's okay - ownership already exists
+              if (ownerInsertError.code !== '23505') {
+                console.error('❌ Error creating business ownership:', ownerInsertError);
+                throw ownerInsertError;
+              } else {
+                console.log('ℹ️ Ownership record already exists');
+              }
+            } else {
+              console.log('👤 Ownership recorded: submitter is the business owner');
+            }
+          } else {
+            console.log('ℹ️ Ownership record already exists');
           }
-
-          console.log('👤 Ownership recorded: submitter is the business owner');
         }
       }
 
