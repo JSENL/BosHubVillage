@@ -448,7 +448,7 @@ const Index = () => {
                     <p className="mt-2 text-sm text-gray-600">Loading content...</p>
                   </div>
                 ) : filteredItems.length > 0 ? (
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                  <div className="space-y-3">
                     {filteredItems.map(renderItem)}
                   </div>
                 ) : (
