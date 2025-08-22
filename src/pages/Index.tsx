@@ -394,25 +394,25 @@ const Index = () => {
           
           {/* Top search and view toggle bar */}
           <div className="px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between bg-white rounded-lg shadow-sm border p-4">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white rounded-lg shadow-sm border p-4 gap-3">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
                 <SidebarTrigger className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-caribbean-teal border border-caribbean-teal rounded-lg hover:bg-caribbean-teal hover:text-white transition-colors">
                   <Filter className="h-4 w-4" />
-                  Filters
+                  <span className="hidden sm:inline">Filters</span>
                 </SidebarTrigger>
-                <div className="relative">
+                <div className="relative flex-1 sm:flex-none">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
                     placeholder="Search events, businesses, local services..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 w-64 md:w-80"
+                    className="pl-10 w-full sm:w-64 md:w-80"
                   />
                 </div>
               </div>
               <button
                 onClick={() => handleViewModeChange('map')}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-caribbean-teal border border-caribbean-teal rounded-lg hover:bg-caribbean-teal hover:text-white transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-caribbean-teal border border-caribbean-teal rounded-lg hover:bg-caribbean-teal hover:text-white transition-colors w-full sm:w-auto justify-center"
               >
                 <Map className="h-4 w-4" />
                 Map View
@@ -421,15 +421,19 @@ const Index = () => {
           </div>
           
           <div className="flex w-full">
-            {/* Collapsible Filters Sidebar */}
-            <Sidebar collapsible="offcanvas" className="border-r bg-white">
+            {/* Collapsible Filters Sidebar - Mobile responsive */}
+            <Sidebar 
+              collapsible="offcanvas" 
+              className="border-r bg-white w-80 lg:w-96"
+              side="left"
+            >
               <SidebarHeader className="border-b p-4">
                 <div className="flex items-center gap-2">
                   <Filter className="h-5 w-5 text-caribbean-teal" />
                   <h3 className="font-semibold text-gray-900">Filters</h3>
                 </div>
               </SidebarHeader>
-              <SidebarContent className="p-4">
+              <SidebarContent className="p-4 overflow-y-auto">
                 <UniversalFilters
                   allItems={allItems}
                   searchTerm={searchTerm}
