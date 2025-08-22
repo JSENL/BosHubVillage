@@ -81,11 +81,13 @@ export const ListViewFilters = ({
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
-              className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50"
+              className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 rounded-lg"
             >
               <div className="flex items-center gap-2">
                 <Filter className="h-5 w-5 text-caribbean-teal" />
-                <span className="font-semibold text-gray-900">Filters</span>
+                <span className="font-semibold text-gray-900">
+                  {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+                </span>
                 <span className="text-sm text-gray-500">({filteredItemsCount} items found)</span>
               </div>
               {isFiltersOpen ? (
@@ -96,8 +98,8 @@ export const ListViewFilters = ({
             </Button>
           </CollapsibleTrigger>
           
-          <CollapsibleContent className="border-t">
-            <div className="p-4">
+          <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
+            <div className="border-t p-4">
               <UniversalFilters
                 allItems={allItems}
                 searchTerm={searchTerm}
