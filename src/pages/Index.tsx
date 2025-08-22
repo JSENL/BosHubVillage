@@ -392,9 +392,37 @@ const Index = () => {
           <Navigation />
           <HeroSection title="Welcome to HubVillage" subtitle="Discover amazing events, businesses, and news in your area" />
           
+          {/* Top search and view toggle bar */}
+          <div className="px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between bg-white rounded-lg shadow-sm border p-4">
+              <div className="flex items-center gap-3">
+                <SidebarTrigger className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-caribbean-teal border border-caribbean-teal rounded-lg hover:bg-caribbean-teal hover:text-white transition-colors">
+                  <Filter className="h-4 w-4" />
+                  Filters
+                </SidebarTrigger>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Search events, businesses, local services..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 w-64 md:w-80"
+                  />
+                </div>
+              </div>
+              <button
+                onClick={() => handleViewModeChange('map')}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-caribbean-teal border border-caribbean-teal rounded-lg hover:bg-caribbean-teal hover:text-white transition-colors"
+              >
+                <Map className="h-4 w-4" />
+                Map View
+              </button>
+            </div>
+          </div>
+          
           <div className="flex w-full">
-            {/* Filters Sidebar */}
-            <Sidebar className="w-80 border-r bg-white">
+            {/* Collapsible Filters Sidebar */}
+            <Sidebar collapsible="offcanvas" className="border-r bg-white">
               <SidebarHeader className="border-b p-4">
                 <div className="flex items-center gap-2">
                   <Filter className="h-5 w-5 text-caribbean-teal" />
