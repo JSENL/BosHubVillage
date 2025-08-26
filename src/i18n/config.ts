@@ -43,6 +43,9 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+    react: {
+      useSuspense: false, // This prevents React from suspending during language changes
+    },
   });
 
 export default i18n;
