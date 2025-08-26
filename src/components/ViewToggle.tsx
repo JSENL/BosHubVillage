@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { 
   Grid3X3, 
@@ -13,6 +14,7 @@ interface ViewToggleProps {
 }
 
 export const ViewToggle = ({ viewMode, onViewModeChange }: ViewToggleProps) => {
+  const { t } = useTranslation();
   return (
     <div className="flex justify-center sm:justify-end">
       <ToggleGroup
