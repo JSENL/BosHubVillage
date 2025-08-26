@@ -174,7 +174,7 @@ const RefactoredIndex = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
-      <HeroSection title="Welcome to HubVillage" subtitle="Discover amazing events, businesses, and news in your area" />
+      <HeroSection />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
         <div className="space-y-4 md:space-y-6">
