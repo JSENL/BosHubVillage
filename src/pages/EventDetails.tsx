@@ -10,17 +10,12 @@ import { Navigation } from '@/components/Navigation';
 import { SocialShare } from '@/components/SocialShare';
 import { CalendarShare } from '@/components/CalendarShare';
 import { EventRegistrationForm } from '@/components/EventRegistrationForm';
-import { useContentTranslation } from '@/hooks/useTranslation';
-import { useTranslation } from 'react-i18next';
-import { EventTranslationDebug } from '@/components/EventTranslationDebug';
 import { useState } from 'react';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { events, loading } = useEvents();
-  const { getTranslatedField } = useContentTranslation();
-  const { t } = useTranslation();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   if (loading) {
@@ -50,12 +45,6 @@ const EventDetails = () => {
     );
   }
 
-  // Get translated content
-  const translatedTitle = getTranslatedField(event, 'title', 'events');
-  const translatedDescription = getTranslatedField(event, 'description', 'events');
-  const translatedLocation = getTranslatedField(event, 'location', 'events');
-  const translatedCategory = getTranslatedField(event, 'category', 'events');
-
   const formatTimeRange = (startTime: string, endTime: string) => {
     if (!startTime && !endTime) return 'Time TBD';
     if (startTime && endTime) {
@@ -76,7 +65,7 @@ const EventDetails = () => {
             <CardContent className="p-8">
               <div className="flex justify-between items-start mb-6">
                 <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-sm">
-                  {translatedCategory}
+                  {event.category}
                 </Badge>
                 <div className="flex items-center text-2xl font-bold text-purple-600">
                   <DollarSign className="h-6 w-6 mr-1" />
@@ -84,8 +73,8 @@ const EventDetails = () => {
                 </div>
               </div>
 
-              <h1 className="text-4xl font-bold text-gray-800 mb-4">{translatedTitle}</h1>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">{translatedDescription}</p>
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">{event.title}</h1>
+              <p className="text-lg text-gray-700 mb-8 leading-relaxed">{event.description}</p>
 
               {/* Event Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -107,15 +96,15 @@ const EventDetails = () => {
                 <div className="flex items-center space-x-3 p-4 bg-purple-50 rounded-lg">
                   <MapPin className="h-6 w-6 text-purple-500" />
                   <div>
-                    <div className="font-semibold text-gray-800">{t('cards.location')}</div>
-                    <div className="text-gray-600">{translatedLocation}</div>
+                    <div className="font-semibold text-gray-800">Location</div>
+                    <div className="text-gray-600">{event.location}</div>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3 p-4 bg-purple-50 rounded-lg">
                   <Users className="h-6 w-6 text-purple-500" />
                   <div>
-                    <div className="font-semibold text-gray-800">{t('cards.attendees')}</div>
+                    <div className="font-semibold text-gray-800">Attendees</div>
                     <div className="text-gray-600">
                       {event.attendees_count || 0} attending
                       {event.max_attendees && (
@@ -136,7 +125,7 @@ const EventDetails = () => {
                     className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    {t('cards.viewDetails')}
+                    Visit Event Website
                   </a>
                 </div>
               )}
@@ -153,18 +142,18 @@ const EventDetails = () => {
                   </Button>
                 )}
                 <SocialShare 
-                  title={translatedTitle}
-                  description={translatedDescription || `Join us for ${translatedTitle} on ${new Date(event.date).toLocaleDateString()}`}
+                  title={event.title}
+                  description={event.description || `Join us for ${event.title} on ${new Date(event.date).toLocaleDateString()}`}
                   url={window.location.href}
-                  hashtags={[translatedCategory.toLowerCase().replace(/\s+/g, ''), 'event', 'community']}
+                  hashtags={[event.category.toLowerCase().replace(/\s+/g, ''), 'event', 'community']}
                 />
                 <CalendarShare
-                  title={translatedTitle}
-                  description={translatedDescription || `Join us for ${translatedTitle}`}
+                  title={event.title}
+                  description={event.description || `Join us for ${event.title}`}
                   startDate={event.date}
                   startTime={event.start_time}
                   endTime={event.end_time}
-                  location={translatedLocation}
+                  location={event.location}
                 />
               </div>
             </CardContent>
@@ -177,14 +166,11 @@ const EventDetails = () => {
             </CardContent>
           </Card>
           
-          {/* Debug Component */}
-          <EventTranslationDebug />
-
           {/* Registration Form Modal */}
           {event.registration_required && (
             <EventRegistrationForm
               eventId={event.id}
-              eventTitle={translatedTitle}
+              eventTitle={event.title}
               isOpen={showRegistrationForm}
               onClose={() => setShowRegistrationForm(false)}
             />

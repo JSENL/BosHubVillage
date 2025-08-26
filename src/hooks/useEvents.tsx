@@ -6,17 +6,13 @@ import { toast } from 'sonner';
 export interface Event {
   id: string;
   title: string;
-  title_translations?: any;
   description: string;
-  description_translations?: any;
   category: string;
-  category_translations?: any;
   event_type: string;
   date: string;
   start_time: string;
   end_time: string;
   location: string;
-  location_translations?: any;
   address?: string;
   website_link?: string;
   price: number;
