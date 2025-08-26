@@ -28,9 +28,9 @@ export const MapboxProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           return;
         }
 
-        if (data?.apiKey) {
+        if (data?.mapboxKey) {
           console.log('✅ Mapbox API key fetched successfully');
-          setMapboxToken(data.apiKey);
+          setMapboxToken(data.mapboxKey);
         } else {
           console.error('No API key returned from edge function');
           setError('No API key configured');
