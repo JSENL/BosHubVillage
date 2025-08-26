@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
 import { Business } from '@/types/business';
 import { Link } from 'react-router-dom';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 
 interface BusinessCardProps {
@@ -12,13 +13,12 @@ interface BusinessCardProps {
 
 const BusinessCard = ({ business }: BusinessCardProps) => {
   const { t } = useTranslation();
-  
-
-  // Use original content directly (no translations)
-  const translatedTitle = business.title;
-  const translatedDescription = business.description;
-  const translatedShortDescription = business.short_description;
-  const translatedAddress = business.address;
+  const { getTranslatedField } = useContentTranslation();
+  // Get translated content from pre-populated database translations
+  const translatedTitle = getTranslatedField(business, 'title', 'business');
+  const translatedDescription = getTranslatedField(business, 'description', 'business');
+  const translatedShortDescription = getTranslatedField(business, 'short_description', 'business');
+  const translatedAddress = getTranslatedField(business, 'address', 'business');
 
   return (
     <Link to={`/business/${business.id}`}>

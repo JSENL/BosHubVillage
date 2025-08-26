@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 
 interface Event {
@@ -30,8 +31,7 @@ interface EventCardProps {
 export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
-  
+  const { getTranslatedField } = useContentTranslation();
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);
   };
@@ -70,11 +70,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const rating = Math.floor(Math.random() * 2) + 4; // 4-5 stars
   const reviewCount = Math.floor(Math.random() * 500) + 50;
 
-  // Use original content directly (no translations)
-  const translatedTitle = event.title;
-  const translatedDescription = event.description;
-  const translatedLocation = event.location;
-  const translatedCategory = event.category;
+  // Get translated content from pre-populated database translations
+  const translatedTitle = getTranslatedField(event, 'title', 'events');
+  const translatedDescription = getTranslatedField(event, 'description', 'events');
+  const translatedLocation = getTranslatedField(event, 'location', 'events');
+  const translatedCategory = getTranslatedField(event, 'category', 'events');
 
   if (viewMode === 'list') {
     return (

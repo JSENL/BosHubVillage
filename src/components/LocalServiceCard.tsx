@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
 import { useNavigate } from 'react-router-dom';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 
 interface LocalServiceCardProps {
@@ -14,12 +15,11 @@ interface LocalServiceCardProps {
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  
-
-  // Use original content directly (no translations)
-  const translatedName = localService.name;
-  const translatedDescription = localService.description;
-  const translatedAddress = localService.address;
+  const { getTranslatedField } = useContentTranslation();
+  // Get translated content from pre-populated database translations
+  const translatedName = getTranslatedField(localService, 'name', 'local_resources');
+  const translatedDescription = getTranslatedField(localService, 'description', 'local_resources');
+  const translatedAddress = getTranslatedField(localService, 'address', 'local_resources');
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
