@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "返回首页",
+    "news": "新闻",
+    "submit": "提交",
+    "submitEvent": "提交活动",
+    "submitBusiness": "提交商业",
+    "submitNews": "提交新闻",
+    "submitLocalService": "提交本地服务",
+    "contactAdmin": "联系管理员",
+    "myMessages": "我的消息",
+    "mySubmissions": "我的提交",
+    "businessDashboard": "商业仪表板",
+    "adminDashboard": "管理仪表板",
+    "signOut": "登出",
+    "signIn": "登录"
+  },
+  "hero": {
+    "title": "发现您的本地社区",
+    "subtitle": "在您的社区中查找活动、新闻、商业和服务"
+  },
+  "search": {
+    "placeholder": "搜索活动、新闻、商业和服务...",
+    "refreshData": "刷新数据"
+  },
+  "filters": {
+    "showFilters": "显示筛选器",
+    "hideFilters": "隐藏筛选器",
+    "filters": "筛选器",
+    "itemsFound": "找到项目",
+    "clearAll": "清除全部",
+    "type": "类型",
+    "category": "类别",
+    "neighborhood": "社区",
+    "village": "村庄",
+    "dateRange": "日期范围"
+  },
+  "viewToggle": {
+    "map": "地图",
+    "list": "列表"
+  },
+  "map": {
+    "noItemsFound": "未找到项目",
+    "tryAdjusting": "尝试调整您的搜索条件或浏览所有项目。",
+    "refreshData": "刷新数据"
+  },
+  "summary": {
+    "totalItems": "总项目",
+    "mappableItems": "可映射项目",
+    "lastUpdated": "最后更新",
+    "realTimeUpdates": "已启用实时更新"
+  },
+  "itemTypes": {
+    "events": "活动",
+    "news": "新闻",
+    "businesses": "商业",
+    "localServices": "本地服务"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "retry": "重试",
+    "save": "保存",
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "view": "查看",
+    "share": "分享",
+    "comments": "评论",
+    "like": "点赞",
+    "unlike": "取消点赞"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "Voltar ao início",
+    "news": "Notícias",
+    "submit": "Enviar",
+    "submitEvent": "Enviar evento",
+    "submitBusiness": "Enviar negócio",
+    "submitNews": "Enviar notícias",
+    "submitLocalService": "Enviar serviço local",
+    "contactAdmin": "Contactar administrador",
+    "myMessages": "As minhas mensagens",
+    "mySubmissions": "As minhas submissões",
+    "businessDashboard": "Painel de negócios",
+    "adminDashboard": "Painel de administração",
+    "signOut": "Sair",
+    "signIn": "Entrar"
+  },
+  "hero": {
+    "title": "Descubra a sua comunidade local",
+    "subtitle": "Encontre eventos, notícias, negócios e serviços no seu bairro"
+  },
+  "search": {
+    "placeholder": "Procurar eventos, notícias, negócios e serviços...",
+    "refreshData": "Atualizar dados"
+  },
+  "filters": {
+    "showFilters": "Mostrar filtros",
+    "hideFilters": "Esconder filtros",
+    "filters": "Filtros",
+    "itemsFound": "itens encontrados",
+    "clearAll": "Limpar tudo",
+    "type": "Tipo",
+    "category": "Categoria",
+    "neighborhood": "Bairro",
+    "village": "Aldeia",
+    "dateRange": "Intervalo de datas"
+  },
+  "viewToggle": {
+    "map": "Mapa",
+    "list": "Lista"
+  },
+  "map": {
+    "noItemsFound": "Nenhum item encontrado",
+    "tryAdjusting": "Tente ajustar os seus critérios de pesquisa ou navegue por todos os itens.",
+    "refreshData": "Atualizar dados"
+  },
+  "summary": {
+    "totalItems": "Total de itens",
+    "mappableItems": "Itens mapeáveis",
+    "lastUpdated": "Última atualização",
+    "realTimeUpdates": "Atualizações em tempo real ativadas"
+  },
+  "itemTypes": {
+    "events": "Eventos",
+    "news": "Notícias",
+    "businesses": "Negócios",
+    "localServices": "Serviços locais"
+  },
+  "common": {
+    "loading": "A carregar...",
+    "error": "Erro",
+    "retry": "Tentar novamente",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "view": "Ver",
+    "share": "Partilhar",
+    "comments": "Comentários",
+    "like": "Gosto",
+    "unlike": "Já não gosto"
+  }
+}

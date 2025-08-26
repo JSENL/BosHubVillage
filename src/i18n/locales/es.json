@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "Volver al inicio",
+    "news": "Noticias",
+    "submit": "Enviar",
+    "submitEvent": "Enviar evento",
+    "submitBusiness": "Enviar negocio",
+    "submitNews": "Enviar noticias",
+    "submitLocalService": "Enviar servicio local",
+    "contactAdmin": "Contactar administrador",
+    "myMessages": "Mis mensajes",
+    "mySubmissions": "Mis envíos",
+    "businessDashboard": "Panel de negocios",
+    "adminDashboard": "Panel de administración",
+    "signOut": "Cerrar sesión",
+    "signIn": "Iniciar sesión"
+  },
+  "hero": {
+    "title": "Descubre tu comunidad local",
+    "subtitle": "Encuentra eventos, noticias, negocios y servicios en tu vecindario"
+  },
+  "search": {
+    "placeholder": "Buscar eventos, noticias, negocios y servicios...",
+    "refreshData": "Actualizar datos"
+  },
+  "filters": {
+    "showFilters": "Mostrar filtros",
+    "hideFilters": "Ocultar filtros",
+    "filters": "Filtros",
+    "itemsFound": "elementos encontrados",
+    "clearAll": "Limpiar todo",
+    "type": "Tipo",
+    "category": "Categoría",
+    "neighborhood": "Vecindario",
+    "village": "Pueblo",
+    "dateRange": "Rango de fechas"
+  },
+  "viewToggle": {
+    "map": "Mapa",
+    "list": "Lista"
+  },
+  "map": {
+    "noItemsFound": "No se encontraron elementos",
+    "tryAdjusting": "Intenta ajustar tus criterios de búsqueda o navega por todos los elementos.",
+    "refreshData": "Actualizar datos"
+  },
+  "summary": {
+    "totalItems": "Total de elementos",
+    "mappableItems": "Elementos mapeables",
+    "lastUpdated": "Última actualización",
+    "realTimeUpdates": "Actualizaciones en tiempo real habilitadas"
+  },
+  "itemTypes": {
+    "events": "Eventos",
+    "news": "Noticias",
+    "businesses": "Negocios",
+    "localServices": "Servicios locales"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "retry": "Reintentar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "view": "Ver",
+    "share": "Compartir",
+    "comments": "Comentarios",
+    "like": "Me gusta",
+    "unlike": "Ya no me gusta"
+  }
+}

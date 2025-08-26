@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "Về trang chủ",
+    "news": "Tin tức",
+    "submit": "Gửi",
+    "submitEvent": "Gửi sự kiện",
+    "submitBusiness": "Gửi doanh nghiệp",
+    "submitNews": "Gửi tin tức",
+    "submitLocalService": "Gửi dịch vụ địa phương",
+    "contactAdmin": "Liên hệ quản trị viên",
+    "myMessages": "Tin nhắn của tôi",
+    "mySubmissions": "Bài gửi của tôi",
+    "businessDashboard": "Bảng điều khiển doanh nghiệp",
+    "adminDashboard": "Bảng điều khiển quản trị",
+    "signOut": "Đăng xuất",
+    "signIn": "Đăng nhập"
+  },
+  "hero": {
+    "title": "Khám phá cộng đồng địa phương của bạn",
+    "subtitle": "Tìm sự kiện, tin tức, doanh nghiệp và dịch vụ trong khu phố của bạn"
+  },
+  "search": {
+    "placeholder": "Tìm kiếm sự kiện, tin tức, doanh nghiệp và dịch vụ...",
+    "refreshData": "Làm mới dữ liệu"
+  },
+  "filters": {
+    "showFilters": "Hiển thị bộ lọc",
+    "hideFilters": "Ẩn bộ lọc",
+    "filters": "Bộ lọc",
+    "itemsFound": "mục được tìm thấy",
+    "clearAll": "Xóa tất cả",
+    "type": "Loại",
+    "category": "Danh mục",
+    "neighborhood": "Khu phố",
+    "village": "Làng",
+    "dateRange": "Khoảng thời gian"
+  },
+  "viewToggle": {
+    "map": "Bản đồ",
+    "list": "Danh sách"
+  },
+  "map": {
+    "noItemsFound": "Không tìm thấy mục nào",
+    "tryAdjusting": "Thử điều chỉnh tiêu chí tìm kiếm hoặc duyệt tất cả các mục.",
+    "refreshData": "Làm mới dữ liệu"
+  },
+  "summary": {
+    "totalItems": "Tổng số mục",
+    "mappableItems": "Mục có thể ánh xạ",
+    "lastUpdated": "Cập nhật lần cuối",
+    "realTimeUpdates": "Cập nhật thời gian thực được bật"
+  },
+  "itemTypes": {
+    "events": "Sự kiện",
+    "news": "Tin tức",
+    "businesses": "Doanh nghiệp",
+    "localServices": "Dịch vụ địa phương"
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "retry": "Thử lại",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "view": "Xem",
+    "share": "Chia sẻ",
+    "comments": "Bình luận",
+    "like": "Thích",
+    "unlike": "Bỏ thích"
+  }
+}

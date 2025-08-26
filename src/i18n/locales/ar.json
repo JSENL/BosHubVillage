@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "العودة للرئيسية",
+    "news": "الأخبار",
+    "submit": "إرسال",
+    "submitEvent": "إرسال حدث",
+    "submitBusiness": "إرسال نشاط تجاري",
+    "submitNews": "إرسال أخبار",
+    "submitLocalService": "إرسال خدمة محلية",
+    "contactAdmin": "الاتصال بالمدير",
+    "myMessages": "رسائلي",
+    "mySubmissions": "مشاركاتي",
+    "businessDashboard": "لوحة النشاط التجاري",
+    "adminDashboard": "لوحة الإدارة",
+    "signOut": "تسجيل خروج",
+    "signIn": "تسجيل دخول"
+  },
+  "hero": {
+    "title": "اكتشف مجتمعك المحلي",
+    "subtitle": "ابحث عن الأحداث والأخبار والشركات والخدمات في منطقتك"
+  },
+  "search": {
+    "placeholder": "البحث عن الأحداث والأخبار والشركات والخدمات...",
+    "refreshData": "تحديث البيانات"
+  },
+  "filters": {
+    "showFilters": "إظهار المرشحات",
+    "hideFilters": "إخفاء المرشحات",
+    "filters": "المرشحات",
+    "itemsFound": "عنصر موجود",
+    "clearAll": "مسح الكل",
+    "type": "النوع",
+    "category": "الفئة",
+    "neighborhood": "الحي",
+    "village": "القرية",
+    "dateRange": "نطاق التاريخ"
+  },
+  "viewToggle": {
+    "map": "الخريطة",
+    "list": "القائمة"
+  },
+  "map": {
+    "noItemsFound": "لم يتم العثور على عناصر",
+    "tryAdjusting": "حاول تعديل معايير البحث أو تصفح جميع العناصر.",
+    "refreshData": "تحديث البيانات"
+  },
+  "summary": {
+    "totalItems": "إجمالي العناصر",
+    "mappableItems": "العناصر القابلة للخرائط",
+    "lastUpdated": "آخر تحديث",
+    "realTimeUpdates": "التحديثات الفورية مفعلة"
+  },
+  "itemTypes": {
+    "events": "الأحداث",
+    "news": "الأخبار",
+    "businesses": "الشركات",
+    "localServices": "الخدمات المحلية"
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "retry": "إعادة المحاولة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تحرير",
+    "delete": "حذف",
+    "view": "عرض",
+    "share": "مشاركة",
+    "comments": "التعليقات",
+    "like": "إعجاب",
+    "unlike": "إلغاء الإعجاب"
+  }
+}

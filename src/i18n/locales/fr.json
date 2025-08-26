@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "Retour à l'accueil",
+    "news": "Actualités",
+    "submit": "Soumettre",
+    "submitEvent": "Soumettre un événement",
+    "submitBusiness": "Soumettre une entreprise",
+    "submitNews": "Soumettre des actualités",
+    "submitLocalService": "Soumettre un service local",
+    "contactAdmin": "Contacter l'administrateur",
+    "myMessages": "Mes messages",
+    "mySubmissions": "Mes soumissions",
+    "businessDashboard": "Tableau de bord entreprise",
+    "adminDashboard": "Tableau de bord admin",
+    "signOut": "Se déconnecter",
+    "signIn": "Se connecter"
+  },
+  "hero": {
+    "title": "Découvrez votre communauté locale",
+    "subtitle": "Trouvez des événements, actualités, entreprises et services dans votre quartier"
+  },
+  "search": {
+    "placeholder": "Rechercher événements, actualités, entreprises et services...",
+    "refreshData": "Actualiser les données"
+  },
+  "filters": {
+    "showFilters": "Afficher les filtres",
+    "hideFilters": "Masquer les filtres",
+    "filters": "Filtres",
+    "itemsFound": "éléments trouvés",
+    "clearAll": "Tout effacer",
+    "type": "Type",
+    "category": "Catégorie",
+    "neighborhood": "Quartier",
+    "village": "Village",
+    "dateRange": "Plage de dates"
+  },
+  "viewToggle": {
+    "map": "Carte",
+    "list": "Liste"
+  },
+  "map": {
+    "noItemsFound": "Aucun élément trouvé",
+    "tryAdjusting": "Essayez d'ajuster vos critères de recherche ou parcourez tous les éléments.",
+    "refreshData": "Actualiser les données"
+  },
+  "summary": {
+    "totalItems": "Total des éléments",
+    "mappableItems": "Éléments cartographiables",
+    "lastUpdated": "Dernière mise à jour",
+    "realTimeUpdates": "Mises à jour en temps réel activées"
+  },
+  "itemTypes": {
+    "events": "Événements",
+    "news": "Actualités",
+    "businesses": "Entreprises", 
+    "localServices": "Services locaux"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "retry": "Réessayer",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "view": "Voir",
+    "share": "Partager",
+    "comments": "Commentaires",
+    "like": "J'aime",
+    "unlike": "Je n'aime plus"
+  }
+}

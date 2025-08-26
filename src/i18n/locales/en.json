@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "Back to Home",
+    "news": "News",
+    "submit": "Submit",
+    "submitEvent": "Submit Event",
+    "submitBusiness": "Submit Business",
+    "submitNews": "Submit News",
+    "submitLocalService": "Submit Local Service",
+    "contactAdmin": "Contact Admin",
+    "myMessages": "My Messages",
+    "mySubmissions": "My Submissions",
+    "businessDashboard": "Business Dashboard",
+    "adminDashboard": "Admin Dashboard",
+    "signOut": "Sign Out",
+    "signIn": "Sign In"
+  },
+  "hero": {
+    "title": "Discover Your Local Community",
+    "subtitle": "Find events, news, businesses, and services in your neighborhood"
+  },
+  "search": {
+    "placeholder": "Search events, news, businesses, and services...",
+    "refreshData": "Refresh Data"
+  },
+  "filters": {
+    "showFilters": "Show Filters",
+    "hideFilters": "Hide Filters",
+    "filters": "Filters",
+    "itemsFound": "items found",
+    "clearAll": "Clear All",
+    "type": "Type",
+    "category": "Category",
+    "neighborhood": "Neighborhood",
+    "village": "Village",
+    "dateRange": "Date Range"
+  },
+  "viewToggle": {
+    "map": "Map",
+    "list": "List"
+  },
+  "map": {
+    "noItemsFound": "No items found",
+    "tryAdjusting": "Try adjusting your search criteria or browse all items.",
+    "refreshData": "Refresh Data"
+  },
+  "summary": {
+    "totalItems": "Total Items",
+    "mappableItems": "Mappable Items",
+    "lastUpdated": "Last updated",
+    "realTimeUpdates": "Real-time updates enabled"
+  },
+  "itemTypes": {
+    "events": "Events",
+    "news": "News", 
+    "businesses": "Businesses",
+    "localServices": "Local Services"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "share": "Share",
+    "comments": "Comments",
+    "like": "Like",
+    "unlike": "Unlike"
+  }
+}

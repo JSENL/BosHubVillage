@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Search, Map, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { UnifiedItem } from "@/types/unifiedItem";
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ListViewFiltersProps {
   allItems: UnifiedItem[];
@@ -47,6 +48,7 @@ export const ListViewFilters = ({
   onViewModeChange
 }: ListViewFiltersProps) => {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="w-full space-y-4">
@@ -57,7 +59,7 @@ export const ListViewFilters = ({
             <div className="relative flex-1 sm:flex-none">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Search events, businesses, local services..."
+                placeholder={t('search.placeholder')}
                 value={searchTerm}
                 onChange={(e) => onSearchTermChange(e.target.value)}
                 className="pl-10 w-full sm:w-64 md:w-80"
@@ -70,7 +72,7 @@ export const ListViewFilters = ({
             className="flex items-center gap-2 w-full sm:w-auto justify-center text-caribbean-teal border-caribbean-teal hover:bg-caribbean-teal hover:text-white"
           >
             <Map className="h-4 w-4" />
-            Map View
+            {t('viewToggle.map')}
           </Button>
         </div>
       </div>
@@ -86,9 +88,9 @@ export const ListViewFilters = ({
               <div className="flex items-center gap-2">
                 <Filter className="h-5 w-5 text-caribbean-teal" />
                 <span className="font-semibold text-gray-900">
-                  {isFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+                  {isFiltersOpen ? t('filters.hideFilters') : t('filters.showFilters')}
                 </span>
-                <span className="text-sm text-gray-500">({filteredItemsCount} items found)</span>
+                <span className="text-sm text-gray-500">({filteredItemsCount} {t('filters.itemsFound')})</span>
               </div>
               {isFiltersOpen ? (
                 <ChevronUp className="h-4 w-4 text-gray-500" />

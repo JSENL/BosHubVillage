@@ -1,0 +1,73 @@
+{
+  "navigation": {
+    "backToHome": "Torna alla home",
+    "news": "Notizie",
+    "submit": "Invia",
+    "submitEvent": "Invia evento",
+    "submitBusiness": "Invia attività",
+    "submitNews": "Invia notizie",
+    "submitLocalService": "Invia servizio locale",
+    "contactAdmin": "Contatta amministratore",
+    "myMessages": "I miei messaggi",
+    "mySubmissions": "Le mie proposte",
+    "businessDashboard": "Dashboard attività",
+    "adminDashboard": "Dashboard amministratore",
+    "signOut": "Esci",
+    "signIn": "Accedi"
+  },
+  "hero": {
+    "title": "Scopri la tua comunità locale",
+    "subtitle": "Trova eventi, notizie, attività e servizi nel tuo quartiere"
+  },
+  "search": {
+    "placeholder": "Cerca eventi, notizie, attività e servizi...",
+    "refreshData": "Aggiorna dati"
+  },
+  "filters": {
+    "showFilters": "Mostra filtri",
+    "hideFilters": "Nascondi filtri",
+    "filters": "Filtri",
+    "itemsFound": "elementi trovati",
+    "clearAll": "Cancella tutto",
+    "type": "Tipo",
+    "category": "Categoria",
+    "neighborhood": "Quartiere",
+    "village": "Paese",
+    "dateRange": "Intervallo date"
+  },
+  "viewToggle": {
+    "map": "Mappa",
+    "list": "Lista"
+  },
+  "map": {
+    "noItemsFound": "Nessun elemento trovato",
+    "tryAdjusting": "Prova ad aggiustare i criteri di ricerca o sfoglia tutti gli elementi.",
+    "refreshData": "Aggiorna dati"
+  },
+  "summary": {
+    "totalItems": "Elementi totali",
+    "mappableItems": "Elementi mappabili",
+    "lastUpdated": "Ultimo aggiornamento",
+    "realTimeUpdates": "Aggiornamenti in tempo reale attivati"
+  },
+  "itemTypes": {
+    "events": "Eventi",
+    "news": "Notizie",
+    "businesses": "Attività",
+    "localServices": "Servizi locali"
+  },
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "retry": "Riprova",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "view": "Visualizza",
+    "share": "Condividi",
+    "comments": "Commenti",
+    "like": "Mi piace",
+    "unlike": "Non mi piace più"
+  }
+}
