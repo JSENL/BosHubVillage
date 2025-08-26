@@ -45,6 +45,8 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
       keyboard: true, // Enable keyboard navigation
       preserveDrawingBuffer: true, // Better performance
       antialias: true, // Smoother rendering
+      attributionControl: true, // Show attribution
+      interactive: true, // Enable all interactions
       fitBoundsOptions: {
         padding: 20
       }
