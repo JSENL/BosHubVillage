@@ -28,6 +28,7 @@ import ContactAdmin from "./pages/ContactAdmin";
 import MyMessages from "./pages/MyMessages";
 import MySubmissions from "./pages/MySubmissions";
 import NotFound from "./pages/NotFound";
+import { MapboxTest } from "./components/MapboxTest";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,7 @@ const App = () => (
         <Route path="/contact-admin" element={<ContactAdmin />} />
         <Route path="/my-messages" element={<MyMessages />} />
         <Route path="/my-submissions" element={<MySubmissions />} />
+        <Route path="/mapbox-test" element={<MapboxTest />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
