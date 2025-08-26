@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface TypeFilterProps {
@@ -10,18 +11,19 @@ export const TypeFilter = ({
   selectedType, 
   onTypeChange 
 }: TypeFilterProps) => {
+  const { t } = useTranslation();
   const typeOptions = [
-    { value: 'all', label: 'All Types' },
-    { value: 'event', label: 'Events' },
-    { value: 'business', label: 'Business' },
-    { value: 'news', label: 'News' },
-    { value: 'local-service', label: 'Local Resources' }
+    { value: 'all', label: t('types.all') },
+    { value: 'event', label: t('types.event') },
+    { value: 'business', label: t('types.business') },
+    { value: 'news', label: t('types.news') },
+    { value: 'local-service', label: t('types.localService') }
   ];
 
   return (
     <Select value={selectedType} onValueChange={onTypeChange}>
       <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-        <SelectValue placeholder="Type" />
+        <SelectValue placeholder={t('filters.type')} />
       </SelectTrigger>
       <SelectContent>
         {typeOptions.map((type) => (

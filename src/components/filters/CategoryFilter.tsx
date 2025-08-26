@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CategoryFilterProps {
@@ -12,8 +13,9 @@ export const CategoryFilter = ({
   onCategoryChange, 
   availableCategories 
 }: CategoryFilterProps) => {
+  const { t } = useTranslation();
   const categoryOptions = [
-    { value: 'all', label: 'All Categories' },
+    { value: 'all', label: t('filters.allCategories') },
     ...availableCategories.map(category => ({
       value: category,
       label: category.charAt(0).toUpperCase() + category.slice(1)
@@ -23,7 +25,7 @@ export const CategoryFilter = ({
   return (
     <Select value={selectedCategory} onValueChange={onCategoryChange}>
       <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-        <SelectValue placeholder="Category" />
+        <SelectValue placeholder={t('filters.category')} />
       </SelectTrigger>
       <SelectContent>
         {categoryOptions.map((category) => (

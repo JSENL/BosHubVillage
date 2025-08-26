@@ -33,7 +33,20 @@
     "category": "Category",
     "neighborhood": "Neighborhood",
     "village": "Village",
-    "dateRange": "Date Range"
+    "dateRange": "Date Range",
+    "allTypes": "All Types",
+    "allCategories": "All Categories",
+    "allNeighborhoods": "All Neighborhoods",
+    "allVillages": "All Villages"
+  },
+  "types": {
+    "all": "All Types",
+    "event": "Events",
+    "business": "Business",
+    "news": "News",
+    "localService": "Local Resources",
+    "businesses": "Businesses",
+    "services": "Services"
   },
   "viewToggle": {
     "map": "Map",
@@ -45,10 +58,16 @@
     "refreshData": "Refresh Data"
   },
   "summary": {
+    "title": "Live Results Summary",
     "totalItems": "Total Items",
     "mappableItems": "Mappable Items",
     "lastUpdated": "Last updated",
-    "realTimeUpdates": "Real-time updates enabled"
+    "realTimeUpdates": "Real-time updates",
+    "onMap": "on map",
+    "showing": "✓ Showing",
+    "hidden": "✗ Hidden",
+    "totalFiltered": "Total filtered items",
+    "itemsWithLocation": "Items with location data"
   },
   "itemTypes": {
     "events": "Events",
@@ -69,6 +88,7 @@
     "comments": "Comments",
     "like": "Like",
     "unlike": "Unlike",
-    "allItems": "All Items"
+    "allItems": "All Items",
+    "found": "found"
   }
 }

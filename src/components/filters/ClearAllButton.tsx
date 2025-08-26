@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
@@ -8,6 +9,7 @@ interface ClearAllButtonProps {
 }
 
 export const ClearAllButton = ({ hasActiveFilters, onClearAll }: ClearAllButtonProps) => {
+  const { t } = useTranslation();
   if (!hasActiveFilters) return null;
 
   return (
@@ -18,7 +20,7 @@ export const ClearAllButton = ({ hasActiveFilters, onClearAll }: ClearAllButtonP
       className="h-8 sm:h-10 text-xs sm:text-sm gap-1"
     >
       <X className="h-3 w-3 sm:h-4 sm:w-4" />
-      Clear All
+      {t('filters.clearAll')}
     </Button>
   );
 };

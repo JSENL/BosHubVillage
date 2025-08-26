@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Filter } from 'lucide-react';
 import { CategoryFilter } from '@/components/filters/CategoryFilter';
@@ -45,6 +46,7 @@ export const UniversalFilters = ({
   filteredItemsCount,
   itemType
 }: UniversalFiltersProps) => {
+  const { t } = useTranslation();
   // Use dynamic filter options based on current filters
   const { availableCategories, availableNeighborhoods, availableVillages } = useDynamicUnifiedFilterOptions({
     allItems,
@@ -57,22 +59,22 @@ export const UniversalFilters = ({
   });
 
   const typeOptions = [
-    { value: 'all', label: 'All Types' },
-    { value: 'event', label: 'Events' },
-    { value: 'business', label: 'Business' },
-    { value: 'local-service', label: 'Local Resources' }
+    { value: 'all', label: t('types.all') },
+    { value: 'event', label: t('types.event') },
+    { value: 'business', label: t('types.business') },
+    { value: 'local-service', label: t('types.localService') }
   ];
 
   return (
     <div className="flex flex-wrap items-center gap-3 sm:gap-4 p-4 bg-white rounded-lg shadow-sm border">
       <div className="flex items-center space-x-2">
         <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-        <span className="text-xs sm:text-sm font-medium text-gray-600">Filters:</span>
+        <span className="text-xs sm:text-sm font-medium text-gray-600">{t('filters.filters')}:</span>
       </div>
 
       <Select value={selectedType} onValueChange={onTypeChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Type" />
+          <SelectValue placeholder={t('filters.type')} />
         </SelectTrigger>
         <SelectContent>
           {typeOptions.map((type) => (
@@ -108,7 +110,7 @@ export const UniversalFilters = ({
       />
 
       <div className="text-xs sm:text-sm text-gray-600">
-        {filteredItemsCount} {selectedType === 'all' ? 'items' : selectedType === 'business' ? 'businesses' : itemType} found
+        {filteredItemsCount} {selectedType === 'all' ? t('filters.itemsFound') : selectedType === 'business' ? t('types.businesses') : itemType} {t('common.found')}
       </div>
     </div>
   );

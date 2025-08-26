@@ -33,7 +33,20 @@
     "category": "Catégorie",
     "neighborhood": "Quartier",
     "village": "Village",
-    "dateRange": "Plage de dates"
+    "dateRange": "Plage de dates",
+    "allTypes": "Tous les types",
+    "allCategories": "Toutes les catégories",
+    "allNeighborhoods": "Tous les quartiers",
+    "allVillages": "Tous les villages"
+  },
+  "types": {
+    "all": "Tous les types",
+    "event": "Événements",
+    "business": "Entreprise",
+    "news": "Actualités",
+    "localService": "Ressources locales",
+    "businesses": "Entreprises",
+    "services": "Services"
   },
   "viewToggle": {
     "map": "Carte",
@@ -45,10 +58,16 @@
     "refreshData": "Actualiser les données"
   },
   "summary": {
+    "title": "Résumé des résultats en direct",
     "totalItems": "Total des éléments",
     "mappableItems": "Éléments cartographiables",
     "lastUpdated": "Dernière mise à jour",
-    "realTimeUpdates": "Mises à jour en temps réel activées"
+    "realTimeUpdates": "Mises à jour en temps réel",
+    "onMap": "sur la carte",
+    "showing": "✓ Affiché",
+    "hidden": "✗ Masqué",
+    "totalFiltered": "Total des éléments filtrés",
+    "itemsWithLocation": "Éléments avec données de localisation"
   },
   "itemTypes": {
     "events": "Événements",
@@ -68,6 +87,8 @@
     "share": "Partager",
     "comments": "Commentaires",
     "like": "J'aime",
-    "unlike": "Je n'aime plus"
+    "unlike": "Je n'aime plus",
+    "allItems": "Tous les éléments",
+    "found": "trouvé"
   }
 }
