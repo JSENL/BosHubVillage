@@ -84,7 +84,15 @@
     "contact": "Contact",
     "website": "Website",
     "phone": "Phone",
-    "email": "Email"
+    "email": "Email",
+    "starRating": "star rating",
+    "reviews": "reviews",
+    "reviewsCount": "reviews count",
+    "maxAttendees": "Maximum Attendees",
+    "added": "Added",
+    "coordinates": "Coordinates",
+    "villages": "Villages",
+    "geocoded": "Geocoded"
   },
   "auth": {
     "signIn": "Sign In",
@@ -129,7 +137,19 @@
     "analytics": "Analytics",
     "announcements": "Announcements",
     "csvImport": "CSV Import",
-    "categories": "Categories"
+    "categories": "Categories",
+    "review": "Review",
+    "approveSuccess": "Approved successfully!",
+    "rejectSuccess": "Rejected successfully!",
+    "approveError": "Failed to approve",
+    "rejectError": "Failed to reject",
+    "rejectionMessage": "Rejection Message / Admin Notes",
+    "rejectionHelp": "If rejecting, please explain why to help the submitter understand what needs to be improved.",
+    "rejectionPlaceholder": "For rejections: Please explain why this submission cannot be approved (e.g., incomplete information, inappropriate content, duplicate, etc.)\\n\\nFor approvals: Add any optional notes or feedback.",
+    "submitterIsOwner": "Submitter is Owner",
+    "adminNotes": "Admin Notes",
+    "adminNotesOptional": "Admin Notes (Optional)",
+    "adminNotesPlaceholder": "Add any notes for the submitter..."
   },
   "forms": {
     "title": "Title",

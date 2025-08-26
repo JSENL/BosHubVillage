@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,6 +18,7 @@ interface BusinessSubmissionCardProps {
 }
 
 export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmissionCardProps) => {
+  const { t } = useTranslation();
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const { updateSubmissionStatus, actionLoading } = useBusinessSubmissionOperations();
@@ -46,21 +48,21 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
         return (
           <Badge variant="outline" className="text-green-600 border-green-600">
             <CheckCircle className="h-3 w-3 mr-1" />
-            Approved
+            {t('admin.approved')}
           </Badge>
         );
       case 'rejected':
         return (
           <Badge variant="outline" className="text-red-600 border-red-600">
             <XCircle className="h-3 w-3 mr-1" />
-            Rejected
+            {t('admin.rejected')}
           </Badge>
         );
       default:
         return (
           <Badge variant="outline" className="text-orange-600 border-orange-600">
             <Clock className="h-3 w-3 mr-1" />
-            Pending
+            {t('admin.pending')}
           </Badge>
         );
     }
@@ -81,7 +83,7 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
           <p className="text-xs text-gray-600 mt-1 truncate">{submission.address}</p>
           {submission.latitude && submission.longitude && (
             <p className="text-xs text-gray-500 mt-1">
-              Coordinates: {Number(submission.latitude).toFixed(6)}, {Number(submission.longitude).toFixed(6)}
+              {t('cards.coordinates')}: {Number(submission.latitude).toFixed(6)}, {Number(submission.longitude).toFixed(6)}
             </p>
           )}
         </div>
@@ -95,14 +97,14 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
 
       {submission.status === 'approved' && submission.is_owner && (
         <Button variant="secondary" disabled className="mt-2">
-          Submitter is Owner
+          {t('admin.submitterIsOwner')}
         </Button>
       )}
 
       {submission.admin_notes && (
         <div className="bg-gray-50 p-3 rounded-md mb-4">
           <p className="text-sm text-gray-700">
-            <span className="font-medium">Admin Notes:</span> {submission.admin_notes}
+            <span className="font-medium">{t('admin.adminNotes')}:</span> {submission.admin_notes}
           </p>
         </div>
       )}
@@ -112,15 +114,15 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
           <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Rejection Message / Admin Notes
+                {t('admin.rejectionMessage')}
               </label>
               <p className="text-xs text-gray-500 mb-2">
-                If rejecting, please explain why to help the submitter understand what needs to be improved.
+                {t('admin.rejectionHelp')}
               </p>
               <Textarea
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="For rejections: Please explain why this submission cannot be approved (e.g., incomplete information, incorrect category, duplicate listing, etc.)&#10;&#10;For approvals: Add any optional notes or feedback."
+                placeholder={t('admin.rejectionPlaceholder')}
                 rows={4}
                 className="resize-none"
               />
@@ -132,7 +134,7 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Approve
+                {t('admin.approve')}
               </Button>
               <Button
                 onClick={() => handleStatusUpdate('rejected')}
@@ -140,7 +142,7 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
                 variant="destructive"
               >
                 <XCircle className="h-4 w-4 mr-2" />
-                Reject
+                {t('admin.reject')}
               </Button>
               <Button
                 onClick={() => {
@@ -149,7 +151,7 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
                 }}
                 variant="outline"
               >
-                Cancel
+                {t('forms.cancel')}
               </Button>
             </div>
           </div>
@@ -158,7 +160,7 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
             onClick={() => setSelectedSubmission(submission.id)}
             className="bg-purple-600 hover:bg-purple-700 text-white"
           >
-            Review
+            {t('admin.review')}
           </Button>
         )
       )}

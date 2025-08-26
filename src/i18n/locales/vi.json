@@ -84,7 +84,15 @@
     "contact": "Liên hệ",
     "website": "Trang web",
     "phone": "Điện thoại",
-    "email": "Email"
+    "email": "Email",
+    "starRating": "đánh giá sao",
+    "reviews": "đánh giá",
+    "reviewsCount": "số lượt đánh giá",
+    "maxAttendees": "Số người tham dự tối đa",
+    "added": "Đã thêm",
+    "coordinates": "Tọa độ",
+    "villages": "Làng",
+    "geocoded": "Đã định vị"
   },
   "auth": {
     "signIn": "Đăng nhập",
@@ -129,7 +137,19 @@
     "analytics": "Phân tích",
     "announcements": "Thông báo",
     "csvImport": "Nhập CSV",
-    "categories": "Danh mục"
+    "categories": "Danh mục",
+    "review": "Xem xét",
+    "approveSuccess": "Phê duyệt thành công!",
+    "rejectSuccess": "Từ chối thành công!",
+    "approveError": "Không thể phê duyệt",
+    "rejectError": "Không thể từ chối",
+    "rejectionMessage": "Thông báo từ chối / Ghi chú quản trị",
+    "rejectionHelp": "Nếu từ chối, vui lòng giải thích lý do để giúp người gửi hiểu những gì cần cải thiện.",
+    "rejectionPlaceholder": "Đối với việc từ chối: Vui lòng giải thích tại sao bài gửi này không thể được phê duyệt (ví dụ: thông tin không đầy đủ, nội dung không phù hợp, trùng lặp, v.v.)\\n\\nĐối với việc phê duyệt: Thêm bất kỳ ghi chú hoặc phản hồi tùy chọn nào.",
+    "submitterIsOwner": "Người gửi là chủ sở hữu",
+    "adminNotes": "Ghi chú quản trị",
+    "adminNotesOptional": "Ghi chú quản trị (Tùy chọn)",
+    "adminNotesPlaceholder": "Thêm bất kỳ ghi chú nào cho người gửi..."
   },
   "forms": {
     "title": "Tiêu đề",

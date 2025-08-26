@@ -84,7 +84,15 @@
     "contact": "Contact",
     "website": "Site web",
     "phone": "Téléphone",
-    "email": "Email"
+    "email": "Email",
+    "starRating": "note étoilée",
+    "reviews": "avis",
+    "reviewsCount": "nombre d'avis",
+    "maxAttendees": "Participants maximum",
+    "added": "Ajouté",
+    "coordinates": "Coordonnées",
+    "villages": "Villages",
+    "geocoded": "Géocodé"
   },
   "auth": {
     "signIn": "Se connecter",
@@ -129,7 +137,19 @@
     "analytics": "Analytique",
     "announcements": "Annonces",
     "csvImport": "Import CSV",
-    "categories": "Catégories"
+    "categories": "Catégories",
+    "review": "Examiner",
+    "approveSuccess": "Approuvé avec succès!",
+    "rejectSuccess": "Rejeté avec succès!",
+    "approveError": "Échec de l'approbation",
+    "rejectError": "Échec du rejet",
+    "rejectionMessage": "Message de rejet / Notes d'admin",
+    "rejectionHelp": "En cas de rejet, veuillez expliquer pourquoi pour aider le soumissionnaire à comprendre ce qui doit être amélioré.",
+    "rejectionPlaceholder": "Pour les rejets: Veuillez expliquer pourquoi cette soumission ne peut pas être approuvée (par exemple, informations incomplètes, contenu inapproprié, doublon, etc.)\\n\\nPour les approbations: Ajoutez des notes ou commentaires optionnels.",
+    "submitterIsOwner": "Le soumissionnaire est propriétaire",
+    "adminNotes": "Notes d'administrateur",
+    "adminNotesOptional": "Notes d'administrateur (Optionnel)",
+    "adminNotesPlaceholder": "Ajoutez des notes pour le soumissionnaire..."
   },
   "forms": {
     "title": "Titre",

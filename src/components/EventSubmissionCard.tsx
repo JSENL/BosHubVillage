@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,6 +22,7 @@ interface EventSubmissionCardProps {
 }
 
 export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCardProps) => {
+  const { t } = useTranslation();
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
@@ -92,7 +94,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
               {submission.max_attendees && (
                 <div className="flex items-center">
                   <Users className="h-3 w-3 mr-1" />
-                  Max: {submission.max_attendees}
+                  {t('cards.maxAttendees')}: {submission.max_attendees}
                 </div>
               )}
             </div>
@@ -100,7 +102,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
         </div>
         <Badge variant="outline" className="text-orange-600 border-orange-600">
           <Clock className="h-3 w-3 mr-1" />
-          Pending
+          {t('admin.pending')}
         </Badge>
       </div>
       
@@ -112,12 +114,12 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
         <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Admin Notes (Optional)
+              {t('admin.adminNotesOptional')}
             </label>
             <Textarea
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder="Add any notes for the submitter..."
+              placeholder={t('admin.adminNotesPlaceholder')}
               rows={3}
             />
           </div>
@@ -128,7 +130,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               <CheckCircle className="h-4 w-4 mr-2" />
-              Approve
+              {t('admin.approve')}
             </Button>
             <Button
               onClick={() => handleStatusUpdate('rejected')}
@@ -136,7 +138,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
               variant="destructive"
             >
               <XCircle className="h-4 w-4 mr-2" />
-              Reject
+              {t('admin.reject')}
             </Button>
             <Button
               onClick={() => {
@@ -145,7 +147,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
               }}
               variant="outline"
             >
-              Cancel
+              {t('forms.cancel')}
             </Button>
           </div>
         </div>
@@ -154,7 +156,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
           onClick={() => setSelectedSubmission(submission.id)}
           className="bg-purple-600 hover:bg-purple-700 text-white"
         >
-          Review
+          {t('admin.review')}
         </Button>
       )}
     </div>

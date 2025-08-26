@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ interface LocalServiceSubmissionCardProps {
 }
 
 const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmissionCardProps) => {
+  const { t } = useTranslation();
   const { isAdmin, user } = useAuth();
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
@@ -59,11 +61,11 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
 
       if (updateError) throw updateError;
 
-      toast.success('Local resource approved successfully!');
+      toast.success(t('admin.approveSuccess'));
       onUpdate();
     } catch (error: any) {
       console.error('Error approving local resource:', error);
-      toast.error('Failed to approve local resource: ' + error.message);
+      toast.error(t('admin.approveError') + ': ' + error.message);
     }
   };
 
@@ -81,13 +83,13 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
 
       if (error) throw error;
 
-      toast.success('Local resource rejected successfully!');
+      toast.success(t('admin.rejectSuccess'));
       setSelectedSubmission(null);
       setAdminNotes('');
       onUpdate();
     } catch (error: any) {
       console.error('Error rejecting local resource:', error);
-      toast.error('Failed to reject local resource: ' + error.message);
+      toast.error(t('admin.rejectError') + ': ' + error.message);
     }
   };
 
@@ -127,7 +129,7 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
         
         <div className="pt-1 border-t">
           <p className="text-xs text-gray-500">
-            Submitted {formatDate(submission.created_at)}
+            {t('admin.submittedOn')} {formatDate(submission.created_at)}
           </p>
         </div>
 
@@ -136,15 +138,15 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
             <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rejection Message / Admin Notes
+                  {t('admin.rejectionMessage')}
                 </label>
                 <p className="text-xs text-gray-500 mb-2">
-                  If rejecting, please explain why to help the submitter understand what needs to be improved.
+                  {t('admin.rejectionHelp')}
                 </p>
                 <Textarea
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
-                  placeholder="For rejections: Please explain why this submission cannot be approved (e.g., incorrect category, incomplete information, duplicate resource, etc.)&#10;&#10;For approvals: Add any optional notes or feedback."
+                  placeholder={t('admin.rejectionPlaceholder')}
                   rows={4}
                   className="resize-none"
                 />
@@ -156,7 +158,7 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
                   className="flex-1 bg-green-600 hover:bg-green-700"
                 >
                   <Check className="h-4 w-4 mr-1" />
-                  Approve
+                  {t('admin.approve')}
                 </Button>
                 <Button
                   onClick={handleReject}
@@ -165,7 +167,7 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
                   className="flex-1"
                 >
                   <X className="h-4 w-4 mr-1" />
-                  Reject
+                  {t('admin.reject')}
                 </Button>
                 <Button
                   onClick={() => {
@@ -175,7 +177,7 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
                   size="sm"
                   variant="outline"
                 >
-                  Cancel
+                  {t('forms.cancel')}
                 </Button>
               </div>
             </div>
@@ -186,7 +188,7 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
                 size="sm"
                 className="flex-1 bg-purple-600 hover:bg-purple-700"
               >
-                Review
+                {t('admin.review')}
               </Button>
             </div>
           )
