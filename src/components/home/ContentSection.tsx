@@ -7,6 +7,7 @@ import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
 import { TranslationManager } from "@/components/TranslationManager";
+import { TranslationTest } from "@/components/TranslationTest";
 
 interface ContentSectionProps {
   filters: HomePageFilters;
@@ -54,6 +55,10 @@ export const ContentSection = ({
           title: item.title || item.name
         }))}
       />
+      
+      <div className="mb-4">
+        <TranslationTest />
+      </div>
       {/* Display total count */}
       <div className="text-center text-muted-foreground">
         Showing {filteredItems.length} items

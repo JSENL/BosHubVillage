@@ -1,8 +1,22 @@
 
 import { UnifiedItem } from '@/types/unifiedItem';
 
-export const createPopupContent = (item: UnifiedItem): string => {
-  const typeLabel = {
+interface TranslationData {
+  [key: string]: string;
+}
+
+export const createPopupContent = (item: UnifiedItem, translations?: TranslationData): string => {
+  // Use translated content if available, fallback to original
+  const getTranslated = (field: string) => {
+    return translations?.[field] || (item as any)[field] || '';
+  };
+
+  const typeLabel = translations ? {
+    event: translations['itemTypes.events'] || 'Event',
+    news: translations['itemTypes.news'] || 'News', 
+    business: translations['itemTypes.businesses'] || 'Business',
+    'local-service': translations['itemTypes.localServices'] || 'Local Resource'
+  }[item.type] : {
     event: 'Event',
     news: 'News',
     business: 'Business',
@@ -19,20 +33,22 @@ export const createPopupContent = (item: UnifiedItem): string => {
     return colors[type as keyof typeof colors] || 'hsl(220, 15%, 45%)';
   };
 
-  const displayLocation = item.location || item.address || '';
-  const displayDescription = item.description || item.content || '';
+  const displayLocation = getTranslated('location') || getTranslated('address') || '';
+  const displayDescription = getTranslated('description') || getTranslated('content') || '';
+  const displayTitle = getTranslated('title') || getTranslated('name') || '';
+  const displayCategory = getTranslated('category') || '';
 
   return `
     <div style="padding: 12px; max-width: 280px; font-family: system-ui, -apple-system, sans-serif;">
       <div style="background: ${getMarkerColor(item.type)}; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 10px; font-weight: 600;">
         ${typeLabel}
       </div>
-      <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #1f2937; line-height: 1.4;">${item.title}</h3>
+      <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #1f2937; line-height: 1.4;">${displayTitle}</h3>
       <p style="margin: 0 0 10px 0; font-size: 14px; color: #6b7280; line-height: 1.4;">${displayDescription.substring(0, 120)}${displayDescription.length > 120 ? '...' : ''}</p>
       
       <div style="space-y: 4px;">
         ${displayLocation ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">📍</span> ${displayLocation}</p>` : ''}
-        ${item.category ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">🏷️</span> ${item.category}</p>` : ''}
+        ${displayCategory ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">🏷️</span> ${displayCategory}</p>` : ''}
         ${item.date ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">📅</span> ${new Date(item.date).toLocaleDateString()}</p>` : ''}
         ${item.price !== undefined ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">💰</span> ${item.price === 0 ? 'FREE' : `$${item.price}`}</p>` : ''}
       </div>
@@ -48,7 +64,7 @@ export const createPopupContent = (item: UnifiedItem): string => {
           cursor: pointer;
           font-weight: 500;
           flex: 1;
-        ">View Details</button>
+        ">${translations?.['cards.viewDetails'] || 'View Details'}</button>
         ${item.latitude && item.longitude ? `
         <button onclick="window.dispatchEvent(new CustomEvent('openDirections', { detail: { item: ${JSON.stringify(item).replace(/"/g, '&quot;')} } }))" style="
           background: #10b981;
