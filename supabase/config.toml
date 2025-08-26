@@ -3,6 +3,9 @@ project_id = "mecotkulcgdbilaksddu"
 [functions.deepseek-ai]
 verify_jwt = false
 
+[functions.translate-content]
+verify_jwt = false
+
 [functions.recover-username]
 verify_jwt = false
 

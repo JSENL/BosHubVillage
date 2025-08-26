@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 interface Event {
   id: string;
@@ -29,6 +30,7 @@ interface EventCardProps {
 export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { getTranslatedField } = useContentTranslation();
   
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);
@@ -68,6 +70,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const rating = Math.floor(Math.random() * 2) + 4; // 4-5 stars
   const reviewCount = Math.floor(Math.random() * 500) + 50;
 
+  // Get translated content
+  const translatedTitle = getTranslatedField(event, 'title', 'events');
+  const translatedDescription = getTranslatedField(event, 'description', 'events');
+  const translatedLocation = getTranslatedField(event, 'location', 'events');
+  const translatedCategory = getTranslatedField(event, 'category', 'events');
+
   if (viewMode === 'list') {
     return (
       <Card 
@@ -83,7 +91,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1 min-w-0 mr-4">
                   <h3 className="text-xl font-bold text-gray-900 hover:text-yelp-red mb-1 line-clamp-2 break-words">
-                    {event.title}
+                    {translatedTitle}
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
                     {[...Array(5)].map((_, i) => (
@@ -97,7 +105,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
                 <div className="text-right flex-shrink-0">
                   <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray mb-2">
-                    <span className="truncate max-w-20">{event.category}</span>
+                    <span className="truncate max-w-20">{translatedCategory}</span>
                   </Badge>
                   <div className="text-lg font-bold text-yelp-red">
                     {event.price === 0 ? t('cards.free') : `$${event.price}`}
@@ -105,7 +113,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{event.description}</p>
+              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{translatedDescription}</p>
               
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 <div className="flex items-center min-w-0">
@@ -114,7 +122,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
                 <div className="flex items-center min-w-0">
                   <MapPin className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
-                  <span className="truncate break-all min-w-0">{event.location}</span>
+                  <span className="truncate break-all min-w-0">{translatedLocation}</span>
                 </div>
                 {event.max_attendees && (
                   <div className="flex items-center">
@@ -139,14 +147,14 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between mb-1">
           <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray text-xs">
-            {event.category}
+            {translatedCategory}
           </Badge>
           <div className="text-sm font-bold text-yelp-red">
             {event.price === 0 ? t('cards.free') : `$${event.price}`}
           </div>
         </div>
         <CardTitle className="text-sm text-gray-900 hover:text-yelp-red line-clamp-2 break-words">
-          {event.title}
+          {translatedTitle}
         </CardTitle>
         <div className="flex items-center space-x-1">
           {[...Array(5)].map((_, i) => (
@@ -161,7 +169,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       
       <CardContent className="pt-2">
         <CardDescription className="mb-2 line-clamp-2 text-gray-600 text-xs break-words">
-          {event.description}
+          {translatedDescription}
         </CardDescription>
         <div className="space-y-1 text-xs">
           <div className="flex items-center text-gray-600 min-w-0">
@@ -170,7 +178,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
           </div>
           <div className="flex items-center text-gray-600 min-w-0">
             <MapPin className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
-            <span className="truncate break-all min-w-0">{event.location}</span>
+            <span className="truncate break-all min-w-0">{translatedLocation}</span>
           </div>
           {event.max_attendees && (
             <div className="flex items-center text-gray-600">

@@ -6,6 +6,7 @@ import { SectionMap } from "@/components/SectionMap";
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
+import { TranslationManager } from "@/components/TranslationManager";
 
 interface ContentSectionProps {
   filters: HomePageFilters;
@@ -46,6 +47,13 @@ export const ContentSection = ({
 
   return (
     <div className="space-y-6">
+      <TranslationManager 
+        items={filteredItems.map(item => ({
+          id: item.id,
+          table: item.type === 'local-service' ? 'local_resources' : item.type as any,
+          title: item.title || item.name
+        }))}
+      />
       {/* Display total count */}
       <div className="text-center text-muted-foreground">
         Showing {filteredItems.length} items

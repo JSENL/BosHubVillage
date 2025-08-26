@@ -86,48 +86,60 @@ export type Database = {
       business: {
         Row: {
           address: string
+          address_translations: Json
           business_type: string
           created_at: string
           created_by: string | null
           description: string
+          description_translations: Json
           id: string
           latitude: number | null
           longitude: number | null
           neighborhood: string
           short_description: string | null
+          short_description_translations: Json
           title: string
+          title_translations: Json
           updated_at: string
           villages: string | null
           website_link: string | null
         }
         Insert: {
           address: string
+          address_translations?: Json
           business_type: string
           created_at?: string
           created_by?: string | null
           description: string
+          description_translations?: Json
           id?: string
           latitude?: number | null
           longitude?: number | null
           neighborhood: string
           short_description?: string | null
+          short_description_translations?: Json
           title: string
+          title_translations?: Json
           updated_at?: string
           villages?: string | null
           website_link?: string | null
         }
         Update: {
           address?: string
+          address_translations?: Json
           business_type?: string
           created_at?: string
           created_by?: string | null
           description?: string
+          description_translations?: Json
           id?: string
           latitude?: number | null
           longitude?: number | null
           neighborhood?: string
           short_description?: string | null
+          short_description_translations?: Json
           title?: string
+          title_translations?: Json
           updated_at?: string
           villages?: string | null
           website_link?: string | null
@@ -783,10 +795,12 @@ export type Database = {
         Row: {
           address: string | null
           category: string
+          category_translations: Json
           created_at: string
           created_by: string
           date: string
           description: string | null
+          description_translations: Json
           end_time: string | null
           event_type: string | null
           id: string
@@ -794,6 +808,7 @@ export type Database = {
           is_recurring: boolean | null
           latitude: number | null
           location: string
+          location_translations: Json
           longitude: number | null
           max_attendees: number | null
           neighborhoods: string | null
@@ -802,6 +817,7 @@ export type Database = {
           registration_required: boolean | null
           start_time: string | null
           title: string
+          title_translations: Json
           updated_at: string
           villages: string | null
           website_link: string | null
@@ -809,10 +825,12 @@ export type Database = {
         Insert: {
           address?: string | null
           category: string
+          category_translations?: Json
           created_at?: string
           created_by: string
           date: string
           description?: string | null
+          description_translations?: Json
           end_time?: string | null
           event_type?: string | null
           id?: string
@@ -820,6 +838,7 @@ export type Database = {
           is_recurring?: boolean | null
           latitude?: number | null
           location: string
+          location_translations?: Json
           longitude?: number | null
           max_attendees?: number | null
           neighborhoods?: string | null
@@ -828,6 +847,7 @@ export type Database = {
           registration_required?: boolean | null
           start_time?: string | null
           title: string
+          title_translations?: Json
           updated_at?: string
           villages?: string | null
           website_link?: string | null
@@ -835,10 +855,12 @@ export type Database = {
         Update: {
           address?: string | null
           category?: string
+          category_translations?: Json
           created_at?: string
           created_by?: string
           date?: string
           description?: string | null
+          description_translations?: Json
           end_time?: string | null
           event_type?: string | null
           id?: string
@@ -846,6 +868,7 @@ export type Database = {
           is_recurring?: boolean | null
           latitude?: number | null
           location?: string
+          location_translations?: Json
           longitude?: number | null
           max_attendees?: number | null
           neighborhoods?: string | null
@@ -854,6 +877,7 @@ export type Database = {
           registration_required?: boolean | null
           start_time?: string | null
           title?: string
+          title_translations?: Json
           updated_at?: string
           villages?: string | null
           website_link?: string | null
@@ -871,13 +895,16 @@ export type Database = {
       local_resources: {
         Row: {
           address: string
+          address_translations: Json
           category: string
           created_at: string
           description: string | null
+          description_translations: Json
           id: string
           latitude: number | null
           longitude: number | null
           name: string
+          name_translations: Json
           neighborhood: string
           permanently_closed: boolean
           updated_at: string
@@ -886,13 +913,16 @@ export type Database = {
         }
         Insert: {
           address: string
+          address_translations?: Json
           category: string
           created_at?: string
           description?: string | null
+          description_translations?: Json
           id?: string
           latitude?: number | null
           longitude?: number | null
           name: string
+          name_translations?: Json
           neighborhood: string
           permanently_closed?: boolean
           updated_at?: string
@@ -901,13 +931,16 @@ export type Database = {
         }
         Update: {
           address?: string
+          address_translations?: Json
           category?: string
           created_at?: string
           description?: string | null
+          description_translations?: Json
           id?: string
           latitude?: number | null
           longitude?: number | null
           name?: string
+          name_translations?: Json
           neighborhood?: string
           permanently_closed?: boolean
           updated_at?: string
@@ -1050,45 +1083,54 @@ export type Database = {
         Row: {
           Address: string | null
           content: string
+          content_translations: Json
           created_at: string
           created_by: string | null
           date_posted: string
           id: string
           latitude: number | null
           location: string
+          location_translations: Json
           longitude: number | null
           source: string
           title: string
+          title_translations: Json
           updated_at: string
           villages: string | null
         }
         Insert: {
           Address?: string | null
           content: string
+          content_translations?: Json
           created_at?: string
           created_by?: string | null
           date_posted?: string
           id?: string
           latitude?: number | null
           location: string
+          location_translations?: Json
           longitude?: number | null
           source: string
           title: string
+          title_translations?: Json
           updated_at?: string
           villages?: string | null
         }
         Update: {
           Address?: string | null
           content?: string
+          content_translations?: Json
           created_at?: string
           created_by?: string | null
           date_posted?: string
           id?: string
           latitude?: number | null
           location?: string
+          location_translations?: Json
           longitude?: number | null
           source?: string
           title?: string
+          title_translations?: Json
           updated_at?: string
           villages?: string | null
         }

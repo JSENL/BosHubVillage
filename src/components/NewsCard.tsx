@@ -6,6 +6,7 @@ import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 interface NewsCardProps {
   news: News;
@@ -13,6 +14,13 @@ interface NewsCardProps {
 
 const NewsCard = ({ news }: NewsCardProps) => {
   const { t } = useTranslation();
+  const { getTranslatedField } = useContentTranslation();
+
+  // Get translated content
+  const translatedTitle = getTranslatedField(news, 'title', 'news');
+  const translatedContent = getTranslatedField(news, 'content', 'news');
+  const translatedLocation = getTranslatedField(news, 'location', 'news');
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: '2-digit',
@@ -26,7 +34,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
       <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full min-h-[200px]">
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold line-clamp-2 break-words">
-            {news.title}
+            {translatedTitle}
           </CardTitle>
           <div className="flex flex-col gap-1 text-xs text-gray-600">
             <div className="flex items-center min-w-0">
@@ -35,7 +43,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
             </div>
             <div className="flex items-center min-w-0">
               <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
-              <span className="truncate break-all min-w-0">{news.location}</span>
+              <span className="truncate break-all min-w-0">{translatedLocation}</span>
             </div>
             <div className="flex items-center min-w-0">
               <ExternalLink className="h-3 w-3 mr-1 flex-shrink-0" />
@@ -45,7 +53,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
         </CardHeader>
         <CardContent className="pt-2">
           <p className="text-gray-700 line-clamp-2 text-xs break-words">
-            {news.content}
+            {translatedContent}
           </p>
         </CardContent>
       </Card>
