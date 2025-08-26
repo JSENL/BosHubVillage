@@ -50,7 +50,7 @@ export const createPopupContent = (item: UnifiedItem, translations?: Translation
         ${displayLocation ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">📍</span> ${displayLocation}</p>` : ''}
         ${displayCategory ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">🏷️</span> ${displayCategory}</p>` : ''}
         ${item.date ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">📅</span> ${new Date(item.date).toLocaleDateString()}</p>` : ''}
-        ${item.price !== undefined ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">💰</span> ${item.price === 0 ? 'FREE' : `$${item.price}`}</p>` : ''}
+        ${item.price !== undefined ? `<p style="margin: 4px 0; font-size: 12px; color: #8b5cf6; display: flex; align-items: center;"><span style="margin-right: 4px;">💰</span> ${item.price === 0 ? (translations?.['cards.free'] || 'FREE') : `$${item.price}`}</p>` : ''}
       </div>
       
       <div style="margin-top: 12px; display: flex; gap: 6px;">
@@ -76,12 +76,12 @@ export const createPopupContent = (item: UnifiedItem, translations?: Translation
           cursor: pointer;
           font-weight: 500;
           white-space: nowrap;
-        ">📍 Directions</button>
+        ">📍 ${translations?.['common.directions'] || 'Directions'}</button>
         ` : ''}
       </div>
       
       <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
-        <p style="margin: 0; font-size: 11px; color: #9ca3af; font-style: italic; text-align: center;">💡 Click marker to highlight • Double-click to view details</p>
+        <p style="margin: 0; font-size: 11px; color: #9ca3af; font-style: italic; text-align: center;">${translations?.['common.clickMarkerHint'] || '💡 Click marker to highlight • Double-click to view details'}</p>
       </div>
     </div>
   `;

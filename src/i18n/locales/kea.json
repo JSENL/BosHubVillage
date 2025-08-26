@@ -113,6 +113,8 @@
     "share": "Partilha",
     "comments": "Komentariu",
     "like": "Gosta",
-    "unlike": "Ka gosta mas"
+    "unlike": "Ka gosta mas",
+    "directions": "Direkson",
+    "clickMarkerHint": "💡 Klika na marka pa realsa • Klika dus vez pa odja detalhi"
   }
 }

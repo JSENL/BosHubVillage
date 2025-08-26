@@ -27,7 +27,10 @@ export const useMapTranslations = () => {
       'itemTypes.news': t('itemTypes.news'),
       'itemTypes.businesses': t('itemTypes.businesses'),
       'itemTypes.localServices': t('itemTypes.localServices'),
-      'cards.viewDetails': t('cards.viewDetails')
+      'cards.viewDetails': t('cards.viewDetails'),
+      'cards.free': t('cards.free'),
+      'common.directions': t('common.directions'),
+      'common.clickMarkerHint': t('common.clickMarkerHint')
     };
   };
 

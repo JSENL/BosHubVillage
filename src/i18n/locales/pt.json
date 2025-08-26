@@ -113,6 +113,8 @@
     "share": "Partilhar",
     "comments": "Comentários",
     "like": "Gosto",
-    "unlike": "Já não gosto"
+    "unlike": "Já não gosto",
+    "directions": "Direções",
+    "clickMarkerHint": "💡 Clique no marcador para destacar • Duplo clique para ver detalhes"
   }
 }

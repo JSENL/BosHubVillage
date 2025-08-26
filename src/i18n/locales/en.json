@@ -194,6 +194,8 @@
     "comments": "Comments",
     "like": "Like",
     "unlike": "Unlike",
+    "directions": "Directions",
+    "clickMarkerHint": "💡 Click marker to highlight • Double-click to view details",
     "allItems": "All Items",
     "found": "found",
     "close": "Close",

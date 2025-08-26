@@ -194,6 +194,8 @@
     "comments": "Commentaires",
     "like": "J'aime",
     "unlike": "Je n'aime plus",
+    "directions": "Directions",
+    "clickMarkerHint": "💡 Cliquez sur le marqueur pour mettre en surbrillance • Double-cliquez pour voir les détails",
     "allItems": "Tous les éléments",
     "found": "trouvé",
     "close": "Fermer",

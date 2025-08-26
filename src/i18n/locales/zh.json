@@ -113,6 +113,8 @@
     "share": "分享",
     "comments": "评论",
     "like": "点赞",
-    "unlike": "取消点赞"
+    "unlike": "取消点赞",
+    "directions": "方向",
+    "clickMarkerHint": "💡 点击标记以突出显示 • 双击查看详细信息"
   }
 }
