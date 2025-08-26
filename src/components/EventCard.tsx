@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, MapPin, DollarSign, Users, Star } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,7 @@ interface EventCardProps {
 
 export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);
@@ -98,7 +100,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                     <span className="truncate max-w-20">{event.category}</span>
                   </Badge>
                   <div className="text-lg font-bold text-yelp-red">
-                    {event.price === 0 ? 'Free' : `$${event.price}`}
+                    {event.price === 0 ? t('cards.free') : `$${event.price}`}
                   </div>
                 </div>
               </div>
@@ -140,7 +142,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
             {event.category}
           </Badge>
           <div className="text-sm font-bold text-yelp-red">
-            {event.price === 0 ? 'Free' : `$${event.price}`}
+            {event.price === 0 ? t('cards.free') : `$${event.price}`}
           </div>
         </div>
         <CardTitle className="text-sm text-gray-900 hover:text-yelp-red line-clamp-2 break-words">

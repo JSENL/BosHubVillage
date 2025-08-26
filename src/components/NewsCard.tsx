@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
@@ -11,6 +12,7 @@ interface NewsCardProps {
 }
 
 const NewsCard = ({ news }: NewsCardProps) => {
+  const { t } = useTranslation();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: '2-digit',
