@@ -24,11 +24,20 @@ const resources = {
   pt: { translation: pt },
 };
 
+// Get saved language or default to English
+const getInitialLanguage = () => {
+  try {
+    return localStorage.getItem('language') || 'en';
+  } catch {
+    return 'en';
+  }
+};
+
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: localStorage.getItem('language') || 'en',
+    lng: getInitialLanguage(),
     fallbackLng: 'en',
     debug: false,
     interpolation: {
