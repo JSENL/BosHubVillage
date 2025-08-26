@@ -2,12 +2,14 @@
 import { useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 
 export const useMapLoader = () => {
   const [mapboxToken, setMapboxToken] = useState('');
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isLoadingToken, setIsLoadingToken] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { i18n } = useTranslation();
 
   // Get Mapbox token from Supabase edge function
   useEffect(() => {
@@ -61,6 +63,7 @@ export const useMapLoader = () => {
         zoom: 12
       });
 
+      // Add navigation controls
       map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
       console.log('Mapbox loaded successfully');

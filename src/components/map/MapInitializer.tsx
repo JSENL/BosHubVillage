@@ -1,6 +1,7 @@
 
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
+import { useTranslation } from 'react-i18next';
 
 interface UseMapInitializerProps {
   mapboxToken: string | null;
@@ -10,6 +11,7 @@ interface UseMapInitializerProps {
 export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitializerProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     // Clean up any existing map first
@@ -48,12 +50,14 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
       }
     });
 
-    // Add navigation controls (zoom in/out, compass)
-    map.addControl(new mapboxgl.NavigationControl({
+    // Add navigation controls
+    const navigationControl = new mapboxgl.NavigationControl({
       showCompass: true,
       showZoom: true,
       visualizePitch: true
-    }), 'top-right');
+    });
+    
+    map.addControl(navigationControl, 'top-right');
 
     // Add fullscreen control
     map.addControl(new mapboxgl.FullscreenControl(), 'top-left');

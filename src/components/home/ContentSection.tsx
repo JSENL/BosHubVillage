@@ -8,6 +8,7 @@ import { UnifiedItem } from "@/types/unifiedItem";
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
 import { TranslationManager } from "@/components/TranslationManager";
 import { TranslationTest } from "@/components/TranslationTest";
+import { SpanishUIDemo } from "@/components/SpanishUIDemo";
 
 interface ContentSectionProps {
   filters: HomePageFilters;
@@ -55,6 +56,10 @@ export const ContentSection = ({
           title: item.title || item.name
         }))}
       />
+      
+      <div className="mb-4">
+        <SpanishUIDemo />
+      </div>
       
       <div className="mb-4">
         <TranslationTest />

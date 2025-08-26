@@ -24,12 +24,12 @@ const resources = {
   pt: { translation: pt },
 };
 
-// Get saved language or default to English
+// Set Spanish as default for demo
 const getInitialLanguage = () => {
   try {
-    return localStorage.getItem('language') || 'en';
+    return localStorage.getItem('language') || 'es'; // Changed default to Spanish
   } catch {
-    return 'en';
+    return 'es'; // Changed default to Spanish
   }
 };
 
@@ -38,7 +38,7 @@ i18n
   .init({
     resources,
     lng: getInitialLanguage(),
-    fallbackLng: 'en',
+    fallbackLng: 'es', // Changed fallback to Spanish
     debug: false,
     interpolation: {
       escapeValue: false,
