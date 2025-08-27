@@ -9,10 +9,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
 import BusinessMessage from '@/components/BusinessMessage';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
   const navigate = useNavigate();
+  const { getTranslatedField } = useContentTranslation();
 
   const { data: business, isLoading, error } = useQuery({
     queryKey: ['business', businessId],
@@ -79,7 +81,7 @@ const BusinessDetails = () => {
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-3xl mb-2">{business.title}</CardTitle>
+                  <CardTitle className="text-3xl mb-2">{getTranslatedField(business, 'title', 'business')}</CardTitle>
                   <div className="flex items-center space-x-4 mb-4">
                     <Badge variant="secondary">
                       <Building className="h-3 w-3 mr-1" />
@@ -95,12 +97,12 @@ const BusinessDetails = () => {
               
               <div className="flex items-center text-gray-600 mb-4">
                 <MapPin className="h-4 w-4 mr-2" />
-                <span>{business.address}</span>
+                <span>{getTranslatedField(business, 'address', 'business')}</span>
               </div>
 
               {business.short_description && (
                 <p className="text-lg text-gray-700 font-medium">
-                  {business.short_description}
+                  {getTranslatedField(business, 'short_description', 'business')}
                 </p>
               )}
 
@@ -123,7 +125,7 @@ const BusinessDetails = () => {
             <CardContent className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-2">About</h3>
-                <p className="text-gray-700 whitespace-pre-wrap">{business.description}</p>
+                <p className="text-gray-700 whitespace-pre-wrap">{getTranslatedField(business, 'description', 'business')}</p>
               </div>
 
               {business.latitude && business.longitude && (

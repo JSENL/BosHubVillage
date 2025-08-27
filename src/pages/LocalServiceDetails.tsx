@@ -9,10 +9,12 @@ import { CommentForm } from '@/components/comments/CommentForm';
 import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
 import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
 import { Navigation } from '@/components/Navigation';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
+  const { getTranslatedField } = useContentTranslation();
 
   const { data: resource, isLoading } = useQuery({
     queryKey: ['local-resource-details', serviceId],
@@ -68,7 +70,7 @@ const LocalServiceDetails = () => {
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
-                  {resource.name}
+                  {getTranslatedField(resource, 'name', 'local_resources')}
                 </CardTitle>
                 <Badge variant="secondary" className="mb-2">
                   <Building className="h-3 w-3 mr-1" />
@@ -78,7 +80,7 @@ const LocalServiceDetails = () => {
             </div>
             <div className="flex items-center text-gray-600 mb-2">
               <MapPin className="h-4 w-4 mr-1" />
-              {resource.address}, {resource.neighborhood}
+              {getTranslatedField(resource, 'address', 'local_resources')}, {resource.neighborhood}
               {resource.village && ` - ${resource.village}`}
             </div>
 
@@ -103,7 +105,7 @@ const LocalServiceDetails = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-2">About</h3>
                   <p className="text-gray-700 leading-relaxed">
-                    {resource.description}
+                    {getTranslatedField(resource, 'description', 'local_resources')}
                   </p>
                 </div>
               )}

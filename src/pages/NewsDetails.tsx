@@ -11,10 +11,12 @@ import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import NewsComments from '@/components/NewsComments';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
   const { user } = useAuth();
+  const { getTranslatedField } = useContentTranslation();
 
   console.log('NewsDetails - newsId:', newsId);
 
@@ -140,7 +142,7 @@ const NewsDetails = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-3xl font-bold text-gray-900 mb-4">
-              {news.title}
+              {getTranslatedField(news, 'title', 'news')}
             </CardTitle>
             <div className="flex flex-wrap gap-4 text-sm text-gray-600">
               <div className="flex items-center">
@@ -149,7 +151,7 @@ const NewsDetails = () => {
               </div>
               <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-1" />
-                {news.location}
+                {getTranslatedField(news, 'location', 'news')}
               </div>
               <div className="flex items-center">
                 <ExternalLink className="h-4 w-4 mr-1" />
@@ -160,7 +162,7 @@ const NewsDetails = () => {
           <CardContent>
             <div className="prose max-w-none">
               <div className="text-gray-700 leading-relaxed whitespace-pre-wrap text-lg">
-                {news.content}
+                {getTranslatedField(news, 'content', 'news')}
               </div>
             </div>
             <div className="mt-6 pt-4 border-t border-gray-200">

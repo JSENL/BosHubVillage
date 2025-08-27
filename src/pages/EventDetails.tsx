@@ -10,12 +10,14 @@ import { Navigation } from '@/components/Navigation';
 import { SocialShare } from '@/components/SocialShare';
 import { CalendarShare } from '@/components/CalendarShare';
 import { EventRegistrationForm } from '@/components/EventRegistrationForm';
+import { useContentTranslation } from '@/hooks/useTranslation';
 import { useState } from 'react';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { events, loading } = useEvents();
+  const { getTranslatedField } = useContentTranslation();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   if (loading) {
@@ -65,7 +67,7 @@ const EventDetails = () => {
             <CardContent className="p-8">
               <div className="flex justify-between items-start mb-6">
                 <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-sm">
-                  {event.category}
+                  {getTranslatedField(event, 'category', 'events')}
                 </Badge>
                 <div className="flex items-center text-2xl font-bold text-purple-600">
                   <DollarSign className="h-6 w-6 mr-1" />
@@ -73,8 +75,8 @@ const EventDetails = () => {
                 </div>
               </div>
 
-              <h1 className="text-4xl font-bold text-gray-800 mb-4">{event.title}</h1>
-              <p className="text-lg text-gray-700 mb-8 leading-relaxed">{event.description}</p>
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">{getTranslatedField(event, 'title', 'events')}</h1>
+              <p className="text-lg text-gray-700 mb-8 leading-relaxed">{getTranslatedField(event, 'description', 'events')}</p>
 
               {/* Event Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -97,7 +99,7 @@ const EventDetails = () => {
                   <MapPin className="h-6 w-6 text-purple-500" />
                   <div>
                     <div className="font-semibold text-gray-800">Location</div>
-                    <div className="text-gray-600">{event.location}</div>
+                    <div className="text-gray-600">{getTranslatedField(event, 'location', 'events')}</div>
                   </div>
                 </div>
 
