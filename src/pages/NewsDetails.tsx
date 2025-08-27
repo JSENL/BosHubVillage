@@ -1,5 +1,6 @@
 
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,7 +17,8 @@ import { useContentTranslation } from '@/hooks/useTranslation';
 const NewsDetails = () => {
   const { newsId } = useParams();
   const { user } = useAuth();
-  const { getTranslatedField } = useContentTranslation();
+  const { getTranslatedField, currentLanguage } = useContentTranslation();
+  const { t } = useTranslation();
 
   console.log('NewsDetails - newsId:', newsId);
 
@@ -85,7 +87,7 @@ const NewsDetails = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading news article...</p>
+            <p className="text-gray-600">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -101,7 +103,7 @@ const NewsDetails = () => {
             <Link to="/news-page">
               <Button variant="outline" className="mt-4">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to News
+                {t('common.backToNews')}
               </Button>
             </Link>
           </div>
@@ -120,7 +122,7 @@ const NewsDetails = () => {
             <Link to="/news-page">
               <Button variant="outline" className="mt-4">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to News
+                {t('common.backToNews')}
               </Button>
             </Link>
           </div>
@@ -135,7 +137,7 @@ const NewsDetails = () => {
         <Link to="/news-page">
           <Button variant="ghost" className="mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to News
+            {t('common.backToNews')}
           </Button>
         </Link>
 
@@ -147,7 +149,9 @@ const NewsDetails = () => {
             <div className="flex flex-wrap gap-4 text-sm text-gray-600">
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
-                {format(new Date(news.date_posted), 'MMMM d, yyyy')}
+                {new Date(news.date_posted).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, { 
+                  year: 'numeric', month: 'long', day: 'numeric' 
+                })}
               </div>
               <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-1" />

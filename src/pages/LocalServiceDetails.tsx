@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +16,7 @@ const LocalServiceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
   const { getTranslatedField } = useContentTranslation();
+  const { t } = useTranslation();
 
   const { data: resource, isLoading } = useQuery({
     queryKey: ['local-resource-details', serviceId],
@@ -44,7 +46,7 @@ const LocalServiceDetails = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">Loading service details...</div>
+          <div className="text-center py-8">{t('common.loading')}</div>
         </div>
       </div>
     );
@@ -54,7 +56,7 @@ const LocalServiceDetails = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">Service not found</div>
+          <div className="text-center py-8">{t('common.serviceNotFound')}</div>
         </div>
       </div>
     );
@@ -94,7 +96,7 @@ const LocalServiceDetails = () => {
                   className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  Visit Website
+                  {t('common.visitWebsite')}
                 </a>
               </div>
             )}
@@ -103,7 +105,7 @@ const LocalServiceDetails = () => {
             <div className="space-y-4">
               {resource.description && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">About</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t('common.about')}</h3>
                   <p className="text-gray-700 leading-relaxed">
                     {getTranslatedField(resource, 'description', 'local_resources')}
                   </p>
@@ -116,7 +118,7 @@ const LocalServiceDetails = () => {
         {/* Comments Section */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl font-bold text-gray-900">Comments & Reviews</CardTitle>
+            <CardTitle className="text-xl font-bold text-gray-900">{t('common.commentsAndReviews')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {user && (

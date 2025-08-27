@@ -205,6 +205,22 @@
     "confirm": "Confirm",
     "success": "Success",
     "failed": "Failed",
-    "total": "Total"
+    "total": "Total",
+    "location": "Location",
+    "attendees": "Attendees",
+    "about": "About",
+    "commentsAndReviews": "Comments & Reviews",
+    "backToNews": "Back to News",
+    "backToEvents": "Back to Events",
+    "eventNotFound": "Event Not Found",
+    "businessNotFound": "Business Not Found",
+    "serviceNotFound": "Service not found",
+    "goHome": "Go Home",
+    "visitWebsite": "Visit Website",
+    "visitEventWebsite": "Visit Event Website",
+    "registerForEvent": "Register for Event",
+    "attending": "attending",
+    "max": "max",
+    "addedOn": "Added"
   }
 }

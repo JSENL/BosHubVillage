@@ -1,5 +1,6 @@
 
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,14 +18,15 @@ const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { events, loading } = useEvents();
-  const { getTranslatedField } = useContentTranslation();
+  const { getTranslatedField, currentLanguage } = useContentTranslation();
+  const { t } = useTranslation();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">Loading event details...</p>
+          <p className="text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -36,11 +38,11 @@ const EventDetails = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Event Not Found</h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">{t('common.eventNotFound')}</h1>
           <p className="text-gray-600 mb-6">The event you're looking for doesn't exist.</p>
           <Button onClick={() => navigate('/')} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Events
+            {t('common.backToEvents')}
           </Button>
         </div>
       </div>
@@ -84,7 +86,7 @@ const EventDetails = () => {
                   <Clock className="h-6 w-6 text-purple-500" />
                   <div>
                     <div className="font-semibold text-gray-800">
-                      {new Date(event.date).toLocaleDateString('en-US', { 
+                      {new Date(event.date).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, { 
                         weekday: 'long', 
                         year: 'numeric', 
                         month: 'long', 
@@ -98,7 +100,7 @@ const EventDetails = () => {
                 <div className="flex items-center space-x-3 p-4 bg-purple-50 rounded-lg">
                   <MapPin className="h-6 w-6 text-purple-500" />
                   <div>
-                    <div className="font-semibold text-gray-800">Location</div>
+                    <div className="font-semibold text-gray-800">{t('common.location')}</div>
                     <div className="text-gray-600">{getTranslatedField(event, 'location', 'events')}</div>
                   </div>
                 </div>
@@ -106,11 +108,11 @@ const EventDetails = () => {
                 <div className="flex items-center space-x-3 p-4 bg-purple-50 rounded-lg">
                   <Users className="h-6 w-6 text-purple-500" />
                   <div>
-                    <div className="font-semibold text-gray-800">Attendees</div>
+                    <div className="font-semibold text-gray-800">{t('common.attendees')}</div>
                     <div className="text-gray-600">
-                      {event.attendees_count || 0} attending
+                      {event.attendees_count || 0} {t('common.attending')}
                       {event.max_attendees && (
-                        <span> / {event.max_attendees} max</span>
+                        <span> / {event.max_attendees} {t('common.max')}</span>
                       )}
                     </div>
                   </div>
@@ -127,7 +129,7 @@ const EventDetails = () => {
                     className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    Visit Event Website
+                    {t('common.visitEventWebsite')}
                   </a>
                 </div>
               )}
@@ -140,7 +142,7 @@ const EventDetails = () => {
                     className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                     onClick={() => setShowRegistrationForm(true)}
                   >
-                    Register for Event
+                    {t('common.registerForEvent')}
                   </Button>
                 )}
                 <SocialShare 
