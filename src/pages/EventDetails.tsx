@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink } from 'lucide-react';
@@ -23,6 +22,13 @@ const EventDetails = () => {
   const { t } = useTranslation();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
 
+  // Find the event
+  const event = events.find(e => e.id === eventId);
+
+  // Always call useAutoTranslate hook (it handles null events internally)
+  useAutoTranslate({ item: event || null, table: 'events', fields: ['title', 'description', 'location', 'category'] });
+
+  // Handle loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
@@ -33,11 +39,7 @@ const EventDetails = () => {
     );
   }
 
-  const event = events.find(e => e.id === eventId);
-
-  // Auto-translate event fields - always call the hook, handle null event inside the hook
-  useAutoTranslate({ item: event, table: 'events', fields: ['title', 'description', 'location', 'category'] });
-
+  // Handle event not found
   if (!event) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center">
@@ -93,7 +95,7 @@ const EventDetails = () => {
                 </Badge>
                 <div className="flex items-center text-2xl font-bold text-purple-600">
                   <DollarSign className="h-6 w-6 mr-1" />
-                  {event.price}
+                  {event.price === 0 ? t('cards.free') : `$${event.price}`}
                 </div>
               </div>
 
@@ -166,18 +168,18 @@ const EventDetails = () => {
                   </Button>
                 )}
                 <SocialShare 
-                  title={event.title}
-                  description={event.description || `Join us for ${event.title} on ${new Date(event.date).toLocaleDateString()}`}
+                  title={getTranslatedField(event, 'title', 'events')}
+                  description={getTranslatedField(event, 'description', 'events') || `Join us for ${getTranslatedField(event, 'title', 'events')} on ${new Date(event.date).toLocaleDateString()}`}
                   url={window.location.href}
                   hashtags={[event.category.toLowerCase().replace(/\s+/g, ''), 'event', 'community']}
                 />
                 <CalendarShare
-                  title={event.title}
-                  description={event.description || `Join us for ${event.title}`}
+                  title={getTranslatedField(event, 'title', 'events')}
+                  description={getTranslatedField(event, 'description', 'events') || `Join us for ${getTranslatedField(event, 'title', 'events')}`}
                   startDate={event.date}
                   startTime={event.start_time}
                   endTime={event.end_time}
-                  location={event.location}
+                  location={getTranslatedField(event, 'location', 'events')}
                 />
               </div>
             </CardContent>
@@ -194,7 +196,7 @@ const EventDetails = () => {
           {event.registration_required && (
             <EventRegistrationForm
               eventId={event.id}
-              eventTitle={event.title}
+              eventTitle={getTranslatedField(event, 'title', 'events')}
               isOpen={showRegistrationForm}
               onClose={() => setShowRegistrationForm(false)}
             />
