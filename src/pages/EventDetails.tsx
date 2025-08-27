@@ -12,6 +12,7 @@ import { SocialShare } from '@/components/SocialShare';
 import { CalendarShare } from '@/components/CalendarShare';
 import { EventRegistrationForm } from '@/components/EventRegistrationForm';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 import { useState } from 'react';
 
 const EventDetails = () => {
@@ -33,6 +34,11 @@ const EventDetails = () => {
   }
 
   const event = events.find(e => e.id === eventId);
+
+  // Auto-translate event fields when event data is available
+  if (event) {
+    useAutoTranslate({ item: event, table: 'events', fields: ['title', 'description', 'location', 'category'] });
+  }
 
   if (!event) {
     return (
