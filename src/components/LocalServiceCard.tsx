@@ -15,14 +15,14 @@ interface LocalServiceCardProps {
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { getTranslatedField } = useContentTranslation();
+  const { getTranslatedField, currentLanguage } = useContentTranslation();
   // Get translated content from pre-populated database translations
   const translatedName = getTranslatedField(localService, 'name', 'local_resources');
   const translatedDescription = getTranslatedField(localService, 'description', 'local_resources');
   const translatedAddress = getTranslatedField(localService, 'address', 'local_resources');
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric'

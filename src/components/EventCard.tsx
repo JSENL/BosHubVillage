@@ -31,13 +31,13 @@ interface EventCardProps {
 export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { getTranslatedField } = useContentTranslation();
+  const { getTranslatedField, currentLanguage } = useContentTranslation();
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric'
@@ -47,11 +47,18 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const formatTimeRange = (startTime: string, endTime: string) => {
     const formatTime = (time: string) => {
       if (!time) return '';
-      const [hours, minutes] = time.split(':');
-      const hour = parseInt(hours);
-      const ampm = hour >= 12 ? 'PM' : 'AM';
-      const hour12 = hour % 12 || 12;
-      return `${hour12}:${minutes} ${ampm}`;
+      
+      if (currentLanguage === 'en') {
+        // 12-hour format for English
+        const [hours, minutes] = time.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        return `${hour12}:${minutes} ${ampm}`;
+      } else {
+        // 24-hour format for other languages
+        return time;
+      }
     };
 
     if (!startTime && !endTime) return '';

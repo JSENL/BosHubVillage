@@ -14,7 +14,7 @@ interface NewsCardProps {
 
 const NewsCard = ({ news }: NewsCardProps) => {
   const { t } = useTranslation();
-  const { getTranslatedField } = useContentTranslation();
+  const { getTranslatedField, currentLanguage } = useContentTranslation();
 
   // Get translated content
   const translatedTitle = getTranslatedField(news, 'title', 'news');
@@ -22,7 +22,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
   const translatedLocation = getTranslatedField(news, 'location', 'news');
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric'

@@ -1,9 +1,11 @@
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, MapPin, DollarSign, Users, Star, Building, Newspaper, Wrench } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UnifiedItem } from '@/types/unifiedItem';
+import { useContentTranslation } from '@/hooks/useTranslation';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
@@ -16,6 +18,8 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   viewMode, 
   isHighlighted = false 
 }) => {
+  const { t } = useTranslation();
+  const { getTranslatedField, currentLanguage } = useContentTranslation();
   const handleViewDetails = () => {
     const routePath = item.type === 'local-service' ? 'local-resource' : 
                      item.type === 'business' ? 'business' : item.type;
@@ -57,12 +61,12 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
 
   const getTypeLabel = () => {
     const labels = {
-      event: 'Event',
-      news: 'News',
-      business: 'Business',
-      'local-service': 'Local Resource'
+      event: t('itemTypes.events'),
+      news: t('itemTypes.news'),
+      business: t('itemTypes.businesses'),
+      'local-service': t('itemTypes.localServices')
     };
-    return labels[item.type] || 'Item';
+    return labels[item.type] || t('common.view');
   };
 
   const cardClassName = `
@@ -74,9 +78,35 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const rating = Math.floor(Math.random() * 2) + 4; // 4-5 stars
   const reviewCount = Math.floor(Math.random() * 200) + 25;
 
-  const displayLocation = item.location || item.address || '';
-  const displayDescription = item.description || item.content || '';
-  const displayCategory = item.category || item.business_type || '';
+  // Get translated fields based on item type
+  const getTranslatedFields = () => {
+    const tableMap = {
+      'event': 'events' as const,
+      'business': 'business' as const,
+      'local-service': 'local_resources' as const,
+      'news': 'news' as const
+    };
+    
+    const table = tableMap[item.type];
+    
+    if (!table) {
+      return {
+        title: item.title,
+        description: item.description || item.content || '',
+        location: item.location || item.address || '',
+        category: item.category || item.business_type || ''
+      };
+    }
+    
+    return {
+      title: getTranslatedField(item, 'title', table) || getTranslatedField(item, 'name', table) || item.title,
+      description: getTranslatedField(item, 'description', table) || getTranslatedField(item, 'content', table) || item.description || item.content || '',
+      location: getTranslatedField(item, 'location', table) || getTranslatedField(item, 'address', table) || item.location || item.address || '',
+      category: getTranslatedField(item, 'category', table) || item.category || item.business_type || ''
+    };
+  };
+  
+  const translatedFields = getTranslatedFields();
 
   if (viewMode === 'list') {
     return (
@@ -93,7 +123,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                 {getTypeIcon()}
                 <div className="text-sm font-medium">
                   {item.type === 'event' && item.date 
-                    ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                    ? new Date(item.date).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, { month: 'short', day: 'numeric' })
                     : getTypeLabel()
                   }
                 </div>
@@ -105,7 +135,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1 min-w-0 mr-4">
                   <h3 className="text-xl font-bold text-gray-900 hover:text-caribbean-teal mb-1 line-clamp-2 break-words">
-                    {item.title}
+                    {translatedFields.title}
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
                     {[...Array(5)].map((_, i) => (
@@ -119,17 +149,17 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                 </div>
                 <div className="text-right flex-shrink-0">
                   <Badge variant="secondary" className="bg-gray-100 text-gray-700 mb-2">
-                    <span className="truncate max-w-24">{displayCategory}</span>
+                    <span className="truncate max-w-24">{translatedFields.category}</span>
                   </Badge>
                   {item.price !== undefined && (
                     <div className="text-lg font-bold text-caribbean-teal">
-                      {item.price === 0 ? 'Free' : `$${item.price}`}
+                      {item.price === 0 ? t('cards.free') : `$${item.price}`}
                     </div>
                   )}
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{displayDescription}</p>
+              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{translatedFields.description}</p>
               
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 {item.date && (
@@ -138,10 +168,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                     <span className="truncate">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
                   </div>
                 )}
-                {displayLocation && (
+                {translatedFields.location && (
                   <div className="flex items-center min-w-0">
                     <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-                    <span className="truncate break-all min-w-0">{displayLocation}</span>
+                    <span className="truncate break-all min-w-0">{translatedFields.location}</span>
                   </div>
                 )}
               </div>
@@ -164,7 +194,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
           {getTypeIcon()}
           <div className="text-sm font-medium">
             {item.type === 'event' && item.date 
-              ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+              ? new Date(item.date).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, { month: 'short', day: 'numeric' })
               : getTypeLabel()
             }
           </div>
@@ -174,16 +204,16 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between mb-2">
           <Badge variant="secondary" className="bg-gray-100 text-gray-700">
-            {displayCategory}
+            {translatedFields.category}
           </Badge>
           {item.price !== undefined && (
             <div className="text-lg font-bold text-caribbean-teal">
-              {item.price === 0 ? 'Free' : `$${item.price}`}
+              {item.price === 0 ? t('cards.free') : `$${item.price}`}
             </div>
           )}
         </div>
         <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal line-clamp-2 break-words">
-          {item.title}
+          {translatedFields.title}
         </CardTitle>
         <div className="flex items-center space-x-1">
           {[...Array(5)].map((_, i) => (
@@ -198,7 +228,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       
       <CardContent>
         <CardDescription className="mb-4 line-clamp-3 text-gray-600 break-words">
-          {displayDescription}
+          {translatedFields.description}
         </CardDescription>
         <div className="space-y-2 text-sm">
           {item.date && (
@@ -207,10 +237,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               <span className="truncate">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
             </div>
           )}
-          {displayLocation && (
+          {translatedFields.location && (
             <div className="flex items-center text-gray-600 min-w-0">
               <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-              <span className="truncate break-all min-w-0">{displayLocation}</span>
+              <span className="truncate break-all min-w-0">{translatedFields.location}</span>
             </div>
           )}
         </div>
