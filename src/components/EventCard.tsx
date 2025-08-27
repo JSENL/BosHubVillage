@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Calendar, MapPin, DollarSign, Users, Star } from 'lucide-react';
@@ -7,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { useContentTranslation } from '@/hooks/useTranslation';
-
 
 interface Event {
   id: string;
@@ -32,6 +30,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { getTranslatedField, currentLanguage } = useContentTranslation();
+
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);
   };
@@ -82,6 +81,22 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const translatedDescription = getTranslatedField(event, 'description', 'events');
   const translatedLocation = getTranslatedField(event, 'location', 'events');
   const translatedCategory = getTranslatedField(event, 'category', 'events');
+
+  // Helper function to format attendees text with translation
+  const formatAttendeesText = (maxAttendees: number) => {
+    const translations = {
+      'en': `Up to ${maxAttendees} attendees`,
+      'es': `Hasta ${maxAttendees} asistentes`,
+      'fr': `Jusqu'à ${maxAttendees} participants`,
+      'zh': `最多 ${maxAttendees} 位参与者`,
+      'ar': `حتى ${maxAttendees} حضور`,
+      'it': `Fino a ${maxAttendees} partecipanti`,
+      'pt': `Até ${maxAttendees} participantes`,
+      'vi': `Tối đa ${maxAttendees} người tham dự`,
+      'kea': `Te ${maxAttendees} partisipanti`
+    };
+    return translations[currentLanguage] || translations['en'];
+  };
 
   if (viewMode === 'list') {
     return (
@@ -134,7 +149,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 {event.max_attendees && (
                   <div className="flex items-center">
                     <Users className="h-4 w-4 mr-2 text-yelp-red" />
-                    <span>Up to {event.max_attendees} people</span>
+                    <span>{formatAttendeesText(event.max_attendees)}</span>
                   </div>
                 )}
               </div>
@@ -190,7 +205,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
           {event.max_attendees && (
             <div className="flex items-center text-gray-600">
               <Users className="h-3 w-3 mr-2 text-yelp-red" />
-              <span>Up to {event.max_attendees} attendees</span>
+              <span>{formatAttendeesText(event.max_attendees)}</span>
             </div>
           )}
         </div>
