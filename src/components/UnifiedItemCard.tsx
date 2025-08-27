@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { UnifiedItem } from '@/types/unifiedItem';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
@@ -20,6 +21,29 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
 }) => {
   const { t } = useTranslation();
   const { getTranslatedField, currentLanguage } = useContentTranslation();
+  
+  // Auto-translate missing fields based on item type
+  const getFieldsForType = (type: string) => {
+    switch (type) {
+      case 'event': return ['title', 'description', 'location', 'category'];
+      case 'business': return ['title', 'description', 'address'];
+      case 'local-service': return ['name', 'description', 'address'];
+      case 'news': return ['title', 'content', 'location'];
+      default: return [];
+    }
+  };
+  
+  const tableMap = {
+    'event': 'events' as const,
+    'business': 'business' as const,
+    'local-service': 'local_resources' as const,
+    'news': 'news' as const
+  };
+  
+  const table = tableMap[item.type];
+  if (table) {
+    useAutoTranslate({ item, table, fields: getFieldsForType(item.type) });
+  }
   const handleViewDetails = () => {
     const routePath = item.type === 'local-service' ? 'local-resource' : 
                      item.type === 'business' ? 'business' : item.type;

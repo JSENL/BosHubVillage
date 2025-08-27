@@ -7,6 +7,7 @@ import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 interface NewsCardProps {
   news: News;
@@ -15,6 +16,9 @@ interface NewsCardProps {
 const NewsCard = ({ news }: NewsCardProps) => {
   const { t } = useTranslation();
   const { getTranslatedField, currentLanguage } = useContentTranslation();
+  
+  // Auto-translate missing fields in the background
+  useAutoTranslate({ item: news, table: 'news', fields: ['title', 'content', 'location'] });
 
   // Get translated content
   const translatedTitle = getTranslatedField(news, 'title', 'news');

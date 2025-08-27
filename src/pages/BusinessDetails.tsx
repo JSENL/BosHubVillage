@@ -11,6 +11,7 @@ import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
 import BusinessMessage from '@/components/BusinessMessage';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -36,6 +37,11 @@ const BusinessDetails = () => {
     },
     enabled: !!businessId,
   });
+
+  // Auto-translate business fields when data is available
+  if (business) {
+    useAutoTranslate({ item: business, table: 'business', fields: ['title', 'description', 'short_description', 'address'] });
+  }
 
   if (isLoading) {
     return (

@@ -11,6 +11,7 @@ import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
 import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
 import { Navigation } from '@/components/Navigation';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
@@ -32,6 +33,11 @@ const LocalServiceDetails = () => {
     },
     enabled: !!serviceId,
   });
+
+  // Auto-translate resource fields when data is available
+  if (resource) {
+    useAutoTranslate({ item: resource, table: 'local_resources', fields: ['name', 'description', 'address'] });
+  }
 
   const {
     comments,

@@ -5,6 +5,7 @@ import { MapPin, Building } from 'lucide-react';
 import { Business } from '@/types/business';
 import { Link } from 'react-router-dom';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 
 interface BusinessCardProps {
@@ -14,6 +15,9 @@ interface BusinessCardProps {
 const BusinessCard = ({ business }: BusinessCardProps) => {
   const { t } = useTranslation();
   const { getTranslatedField } = useContentTranslation();
+  
+  // Auto-translate missing fields in the background
+  useAutoTranslate({ item: business, table: 'business', fields: ['title', 'description', 'short_description', 'address'] });
   // Get translated content from pre-populated database translations
   const translatedTitle = getTranslatedField(business, 'title', 'business');
   const translatedDescription = getTranslatedField(business, 'description', 'business');

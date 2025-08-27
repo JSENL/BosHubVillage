@@ -6,6 +6,7 @@ import { MapPin, Building } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
 import { useNavigate } from 'react-router-dom';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 
 interface LocalServiceCardProps {
@@ -16,6 +17,9 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { getTranslatedField, currentLanguage } = useContentTranslation();
+  
+  // Auto-translate missing fields in the background
+  useAutoTranslate({ item: localService, table: 'local_resources', fields: ['name', 'description', 'address'] });
   // Get translated content from pre-populated database translations
   const translatedName = getTranslatedField(localService, 'name', 'local_resources');
   const translatedDescription = getTranslatedField(localService, 'description', 'local_resources');

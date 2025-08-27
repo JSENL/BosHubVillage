@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import NewsComments from '@/components/NewsComments';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -76,6 +77,11 @@ const NewsDetails = () => {
     },
     enabled: !!newsId,
   });
+
+  // Auto-translate news fields when data is available
+  if (news) {
+    useAutoTranslate({ item: news, table: 'news', fields: ['title', 'content', 'location'] });
+  }
 
   console.log('NewsDetails - news:', news);
   console.log('NewsDetails - isLoading:', isLoading);
