@@ -13,6 +13,7 @@ export const useAutoTranslate = ({ item, table, fields }: UseAutoTranslateParams
   const inFlightRef = useRef<Record<string, boolean>>({});
 
   useEffect(() => {
+    // Exit early if no item or if English language
     if (!item?.id || currentLanguage === 'en') return;
 
     const run = async () => {

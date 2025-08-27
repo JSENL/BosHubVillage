@@ -34,10 +34,8 @@ const LocalServiceDetails = () => {
     enabled: !!serviceId,
   });
 
-  // Auto-translate resource fields when data is available
-  if (resource) {
-    useAutoTranslate({ item: resource, table: 'local_resources', fields: ['name', 'description', 'address'] });
-  }
+  // Auto-translate resource fields - always call the hook
+  useAutoTranslate({ item: resource, table: 'local_resources', fields: ['name', 'description', 'address'] });
 
   const {
     comments,

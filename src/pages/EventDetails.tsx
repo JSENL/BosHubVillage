@@ -35,10 +35,8 @@ const EventDetails = () => {
 
   const event = events.find(e => e.id === eventId);
 
-  // Auto-translate event fields when event data is available
-  if (event) {
-    useAutoTranslate({ item: event, table: 'events', fields: ['title', 'description', 'location', 'category'] });
-  }
+  // Auto-translate event fields - always call the hook, handle null event inside the hook
+  useAutoTranslate({ item: event, table: 'events', fields: ['title', 'description', 'location', 'category'] });
 
   if (!event) {
     return (

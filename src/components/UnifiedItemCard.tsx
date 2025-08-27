@@ -41,9 +41,13 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   };
   
   const table = tableMap[item.type];
-  if (table) {
-    useAutoTranslate({ item, table, fields: getFieldsForType(item.type) });
-  }
+  
+  // Always call the hook, but only process if we have a valid table
+  useAutoTranslate({ 
+    item: table ? item : null, 
+    table: table || 'events', 
+    fields: table ? getFieldsForType(item.type) : [] 
+  });
   const handleViewDetails = () => {
     const routePath = item.type === 'local-service' ? 'local-resource' : 
                      item.type === 'business' ? 'business' : item.type;

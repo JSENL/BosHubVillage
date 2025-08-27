@@ -78,10 +78,8 @@ const NewsDetails = () => {
     enabled: !!newsId,
   });
 
-  // Auto-translate news fields when data is available
-  if (news) {
-    useAutoTranslate({ item: news, table: 'news', fields: ['title', 'content', 'location'] });
-  }
+  // Auto-translate news fields - always call the hook
+  useAutoTranslate({ item: news, table: 'news', fields: ['title', 'content', 'location'] });
 
   console.log('NewsDetails - news:', news);
   console.log('NewsDetails - isLoading:', isLoading);

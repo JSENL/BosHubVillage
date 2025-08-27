@@ -38,10 +38,8 @@ const BusinessDetails = () => {
     enabled: !!businessId,
   });
 
-  // Auto-translate business fields when data is available
-  if (business) {
-    useAutoTranslate({ item: business, table: 'business', fields: ['title', 'description', 'short_description', 'address'] });
-  }
+  // Auto-translate business fields - always call the hook
+  useAutoTranslate({ item: business, table: 'business', fields: ['title', 'description', 'short_description', 'address'] });
 
   if (isLoading) {
     return (
