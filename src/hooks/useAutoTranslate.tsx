@@ -26,16 +26,22 @@ export const useAutoTranslate = ({ item, table, fields }: UseAutoTranslateParams
         if (!originalText) continue;
 
         // Detect placeholder or ineffective translations
-        const isPlaceholder = typeof existing === 'string' && existing.includes(' - ') && (
-          existing.includes('وصف باللغة العربية') ||
-          existing.includes('descrizione in italiano') ||
-          existing.includes('deskrison na kriolu') ||
-          existing.includes('descrição em português') ||
-          existing.includes('(Mô tả bằng tiếng Việt)') ||
-          existing.includes('(Sự kiện)')
+        const isPlaceholder = typeof existing === 'string' && (
+          existing.includes(' - ') && (
+            existing.includes('وصف باللغة العربية') ||
+            existing.includes('descrizione in italiano') ||
+            existing.includes('deskrison na kriolu') ||
+            existing.includes('descrição em português') ||
+            existing.includes('(Mô tả bằng tiếng Việt)') ||
+            existing.includes('(Sự kiện)')
+          ) ||
+          // Also detect if the translation is exactly the same as the original English text
+          existing === originalText ||
+          // Or if it contains the original English text as a prefix with placeholder suffix
+          (originalText && existing.startsWith(originalText + ' - '))
         );
 
-        const needsTranslation = !existing || existing === originalText || isPlaceholder;
+        const needsTranslation = !existing || isPlaceholder;
         const cacheKey = `${table}-${item.id}-${field}-${currentLanguage}`;
         if (!needsTranslation || inFlightRef.current[cacheKey]) continue;
 

@@ -89,16 +89,20 @@ export const useContentTranslation = () => {
     if (translations && translations[currentLanguage]) {
       const translation = translations[currentLanguage];
       
-      // Check if translation is just the same as English (fallback case)
-      // or if it contains placeholder text
+      // Check if translation is placeholder text or just the original text
       const originalText = item[fieldName] || '';
-      const isPlaceholderText = translation.includes(' - ') && (
-        translation.includes('وصف باللغة العربية') ||
-        translation.includes('descrizione in italiano') ||
-        translation.includes('deskrison na kriolu') ||
-        translation.includes('descrição em português') ||
-        translation.includes('(Mô tả bằng tiếng Việt)') ||
-        translation.includes('(Sự kiện)')
+      const isPlaceholderText = (
+        translation.includes(' - ') && (
+          translation.includes('وصف باللغة العربية') ||
+          translation.includes('descrizione in italiano') ||
+          translation.includes('deskrison na kriolu') ||
+          translation.includes('descrição em português') ||
+          translation.includes('(Mô tả bằng tiếng Việt)') ||
+          translation.includes('(Sự kiện)')
+        )
+      ) || (
+        // Also detect if translation starts with original text + " - "
+        originalText && translation.startsWith(originalText + ' - ')
       );
       
       // If it's placeholder text or exactly the same as English, fall back to original
