@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { useContentTranslation } from '@/hooks/useTranslation';
+import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 interface Event {
   id: string;
@@ -30,6 +31,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { getTranslatedField, currentLanguage } = useContentTranslation();
+  
+  // Auto-translate missing fields in the background and cache them
+  useAutoTranslate({ item: event, table: 'events', fields: ['title', 'description'] });
 
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);

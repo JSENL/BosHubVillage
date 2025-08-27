@@ -76,6 +76,12 @@ export const useContentTranslation = () => {
       return item[fieldName] || '';
     }
 
+    // Check in-memory translation cache first (populated by translateContent)
+    const cacheKey = `${table}-${item?.id}-${fieldName}-${currentLanguage}`;
+    if (translationCache[cacheKey]) {
+      return translationCache[cacheKey];
+    }
+
     // Check if translations exist in the database record
     const translationsField = `${fieldName}_translations`;
     const translations = item[translationsField];
