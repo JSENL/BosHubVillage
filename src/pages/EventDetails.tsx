@@ -51,10 +51,26 @@ const EventDetails = () => {
 
   const formatTimeRange = (startTime: string, endTime: string) => {
     if (!startTime && !endTime) return 'Time TBD';
+    
+    const formatTime = (timeStr: string) => {
+      if (!timeStr) return '';
+      
+      if (currentLanguage === 'en') {
+        // Convert 24-hour to 12-hour format for English
+        const [hours, minutes] = timeStr.split(':');
+        const hour24 = parseInt(hours);
+        const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
+        const ampm = hour24 >= 12 ? 'PM' : 'AM';
+        return `${hour12}:${minutes} ${ampm}`;
+      }
+      
+      return timeStr; // Keep 24-hour format for other languages
+    };
+    
     if (startTime && endTime) {
-      return `${startTime} - ${endTime}`;
+      return `${formatTime(startTime)} - ${formatTime(endTime)}`;
     }
-    return startTime || endTime;
+    return formatTime(startTime || endTime);
   };
 
   return (
