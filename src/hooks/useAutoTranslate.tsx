@@ -47,10 +47,12 @@ export const useAutoTranslate = ({ item, table, fields }: UseAutoTranslateParams
 
         try {
           inFlightRef.current[cacheKey] = true;
+          console.log(`🔄 Auto-translating ${field} for ${table}:${item.id} to ${currentLanguage}`);
           await translateContent({ table, id: item.id, field, originalText });
+          console.log(`✅ Successfully translated ${field} for ${table}:${item.id} to ${currentLanguage}`);
           // Translation is cached in-memory; UI will re-render and pick it up via getTranslatedField
         } catch (e) {
-          console.error('Auto-translate failed', { table, id: item.id, field, e });
+          console.error(`❌ Auto-translate failed for ${field}:`, { table, id: item.id, field, currentLanguage, e });
         } finally {
           inFlightRef.current[cacheKey] = false;
         }
