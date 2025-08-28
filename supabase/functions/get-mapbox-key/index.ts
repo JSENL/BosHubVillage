@@ -12,10 +12,21 @@ serve(async (req) => {
   }
 
   try {
-    // Use the provided public Mapbox token directly
-    const mapboxApiKey = 'REPLACED_USE_MAPBOX_PUBLIC_KEY_FROM_ENV'
+    // Get Mapbox key from Supabase secrets
+    const mapboxApiKey = Deno.env.get('MAPBOX_PUBLIC_KEY')
     
-    console.log('✅ Using provided Mapbox public token')
+    if (!mapboxApiKey) {
+      console.log('❌ MAPBOX_PUBLIC_KEY not found in secrets')
+      return new Response(
+        JSON.stringify({ error: 'MAPBOX_PUBLIC_KEY not configured in secrets' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
+    
+    console.log('✅ Using Mapbox public key from secrets')
 
     return new Response(
       JSON.stringify({ mapboxKey: mapboxApiKey }),
