@@ -59,8 +59,15 @@ export const MapboxTest = () => {
       });
 
       map.on('error', (e) => {
-        addLog(`❌ Map error: ${e.error?.message || 'Unknown error'}`);
+        const errorMsg = e.error?.message || 'Unknown error';
+        addLog(`❌ Map error: ${errorMsg}`);
+        console.error('Mapbox error details:', e);
         setMapStatus('error');
+        
+        // Check for common auth issues
+        if (errorMsg.includes('401') || errorMsg.includes('Unauthorized')) {
+          addLog('🔑 Authentication issue detected - check your Mapbox token');
+        }
       });
 
       map.on('style.load', () => {
