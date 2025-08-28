@@ -11,6 +11,7 @@ import { useUnifiedFiltering } from '@/hooks/useUnifiedFiltering';
 import { useFilters, FilterProvider } from '@/contexts/FilterContext';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { toast } from 'sonner';
+import SimpleMapTest from '@/components/SimpleMapTest';
 
 const UnifiedIndexContent = () => {
   const {
@@ -142,6 +143,12 @@ const UnifiedIndexContent = () => {
               typesToShow.includes(item.type)
             ).length}</div>
           </div>
+        </div>
+
+        {/* Temporary Mapbox Test */}
+        <div className="bg-yellow-100 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4">🧪 Mapbox Test (Temporary)</h3>
+          <SimpleMapTest />
         </div>
 
         <EnhancedUniversalMap
