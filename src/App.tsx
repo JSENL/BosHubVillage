@@ -1,74 +1,137 @@
+import React from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from '@/components/ui/toaster'
+import { MapboxProvider } from '@/contexts/MapboxContext'
+import Index from '@/pages/Index'
+import EventDetails from '@/pages/EventDetails'
+import BusinessDetails from '@/pages/BusinessDetails'
+import LocalServiceDetails from '@/pages/LocalServiceDetails'
+import NewsDetails from '@/pages/NewsDetails'
+import NewsPage from '@/pages/NewsPage'
+import Auth from '@/pages/Auth'
+import AdminDashboard from '@/pages/AdminDashboard'
+import AdminApproval from '@/pages/AdminApproval'
+import SubmitEvent from '@/pages/SubmitEvent'
+import SubmitBusiness from '@/pages/SubmitBusiness'
+import SubmitLocalService from '@/pages/SubmitLocalService'
+import SubmitNews from '@/pages/SubmitNews'
+import MySubmissions from '@/pages/MySubmissions'
+import BusinessDashboard from '@/pages/BusinessDashboard'
+import ContactAdmin from '@/pages/ContactAdmin'
+import MyMessages from '@/pages/MyMessages'
+import NotFound from '@/pages/NotFound'
+import RefactoredIndex from '@/pages/RefactoredIndex'
+import UnifiedIndex from '@/pages/UnifiedIndex'
+import MapboxTestPage from '@/pages/MapboxTestPage'
+import AdminRoute from '@/components/routing/AdminRoute'
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/hooks/useAuth";
-import { MapboxProvider } from "@/contexts/MapboxContext";
-import { FilterProvider } from "@/contexts/FilterContext";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import SubmitEvent from "./pages/SubmitEvent";
-import SubmitBusiness from "./pages/SubmitBusiness";
-import SubmitLocalService from "./pages/SubmitLocalService";
-import SubmitNews from "./pages/SubmitNews";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminRoute from "./components/routing/AdminRoute";
- 
- 
- import EventDetails from "./pages/EventDetails";
-import BusinessDetails from "./pages/BusinessDetails";
-import BusinessDashboard from "./pages/BusinessDashboard";
-import NewsDetails from "./pages/NewsDetails";
-import LocalServiceDetails from "./pages/LocalServiceDetails";
-import NewsPage from "./pages/NewsPage";
+const queryClient = new QueryClient()
 
-import ContactAdmin from "./pages/ContactAdmin";
-import MyMessages from "./pages/MyMessages";
-import MySubmissions from "./pages/MySubmissions";
-import NotFound from "./pages/NotFound";
-import { MapboxTest } from "./components/MapboxTest";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <UnifiedIndex />,
+  },
+  {
+    path: "/mapbox-test",
+    element: <MapboxTestPage />,
+  },
+  {
+    path: "/event/:id",
+    element: <EventDetails />,
+  },
+  {
+    path: "/business/:id", 
+    element: <BusinessDetails />,
+  },
+  {
+    path: "/local-resource/:id",
+    element: <LocalServiceDetails />,
+  },
+  {
+    path: "/news/:id",
+    element: <NewsDetails />,
+  },
+  {
+    path: "/news",
+    element: <NewsPage />,
+  },
+  {
+    path: "/auth",
+    element: <Auth />,
+  },
+  {
+    path: "/admin",
+    element: (
+      <AdminRoute>
+        <AdminDashboard />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/admin/approval",
+    element: (
+      <AdminRoute>
+        <AdminApproval />
+      </AdminRoute>
+    ),
+  },
+  {
+    path: "/submit-event",
+    element: <SubmitEvent />,
+  },
+  {
+    path: "/submit-business",
+    element: <SubmitBusiness />,
+  },
+  {
+    path: "/submit-local-service",
+    element: <SubmitLocalService />,
+  },
+  {
+    path: "/submit-news",
+    element: <SubmitNews />,
+  },
+  {
+    path: "/my-submissions",
+    element: <MySubmissions />,
+  },
+  {
+    path: "/business-dashboard",
+    element: <BusinessDashboard />,
+  },
+  {
+    path: "/contact-admin",
+    element: <ContactAdmin />,
+  },
+  {
+    path: "/my-messages",
+    element: <MyMessages />,
+  },
+  {
+    path: "/refactored",
+    element: <RefactoredIndex />,
+  },
+  {
+    path: "/index", 
+    element: <Index />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
+  },
+])
 
-const queryClient = new QueryClient();
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MapboxProvider>
+        <RouterProvider router={router} />
+        <Toaster />
+      </MapboxProvider>
+    </QueryClientProvider>
+  )
+}
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <MapboxProvider>
-          <FilterProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/submit-event" element={<SubmitEvent />} />
-            <Route path="/submit-business" element={<SubmitBusiness />} />
-            <Route path="/submit-local-resource" element={<SubmitLocalService />} />
-            <Route path="/submit-news" element={<SubmitNews />} />
-            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            
-            
-            <Route path="/event/:eventId" element={<EventDetails />} />
-            <Route path="/business/:businessId" element={<BusinessDetails />} />
-            <Route path="/business-dashboard" element={<BusinessDashboard />} />
-            <Route path="/news/:newsId" element={<NewsDetails />} />
-            <Route path="/news-page" element={<NewsPage />} />
-            <Route path="/local-resource/:serviceId" element={<LocalServiceDetails />} />
-        <Route path="/contact-admin" element={<ContactAdmin />} />
-        <Route path="/my-messages" element={<MyMessages />} />
-        <Route path="/my-submissions" element={<MySubmissions />} />
-        <Route path="/mapbox-test" element={<MapboxTest />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-          </FilterProvider>
-        </MapboxProvider>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+export default App
