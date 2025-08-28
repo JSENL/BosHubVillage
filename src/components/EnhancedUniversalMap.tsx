@@ -34,6 +34,13 @@ export const EnhancedUniversalMap = ({
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
   const { mapboxToken, isLoadingApiKey, error } = useMapboxToken();
+  
+  console.log('🗺️ EnhancedUniversalMap Debug:', {
+    mapboxToken: mapboxToken ? `${mapboxToken.substring(0, 10)}...` : 'null',
+    isLoadingApiKey,
+    error,
+    itemsCount: items.length
+  });
   const { filteredMappableItems } = useItemFiltering({ 
     items: items, // Use the pre-filtered items directly 
     selectedTypes: selectedTypes 
