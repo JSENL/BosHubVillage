@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { HeroSection } from '@/components/HeroSection';
 import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
+import { MapboxTileTest } from '@/components/MapboxTileTest';
 import { UniversalFilters } from '@/components/UniversalFilters';
 import { SearchSection } from '@/components/unified/SearchSection';
 import { ResultsSummary } from '@/components/unified/ResultsSummary';
@@ -126,6 +127,8 @@ const UnifiedIndexContent = () => {
           filteredItemsCount={allItems.length}
           itemType="events"
         />
+
+        <MapboxTileTest />
 
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold mb-2">Debug Information</h3>
