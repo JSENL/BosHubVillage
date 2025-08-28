@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/toaster'
 import { MapboxProvider } from '@/contexts/MapboxContext'
+import { AuthProvider } from '@/hooks/useAuth'
 import Index from '@/pages/Index'
 import EventDetails from '@/pages/EventDetails'
 import BusinessDetails from '@/pages/BusinessDetails'
@@ -126,10 +127,12 @@ const router = createBrowserRouter([
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <MapboxProvider>
-        <RouterProvider router={router} />
-        <Toaster />
-      </MapboxProvider>
+      <AuthProvider>
+        <MapboxProvider>
+          <RouterProvider router={router} />
+          <Toaster />
+        </MapboxProvider>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
