@@ -4,6 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Ensure Mapbox tiles render properly */
+.mapboxgl-map {
+  font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.mapboxgl-canvas-container {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.mapboxgl-canvas {
+  position: absolute !important;
+  left: 0;
+  top: 0;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
