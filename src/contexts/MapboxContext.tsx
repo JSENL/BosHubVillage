@@ -30,11 +30,10 @@ export const MapboxProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
         if (data?.mapboxKey) {
           console.log('✅ Mapbox API key fetched successfully');
-          console.log('🔑 Token preview:', data.mapboxKey.substring(0, 20) + '...');
           setMapboxToken(data.mapboxKey);
         } else {
-          console.error('No API key returned from edge function', data);
-          setError('No API key configured in Supabase secrets');
+          console.error('No API key returned from edge function');
+          setError('No API key configured');
         }
       } catch (err) {
         console.error('Error calling edge function:', err);

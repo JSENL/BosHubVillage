@@ -25,17 +25,10 @@ export const useMapMarkers = ({
       hasMap: !!map,
       itemsCount: items?.length || 0,
       mapReady: map && map.loaded && map.loaded(),
-      mapContainer: map && map.getContainer(),
     });
 
     if (!map) {
       console.log('🗺️ MapMarkers: No map instance available');
-      return;
-    }
-
-    // Check if map container exists and is ready
-    if (!map.getContainer()) {
-      console.log('🗺️ MapMarkers: Map container not ready yet');
       return;
     }
 
@@ -118,17 +111,13 @@ export const useMapMarkers = ({
         }
       });
 
-      // Create marker with safety checks
-      try {
-        const marker = new mapboxgl.Marker(el)
-          .setLngLat([coords.lng, coords.lat])
-          .addTo(map);
+      // Create marker without popup for now (sidebar will handle display)
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat([coords.lng, coords.lat])
+        .addTo(map);
 
-        console.log('🎯 Added marker for:', item.title, 'at', [coords.lng, coords.lat]);
-        markersRef.current.push(marker);
-      } catch (error) {
-        console.error('❌ Error adding marker for:', item.title, error);
-      }
+      console.log('🎯 Added marker for:', item.title, 'at', [coords.lng, coords.lat]);
+      markersRef.current.push(marker);
     });
 
     console.log(`✅ Created ${markersRef.current.length} DOM markers`);
