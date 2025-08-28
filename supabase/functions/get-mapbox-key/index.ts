@@ -12,17 +12,10 @@ serve(async (req) => {
   }
 
   try {
-    const mapboxApiKey = Deno.env.get('MAPBOX_PUBLIC_TOKEN')
+    // Use the provided public Mapbox token directly
+    const mapboxApiKey = 'REPLACED_USE_MAPBOX_PUBLIC_KEY_FROM_ENV'
     
-    if (!mapboxApiKey) {
-      return new Response(
-        JSON.stringify({ error: 'MAPBOX_PUBLIC_TOKEN not configured' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      )
-    }
+    console.log('✅ Using provided Mapbox public token')
 
     return new Response(
       JSON.stringify({ mapboxKey: mapboxApiKey }),
