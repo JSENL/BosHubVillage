@@ -1381,27 +1381,222 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
+          bio: string | null
           created_at: string
           email: string
+          followers_count: number
+          following_count: number
           full_name: string | null
           id: string
+          interests: string[] | null
+          is_verified: boolean
+          location: string | null
           updated_at: string
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email: string
+          followers_count?: number
+          following_count?: number
+          full_name?: string | null
+          id: string
+          interests?: string[] | null
+          is_verified?: boolean
+          location?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email?: string
+          followers_count?: number
+          following_count?: number
+          full_name?: string | null
+          id?: string
+          interests?: string[] | null
+          is_verified?: boolean
+          location?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      recently_viewed: {
+        Row: {
+          id: string
+          item_id: string
+          item_type: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          id?: string
+          item_id: string
+          item_type: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          id?: string
+          item_id?: string
+          item_type?: string
+          user_id?: string
+          viewed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recently_viewed_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trending_content: {
+        Row: {
+          bookmark_count: number
+          comment_count: number
+          id: string
+          item_id: string
+          item_type: string
+          last_updated: string
+          score: number
+          view_count: number
+        }
+        Insert: {
+          bookmark_count?: number
+          comment_count?: number
+          id?: string
+          item_id: string
+          item_type: string
+          last_updated?: string
+          score?: number
+          view_count?: number
+        }
+        Update: {
+          bookmark_count?: number
+          comment_count?: number
+          id?: string
+          item_id?: string
+          item_type?: string
+          last_updated?: string
+          score?: number
+          view_count?: number
+        }
+        Relationships: []
+      }
+      user_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          item_id: string | null
+          item_type: string | null
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_type?: string | null
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_type?: string | null
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          email: string
-          full_name?: string | null
-          id: string
-          updated_at?: string
+          id?: string
+          item_id: string
+          item_type: string
+          user_id: string
         }
         Update: {
           created_at?: string
-          email?: string
-          full_name?: string | null
           id?: string
-          updated_at?: string
+          item_id?: string
+          item_type?: string
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_followers: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_followers_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_followers_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
