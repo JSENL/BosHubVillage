@@ -28,10 +28,15 @@ import {
   Megaphone,
   UserCheck,
   Upload,
-  BarChart3
+  BarChart3,
+  UserCircle
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
 import { AnalyticsOverview } from '@/components/admin/AnalyticsOverview';
+import SocialFeaturesOverview from '@/components/admin/SocialFeaturesOverview';
+import UserActivityMonitor from '@/components/admin/UserActivityMonitor';
+import BookmarksManagement from '@/components/admin/BookmarksManagement';
+import SocialNetworkAnalytics from '@/components/admin/SocialNetworkAnalytics';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -89,7 +94,7 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs defaultValue="content" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8 h-auto">
+            <TabsList className="grid w-full grid-cols-5 mb-8 h-auto">
               <TabsTrigger value="content" className="flex flex-col items-center p-4 h-auto">
                 <Calendar className="h-5 w-5 mb-1" />
                 <span className="text-sm">Content Management</span>
@@ -105,6 +110,10 @@ const AdminDashboard = () => {
               <TabsTrigger value="tools" className="flex flex-col items-center p-4 h-auto">
                 <BarChart3 className="h-5 w-5 mb-1" />
                 <span className="text-sm">Tools & Analytics</span>
+              </TabsTrigger>
+              <TabsTrigger value="social" className="flex flex-col items-center p-4 h-auto">
+                <UserCircle className="h-5 w-5 mb-1" />
+                <span className="text-sm">Social Features</span>
               </TabsTrigger>
             </TabsList>
             
@@ -273,6 +282,57 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="categories">
                         <CategoriesManagement />
+                      </TabsContent>
+                    </Tabs>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="social" className="space-y-6">
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <UserCircle className="h-5 w-5" />
+                      Social Features Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Tabs defaultValue="overview" className="w-full">
+                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                        <TabsTrigger value="overview" className="flex items-center gap-2">
+                          <BarChart3 className="h-4 w-4" />
+                          Overview
+                        </TabsTrigger>
+                        <TabsTrigger value="bookmarks" className="flex items-center gap-2">
+                          <Heart className="h-4 w-4" />
+                          Bookmarks
+                        </TabsTrigger>
+                        <TabsTrigger value="network" className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Social Network
+                        </TabsTrigger>
+                        <TabsTrigger value="activity" className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          User Activity
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="overview">
+                        <SocialFeaturesOverview />
+                      </TabsContent>
+                      
+                      <TabsContent value="bookmarks">
+                        <BookmarksManagement />
+                      </TabsContent>
+                      
+                      <TabsContent value="network">
+                        <SocialNetworkAnalytics />
+                      </TabsContent>
+                      
+                      <TabsContent value="activity">
+                        <UserActivityMonitor />
                       </TabsContent>
                     </Tabs>
                   </CardContent>
