@@ -11,6 +11,7 @@ import { TranslationTest } from "@/components/TranslationTest";
 import { SpanishUIDemo } from "@/components/SpanishUIDemo";
 import { TranslationVerification } from "@/components/TranslationVerification";
 import { HeroTranslationTest } from "@/components/HeroTranslationTest";
+import { useAuth } from '@/hooks/useAuth';
 
 interface ContentSectionProps {
   filters: HomePageFilters;
@@ -25,6 +26,7 @@ export const ContentSection = ({
   filteredItems,
   isLoading
 }: ContentSectionProps) => {
+  const { isAdmin } = useAuth();
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -59,21 +61,25 @@ export const ContentSection = ({
         }))}
       />
       
-      <div className="mb-4">
-        <HeroTranslationTest />
-      </div>
-      
-      <div className="mb-4">
-        <TranslationVerification />
-      </div>
-      
-      <div className="mb-4">
-        <SpanishUIDemo />
-      </div>
-      
-      <div className="mb-4">
-        <TranslationTest />
-      </div>
+      {isAdmin && (
+        <>
+          <div className="mb-4">
+            <HeroTranslationTest />
+          </div>
+          
+          <div className="mb-4">
+            <TranslationVerification />
+          </div>
+          
+          <div className="mb-4">
+            <SpanishUIDemo />
+          </div>
+          
+          <div className="mb-4">
+            <TranslationTest />
+          </div>
+        </>
+      )}
       {/* Display total count */}
       <div className="text-center text-muted-foreground">
         Showing {filteredItems.length} items

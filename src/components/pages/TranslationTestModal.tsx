@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { TestTranslation } from "@/components/TestTranslation";
+import { useAuth } from '@/hooks/useAuth';
 
 export const TranslationTestModal = () => {
+  const { isAdmin } = useAuth();
   const [showTranslationTest, setShowTranslationTest] = useState(false);
+  
+  // Only show for admins
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <>
