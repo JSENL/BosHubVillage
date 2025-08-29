@@ -8,6 +8,7 @@ import { ListViewSection } from './ListViewSection';
 import { SearchSection } from './SearchSection';
 import { ItemGrid } from './ItemGrid';
 import { TranslationTestModal } from './TranslationTestModal';
+import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
 import { useDataContext } from './DataProvider';
 import { useFilterContext } from './FilterProvider';
 
@@ -40,40 +41,46 @@ const MapViewContent = () => {
       <HeroSection />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
-        <div className="space-y-4 md:space-y-6">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h2>
-          
-          {/* Mobile-responsive map */}
-          <MapViewSection />
+        <div className="flex gap-6">
+          {/* Main content */}
+          <div className="flex-1 space-y-4 md:space-y-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h2>
+            
+            {/* Mobile-responsive map */}
+            <MapViewSection />
 
-          {/* Search all content - positioned below map and above filters */}
-          <SearchSection />
+            {/* Search all content - positioned below map and above filters */}
+            <SearchSection />
 
-          {/* Mobile-optimized filters */}
-          <div className="bg-white rounded-lg border shadow-sm">
-            <UniversalFilters
-              allItems={allItems}
-              searchTerm=""
-              selectedType={selectedType}
-              onTypeChange={setSelectedType}
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-              selectedNeighborhood={selectedNeighborhood}
-              onNeighborhoodChange={setSelectedNeighborhood}
-              selectedVillage={selectedVillage}
-              onVillageChange={setSelectedVillage}
-              eventDateRange={eventDateRange}
-              onEventDateRangeChange={setEventDateRange}
-              selectedEventDates={selectedEventDates}
-              onSelectedEventDatesChange={setSelectedEventDates}
-              filteredItemsCount={filteredItems.length}
-              itemType="events"
-            />
+            {/* Mobile-optimized filters */}
+            <div className="bg-white rounded-lg border shadow-sm">
+              <UniversalFilters
+                allItems={allItems}
+                searchTerm=""
+                selectedType={selectedType}
+                onTypeChange={setSelectedType}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+                selectedNeighborhood={selectedNeighborhood}
+                onNeighborhoodChange={setSelectedNeighborhood}
+                selectedVillage={selectedVillage}
+                onVillageChange={setSelectedVillage}
+                eventDateRange={eventDateRange}
+                onEventDateRangeChange={setEventDateRange}
+                selectedEventDates={selectedEventDates}
+                onSelectedEventDatesChange={setSelectedEventDates}
+                filteredItemsCount={filteredItems.length}
+                itemType="events"
+              />
+            </div>
+
+            {/* Bottom grid - only show when in map view on all screen sizes */}
+            <ItemGrid />
           </div>
-        </div>
 
-        {/* Bottom grid - only show when in map view on all screen sizes */}
-        <ItemGrid />
+          {/* Discovery sidebar */}
+          <DiscoverySidebar />
+        </div>
       </div>
       
       <TranslationTestModal />

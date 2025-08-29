@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { UnifiedItem } from '@/types/unifiedItem';
 import { useContentTranslation } from '@/hooks/useTranslation';
 import { useAutoTranslate } from '@/hooks/useAutoTranslate';
+import { BookmarkButton } from '@/components/social/BookmarkButton';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
@@ -175,10 +176,18 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                     <span className="text-sm text-gray-600 ml-2 truncate">{reviewCount} reviews</span>
                   </div>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 mb-2">
-                    <span className="truncate max-w-24">{translatedFields.category}</span>
-                  </Badge>
+                <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
+                  <div className="flex items-center gap-2">
+                    <BookmarkButton 
+                      itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
+                      itemId={item.id}
+                      size="sm"
+                      variant="ghost"
+                    />
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+                      <span className="truncate max-w-24">{translatedFields.category}</span>
+                    </Badge>
+                  </div>
                   {item.price !== undefined && (
                     <div className="text-lg font-bold text-caribbean-teal">
                       {item.price === 0 ? t('cards.free') : `$${item.price}`}
@@ -234,11 +243,19 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
           <Badge variant="secondary" className="bg-gray-100 text-gray-700">
             {translatedFields.category}
           </Badge>
-          {item.price !== undefined && (
-            <div className="text-lg font-bold text-caribbean-teal">
-              {item.price === 0 ? t('cards.free') : `$${item.price}`}
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <BookmarkButton 
+              itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
+              itemId={item.id}
+              size="sm"
+              variant="ghost"
+            />
+            {item.price !== undefined && (
+              <div className="text-lg font-bold text-caribbean-teal">
+                {item.price === 0 ? t('cards.free') : `$${item.price}`}
+              </div>
+            )}
+          </div>
         </div>
         <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal line-clamp-2 break-words">
           {translatedFields.title}
