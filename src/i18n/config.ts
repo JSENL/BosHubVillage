@@ -6,7 +6,7 @@ import en from './locales/en.json';
 import fr from './locales/fr.json';
 import es from './locales/es.json';
 import vi from './locales/vi.json';
-import kea from './locales/kea.json'; // Cape Verdean Creole
+
 import zh from './locales/zh.json';
 import ar from './locales/ar.json';
 import it from './locales/it.json';
@@ -17,7 +17,7 @@ const resources = {
   fr: { translation: fr },
   es: { translation: es },
   vi: { translation: vi },
-  kea: { translation: kea },
+  
   zh: { translation: zh },
   ar: { translation: ar },
   it: { translation: it },

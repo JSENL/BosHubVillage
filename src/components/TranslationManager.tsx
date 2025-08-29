@@ -88,7 +88,7 @@ export const TranslationManager = ({ items }: TranslationManagerProps) => {
       'ar': 'Arabic',
       'it': 'Italian',
       'pt': 'Portuguese',
-      'kea': 'Cape Verdean Creole'
+      
     };
     return names[code] || code;
   };

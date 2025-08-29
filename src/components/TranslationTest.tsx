@@ -43,7 +43,7 @@ export const TranslationTest = () => {
       'ar': 'Arabic',
       'it': 'Italian',
       'pt': 'Portuguese',
-      'kea': 'Cape Verdean Creole',
+      
       'vi': 'Vietnamese'
     };
     return languageNames[currentLanguage] || currentLanguage;

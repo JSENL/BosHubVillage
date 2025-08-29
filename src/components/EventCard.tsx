@@ -97,7 +97,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       'it': `Fino a ${maxAttendees} partecipanti`,
       'pt': `Até ${maxAttendees} participantes`,
       'vi': `Tối đa ${maxAttendees} người tham dự`,
-      'kea': `Te ${maxAttendees} partisipanti`
+      
     };
     return translations[currentLanguage] || translations['en'];
   };
