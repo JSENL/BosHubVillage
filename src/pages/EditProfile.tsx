@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ProfilePictureUpload } from '@/components/profile/ProfilePictureUpload';
 import { X, Plus, Save, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -33,6 +33,7 @@ export const EditProfile = () => {
     location: '',
     website: '',
     interests: [] as string[],
+    avatar_url: '',
   });
   
   const [newInterest, setNewInterest] = useState('');
@@ -46,12 +47,17 @@ export const EditProfile = () => {
         location: profile.location || '',
         website: profile.website || '',
         interests: profile.interests || [],
+        avatar_url: profile.avatar_url || '',
       });
     }
   }, [profile]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleAvatarUpdate = (newAvatarUrl: string) => {
+    setFormData(prev => ({ ...prev, avatar_url: newAvatarUrl }));
   };
 
   const addInterest = (interest: string) => {
@@ -141,19 +147,13 @@ export const EditProfile = () => {
               <CardTitle>Profile Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Avatar Section */}
-              <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={profile?.avatar_url || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-medium text-lg">
-                    {getInitials(formData.full_name || 'U')}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    Avatar can be changed through your authentication provider
-                  </p>
-                </div>
+              {/* Profile Picture Upload */}
+              <div className="flex justify-center">
+                <ProfilePictureUpload
+                  currentAvatarUrl={formData.avatar_url}
+                  onAvatarUpdate={handleAvatarUpdate}
+                  userFullName={formData.full_name}
+                />
               </div>
 
               {/* Basic Info */}
