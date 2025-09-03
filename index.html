@@ -3,24 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>event-spotlight-maps</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
-
-    <meta property="og:title" content="event-spotlight-maps" />
-    <meta property="og:description" content="Lovable Generated Project" />
+    
+    <!-- SEO Meta Tags -->
+    <title>Local Community Hub - Discover Events, Businesses & Services</title>
+    <meta name="description" content="Discover local events, businesses, and community services in your area. Connect with your neighborhood and explore what's happening around you." />
+    <meta name="keywords" content="local events, community, businesses, services, neighborhood, discover, map, social" />
+    <meta name="author" content="Local Community Hub" />
+    <link rel="canonical" href="https://your-domain.com/" />
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:url" content="https://your-domain.com/" />
+    <meta property="og:title" content="Local Community Hub - Discover Events, Businesses & Services" />
+    <meta property="og:description" content="Discover local events, businesses, and community services in your area. Connect with your neighborhood and explore what's happening around you." />
+    <meta property="og:image" content="https://your-domain.com/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Local Community Hub" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:url" content="https://your-domain.com/" />
+    <meta name="twitter:title" content="Local Community Hub - Discover Events, Businesses & Services" />
+    <meta name="twitter:description" content="Discover local events, businesses, and community services in your area. Connect with your neighborhood and explore what's happening around you." />
+    <meta name="twitter:image" content="https://your-domain.com/twitter-image.jpg" />
+    
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.mapbox.com" />
+    <link rel="dns-prefetch" href="https://mecotkulcgdbilaksddu.supabase.co" />
+    
+    <!-- Theme and Icons -->
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Local Community Hub",
+      "description": "Discover local events, businesses, and community services in your area",
+      "url": "https://your-domain.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://your-domain.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
 
   <body>
-    <div id="root"></div>
+    <!-- Accessibility: Skip to main content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded z-50">
+      Skip to main content
+    </a>
+    
+    <div id="root" role="application" aria-label="Local Community Hub Application"></div>
+    
+    <!-- Performance: Critical scripts -->
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Performance: Non-critical scripts loaded defer -->
+    <script>
+      // Progressive enhancement for offline support
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>

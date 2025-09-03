@@ -40,11 +40,11 @@ const MapViewContent = () => {
       <Navigation />
       <HeroSection />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
         <div className="flex gap-6">
           {/* Main content */}
-          <div className="flex-1 space-y-4 md:space-y-6">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h2>
+          <section className="flex-1 space-y-4 md:space-y-6" aria-labelledby="community-heading">
+            <h1 id="community-heading" className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h1>
             
             {/* Mobile-responsive map */}
             <MapViewSection />
@@ -76,12 +76,14 @@ const MapViewContent = () => {
 
             {/* Bottom grid - only show when in map view on all screen sizes */}
             <ItemGrid />
-          </div>
+          </section>
 
           {/* Discovery sidebar */}
-          <DiscoverySidebar />
+          <aside className="w-80 space-y-6 hidden lg:block" aria-label="Discovery and recommendations">
+            <DiscoverySidebar />
+          </aside>
         </div>
-      </div>
+      </main>
       
       <TranslationTestModal />
     </div>

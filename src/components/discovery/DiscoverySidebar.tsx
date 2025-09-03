@@ -7,7 +7,7 @@ export const DiscoverySidebar = () => {
   const { user } = useAuth();
 
   return (
-    <div className="w-80 space-y-6 hidden lg:block">
+    <div className="space-y-6">
       <TrendingSection />
       
       {user && <BookmarksSection />}

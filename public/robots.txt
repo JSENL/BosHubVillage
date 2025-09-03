@@ -1,3 +1,26 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1
+
+# Disallow admin and private pages
+Disallow: /admin
+Disallow: /auth
+Disallow: /edit-profile
+Disallow: /my-*
+Disallow: /business-dashboard
+
+# Allow important public pages
+Allow: /event/
+Allow: /business/
+Allow: /news/
+Allow: /local-resource/
+
+# Social media crawlers
 User-agent: Googlebot
 Allow: /
 
@@ -8,7 +31,4 @@ User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
 Allow: /

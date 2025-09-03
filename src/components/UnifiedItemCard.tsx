@@ -8,6 +8,7 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { useContentTranslation } from '@/hooks/useTranslation';
 import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
+import { useNavigate } from 'react-router-dom';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
@@ -22,6 +23,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
 }) => {
   const { t } = useTranslation();
   const { getTranslatedField, currentLanguage } = useContentTranslation();
+  const navigate = useNavigate();
   
   // Auto-translate missing fields based on item type
   const getFieldsForType = (type: string) => {
@@ -52,7 +54,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const handleViewDetails = () => {
     const routePath = item.type === 'local-service' ? 'local-resource' : 
                      item.type === 'business' ? 'business' : item.type;
-    window.location.href = `/${routePath}/${item.id}`;
+    navigate(`/${routePath}/${item.id}`);
   };
 
   const formatTimeRange = (startTime?: string, endTime?: string) => {

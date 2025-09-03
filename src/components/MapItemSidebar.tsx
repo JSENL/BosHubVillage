@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { X, MapPin, Calendar, Clock, DollarSign, Building, Tag, ChevronUp, ChevronDown, Move } from 'lucide-react';
 import { DirectionsModal } from './map/DirectionsModal';
+import { useNavigate } from 'react-router-dom';
 
 interface MapItemSidebarProps {
   selectedItem: UnifiedItem | null;
@@ -13,6 +14,7 @@ interface MapItemSidebarProps {
 }
 
 export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapItemSidebarProps) => {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(true);
   const [position, setPosition] = useState({ x: 16, y: 16 });
   const [isDragging, setIsDragging] = useState(false);
@@ -92,7 +94,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
   const handleViewDetails = () => {
     if (!selectedItem) return;
     const path = selectedItem.type === 'local-service' ? 'local-resource' : selectedItem.type;
-    window.location.href = `/${path}/${selectedItem.id}`;
+    navigate(`/${path}/${selectedItem.id}`);
   };
 
   // Don't render anything if no item is selected
