@@ -29,6 +29,7 @@ import MyMessages from "./pages/MyMessages";
 import MySubmissions from "./pages/MySubmissions";
 import NotFound from "./pages/NotFound";
 import UserProfile from "./pages/UserProfile";
+import { EditProfile } from "./pages/EditProfile";
 import { MapboxTest } from "./components/MapboxTest";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,7 @@ const App = () => (
         <Route path="/my-messages" element={<MyMessages />} />
         <Route path="/my-submissions" element={<MySubmissions />} />
         <Route path="/user/:userId" element={<UserProfile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/mapbox-test" element={<MapboxTest />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
