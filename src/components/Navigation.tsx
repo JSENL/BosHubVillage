@@ -124,18 +124,12 @@ export const Navigation = () => {
                      <p className="text-sm font-medium text-gray-900">{user.user_metadata?.full_name || user.user_metadata?.name || 'User'}</p>
                      <p className="text-xs text-gray-500">{user.email}</p>
                     </div>
-                    <DropdownMenuItem asChild>
-                      <Link to={`/user/${user.id}`} className="cursor-pointer">
-                         <User className="h-4 w-4 mr-2" />
-                         My Profile
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/edit-profile" className="cursor-pointer">
-                         <Settings className="h-4 w-4 mr-2" />
-                         Edit Profile
-                      </Link>
-                    </DropdownMenuItem>
+                     <DropdownMenuItem asChild>
+                       <Link to={`/user/${user.id}`} className="cursor-pointer">
+                          <User className="h-4 w-4 mr-2" />
+                          My Profile
+                       </Link>
+                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link to="/contact-admin" className="cursor-pointer">
