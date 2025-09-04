@@ -22,6 +22,11 @@ const Auth = () => {
   const [recoveryLoading, setRecoveryLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>('signin');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [resetting, setResetting] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
   const navigate = useNavigate();
 
   // Password validation helpers
@@ -56,6 +61,24 @@ const Auth = () => {
     };
     checkUser();
   }, [navigate]);
+
+  // Detect recovery redirects and tab preference from URL
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      const modeParam = params.get('mode');
+      const hash = window.location.hash.replace('#', '');
+      const hashParams = new URLSearchParams(hash);
+      const type = hashParams.get('type');
+
+      if (type === 'recovery' || tabParam === 'reset-password' || modeParam === 'recovery') {
+        setActiveTab('reset-password');
+      } else if (tabParam === 'signin' || tabParam === 'signup' || tabParam === 'recovery') {
+        setActiveTab(tabParam);
+      }
+    } catch {}
+  }, []);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -171,11 +194,51 @@ const Auth = () => {
 
       toast.success('Password reset email sent! Check your inbox.');
       setRecoveryEmail('');
+      setActiveTab('reset-password');
     } catch (error: any) {
       setError(error.message);
       toast.error(error.message);
     } finally {
       setRecoveryLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetting(true);
+    setError('');
+
+    const resetValidation = validatePassword(newPassword);
+    if (!resetValidation.isValid) {
+      const msg = 'Password does not meet requirements';
+      setError(msg);
+      toast.error(msg);
+      setResetting(false);
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      const msg = 'Passwords do not match';
+      setError(msg);
+      toast.error(msg);
+      setResetting(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+
+      toast.success('Password updated. You can now sign in.');
+      setNewPassword('');
+      setConfirmNewPassword('');
+      // Clear URL params/hash and go to Sign In
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setActiveTab('signin');
+    } catch (error: any) {
+      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -219,11 +282,12 @@ const Auth = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
               <TabsTrigger value="recovery">Recovery</TabsTrigger>
+              <TabsTrigger value="reset-password">Reset</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
@@ -397,6 +461,99 @@ const Auth = () => {
                   disabled={loading || !passwordValidation.isValid}
                 >
                   {loading ? 'Creating account...' : 'Create Account'}
+                </Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="reset-password">
+              <form onSubmit={handlePasswordReset} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      id="new-password"
+                      type={showResetPassword ? "text" : "password"}
+                      placeholder="Enter a new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="pl-10 pr-10"
+                      required
+                      minLength={8}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowResetPassword(!showResetPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {showResetPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-new-password">Confirm New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      id="confirm-new-password"
+                      type="password"
+                      placeholder="Re-enter your new password"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Simple validation hints */}
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center space-x-2">
+                    {validatePassword(newPassword).hasMinLength ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <X className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className={validatePassword(newPassword).hasMinLength ? 'text-green-700' : 'text-red-600'}>
+                      At least 8 characters
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {validatePassword(newPassword).hasUppercase ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <X className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className={validatePassword(newPassword).hasUppercase ? 'text-green-700' : 'text-red-600'}>
+                      At least one uppercase letter
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {validatePassword(newPassword).hasSymbol ? (
+                      <Check className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <X className="h-4 w-4 text-red-500" />
+                    )}
+                    <span className={validatePassword(newPassword).hasSymbol ? 'text-green-700' : 'text-red-600'}>
+                      At least one symbol (!@#$%^&* etc.)
+                    </span>
+                  </div>
+                </div>
+
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full yelp-gradient hover:opacity-90 text-white"
+                  disabled={resetting}
+                >
+                  {resetting ? 'Updating...' : 'Update Password'}
                 </Button>
               </form>
             </TabsContent>
