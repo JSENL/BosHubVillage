@@ -237,16 +237,19 @@ const Auth = () => {
     setError('');
 
     try {
+      console.log('🔔 Invoking send-password-reset for:', recoveryEmail)
       // Use our custom edge function for sending password reset emails
       const { data, error } = await supabase.functions.invoke('send-password-reset', {
         body: { email: recoveryEmail }
       });
+      console.log('✅ send-password-reset result:', { data, error })
 
       if (error) throw error;
 
       toast.success('Password reset email sent! Check your inbox.');
       setRecoveryEmail('');
     } catch (error: any) {
+      console.error('❌ send-password-reset failed:', error)
       setError(error.message);
       toast.error(error.message);
     } finally {
