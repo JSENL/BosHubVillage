@@ -237,15 +237,15 @@ const Auth = () => {
     setError('');
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(recoveryEmail, {
-        redirectTo: `${window.location.origin}/auth?tab=reset-password`,
+      // Use our custom edge function for sending password reset emails
+      const { data, error } = await supabase.functions.invoke('send-password-reset', {
+        body: { email: recoveryEmail }
       });
 
       if (error) throw error;
 
       toast.success('Password reset email sent! Check your inbox.');
       setRecoveryEmail('');
-      setActiveTab('reset-password');
     } catch (error: any) {
       setError(error.message);
       toast.error(error.message);
@@ -356,10 +356,9 @@ const Auth = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className={`grid w-full ${activeTab === 'reset-password' ? 'grid-cols-4' : 'grid-cols-3'}`}>
+            <TabsList className={`grid w-full ${activeTab === 'reset-password' ? 'grid-cols-3' : 'grid-cols-2'}`}>
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              <TabsTrigger value="recovery">Recovery</TabsTrigger>
               {activeTab === 'reset-password' && (
                 <TabsTrigger value="reset-password">Reset Password</TabsTrigger>
               )}
@@ -417,15 +416,27 @@ const Auth = () => {
                   </Alert>
                 )}
 
-                <Button
+                 <Button
                   type="submit"
                   className="w-full yelp-gradient hover:opacity-90 text-white"
                   disabled={loading}
                 >
                   {loading ? 'Signing in...' : 'Sign In'}
                 </Button>
+                
+                <div className="text-center">
+                  <Button
+                    type="button"
+                    variant="link"
+                    onClick={() => setActiveTab('recovery')}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Forgot your password?
+                  </Button>
+                </div>
               </form>
             </TabsContent>
+            
 
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
@@ -541,99 +552,56 @@ const Auth = () => {
             </TabsContent>
 
             <TabsContent value="recovery">
-              <div className="space-y-4">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold">Account Recovery</h3>
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-semibold">Reset Your Password</h3>
                   <p className="text-sm text-gray-600">
-                    Forgot your password or username? We can help you recover your account.
+                    Enter your email address and we'll send you a secure link to reset your password.
                   </p>
                 </div>
 
-                <Tabs defaultValue="password" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="password">Reset Password</TabsTrigger>
-                    <TabsTrigger value="username">Find Username</TabsTrigger>
-                  </TabsList>
+                <div className="space-y-2">
+                  <Label htmlFor="recovery-email">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      id="recovery-email"
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={recoveryEmail}
+                      onChange={(e) => setRecoveryEmail(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
 
-                  <TabsContent value="password">
-                    <form onSubmit={handleForgotPassword} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="recovery-email">Email Address</Label>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                          <Input
-                            id="recovery-email"
-                            type="email"
-                            placeholder="Enter your email"
-                            value={recoveryEmail}
-                            onChange={(e) => setRecoveryEmail(e.target.value)}
-                            className="pl-10"
-                            required
-                          />
-                        </div>
-                      </div>
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
 
-                      <p className="text-sm text-gray-600">
-                        We'll send you a secure link to reset your password.
-                      </p>
-
-                      {error && (
-                        <Alert variant="destructive">
-                          <AlertCircle className="h-4 w-4" />
-                          <AlertDescription>{error}</AlertDescription>
-                        </Alert>
-                      )}
-
-                      <Button
-                        type="submit"
-                        className="w-full yelp-gradient hover:opacity-90 text-white"
-                        disabled={recoveryLoading}
-                      >
-                        {recoveryLoading ? 'Sending...' : 'Send Password Reset'}
-                      </Button>
-                    </form>
-                  </TabsContent>
-
-                  <TabsContent value="username">
-                    <form onSubmit={handleForgotUsername} className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="username-recovery-email">Email Address</Label>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                          <Input
-                            id="username-recovery-email"
-                            type="email"
-                            placeholder="Enter your email"
-                            value={recoveryEmail}
-                            onChange={(e) => setRecoveryEmail(e.target.value)}
-                            className="pl-10"
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-gray-600">
-                        We'll send you your username if an account exists with this email.
-                      </p>
-
-                      {error && (
-                        <Alert variant="destructive">
-                          <AlertCircle className="h-4 w-4" />
-                          <AlertDescription>{error}</AlertDescription>
-                        </Alert>
-                      )}
-
-                      <Button
-                        type="submit"
-                        className="w-full yelp-gradient hover:opacity-90 text-white"
-                        disabled={recoveryLoading}
-                      >
-                        {recoveryLoading ? 'Sending...' : 'Send Username'}
-                      </Button>
-                    </form>
-                  </TabsContent>
-                </Tabs>
-              </div>
+                <Button
+                  type="submit"
+                  className="w-full yelp-gradient hover:opacity-90 text-white"
+                  disabled={recoveryLoading}
+                >
+                  {recoveryLoading ? 'Sending...' : 'Send Password Reset'}
+                </Button>
+                
+                <div className="text-center">
+                  <Button
+                    type="button"
+                    variant="link"
+                    onClick={() => setActiveTab('signin')}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Back to Sign In
+                  </Button>
+                </div>
+              </form>
             </TabsContent>
 
             <TabsContent value="reset-password">
