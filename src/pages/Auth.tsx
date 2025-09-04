@@ -356,10 +356,13 @@ const Auth = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className={`grid w-full ${activeTab === 'reset-password' ? 'grid-cols-4' : 'grid-cols-3'}`}>
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
               <TabsTrigger value="recovery">Recovery</TabsTrigger>
+              {activeTab === 'reset-password' && (
+                <TabsTrigger value="reset-password">Reset Password</TabsTrigger>
+              )}
             </TabsList>
             
             <TabsContent value="signin">
@@ -631,6 +634,115 @@ const Auth = () => {
                   </TabsContent>
                 </Tabs>
               </div>
+            </TabsContent>
+
+            <TabsContent value="reset-password">
+              <form onSubmit={handlePasswordReset} className="space-y-4">
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-semibold">Reset Your Password</h3>
+                  <p className="text-sm text-gray-600">
+                    Enter your new password below
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      id="new-password"
+                      type={showResetPassword ? "text" : "password"}
+                      placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="pl-10 pr-10"
+                      required
+                      minLength={8}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowResetPassword(!showResetPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      {showResetPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                  
+                  {/* Password requirements for reset */}
+                  {newPassword && (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        {validatePassword(newPassword).hasMinLength ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <X className="h-4 w-4 text-red-500" />
+                        )}
+                        <span className={validatePassword(newPassword).hasMinLength ? 'text-green-700' : 'text-red-600'}>
+                          At least 8 characters
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {validatePassword(newPassword).hasUppercase ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <X className="h-4 w-4 text-red-500" />
+                        )}
+                        <span className={validatePassword(newPassword).hasUppercase ? 'text-green-700' : 'text-red-600'}>
+                          At least one uppercase letter
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        {validatePassword(newPassword).hasSymbol ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <X className="h-4 w-4 text-red-500" />
+                        )}
+                        <span className={validatePassword(newPassword).hasSymbol ? 'text-green-700' : 'text-red-600'}>
+                          At least one symbol (!@#$%^&* etc.)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-new-password">Confirm New Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                      id="confirm-new-password"
+                      type="password"
+                      placeholder="Confirm new password"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                  {confirmNewPassword && newPassword !== confirmNewPassword && (
+                    <p className="text-sm text-red-600">Passwords do not match</p>
+                  )}
+                </div>
+
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                <Button
+                  type="submit"
+                  className="w-full yelp-gradient hover:opacity-90 text-white"
+                  disabled={resetting || !validatePassword(newPassword).isValid || newPassword !== confirmNewPassword}
+                >
+                  {resetting ? 'Updating password...' : 'Update Password'}
+                </Button>
+              </form>
             </TabsContent>
           </Tabs>
         </CardContent>
