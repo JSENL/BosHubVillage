@@ -356,11 +356,10 @@ const Auth = () => {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
               <TabsTrigger value="recovery">Recovery</TabsTrigger>
-              <TabsTrigger value="reset-password">Reset</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
@@ -534,99 +533,6 @@ const Auth = () => {
                   disabled={loading || !passwordValidation.isValid}
                 >
                   {loading ? 'Creating account...' : 'Create Account'}
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="reset-password">
-              <form onSubmit={handlePasswordReset} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">New Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      id="new-password"
-                      type={showResetPassword ? "text" : "password"}
-                      placeholder="Enter a new password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className="pl-10 pr-10"
-                      required
-                      minLength={8}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowResetPassword(!showResetPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                    >
-                      {showResetPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-new-password">Confirm New Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      id="confirm-new-password"
-                      type="password"
-                      placeholder="Re-enter your new password"
-                      value={confirmNewPassword}
-                      onChange={(e) => setConfirmNewPassword(e.target.value)}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Simple validation hints */}
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center space-x-2">
-                    {validatePassword(newPassword).hasMinLength ? (
-                      <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <X className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className={validatePassword(newPassword).hasMinLength ? 'text-green-700' : 'text-red-600'}>
-                      At least 8 characters
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {validatePassword(newPassword).hasUppercase ? (
-                      <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <X className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className={validatePassword(newPassword).hasUppercase ? 'text-green-700' : 'text-red-600'}>
-                      At least one uppercase letter
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {validatePassword(newPassword).hasSymbol ? (
-                      <Check className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <X className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className={validatePassword(newPassword).hasSymbol ? 'text-green-700' : 'text-red-600'}>
-                      At least one symbol (!@#$%^&* etc.)
-                    </span>
-                  </div>
-                </div>
-
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
-
-                <Button
-                  type="submit"
-                  className="w-full yelp-gradient hover:opacity-90 text-white"
-                  disabled={resetting}
-                >
-                  {resetting ? 'Updating...' : 'Update Password'}
                 </Button>
               </form>
             </TabsContent>
