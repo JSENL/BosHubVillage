@@ -62,54 +62,72 @@ const Auth = () => {
     checkUser();
   }, [navigate]);
 
-  // Detect recovery redirects and tab preference from URL
-  useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const tabParam = params.get('tab');
-      const modeParam = params.get('mode');
-      const hash = window.location.hash.replace('#', '');
-      const hashParams = new URLSearchParams(hash);
-      const type = hashParams.get('type');
-
-      if (type === 'recovery' || tabParam === 'reset-password' || modeParam === 'recovery') {
-        setActiveTab('reset-password');
-        // Attempt to establish a session from URL tokens so reset can proceed
-        ensureRecoverySessionFromUrl();
-      } else if (tabParam === 'signin' || tabParam === 'signup' || tabParam === 'recovery') {
-        setActiveTab(tabParam);
-      }
-    } catch {}
-  }, []);
 
   // Ensure we have a valid recovery session when arriving from email link
   const ensureRecoverySessionFromUrl = async () => {
     try {
+      console.log('🔐 Checking for recovery tokens in URL...');
       const hash = window.location.hash.replace('#', '');
       const hashParams = new URLSearchParams(hash);
-      const access_token = hashParams.get('access_token');
-      const refresh_token = hashParams.get('refresh_token');
-      if (access_token && refresh_token) {
-        await supabase.auth.setSession({ access_token, refresh_token });
-        return;
-      }
       const params = new URLSearchParams(window.location.search);
-      const token_hash = params.get('token_hash') || hashParams.get('token_hash');
-      const type = params.get('type') || hashParams.get('type');
-      if (type === 'recovery' && token_hash) {
-        // verify the recovery token to create a session
-        await supabase.auth.verifyOtp({ type: 'recovery', token_hash } as any);
+      
+      // Check for recovery tokens in hash (most common) or query params
+      const access_token = hashParams.get('access_token') || params.get('access_token');
+      const refresh_token = hashParams.get('refresh_token') || params.get('refresh_token');
+      const type = hashParams.get('type') || params.get('type');
+      
+      console.log('🔐 Found tokens:', { access_token: !!access_token, refresh_token: !!refresh_token, type });
+      
+      if (access_token && refresh_token && type === 'recovery') {
+        console.log('🔐 Setting recovery session...');
+        const { data, error } = await supabase.auth.setSession({ 
+          access_token, 
+          refresh_token 
+        });
+        if (error) {
+          console.error('❌ Session setup failed:', error);
+          throw error;
+        }
+        console.log('✅ Recovery session established:', data.session?.user?.email);
+        
+        // Clear the hash to clean up the URL
+        window.history.replaceState({}, document.title, '/auth?tab=reset-password');
+        setActiveTab('reset-password');
+        return true;
       }
-    } catch {}
+      
+      return false;
+    } catch (error) {
+      console.error('❌ Recovery session setup failed:', error);
+      return false;
+    }
   };
 
-  // Listen for auth events to switch UI to reset mode
+  // Listen for auth events and handle recovery on page load
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔐 Auth event:', event, session?.user?.email);
+      if (event === 'PASSWORD_RECOVERY' || event === 'TOKEN_REFRESHED') {
+        console.log('🔐 Password recovery event detected, switching to reset tab');
         setActiveTab('reset-password');
       }
     });
+    
+    // Check for recovery tokens immediately on component mount
+    const checkRecoveryOnLoad = async () => {
+      const recoveryDetected = await ensureRecoverySessionFromUrl();
+      if (!recoveryDetected) {
+        // Check if we're already on a recovery-related tab from URL params
+        const params = new URLSearchParams(window.location.search);
+        const tabParam = params.get('tab');
+        if (tabParam && ['signin', 'signup', 'recovery', 'reset-password'].includes(tabParam)) {
+          setActiveTab(tabParam);
+        }
+      }
+    };
+    
+    checkRecoveryOnLoad();
+    
     return () => subscription.unsubscribe();
   }, []);
 
@@ -258,16 +276,28 @@ const Auth = () => {
     }
 
     try {
-      // Ensure we have a valid auth session when resetting
+      console.log('🔐 Starting password reset...');
+      
+      // Check current session first
       let { data: { session } } = await supabase.auth.getSession();
+      console.log('🔐 Current session:', session?.user?.email || 'none');
+      
       if (!session) {
-        await ensureRecoverySessionFromUrl();
-        ({ data: { session } } = await supabase.auth.getSession());
+        console.log('🔐 No session found, attempting recovery from URL...');
+        const recoverySuccess = await ensureRecoverySessionFromUrl();
+        if (recoverySuccess) {
+          ({ data: { session } } = await supabase.auth.getSession());
+          console.log('🔐 Recovery session established:', session?.user?.email || 'failed');
+        }
       }
+      
       if (!session) {
-        throw new Error('Auth session missing. Open the reset link on the same device/browser, or request a new email.');
+        const errorMsg = 'Auth session missing. Please click the password reset link from your email again.';
+        console.error('❌', errorMsg);
+        throw new Error(errorMsg);
       }
 
+      console.log('🔐 Updating password for user:', session.user.email);
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
 

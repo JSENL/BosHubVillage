@@ -32,6 +32,20 @@ import UserProfile from "./pages/UserProfile";
 import { EditProfile } from "./pages/EditProfile";
 import { MapboxTest } from "./components/MapboxTest";
 
+// Recovery redirect component to handle email link redirects
+const RecoveryRedirect = () => {
+  const hasRecoveryTokens = window.location.hash.includes('type=recovery') || 
+                           window.location.hash.includes('access_token');
+  
+  if (hasRecoveryTokens) {
+    // Redirect to auth page preserving the hash
+    window.location.href = '/auth' + window.location.hash;
+    return null;
+  }
+  
+  return <Index />;
+};
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -44,7 +58,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<RecoveryRedirect />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/submit-event" element={<SubmitEvent />} />
             <Route path="/submit-business" element={<SubmitBusiness />} />
