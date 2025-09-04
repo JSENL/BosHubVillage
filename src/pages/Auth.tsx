@@ -80,6 +80,37 @@ const Auth = () => {
     } catch {}
   }, []);
 
+  // Ensure we have a valid recovery session when arriving from email link
+  const ensureRecoverySessionFromUrl = async () => {
+    try {
+      const hash = window.location.hash.replace('#', '');
+      const hashParams = new URLSearchParams(hash);
+      const access_token = hashParams.get('access_token');
+      const refresh_token = hashParams.get('refresh_token');
+      if (access_token && refresh_token) {
+        await supabase.auth.setSession({ access_token, refresh_token });
+        return;
+      }
+      const params = new URLSearchParams(window.location.search);
+      const token_hash = params.get('token_hash') || hashParams.get('token_hash');
+      const type = params.get('type') || hashParams.get('type');
+      if (type === 'recovery' && token_hash) {
+        // verify the recovery token to create a session
+        await supabase.auth.verifyOtp({ type: 'recovery', token_hash } as any);
+      }
+    } catch {}
+  };
+
+  // Listen for auth events to switch UI to reset mode
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setActiveTab('reset-password');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -225,6 +256,16 @@ const Auth = () => {
     }
 
     try {
+      // Ensure we have a valid auth session when resetting
+      let { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        await ensureRecoverySessionFromUrl();
+        ({ data: { session } } = await supabase.auth.getSession());
+      }
+      if (!session) {
+        throw new Error('Auth session missing. Open the reset link on the same device/browser, or request a new email.');
+      }
+
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
 
