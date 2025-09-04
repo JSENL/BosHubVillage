@@ -246,7 +246,8 @@ const Auth = () => {
 
       if (error) throw error;
 
-      toast.success('Password reset email sent! Check your inbox.');
+      const via = data?.provider ? ` (via ${data.provider})` : '';
+      toast.success(`Password reset email sent${via}. Check your inbox.`);
       setRecoveryEmail('');
     } catch (error: any) {
       console.error('❌ send-password-reset failed:', error)

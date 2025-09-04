@@ -57,13 +57,37 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Generate password reset link using Supabase Admin API
+    // Primary: ask Supabase to send the recovery email directly
+    const redirectTo = `${req.headers.get('origin') || 'http://localhost:5173'}/auth?tab=reset-password`;
+    const { error: resetEmailError } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+      redirectTo,
+    });
+
+    if (!resetEmailError) {
+      console.log('Supabase resetPasswordForEmail queued successfully');
+      return new Response(
+        JSON.stringify({
+          message: "If an account with this email exists, we've sent a password reset link.",
+          success: true,
+          provider: 'supabase',
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
+      );
+    }
+
+    console.warn('Supabase resetPasswordForEmail failed, falling back to Resend:', resetEmailError);
+
+    // Fallback: Generate password reset link and send with Resend
     const { data: resetData, error: resetError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'recovery',
       email,
-      options: {
-        redirectTo: `${req.headers.get('origin') || 'http://localhost:5173'}/auth?tab=reset-password`
-      }
+      options: { redirectTo }
     });
 
     if (resetError) {
@@ -72,12 +96,10 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const resetLink = resetData.properties?.action_link;
-
     if (!resetLink) {
       throw new Error('Failed to generate reset link');
     }
 
-    // Send password reset email
     const { data: emailData, error: emailError } = await resend.emails.send({
       from: "HubVillage <onboarding@resend.dev>",
       to: [email],
@@ -88,35 +110,15 @@ const handler = async (req: Request): Promise<Response> => {
             <h1 style="color: #D1472C; margin: 0;">HubVillage</h1>
             <p style="color: #666; margin: 5px 0;">Password Reset Request</p>
           </div>
-          
           <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
             <h2 style="color: #333; margin-top: 0;">Reset Your Password</h2>
-            <p style="color: #666; line-height: 1.5;">
-              We received a request to reset your password for your HubVillage account. 
-              Click the button below to reset your password:
-            </p>
-            
+            <p style="color: #666; line-height: 1.5;">We received a request to reset your password for your HubVillage account.</p>
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetLink}" 
-                 style="background: linear-gradient(135deg, #D1472C, #FF6B3D); 
-                        color: white; 
-                        padding: 12px 30px; 
-                        text-decoration: none; 
-                        border-radius: 6px; 
-                        font-weight: bold;
-                        display: inline-block;">
-                Reset Password
-              </a>
+              <a href="${resetLink}" style="background: linear-gradient(135deg, #D1472C, #FF6B3D); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
             </div>
-            
-            <p style="color: #666; font-size: 14px; line-height: 1.5;">
-              If the button doesn't work, you can copy and paste this link into your browser:
-            </p>
-            <p style="background: #eee; padding: 10px; border-radius: 4px; font-size: 12px; word-break: break-all;">
-              ${resetLink}
-            </p>
+            <p style="color: #666; font-size: 14px; line-height: 1.5;">If the button doesn't work, copy this link into your browser:</p>
+            <p style="background: #eee; padding: 10px; border-radius: 4px; font-size: 12px; word-break: break-all;">${resetLink}</p>
           </div>
-          
           <div style="color: #999; font-size: 12px; text-align: center; margin-top: 30px;">
             <p>This link will expire in 1 hour for security purposes.</p>
             <p>If you didn't request this password reset, you can safely ignore this email.</p>
@@ -131,13 +133,13 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error('Email delivery failed. Please verify sender domain or try again later.');
     }
 
-    console.log("Password reset email queued:", emailData?.id);
-
+    console.log('Password reset email queued via Resend:', emailData.id);
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         message: "If an account with this email exists, we've sent a password reset link.",
         success: true,
-        messageId: emailData?.id 
+        provider: 'resend',
+        messageId: emailData.id,
       }),
       {
         status: 200,
