@@ -24,16 +24,25 @@ export const useDiscoverPeople = () => {
     queryFn: async () => {
       if (!user?.id) return [];
 
+      // Get users this person is already following to exclude them
+      const { data: followingData } = await supabase
+        .from('user_followers')
+        .select('following_id')
+        .eq('follower_id', user.id);
+      
+      const followingIds = followingData?.map(f => f.following_id) || [];
+      
       // Get users that the current user is NOT already following
-      const { data, error } = await supabase
+      let query = supabase
         .from('profiles')
         .select('*')
-        .neq('id', user.id)
-        .not('id', 'in', `(
-          SELECT following_id 
-          FROM user_followers 
-          WHERE follower_id = '${user.id}'
-        )`)
+        .neq('id', user.id);
+      
+      if (followingIds.length > 0) {
+        query = query.not('id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+      }
+      
+      const { data, error } = await query
         .order('followers_count', { ascending: false })
         .limit(10);
 
@@ -58,16 +67,25 @@ export const useDiscoverPeople = () => {
 
       if (!currentUserProfile?.interests?.length) return [];
 
+      // Get users this person is already following to exclude them
+      const { data: followingData } = await supabase
+        .from('user_followers')
+        .select('following_id')
+        .eq('follower_id', user.id);
+      
+      const followingIds = followingData?.map(f => f.following_id) || [];
+
       // Find users with overlapping interests
-      const { data, error } = await supabase
+      let query = supabase
         .from('profiles')
         .select('*')
-        .neq('id', user.id)
-        .not('id', 'in', `(
-          SELECT following_id 
-          FROM user_followers 
-          WHERE follower_id = '${user.id}'
-        )`)
+        .neq('id', user.id);
+      
+      if (followingIds.length > 0) {
+        query = query.not('id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+      }
+      
+      const { data, error } = await query
         .overlaps('interests', currentUserProfile.interests)
         .order('followers_count', { ascending: false })
         .limit(5);
@@ -84,19 +102,28 @@ export const useDiscoverPeople = () => {
     queryFn: async () => {
       if (!user?.id) return [];
 
+      // Get users this person is already following to exclude them
+      const { data: followingData } = await supabase
+        .from('user_followers')
+        .select('following_id')
+        .eq('follower_id', user.id);
+      
+      const followingIds = followingData?.map(f => f.following_id) || [];
+
       // Get users with recent activity
-      const { data, error } = await supabase
+      let query = supabase
         .from('user_activities')
         .select(`
           user_id,
           profiles!inner(*)
         `)
-        .neq('user_id', user.id)
-        .not('user_id', 'in', `(
-          SELECT following_id 
-          FROM user_followers 
-          WHERE follower_id = '${user.id}'
-        )`)
+        .neq('user_id', user.id);
+      
+      if (followingIds.length > 0) {
+        query = query.not('user_id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+      }
+      
+      const { data, error } = await query
         .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Last 7 days
         .order('created_at', { ascending: false })
         .limit(20);
@@ -137,16 +164,25 @@ export const useDiscoverPeople = () => {
 
       if (!currentUserProfile?.location) return [];
 
+      // Get users this person is already following to exclude them
+      const { data: followingData } = await supabase
+        .from('user_followers')
+        .select('following_id')
+        .eq('follower_id', user.id);
+      
+      const followingIds = followingData?.map(f => f.following_id) || [];
+
       // Find users in the same location
-      const { data, error } = await supabase
+      let query = supabase
         .from('profiles')
         .select('*')
-        .neq('id', user.id)
-        .not('id', 'in', `(
-          SELECT following_id 
-          FROM user_followers 
-          WHERE follower_id = '${user.id}'
-        )`)
+        .neq('id', user.id);
+      
+      if (followingIds.length > 0) {
+        query = query.not('id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+      }
+      
+      const { data, error } = await query
         .ilike('location', `%${currentUserProfile.location}%`)
         .order('followers_count', { ascending: false })
         .limit(5);
