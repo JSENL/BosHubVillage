@@ -30,9 +30,11 @@ export const useTrending = () => {
 
       const eventIds = trending.map(t => t.item_id);
       
+      const currentDate = new Date().toISOString().split('T')[0];
       const { data: events, error } = await supabase
         .from('events')
         .select('*')
+        .gte('date', currentDate)
         .in('id', eventIds);
 
       if (error) throw error;

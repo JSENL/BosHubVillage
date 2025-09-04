@@ -30,9 +30,11 @@ export const UniversalMap = ({ height = "400px" }: UniversalMapProps) => {
     const fetchMapData = async () => {
       try {
         // Fetch events with the new address column
+        const currentDate = new Date().toISOString().split('T')[0];
         const { data: events, error: eventsError } = await supabase
           .from('events')
           .select('*')
+          .gte('date', currentDate)
           .not('latitude', 'is', null)
           .not('longitude', 'is', null);
 

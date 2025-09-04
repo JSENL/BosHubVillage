@@ -9,8 +9,9 @@ export const fetchAllUnifiedData = async (
 ): Promise<UnifiedItem[]> => {
   console.log('🔄 Starting unified data fetch...');
   
+  const currentDate = new Date().toISOString().split('T')[0];
   const [eventsRes, pastEventsRes, newsRes, localResourcesRes, businessRes] = await Promise.all([
-    supabase.from('events').select('*').order('created_at', { ascending: false }),
+    supabase.from('events').select('*').gte('date', currentDate).order('created_at', { ascending: false }),
     includePastEvents ? supabase.from('past_events').select('*').order('date', { ascending: false }) : Promise.resolve({ data: [], error: null }),
     supabase.from('news').select('*').order('date_posted', { ascending: false }),
     supabase.from('local_resources').select('*').order('created_at', { ascending: false }),

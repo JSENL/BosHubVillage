@@ -25,9 +25,11 @@ export const BookmarksSection = () => {
 
       // Fetch events
       if (eventIds.length > 0) {
+        const currentDate = new Date().toISOString().split('T')[0];
         const { data: events } = await supabase
           .from('events')
           .select('id, title, location, date')
+          .gte('date', currentDate)
           .in('id', eventIds);
         
         if (events) {

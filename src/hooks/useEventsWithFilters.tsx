@@ -65,12 +65,15 @@ export const useEventsWithFilters = () => {
 
   const fetchEvents = async () => {
     try {
+      const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+      
       const { data, error } = await supabase
         .from('events')
         .select(`
           *,
           event_attendees(count)
         `)
+        .gte('date', currentDate) // Only fetch events from today onwards
         .order('date', { ascending: true });
 
       if (error) throw error;

@@ -12,9 +12,11 @@ export const useEventDates = () => {
         setIsLoading(true);
         setError(null);
 
+        const currentDate = new Date().toISOString().split('T')[0];
         const { data, error } = await supabase
           .from('events')
           .select('date')
+          .gte('date', currentDate)
           .order('date', { ascending: true });
 
         if (error) {
