@@ -53,7 +53,7 @@ export const RecentlyReviewedSubmissions = ({ submissions, onUpdate }: RecentlyR
 
       if (error) throw error;
 
-      toast.success('Submission deleted successfully');
+      toast.success('Event submission deleted successfully');
       onUpdate();
     } catch (error: any) {
       console.error('Error deleting submission:', error);

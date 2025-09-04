@@ -34,7 +34,7 @@ export const PendingNewsSubmissions = ({ submissions, onUpdate }: PendingNewsSub
 
       if (error) throw error;
 
-      toast.success('Submission deleted successfully');
+      toast.success('News submission deleted successfully');
       onUpdate();
     } catch (error: any) {
       console.error('Error deleting submission:', error);

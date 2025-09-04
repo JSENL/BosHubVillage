@@ -120,7 +120,10 @@ export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventS
 
       if (error) throw error;
 
-      toast.success('Submission deleted successfully');
+      toast.success('Event submission deleted successfully');
+      // Reset any selected submission state to clean up UI
+      setSelectedSubmission(null);
+      setAdminNotes('');
       onUpdate();
     } catch (error: any) {
       console.error('Error deleting submission:', error);
