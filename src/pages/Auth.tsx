@@ -74,6 +74,8 @@ const Auth = () => {
 
       if (type === 'recovery' || tabParam === 'reset-password' || modeParam === 'recovery') {
         setActiveTab('reset-password');
+        // Attempt to establish a session from URL tokens so reset can proceed
+        ensureRecoverySessionFromUrl();
       } else if (tabParam === 'signin' || tabParam === 'signup' || tabParam === 'recovery') {
         setActiveTab(tabParam);
       }
