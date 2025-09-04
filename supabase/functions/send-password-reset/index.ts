@@ -60,9 +60,9 @@ const handler = async (req: Request): Promise<Response> => {
     // Generate password reset link using Supabase Admin API
     const { data: resetData, error: resetError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'recovery',
-      email: email,
+      email,
       options: {
-        redirectTo: `${Deno.env.get('SUPABASE_URL')?.replace('supabase.co', 'supabase.co')}/auth/v1/verify?redirect_to=${encodeURIComponent(`${req.headers.get('origin') || 'http://localhost:5173'}/auth?tab=reset-password`)}`
+        redirectTo: `${req.headers.get('origin') || 'http://localhost:5173'}/auth?tab=reset-password`
       }
     });
 
@@ -78,7 +78,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Send password reset email
-    const emailResponse = await resend.emails.send({
+    const { data: emailData, error: emailError } = await resend.emails.send({
       from: "HubVillage <onboarding@resend.dev>",
       to: [email],
       subject: "Reset Your HubVillage Password",
@@ -126,12 +126,18 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Password reset email sent successfully:", emailResponse);
+    if (emailError || !emailData?.id) {
+      console.error('Resend email send failed:', emailError || emailData);
+      throw new Error('Email delivery failed. Please verify sender domain or try again later.');
+    }
+
+    console.log("Password reset email queued:", emailData?.id);
 
     return new Response(
       JSON.stringify({ 
         message: "If an account with this email exists, we've sent a password reset link.",
-        success: true 
+        success: true,
+        messageId: emailData?.id 
       }),
       {
         status: 200,
