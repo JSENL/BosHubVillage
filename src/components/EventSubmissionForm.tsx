@@ -72,7 +72,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     }
 
     if (!isReady) {
-      toast.error('Google Maps API not ready. Please try again.');
+      toast.error('Mapbox API not ready. Please try again.');
       return;
     }
 
@@ -151,7 +151,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         </CardTitle>
         <p className="text-gray-600">Your event will be reviewed by our admin team before being published.</p>
         {!isReady && (
-          <p className="text-sm text-amber-600">Loading Google Maps API for address validation...</p>
+          <p className="text-sm text-amber-600">Loading Mapbox API for address validation...</p>
         )}
       </CardHeader>
       <CardContent>

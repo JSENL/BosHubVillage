@@ -1,63 +1,36 @@
 
-// Note: This file contains Google Maps geocoding functionality
-// Currently commented out in favor of Mapbox implementation
-
-/*
-import { Loader } from '@googlemaps/js-api-loader';
-
-let googleMapsLoader: Loader | null = null;
-let isGoogleMapsLoaded = false;
-
-const initializeGoogleMaps = async (apiKey: string) => {
-  if (isGoogleMapsLoaded) return;
-  
-  if (!googleMapsLoader) {
-    googleMapsLoader = new Loader({
-      apiKey: apiKey,
-      version: 'weekly',
-      libraries: ['places', 'geometry']
-    });
-  }
-  
-  try {
-    await googleMapsLoader.load();
-    isGoogleMapsLoaded = true;
-  } catch (error) {
-    console.error('Error loading Google Maps:', error);
-    throw error;
-  }
-};
-
+// Mapbox-only geocoding utility
 export const geocodeAddress = async (address: string, apiKey: string): Promise<{ lat: number; lng: number } | null> => {
-  try {
-    await initializeGoogleMaps(apiKey);
-    
-    const geocoder = new google.maps.Geocoder();
-    
-    return new Promise((resolve, reject) => {
-      geocoder.geocode({ address }, (results, status) => {
-        if (status === 'OK' && results && results[0]) {
-          const location = results[0].geometry.location;
-          resolve({
-            lat: location.lat(),
-            lng: location.lng()
-          });
-        } else {
-          console.error('Geocoding failed:', status);
-          resolve(null);
-        }
-      });
-    });
-  } catch (error) {
-    console.error('Error geocoding address:', error);
+  if (!address || !apiKey) {
+    console.error('Address or API key missing for geocoding');
     return null;
   }
-};
-*/
 
-// Use Mapbox geocoding instead - this is already implemented in the project
-// via the useGeocoding hook and other geocoding utilities
-export const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number } | null> => {
-  console.warn('Google Maps geocoding is disabled. Use Mapbox geocoding utilities instead.');
-  return null;
+  try {
+    console.log('Geocoding address with Mapbox:', address);
+    
+    const encodedAddress = encodeURIComponent(address);
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?access_token=${apiKey}&limit=1`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.features && data.features.length > 0) {
+      const feature = data.features[0];
+      const [longitude, latitude] = feature.center;
+      
+      console.log('Mapbox geocoding successful:', { latitude, longitude });
+      
+      return {
+        lat: latitude,
+        lng: longitude
+      };
+    } else {
+      console.error('Mapbox geocoding failed: No results found');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error during Mapbox geocoding:', error);
+    return null;
+  }
 };

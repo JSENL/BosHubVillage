@@ -4,20 +4,22 @@ export const geocodeAddresses = async (addresses: string[], apiKey: string): Pro
   
   for (const address of addresses) {
     try {
+      const encodedAddress = encodeURIComponent(address);
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?access_token=${apiKey}&limit=1`
       );
       
       const data = await response.json();
       
-      if (data.status === 'OK' && data.results.length > 0) {
-        const location = data.results[0].geometry.location;
+      if (data.features && data.features.length > 0) {
+        const feature = data.features[0];
+        const [longitude, latitude] = feature.center;
         results.push({
-          lat: location.lat,
-          lng: location.lng,
+          lat: latitude,
+          lng: longitude,
           address: address
         });
-        console.log(`Geocoded ${address}:`, location);
+        console.log(`Geocoded ${address}:`, { latitude, longitude });
       } else {
         console.warn(`Could not geocode address: ${address}`);
       }

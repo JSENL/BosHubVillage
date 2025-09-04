@@ -44,7 +44,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
     }
 
     if (!isReady) {
-      toast.error('Google Maps API not ready. Please try again.');
+      toast.error('Mapbox API not ready. Please try again.');
       return;
     }
 
@@ -109,7 +109,7 @@ const EventForm = ({ onClose }: EventFormProps) => {
           Create New Event
         </CardTitle>
         {!isReady && (
-          <p className="text-sm text-amber-600">Loading Google Maps API for address validation...</p>
+          <p className="text-sm text-amber-600">Loading Mapbox API for address validation...</p>
         )}
       </CardHeader>
       <CardContent>
