@@ -36,9 +36,9 @@ export const MapViewSection = () => {
     setViewMode(newViewMode);
   };
 
-  // Determine selected types for the map (excluding news)
+  // Determine selected types for the map (including all types)
   const selectedTypesForMap = selectedType === 'all' 
-    ? ['event', 'business', 'local-service'] 
+    ? ['event', 'business', 'local-service', 'news', 'past-event'] 
     : [selectedType];
 
   // Create filtered items for map (including all item types)
