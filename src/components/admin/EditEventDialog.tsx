@@ -18,13 +18,21 @@ interface EditEventDialogProps {
 
 export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEventDialogProps) => {
   const [loading, setLoading] = useState(false);
+  
+  // Helper function to format date properly without timezone issues
+  const formatDateForInput = (dateString: string) => {
+    // Ensure we're working with just the date part, no time conversion
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toISOString().split('T')[0];
+  };
+
   const [formData, setFormData] = useState({
     title: event.title,
     description: event.description || '',
     category: event.category,
     location: event.location,
     address: event.address || '',
-    date: event.date,
+    date: formatDateForInput(event.date),
     start_time: event.start_time || '',
     end_time: event.end_time || '',
     price: event.price || 0,
@@ -44,9 +52,9 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
         category: formData.category,
         location: formData.location,
         address: formData.address,
-        date: formData.date,
-        start_time: formData.start_time,
-        end_time: formData.end_time,
+        date: formData.date, // Keep as YYYY-MM-DD format to avoid timezone conversion
+        start_time: formData.start_time || null,
+        end_time: formData.end_time || null,
         price: formData.price,
         max_attendees: formData.max_attendees,
       };

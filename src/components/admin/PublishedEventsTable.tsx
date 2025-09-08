@@ -200,7 +200,7 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
                     <TableCell>
                       <div className="flex items-center text-sm">
                         <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(event.date).toLocaleDateString()}
+                        {new Date(event.date + 'T00:00:00').toLocaleDateString()}
                       </div>
                     </TableCell>
                     <TableCell>
