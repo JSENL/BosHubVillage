@@ -11,11 +11,12 @@ export const fetchAllUnifiedData = async (
   
   const currentDate = new Date().toISOString().split('T')[0];
   const [eventsRes, pastEventsRes, newsRes, localResourcesRes, businessRes] = await Promise.all([
-    supabase.from('events').select('*').gte('date', currentDate).order('created_at', { ascending: false }),
-    includePastEvents ? supabase.from('past_events').select('*').order('date', { ascending: false }) : Promise.resolve({ data: [], error: null }),
-    supabase.from('news').select('*').order('date_posted', { ascending: false }),
-    supabase.from('local_resources').select('*').order('created_at', { ascending: false }),
-    supabase.from('business').select('*').order('created_at', { ascending: false })
+    // Remove date ordering to ensure sponsored prioritization works
+    supabase.from('events').select('*').gte('date', currentDate),
+    includePastEvents ? supabase.from('past_events').select('*') : Promise.resolve({ data: [], error: null }),
+    supabase.from('news').select('*'),
+    supabase.from('local_resources').select('*'),
+    supabase.from('business').select('*')
   ]);
 
   console.log('📊 Database fetch results:', {
@@ -211,23 +212,37 @@ export const fetchAllUnifiedData = async (
     }
   });
   
-  // Sort items to prioritize sponsored content (sponsored items first)
+  // Sort items to prioritize sponsored content (sponsored items ALWAYS first)
   const sortedItems = validItems.sort((a, b) => {
     const aSponsored = (a as any).is_sponsored || false;
     const bSponsored = (b as any).is_sponsored || false;
     
-    // Sponsored items come first
+    // Sponsored items ALWAYS come first, regardless of any other factors
     if (aSponsored && !bSponsored) return -1;
     if (!aSponsored && bSponsored) return 1;
     
-    // Among items of same sponsorship status, maintain original order
-    return 0;
+    // Among sponsored items, sort by creation date (newest first)
+    if (aSponsored && bSponsored) {
+      const aDate = new Date(a.originalData?.created_at || a.originalData?.date_posted || 0);
+      const bDate = new Date(b.originalData?.created_at || b.originalData?.date_posted || 0);
+      return bDate.getTime() - aDate.getTime();
+    }
+    
+    // Among non-sponsored items, maintain original order or sort by date
+    const aDate = new Date(a.originalData?.created_at || a.originalData?.date_posted || 0);
+    const bDate = new Date(b.originalData?.created_at || b.originalData?.date_posted || 0);
+    return bDate.getTime() - aDate.getTime();
   });
   
   console.log('🎯 Sponsored items prioritized:', {
     totalItems: sortedItems.length,
     sponsoredItems: sortedItems.filter(item => (item as any).is_sponsored).length,
-    regularItems: sortedItems.filter(item => !(item as any).is_sponsored).length
+    regularItems: sortedItems.filter(item => !(item as any).is_sponsored).length,
+    firstFiveItems: sortedItems.slice(0, 5).map(item => ({
+      title: item.title,
+      sponsored: (item as any).is_sponsored || false,
+      type: item.type
+    }))
   });
   
   return sortedItems;
