@@ -39,7 +39,7 @@ export const useDiscoverPeople = () => {
         .neq('id', user.id);
       
       if (followingIds.length > 0) {
-        query = query.not('id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+        query = query.not('id', 'in', `(${followingIds.join(',')})`);
       }
       
       const { data, error } = await query
@@ -82,7 +82,7 @@ export const useDiscoverPeople = () => {
         .neq('id', user.id);
       
       if (followingIds.length > 0) {
-        query = query.not('id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+        query = query.not('id', 'in', `(${followingIds.join(',')})`);
       }
       
       const { data, error } = await query
@@ -120,7 +120,7 @@ export const useDiscoverPeople = () => {
         .neq('user_id', user.id);
       
       if (followingIds.length > 0) {
-        query = query.not('user_id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+        query = query.not('user_id', 'in', `(${followingIds.join(',')})`);
       }
       
       const { data, error } = await query
@@ -179,7 +179,7 @@ export const useDiscoverPeople = () => {
         .neq('id', user.id);
       
       if (followingIds.length > 0) {
-        query = query.not('id', 'in', `(${followingIds.map(id => `'${id}'`).join(',')})`);
+        query = query.not('id', 'in', `(${followingIds.join(',')})`);
       }
       
       const { data, error } = await query
