@@ -81,8 +81,7 @@ export const fetchAllUnifiedData = async (
         end_time: event.end_time,
         price: Number(event.price || 0),
         neighborhoods: event.neighborhoods,
-        villages: event.villages,
-        
+        villages: event.villages
       });
     });
   }
@@ -111,8 +110,7 @@ export const fetchAllUnifiedData = async (
         content: news.content,
         source: news.source,
         villages: news.villages,
-        date: news.date_posted,
-        
+        date: news.date_posted
       });
     });
   }
@@ -138,8 +136,7 @@ export const fetchAllUnifiedData = async (
         business_type: business.business_type,
         villages: business.villages,
         neighborhoods: business.neighborhood,
-        originalData: business,
-        
+        originalData: business
       };
       
       console.log(`🏢 Transformed business item:`, item);
@@ -167,8 +164,7 @@ export const fetchAllUnifiedData = async (
         category: resource.category,
         name: resource.name,
         neighborhoods: resource.neighborhood,
-        villages: resource.village,
-        
+        villages: resource.village
       });
     });
   }
