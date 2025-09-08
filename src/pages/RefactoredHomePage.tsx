@@ -61,19 +61,6 @@ const MainContent = () => {
           {/* Filter Bar */}
           <FilterBar
             allItems={allItems}
-            searchTerm={filters.searchTerm}
-            selectedType={filters.selectedType}
-            onTypeChange={(type) => updateFilter('selectedType', type)}
-            selectedCategory={filters.selectedCategory}
-            onCategoryChange={(category) => updateFilter('selectedCategory', category)}
-            selectedNeighborhood={filters.selectedNeighborhood}
-            onNeighborhoodChange={(neighborhood) => updateFilter('selectedNeighborhood', neighborhood)}
-            selectedVillage={filters.selectedVillage}
-            onVillageChange={(village) => updateFilter('selectedVillage', village)}
-            eventDateRange={filters.eventDateRange}
-            onEventDateRangeChange={(range) => updateFilter('eventDateRange', range)}
-            selectedEventDates={filters.selectedEventDates}
-            onSelectedEventDatesChange={(dates) => updateFilter('selectedEventDates', dates)}
             filteredItemsCount={filteredItems.length}
           />
           
