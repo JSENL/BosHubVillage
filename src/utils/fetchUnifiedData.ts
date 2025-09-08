@@ -82,7 +82,7 @@ export const fetchAllUnifiedData = async (
         price: Number(event.price || 0),
         neighborhoods: event.neighborhoods,
         villages: event.villages,
-        is_sponsored: event.is_sponsored || false
+        
       });
     });
   }
@@ -112,7 +112,7 @@ export const fetchAllUnifiedData = async (
         source: news.source,
         villages: news.villages,
         date: news.date_posted,
-        is_sponsored: news.is_sponsored || false
+        
       });
     });
   }
@@ -139,7 +139,7 @@ export const fetchAllUnifiedData = async (
         villages: business.villages,
         neighborhoods: business.neighborhood,
         originalData: business,
-        is_sponsored: business.is_sponsored || false
+        
       };
       
       console.log(`🏢 Transformed business item:`, item);
@@ -168,7 +168,7 @@ export const fetchAllUnifiedData = async (
         name: resource.name,
         neighborhoods: resource.neighborhood,
         villages: resource.village,
-        is_sponsored: resource.is_sponsored || false
+        
       });
     });
   }
