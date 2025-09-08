@@ -221,7 +221,6 @@
     "registerForEvent": "Register for Event",
     "attending": "attending",
     "max": "max",
-    "addedOn": "Added",
-    "sponsored": "Sponsored"
+    "addedOn": "Added"
   }
 }
