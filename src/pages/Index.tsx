@@ -1,7 +1,7 @@
-import { HomePage } from "@/components/pages/HomePage";
+import { RefactoredHomePage } from './RefactoredHomePage';
 
 const Index = () => {
-  return <HomePage />;
+  return <RefactoredHomePage />;
 };
 
 export default Index;
