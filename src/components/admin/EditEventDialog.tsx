@@ -76,12 +76,22 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
         return;
       }
 
+      // Update the event with an explicit updated_at timestamp
+      updateData.updated_at = new Date().toISOString();
+
       const { error } = await supabase
         .from('events')
         .update(updateData)
         .eq('id', event.id);
 
       if (error) throw error;
+
+      // Log the successful update for debugging
+      console.log('Event updated successfully:', {
+        eventId: event.id,
+        updatedFields: Object.keys(updateData),
+        updateData
+      });
 
       toast.success('Event updated successfully');
       onUpdate();
