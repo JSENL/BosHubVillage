@@ -211,5 +211,24 @@ export const fetchAllUnifiedData = async (
     }
   });
   
-  return validItems;
+  // Sort items to prioritize sponsored content (sponsored items first)
+  const sortedItems = validItems.sort((a, b) => {
+    const aSponsored = (a as any).is_sponsored || false;
+    const bSponsored = (b as any).is_sponsored || false;
+    
+    // Sponsored items come first
+    if (aSponsored && !bSponsored) return -1;
+    if (!aSponsored && bSponsored) return 1;
+    
+    // Among items of same sponsorship status, maintain original order
+    return 0;
+  });
+  
+  console.log('🎯 Sponsored items prioritized:', {
+    totalItems: sortedItems.length,
+    sponsoredItems: sortedItems.filter(item => (item as any).is_sponsored).length,
+    regularItems: sortedItems.filter(item => !(item as any).is_sponsored).length
+  });
+  
+  return sortedItems;
 };

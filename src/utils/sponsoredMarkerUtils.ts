@@ -12,13 +12,18 @@ export interface SponsoredMarkerOptions {
 /**
  * Creates a custom HTML marker element with visual effects for sponsored items
  */
-export const createSponsoredMarkerElement = (options: SponsoredMarkerOptions = {}) => {
+export const createSponsoredMarkerElement = (config: {
+  isSponsored?: boolean;
+  size?: number;
+  color?: string;
+  glowColor?: string;
+}) => {
   const {
-    isSponsored = false,
-    size = 30,
+    isSponsored = true,
+    size = 35,
     color = '#dc2626',
     glowColor = '#fbbf24'
-  } = options;
+  } = config;
 
   const el = document.createElement('div');
   

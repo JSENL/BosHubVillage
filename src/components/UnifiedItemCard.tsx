@@ -242,9 +242,16 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between mb-2">
-          <Badge variant="secondary" className="bg-gray-100 text-gray-700">
-            {translatedFields.category}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+              {translatedFields.category}
+            </Badge>
+            {(item as any).is_sponsored && (
+              <Badge variant="default" className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white animate-pulse">
+                ⭐ {t('common.sponsored')}
+              </Badge>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <BookmarkButton 
               itemType={item.type === 'local-service' ? 'local_service' : item.type as any}

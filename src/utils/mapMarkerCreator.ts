@@ -19,6 +19,7 @@ export const createMarkerElement = (item: UnifiedItem): HTMLDivElement => {
   console.log(`🎯 Creating marker for: ${item.title}, sponsored: ${isSponsored}, type: ${item.type}`);
   
   if (isSponsored) {
+    console.log(`✨ Creating SPONSORED marker for: ${item.title}`);
     // Create sponsored marker with visual effects
     const markerConfig = getMarkerConfig(item.type, true);
     const sponsoredElement = createSponsoredMarkerElement(markerConfig);
