@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { validateCoordinates, createPopupContent } from '@/utils/mapMarkerUtils';
+import { createMarkerElement } from '@/utils/mapMarkerCreator';
 
 interface UseMapMarkersProps {
   map: mapboxgl.Map | null;
@@ -60,38 +61,10 @@ export const useMapMarkers = ({
       }
 
       console.log('✅ Valid coordinates for item:', item.title, coords);
+      console.log('🔍 Checking if sponsored:', item.title, 'is_sponsored:', (item as any).is_sponsored);
 
-      // Get marker color based on item type
-      const getMarkerColor = (type: string) => {
-        switch (type) {
-          case 'event': return 'hsl(5, 75%, 55%)'; // Warm red from logo
-          case 'local-service': return 'hsl(15, 85%, 65%)'; // Coral orange from logo
-          case 'business': return 'hsl(210, 75%, 45%)'; // Vibrant blue from logo
-          case 'news': return 'hsl(135, 65%, 45%)'; // Forest green from logo
-          default: return 'hsl(220, 15%, 45%)'; // Muted gray
-        }
-      };
-
-      // Create marker element with custom color
-      const el = document.createElement('div');
-      el.className = 'marker';
-      el.style.width = '24px';
-      el.style.height = '24px';
-      el.style.borderRadius = '50%';
-      el.style.cursor = 'pointer';
-      el.style.backgroundColor = getMarkerColor(item.type);
-      el.style.border = '3px solid white';
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-      el.style.display = 'flex';
-      el.style.alignItems = 'center';
-      el.style.justifyContent = 'center';
-      el.style.fontSize = '12px';
-      el.style.fontWeight = 'bold';
-      el.style.color = 'white';
-      
-      // Add type indicator
-      const typeIndicator = item.type.charAt(0).toUpperCase();
-      el.textContent = typeIndicator;
+      // Use the enhanced marker element with sponsored effects
+      const el = createMarkerElement(item);
 
       // Add click handler
       el.addEventListener('click', (e) => {

@@ -25,6 +25,9 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const { getTranslatedField, currentLanguage } = useContentTranslation();
   const navigate = useNavigate();
   
+  // Debug logging for sponsored status
+  console.log(`🎭 UnifiedItemCard for "${item.title}": sponsored=${(item as any).is_sponsored}`);
+  
   // Auto-translate missing fields based on item type
   const getFieldsForType = (type: string) => {
     switch (type) {
@@ -247,7 +250,15 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               {translatedFields.category}
             </Badge>
             {(item as any).is_sponsored && (
-              <Badge variant="default" className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white animate-pulse">
+              <Badge 
+                variant="default" 
+                className="bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500 text-white animate-pulse shadow-lg ring-2 ring-yellow-400/50 font-bold text-xs px-2 py-1"
+                style={{
+                  background: 'linear-gradient(45deg, #fbbf24, #f59e0b, #d97706)',
+                  boxShadow: '0 0 20px rgba(251, 191, 36, 0.6), 0 4px 6px rgba(0, 0, 0, 0.1)',
+                  animation: 'pulse 1.5s infinite'
+                }}
+              >
                 ⭐ {t('common.sponsored')}
               </Badge>
             )}
