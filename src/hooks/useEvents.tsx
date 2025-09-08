@@ -35,6 +35,7 @@ export const useEvents = () => {
 
   const fetchEvents = async () => {
     try {
+      console.log('Fetching events from Supabase...');
       const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
       
       const { data, error } = await supabase
@@ -47,6 +48,8 @@ export const useEvents = () => {
         .order('date', { ascending: true });
 
       if (error) throw error;
+
+      console.log('✅ Events fetched successfully:', data?.length || 0);
 
       const eventsWithAttendees = data?.map(event => ({
         ...event,
@@ -62,7 +65,7 @@ export const useEvents = () => {
 
       setEvents(eventsWithAttendees);
     } catch (error: any) {
-      console.error('Error fetching events:', error);
+      console.error('❌ Error fetching events:', error);
       toast.error('Failed to load events');
     } finally {
       setLoading(false);

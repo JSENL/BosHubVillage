@@ -7,6 +7,7 @@ import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
 import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
+import { DebugDataLoader } from '@/components/debug/DebugDataLoader';
 
 const MainContent = () => {
   const { 
@@ -82,6 +83,7 @@ const MainContent = () => {
       </div>
       
       <TranslationTestModal />
+      <DebugDataLoader />
     </>
   );
 };
