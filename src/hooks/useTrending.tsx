@@ -2,96 +2,55 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export const useTrending = () => {
-  const { data: trendingItems, isLoading } = useQuery({
-    queryKey: ['trending-content'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('trending_content')
-        .select('*')
-        .order('score', { ascending: false })
-        .limit(10);
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: trendingEvents } = useQuery({
+  // Get trending items directly from tables since trending_content exists but might be empty
+  const { data: trendingEvents, isLoading: eventsLoading } = useQuery({
     queryKey: ['trending-events'],
     queryFn: async () => {
-      const { data: trending } = await supabase
-        .from('trending_content')
-        .select('item_id')
-        .eq('item_type', 'event')
-        .order('score', { ascending: false })
-        .limit(5);
-
-      if (!trending?.length) return [];
-
-      const eventIds = trending.map(t => t.item_id);
-      
       const currentDate = new Date().toISOString().split('T')[0];
       const { data: events, error } = await supabase
         .from('events')
         .select('*')
         .gte('date', currentDate)
-        .in('id', eventIds);
+        .order('created_at', { ascending: false })
+        .limit(5);
 
       if (error) throw error;
-      return events;
+      return events || [];
     },
   });
 
-  const { data: trendingBusinesses } = useQuery({
+  const { data: trendingBusinesses, isLoading: businessesLoading } = useQuery({
     queryKey: ['trending-businesses'],
     queryFn: async () => {
-      const { data: trending } = await supabase
-        .from('trending_content')
-        .select('item_id')
-        .eq('item_type', 'business')
-        .order('score', { ascending: false })
-        .limit(5);
-
-      if (!trending?.length) return [];
-
-      const businessIds = trending.map(t => t.item_id);
-      
       const { data: businesses, error } = await supabase
         .from('business')
         .select('*')
-        .in('id', businessIds);
+        .order('created_at', { ascending: false })
+        .limit(5);
 
       if (error) throw error;
-      return businesses;
+      return businesses || [];
     },
   });
 
-  const { data: trendingNews } = useQuery({
+  const { data: trendingNews, isLoading: newsLoading } = useQuery({
     queryKey: ['trending-news'],
     queryFn: async () => {
-      const { data: trending } = await supabase
-        .from('trending_content')
-        .select('item_id')
-        .eq('item_type', 'news')
-        .order('score', { ascending: false })
-        .limit(5);
-
-      if (!trending?.length) return [];
-
-      const newsIds = trending.map(t => t.item_id);
-      
       const { data: news, error } = await supabase
         .from('news')
         .select('*')
-        .in('id', newsIds);
+        .order('created_at', { ascending: false })
+        .limit(5);
 
       if (error) throw error;
-      return news;
+      return news || [];
     },
   });
 
+  const isLoading = eventsLoading || businessesLoading || newsLoading;
+
   return {
-    trendingItems,
+    trendingItems: null, // Not using this anymore
     trendingEvents,
     trendingBusinesses,
     trendingNews,

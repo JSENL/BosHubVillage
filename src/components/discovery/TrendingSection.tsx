@@ -4,6 +4,7 @@ import { useTrending } from '@/hooks/useTrending';
 import { TrendingUp, Calendar, Building2, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { FallbackTrendingSection } from './FallbackTrendingSection';
 
 export const TrendingSection = () => {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ export const TrendingSection = () => {
   const hasContent = trendingEvents?.length || trendingBusinesses?.length || trendingNews?.length;
 
   if (!hasContent) {
-    return null;
+    return <FallbackTrendingSection />;
   }
 
   return (

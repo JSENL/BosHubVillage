@@ -141,18 +141,25 @@ export const EnhancedUniversalMap = ({
 
   if (isLoadingApiKey) {
     return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
         <p className="text-gray-600">Loading map...</p>
+        <p className="text-xs text-gray-400 mt-1">Fetching Mapbox configuration...</p>
       </div>
     );
   }
 
   if (error || !mapboxToken) {
     return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
+      <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
         <p className="text-red-500 mb-4">{error || 'Failed to load Mapbox API key'}</p>
         <p className="text-sm text-gray-400">Please check your Mapbox configuration</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="mt-3 px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+        >
+          Retry Loading Map
+        </button>
       </div>
     );
   }
@@ -168,11 +175,19 @@ export const EnhancedUniversalMap = ({
       >
         {/* Debug overlay - hidden by default */}
         
-        {isLoadingApiKey ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+        {!mapInstance && isLoadingApiKey ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
               <p className="text-sm text-gray-600">Loading map...</p>
+              <p className="text-xs text-gray-400 mt-1">Please wait...</p>
+            </div>
+          </div>
+        ) : !mapInstance && !isLoadingApiKey ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="text-center">
+              <div className="animate-pulse rounded-full h-8 w-8 bg-gray-300 mx-auto mb-2"></div>
+              <p className="text-sm text-gray-600">Initializing map...</p>
             </div>
           </div>
         ) : error ? (
