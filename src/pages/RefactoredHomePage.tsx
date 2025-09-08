@@ -64,15 +64,13 @@ const MainContent = () => {
             filteredItemsCount={filteredItems.length}
           />
           
-          {/* Bottom grid for map view */}
+          {/* Full list view for map mode */}
           {filters.viewMode === 'map' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredItems.slice(0, 6).map((item) => (
-                <div key={`${item.type}-${item.id}`} className="bg-white rounded-lg border shadow-sm p-4">
-                  <h3 className="font-semibold text-sm">{item.title}</h3>
-                  <p className="text-xs text-gray-600 mt-1">{item.type}</p>
-                </div>
-              ))}
+            <div className="max-h-96 overflow-y-auto">
+              <ListView
+                items={filteredItems}
+                isLoading={isLoading}
+              />
             </div>
           )}
         </section>
