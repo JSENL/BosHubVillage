@@ -75,7 +75,7 @@ const MainContent = () => {
           )}
         </section>
 
-        {/* Discovery sidebar */}
+        {/* Discovery sidebar - always visible on large screens */}
         <aside className="w-80 space-y-6 hidden lg:block" aria-label="Discovery and recommendations">
           <DiscoverySidebar />
         </aside>
