@@ -35,15 +35,16 @@ export const useDiscoverPeople = () => {
       // Get users that the current user is NOT already following
       let query = supabase
         .from('profiles')
-        .select('*')
-        .neq('id', user.id);
+        .select('id, email, full_name, avatar_url, bio, location, interests, is_verified, followers_count, following_count')
+        .neq('id', user.id)
+        .not('full_name', 'is', null); // Only get users with names
       
       if (followingIds.length > 0) {
         query = query.not('id', 'in', `(${followingIds.join(',')})`);
       }
       
       const { data, error } = await query
-        .order('followers_count', { ascending: false })
+        .order('created_at', { ascending: false }) // Show newest users first
         .limit(10);
 
       if (error) throw error;
@@ -78,8 +79,10 @@ export const useDiscoverPeople = () => {
       // Find users with overlapping interests
       let query = supabase
         .from('profiles')
-        .select('*')
-        .neq('id', user.id);
+        .select('id, email, full_name, avatar_url, bio, location, interests, is_verified, followers_count, following_count')
+        .neq('id', user.id)
+        .not('full_name', 'is', null)
+        .not('interests', 'is', null);
       
       if (followingIds.length > 0) {
         query = query.not('id', 'in', `(${followingIds.join(',')})`);
@@ -90,7 +93,10 @@ export const useDiscoverPeople = () => {
         .order('followers_count', { ascending: false })
         .limit(5);
 
-      if (error) throw error;
+      if (error) {
+        console.log('Similar interests query error:', error);
+        return [];
+      }
       return data as UserProfile[];
     },
     enabled: !!user?.id,
@@ -110,28 +116,39 @@ export const useDiscoverPeople = () => {
       
       const followingIds = followingData?.map(f => f.following_id) || [];
 
-      // Get users with recent activity
-      let query = supabase
+      // Get users with recent activity, fallback to all users if no activities
+      const { data: activityData, error: activityError } = await supabase
         .from('user_activities')
         .select(`
           user_id,
-          profiles!inner(*)
+          profiles!inner(id, email, full_name, avatar_url, bio, location, interests, is_verified, followers_count, following_count)
         `)
-        .neq('user_id', user.id);
-      
-      if (followingIds.length > 0) {
-        query = query.not('user_id', 'in', `(${followingIds.join(',')})`);
-      }
-      
-      const { data, error } = await query
-        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Last 7 days
+        .neq('user_id', user.id)
+        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
         .order('created_at', { ascending: false })
         .limit(20);
 
-      if (error) throw error;
+      if (activityError || !activityData?.length) {
+        // Fallback to recent profiles if no activity data
+        let fallbackQuery = supabase
+          .from('profiles')
+          .select('id, email, full_name, avatar_url, bio, location, interests, is_verified, followers_count, following_count')
+          .neq('id', user.id)
+          .not('full_name', 'is', null);
+        
+        if (followingIds.length > 0) {
+          fallbackQuery = fallbackQuery.not('id', 'in', `(${followingIds.join(',')})`);
+        }
+        
+        const { data: fallbackData } = await fallbackQuery
+          .order('created_at', { ascending: false })
+          .limit(3);
+          
+        return fallbackData as UserProfile[] || [];
+      }
 
       // Group by user and count activities
-      const userActivityCount = data.reduce((acc: Record<string, { profile: UserProfile; count: number }>, activity: any) => {
+      const userActivityCount = activityData.reduce((acc: Record<string, { profile: UserProfile; count: number }>, activity: any) => {
         const profile = activity.profiles;
         if (!acc[profile.id]) {
           acc[profile.id] = { profile, count: 0 };
@@ -175,8 +192,10 @@ export const useDiscoverPeople = () => {
       // Find users in the same location
       let query = supabase
         .from('profiles')
-        .select('*')
-        .neq('id', user.id);
+        .select('id, email, full_name, avatar_url, bio, location, interests, is_verified, followers_count, following_count')
+        .neq('id', user.id)
+        .not('full_name', 'is', null)
+        .not('location', 'is', null);
       
       if (followingIds.length > 0) {
         query = query.not('id', 'in', `(${followingIds.join(',')})`);
@@ -187,7 +206,10 @@ export const useDiscoverPeople = () => {
         .order('followers_count', { ascending: false })
         .limit(5);
 
-      if (error) throw error;
+      if (error) {
+        console.log('Local users query error:', error);
+        return [];
+      }
       return data as UserProfile[];
     },
     enabled: !!user?.id,

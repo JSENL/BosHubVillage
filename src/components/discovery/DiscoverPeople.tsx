@@ -85,14 +85,30 @@ export const DiscoverPeople = () => {
                 <UserDiscoveryCard 
                   key={user.id} 
                   user={user}
-                  reason="Popular"
+                  reason="New user"
                 />
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground text-center py-4">
-              No recommendations available right now.
-            </p>
+            <div className="text-center py-6">
+              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-4 border border-purple-100">
+                <Sparkles className="h-8 w-8 mx-auto text-purple-500 mb-2" />
+                <p className="text-sm font-medium text-gray-700 mb-1">
+                  Discover new people
+                </p>
+                <p className="text-xs text-gray-500 mb-3">
+                  Complete your profile to get better recommendations
+                </p>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={refreshDiscovery}
+                  className="text-xs"
+                >
+                  Refresh
+                </Button>
+              </div>
+            </div>
           )}
         </TabsContent>
         
@@ -156,9 +172,25 @@ export const DiscoverPeople = () => {
             )}
             
             {!similarInterestUsers?.length && !trendingUsers?.length && !localUsers?.length && (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Complete your profile to get better recommendations.
-              </p>
+              <div className="text-center py-6">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+                  <Heart className="h-8 w-8 mx-auto text-blue-500 mb-2" />
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    No matches found
+                  </p>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Add interests and location to your profile for better matches
+                  </p>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={refreshDiscovery}
+                    className="text-xs"
+                  >
+                    Try again
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         </TabsContent>
