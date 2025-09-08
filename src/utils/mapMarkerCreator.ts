@@ -2,46 +2,70 @@
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { validateCoordinates, getMarkerColor, createPopupContent } from './mapMarkerUtils';
+import { 
+  createSponsoredMarkerElement, 
+  injectSponsoredMarkerStyles, 
+  getMarkerConfig 
+} from './sponsoredMarkerUtils';
 
 export const createMarkerElement = (item: UnifiedItem): HTMLDivElement => {
-  const markerElement = document.createElement('div');
-  markerElement.className = 'marker-custom';
-  markerElement.style.cssText = `
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background-color: ${getMarkerColor(item.type)};
-    border: 3px solid white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: white;
-    font-size: 12px;
-    position: relative;
-    transform-origin: center center;
-  `;
+  // Inject sponsored marker styles on first use
+  injectSponsoredMarkerStyles();
 
-  const typeIndicator = item.type.charAt(0).toUpperCase();
-  markerElement.textContent = typeIndicator;
-
-  // Add hover effects that don't affect positioning
-  markerElement.addEventListener('mouseenter', () => {
-    markerElement.style.transform = 'scale(1.2)';
-    markerElement.style.zIndex = '1000';
-    markerElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4)';
-  });
+  // Check if item is sponsored
+  const isSponsored = (item as any).is_sponsored || false;
   
-  markerElement.addEventListener('mouseleave', () => {
-    markerElement.style.transform = 'scale(1)';
-    markerElement.style.zIndex = '1';
-    markerElement.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
-  });
+  if (isSponsored) {
+    // Create sponsored marker with visual effects
+    const markerConfig = getMarkerConfig(item.type, true);
+    const sponsoredElement = createSponsoredMarkerElement(markerConfig);
+    
+    // Add click data attributes
+    sponsoredElement.setAttribute('data-item-id', item.id);
+    sponsoredElement.setAttribute('data-item-type', item.type);
+    
+    return sponsoredElement as HTMLDivElement;
+  } else {
+    // Create regular marker (existing code)
+    const markerElement = document.createElement('div');
+    markerElement.className = 'marker-custom';
+    markerElement.style.cssText = `
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: ${getMarkerColor(item.type)};
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      font-size: 12px;
+      position: relative;
+      transform-origin: center center;
+    `;
 
-  return markerElement;
+    const typeIndicator = item.type.charAt(0).toUpperCase();
+    markerElement.textContent = typeIndicator;
+
+    // Add hover effects that don't affect positioning
+    markerElement.addEventListener('mouseenter', () => {
+      markerElement.style.transform = 'scale(1.2)';
+      markerElement.style.zIndex = '1000';
+      markerElement.style.boxShadow = '0 4px 12px rgba(0,0,0,0.4)';
+    });
+    
+    markerElement.addEventListener('mouseleave', () => {
+      markerElement.style.transform = 'scale(1)';
+      markerElement.style.zIndex = '1';
+      markerElement.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+    });
+
+    return markerElement;
+  }
 };
 
 export const createMapboxMarker = (

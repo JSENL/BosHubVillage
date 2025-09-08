@@ -53,6 +53,26 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
     }
   };
 
+  const handleToggleSponsored = async (businessId: string, isSponsored: boolean) => {
+    setActionLoading(businessId);
+    try {
+      const { error } = await supabase
+        .from('business')
+        .update({ is_sponsored: isSponsored })
+        .eq('id', businessId);
+
+      if (error) throw error;
+
+      toast.success(`Business ${isSponsored ? 'marked as sponsored' : 'removed from sponsored'}`);
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error updating sponsored status:', error);
+      toast.error('Failed to update sponsored status');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -76,6 +96,7 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
                 <TableHead>Type</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Business Owner</TableHead>
+                <TableHead>Sponsored</TableHead>
                 <TableHead>Created</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -116,6 +137,19 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
                     ) : (
                       <div className="text-sm text-gray-400">No owner assigned</div>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => handleToggleSponsored(business.id, !business.is_sponsored)}
+                      disabled={actionLoading === business.id}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                        business.is_sponsored 
+                          ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {business.is_sponsored ? '⭐ Sponsored' : '☆ Regular'}
+                    </button>
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">

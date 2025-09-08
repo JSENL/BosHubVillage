@@ -26,6 +26,7 @@ export interface Event {
   neighborhoods: string | null;
   villages: string | null;
   attendees_count?: number;
+  is_sponsored?: boolean;
 }
 
 export const useEvents = () => {

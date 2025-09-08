@@ -20,4 +20,5 @@ export interface UnifiedItem {
   content?: string;
   source?: string;
   originalData?: any; // Store the original data for rendering components
+  is_sponsored?: boolean;
 }

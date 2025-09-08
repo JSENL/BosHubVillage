@@ -93,6 +93,7 @@ export type Database = {
           description: string
           description_translations: Json
           id: string
+          is_sponsored: boolean | null
           latitude: number | null
           longitude: number | null
           neighborhood: string
@@ -113,6 +114,7 @@ export type Database = {
           description: string
           description_translations?: Json
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           neighborhood: string
@@ -133,6 +135,7 @@ export type Database = {
           description?: string
           description_translations?: Json
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           neighborhood?: string
@@ -327,6 +330,7 @@ export type Database = {
           description: string
           id: string
           is_owner: boolean | null
+          is_sponsored: boolean | null
           latitude: number | null
           longitude: number | null
           neighborhood: string
@@ -348,6 +352,7 @@ export type Database = {
           description: string
           id?: string
           is_owner?: boolean | null
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           neighborhood: string
@@ -369,6 +374,7 @@ export type Database = {
           description?: string
           id?: string
           is_owner?: boolean | null
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           neighborhood?: string
@@ -715,6 +721,7 @@ export type Database = {
           event_type: string | null
           id: string
           is_recurring: boolean | null
+          is_sponsored: boolean | null
           latitude: number | null
           location: string
           longitude: number | null
@@ -743,6 +750,7 @@ export type Database = {
           event_type?: string | null
           id?: string
           is_recurring?: boolean | null
+          is_sponsored?: boolean | null
           latitude?: number | null
           location: string
           longitude?: number | null
@@ -771,6 +779,7 @@ export type Database = {
           event_type?: string | null
           id?: string
           is_recurring?: boolean | null
+          is_sponsored?: boolean | null
           latitude?: number | null
           location?: string
           longitude?: number | null
@@ -806,6 +815,7 @@ export type Database = {
           id: string
           is_private: boolean
           is_recurring: boolean | null
+          is_sponsored: boolean | null
           latitude: number | null
           location: string
           location_translations: Json
@@ -836,6 +846,7 @@ export type Database = {
           id?: string
           is_private?: boolean
           is_recurring?: boolean | null
+          is_sponsored?: boolean | null
           latitude?: number | null
           location: string
           location_translations?: Json
@@ -866,6 +877,7 @@ export type Database = {
           id?: string
           is_private?: boolean
           is_recurring?: boolean | null
+          is_sponsored?: boolean | null
           latitude?: number | null
           location?: string
           location_translations?: Json
@@ -901,6 +913,7 @@ export type Database = {
           description: string | null
           description_translations: Json
           id: string
+          is_sponsored: boolean | null
           latitude: number | null
           longitude: number | null
           name: string
@@ -919,6 +932,7 @@ export type Database = {
           description?: string | null
           description_translations?: Json
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           name: string
@@ -937,6 +951,7 @@ export type Database = {
           description?: string | null
           description_translations?: Json
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           name?: string
@@ -1012,6 +1027,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_sponsored: boolean | null
           latitude: number | null
           longitude: number | null
           name: string
@@ -1031,6 +1047,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           name: string
@@ -1050,6 +1067,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
           name?: string
@@ -1088,6 +1106,7 @@ export type Database = {
           created_by: string | null
           date_posted: string
           id: string
+          is_sponsored: boolean | null
           latitude: number | null
           location: string
           location_translations: Json
@@ -1106,6 +1125,7 @@ export type Database = {
           created_by?: string | null
           date_posted?: string
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           location: string
           location_translations?: Json
@@ -1124,6 +1144,7 @@ export type Database = {
           created_by?: string | null
           date_posted?: string
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           location?: string
           location_translations?: Json
@@ -1237,6 +1258,7 @@ export type Database = {
           created_at: string
           date_posted: string
           id: string
+          is_sponsored: boolean | null
           latitude: number | null
           link: string | null
           location: string
@@ -1257,6 +1279,7 @@ export type Database = {
           created_at?: string
           date_posted?: string
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           link?: string | null
           location: string
@@ -1277,6 +1300,7 @@ export type Database = {
           created_at?: string
           date_posted?: string
           id?: string
+          is_sponsored?: boolean | null
           latitude?: number | null
           link?: string | null
           location?: string

@@ -106,6 +106,26 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
     }
   };
 
+  const handleToggleSponsored = async (eventId: string, isSponsored: boolean) => {
+    setActionLoading(eventId);
+    try {
+      const { error } = await supabase
+        .from('events')
+        .update({ is_sponsored: isSponsored })
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      toast.success(`Event ${isSponsored ? 'marked as sponsored' : 'removed from sponsored'}`);
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error updating sponsored status:', error);
+      toast.error('Failed to update sponsored status');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   return (
     <>
       <Card>
@@ -185,6 +205,7 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
                   <TableHead>Date</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Price</TableHead>
+                  <TableHead>Sponsored</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -211,6 +232,19 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
                     </TableCell>
                     <TableCell>
                       {event.price === 0 ? 'Free' : `$${event.price}`}
+                    </TableCell>
+                    <TableCell>
+                      <button
+                        onClick={() => handleToggleSponsored(event.id, !event.is_sponsored)}
+                        disabled={actionLoading === event.id}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                          event.is_sponsored 
+                            ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' 
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {event.is_sponsored ? '⭐ Sponsored' : '☆ Regular'}
+                      </button>
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">

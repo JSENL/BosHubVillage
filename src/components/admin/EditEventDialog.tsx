@@ -39,6 +39,7 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
     max_attendees: event.max_attendees || null,
     latitude: event.latitude?.toString() || '',
     longitude: event.longitude?.toString() || '',
+    is_sponsored: event.is_sponsored || false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,6 +58,7 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
         end_time: formData.end_time || null,
         price: formData.price,
         max_attendees: formData.max_attendees,
+        is_sponsored: formData.is_sponsored,
       };
 
       // Handle coordinates - only include if they have values
@@ -249,6 +251,19 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
                 placeholder="e.g., -71.0589"
               />
             </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input
+              id="is_sponsored"
+              type="checkbox"
+              checked={formData.is_sponsored}
+              onChange={(e) => setFormData({ ...formData, is_sponsored: e.target.checked })}
+              className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+            />
+            <Label htmlFor="is_sponsored" className="text-sm font-medium">
+              🌟 Sponsored/Special Event (will have glowing marker)
+            </Label>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">
