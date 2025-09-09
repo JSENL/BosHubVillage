@@ -8,6 +8,7 @@ import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
 import { DebugDataLoader } from '@/components/debug/DebugDataLoader';
+import { MapboxDebugTest } from '@/components/MapboxDebugTest';
 
 const MainContent = () => {
   const { 
@@ -84,6 +85,7 @@ const MainContent = () => {
       
       <TranslationTestModal />
       <DebugDataLoader />
+      <MapboxDebugTest />
     </>
   );
 };
