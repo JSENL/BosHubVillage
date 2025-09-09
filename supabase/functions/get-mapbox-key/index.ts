@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const corsHeaders = {
@@ -12,30 +11,15 @@ serve(async (req) => {
   }
 
   try {
-    console.log('🔍 Checking for Mapbox secrets...');
+    console.log('🔍 Fetching Mapbox key...');
     
-    // Primary secret name to use
-    const mapboxApiKey = Deno.env.get('MAP_PUBLIC_KEY') || 
-                        Deno.env.get('MAPBOX_PUBLIC_KEY') || 
-                        Deno.env.get('MAPBOX_PUBLIC_TOKEN') || 
-                        Deno.env.get('MAPBOX_API_KEY');
+    // Get the Mapbox token from secrets
+    const mapboxKey = Deno.env.get('MAP_PUBLIC_KEY');
     
-    console.log('🔍 Available env vars:', {
-      MAP_PUBLIC_KEY: !!Deno.env.get('MAP_PUBLIC_KEY'),
-      MAPBOX_PUBLIC_KEY: !!Deno.env.get('MAPBOX_PUBLIC_KEY'),
-      MAPBOX_PUBLIC_TOKEN: !!Deno.env.get('MAPBOX_PUBLIC_TOKEN'), 
-      MAPBOX_API_KEY: !!Deno.env.get('MAPBOX_API_KEY'),
-      MAPBOX_SECRET: !!Deno.env.get('MAPBOX_SECRET'),
-      selectedKey: mapboxApiKey ? mapboxApiKey.substring(0, 10) + '...' : 'None'
-    });
-    
-    if (!mapboxApiKey) {
-      console.log('❌ No Mapbox key found in any expected secret name')
+    if (!mapboxKey) {
+      console.log('❌ MAP_PUBLIC_KEY not found');
       return new Response(
-        JSON.stringify({ 
-          error: 'No Mapbox key configured. Please add MAP_PUBLIC_KEY secret.',
-          availableSecrets: Object.keys(Deno.env.toObject()).filter(key => key.includes('MAP'))
-        }),
+        JSON.stringify({ error: 'MAP_PUBLIC_KEY not configured' }),
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -43,16 +27,16 @@ serve(async (req) => {
       )
     }
     
-    console.log('✅ Using Mapbox key from MAP_PUBLIC_KEY, length:', mapboxApiKey.length, 'starts with:', mapboxApiKey.substring(0, 10))
+    console.log('✅ Mapbox key found, length:', mapboxKey.length);
 
     return new Response(
-      JSON.stringify({ mapboxKey: mapboxApiKey }),
+      JSON.stringify({ mapboxKey: mapboxKey }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     )
   } catch (error) {
-    console.error('❌ Edge function error:', error)
+    console.error('❌ Error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 

@@ -1,7 +1,5 @@
-import { useState } from 'react';
+import { SimpleMapbox } from '@/components/SimpleMapbox';
 import { UnifiedItem } from '@/types/unifiedItem';
-import { EnhancedUniversalMap } from '@/components/map/EnhancedUniversalMap';
-import { MapItemSidebar } from '@/components/MapItemSidebar';
 
 interface MapViewProps {
   items: UnifiedItem[];
@@ -10,25 +8,9 @@ interface MapViewProps {
 }
 
 export const MapView = ({ items, selectedTypes, height = "540px" }: MapViewProps) => {
-  const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
-
-  const handleMarkerClick = (item: UnifiedItem) => {
-    setSelectedItem(item);
-  };
-
   return (
     <div className="relative w-full" style={{ height }}>
-      <EnhancedUniversalMap
-        items={items}
-        height={height}
-        selectedTypes={selectedTypes}
-        onItemClick={handleMarkerClick}
-      />
-      <MapItemSidebar 
-        selectedItem={selectedItem}
-        onClose={() => setSelectedItem(null)}
-        onGetDirections={() => {}} // This should be handled by the map component
-      />
+      <SimpleMapbox items={items} height={height} />
     </div>
   );
 };
