@@ -23,9 +23,10 @@ export const DebugDataLoader = () => {
       {/* Mapbox Status */}
       <div className="mb-2">
         <strong>Mapbox Status:</strong>
-        <div>• Token: {mapboxToken ? 'Available' : 'Missing'}</div>
+        <div>• Token: {mapboxToken ? `Available (${mapboxToken.substring(0, 10)}...)` : 'Missing'}</div>
         <div>• Loading API Key: {isLoadingApiKey ? 'Yes' : 'No'}</div>
         <div>• Error: {error || 'None'}</div>
+        <div>• Token Length: {mapboxToken?.length || 0}</div>
       </div>
 
       {/* Sample Items */}

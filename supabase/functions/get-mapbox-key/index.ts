@@ -26,7 +26,7 @@ serve(async (req) => {
       )
     }
     
-    console.log('✅ Using Mapbox public key from secrets')
+    console.log('✅ Using Mapbox public key from secrets, length:', mapboxApiKey.length)
 
     return new Response(
       JSON.stringify({ mapboxKey: mapboxApiKey }),
@@ -35,6 +35,7 @@ serve(async (req) => {
       }
     )
   } catch (error) {
+    console.error('❌ Edge function error:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
