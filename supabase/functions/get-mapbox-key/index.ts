@@ -14,12 +14,14 @@ serve(async (req) => {
   try {
     console.log('🔍 Checking for Mapbox secrets...');
     
-    // Try multiple possible secret names
-    const mapboxApiKey = Deno.env.get('MAPBOX_PUBLIC_KEY') || 
+    // Primary secret name to use
+    const mapboxApiKey = Deno.env.get('MAP_PUBLIC_KEY') || 
+                        Deno.env.get('MAPBOX_PUBLIC_KEY') || 
                         Deno.env.get('MAPBOX_PUBLIC_TOKEN') || 
                         Deno.env.get('MAPBOX_API_KEY');
     
     console.log('🔍 Available env vars:', {
+      MAP_PUBLIC_KEY: !!Deno.env.get('MAP_PUBLIC_KEY'),
       MAPBOX_PUBLIC_KEY: !!Deno.env.get('MAPBOX_PUBLIC_KEY'),
       MAPBOX_PUBLIC_TOKEN: !!Deno.env.get('MAPBOX_PUBLIC_TOKEN'), 
       MAPBOX_API_KEY: !!Deno.env.get('MAPBOX_API_KEY'),
@@ -31,8 +33,8 @@ serve(async (req) => {
       console.log('❌ No Mapbox key found in any expected secret name')
       return new Response(
         JSON.stringify({ 
-          error: 'No Mapbox key configured',
-          availableSecrets: Object.keys(Deno.env.toObject()).filter(key => key.includes('MAPBOX'))
+          error: 'No Mapbox key configured. Please add MAP_PUBLIC_KEY secret.',
+          availableSecrets: Object.keys(Deno.env.toObject()).filter(key => key.includes('MAP'))
         }),
         { 
           status: 500, 
@@ -41,7 +43,7 @@ serve(async (req) => {
       )
     }
     
-    console.log('✅ Using Mapbox key, length:', mapboxApiKey.length, 'starts with:', mapboxApiKey.substring(0, 10))
+    console.log('✅ Using Mapbox key from MAP_PUBLIC_KEY, length:', mapboxApiKey.length, 'starts with:', mapboxApiKey.substring(0, 10))
 
     return new Response(
       JSON.stringify({ mapboxKey: mapboxApiKey }),
