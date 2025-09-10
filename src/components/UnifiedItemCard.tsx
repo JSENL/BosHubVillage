@@ -85,7 +85,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       event: 'from-red-500 to-red-600',
       news: 'from-blue-500 to-blue-600',
       business: 'from-green-500 to-green-600',
-      'local-service': 'from-yellow-500 to-yellow-600'
+      'local-service': 'from-coral-orange to-coral-orange/90'
     };
     return colors[item.type] || 'from-gray-500 to-gray-600';
   };
