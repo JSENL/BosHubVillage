@@ -24,8 +24,7 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
     if (!mapRef.current || !mapboxToken || isLoadingApiKey) {
       console.log('⏳ Map initialization skipped:', { 
         hasMapRef: !!mapRef.current, 
-        hasToken: !!mapboxToken,
-        tokenLength: mapboxToken?.length || 0,
+        hasToken: !!mapboxToken, 
         isLoading: isLoadingApiKey 
       });
       return;

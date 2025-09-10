@@ -23,41 +23,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   
 
   useEffect(() => {
-    let mounted = true;
-
-    // Function to check user roles
-    const checkUserRoles = async (userId: string) => {
-      try {
-        const { data: roles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', userId);
-        
-        const userRoles = roles?.map(r => r.role) || [];
-        if (mounted) {
-          setIsAdmin(userRoles.includes('admin'));
-        }
-      } catch (error) {
-        console.error('Error checking user roles:', error);
-        if (mounted) {
-          setIsAdmin(false);
-        }
-      }
-    };
-
-    // Set up auth state listener FIRST
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!mounted) return;
-        
-        console.log('Auth state change:', event, session ? 'session exists' : 'no session');
-        
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check roles after setting user/session
-          await checkUserRoles(session.user.id);
+          // Check if user is admin
+          setTimeout(async () => {
+            try {
+              const { data: roles } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', session.user.id);
+              
+              const userRoles = roles?.map(r => r.role) || [];
+              setIsAdmin(userRoles.includes('admin'));
+            } catch (error) {
+              setIsAdmin(false);
+            }
+          }, 0);
         } else {
           setIsAdmin(false);
         }
@@ -66,46 +52,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     );
 
-    // THEN check for existing session
-    const getInitialSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error);
-          if (mounted) {
-            setLoading(false);
-          }
-          return;
+    // Get initial session and roles
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        try {
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id);
+          const userRoles = roles?.map(r => r.role) || [];
+          setIsAdmin(userRoles.includes('admin'));
+        } catch {
+          setIsAdmin(false);
         }
-
-        if (mounted) {
-          console.log('Initial session:', session ? 'session exists' : 'no session');
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            await checkUserRoles(session.user.id);
-          } else {
-            setIsAdmin(false);
-          }
-          
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error in getInitialSession:', error);
-        if (mounted) {
-          setLoading(false);
-        }
+      } else {
+        setIsAdmin(false);
       }
-    };
+      setLoading(false);
+    });
 
-    getInitialSession();
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {

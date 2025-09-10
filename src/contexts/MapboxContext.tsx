@@ -22,21 +22,21 @@ export const MapboxProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         const { data, error } = await supabase.functions.invoke('get-mapbox-key');
         
         if (error) {
-          console.error('❌ Error fetching Mapbox API key:', error);
+          console.error('Error fetching Mapbox API key:', error);
           setError('Failed to fetch Mapbox API key');
           setIsLoadingApiKey(false);
           return;
         }
 
         if (data?.mapboxKey) {
-          console.log('✅ Mapbox API key fetched successfully:', data.mapboxKey.substring(0, 10) + '...');
+          console.log('✅ Mapbox API key fetched successfully');
           setMapboxToken(data.mapboxKey);
         } else {
-          console.error('❌ No API key returned from edge function');
+          console.error('No API key returned from edge function');
           setError('No API key configured');
         }
       } catch (err) {
-        console.error('❌ Error calling edge function:', err);
+        console.error('Error calling edge function:', err);
         setError('Failed to connect to API service');
       } finally {
         setIsLoadingApiKey(false);

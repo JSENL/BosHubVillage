@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const corsHeaders = {
@@ -11,15 +12,13 @@ serve(async (req) => {
   }
 
   try {
-    console.log('🔍 Fetching Mapbox key...');
+    // Get Mapbox key from Supabase secrets
+    const mapboxApiKey = Deno.env.get('MAPBOX_PUBLIC_KEY')
     
-    // Get the Mapbox token from secrets
-    const mapboxKey = Deno.env.get('MAP_PUBLIC_KEY');
-    
-    if (!mapboxKey) {
-      console.log('❌ MAP_PUBLIC_KEY not found');
+    if (!mapboxApiKey) {
+      console.log('❌ MAPBOX_PUBLIC_KEY not found in secrets')
       return new Response(
-        JSON.stringify({ error: 'MAP_PUBLIC_KEY not configured' }),
+        JSON.stringify({ error: 'MAPBOX_PUBLIC_KEY not configured in secrets' }),
         { 
           status: 500, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -27,16 +26,15 @@ serve(async (req) => {
       )
     }
     
-    console.log('✅ Mapbox key found, length:', mapboxKey.length);
+    console.log('✅ Using Mapbox public key from secrets')
 
     return new Response(
-      JSON.stringify({ mapboxKey: mapboxKey }),
+      JSON.stringify({ mapboxKey: mapboxApiKey }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     )
   } catch (error) {
-    console.error('❌ Error:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 

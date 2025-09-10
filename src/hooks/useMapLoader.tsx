@@ -26,9 +26,9 @@ export const useMapLoader = () => {
           return;
         }
 
-        if (data?.mapboxKey) {
+        if (data?.apiKey) {
           console.log('Mapbox API key fetched successfully');
-          setMapboxToken(data.mapboxKey);
+          setMapboxToken(data.apiKey);
           setMapLoaded(true);
         } else {
           console.error('No API key returned from edge function');

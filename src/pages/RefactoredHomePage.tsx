@@ -7,7 +7,6 @@ import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
 import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
-import { MapboxWorkingTest } from '@/components/MapboxWorkingTest';
 
 const MainContent = () => {
   const { 
@@ -25,11 +24,6 @@ const MainContent = () => {
   return (
     <>
       <HeroSection />
-      
-      {/* Mapbox Test Component */}
-      <div className="container mx-auto px-4 py-8">
-        <MapboxWorkingTest />
-      </div>
       
       <div className="flex gap-6">
         {/* Main content */}
@@ -81,7 +75,7 @@ const MainContent = () => {
           )}
         </section>
 
-        {/* Discovery sidebar - always visible on large screens */}
+        {/* Discovery sidebar */}
         <aside className="w-80 space-y-6 hidden lg:block" aria-label="Discovery and recommendations">
           <DiscoverySidebar />
         </aside>
