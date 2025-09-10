@@ -26,9 +26,14 @@ const MainContent = () => {
     <>
       <HeroSection />
       
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Discovery sidebar - shows at top on mobile, side on desktop */}
+        <aside className="w-full lg:w-80 lg:order-2" aria-label="Discovery and recommendations">
+          <DiscoverySidebar />
+        </aside>
+
         {/* Main content */}
-        <section className="flex-1 space-y-4 md:space-y-6" aria-labelledby="community-heading">
+        <section className="flex-1 lg:order-1 space-y-4 md:space-y-6" aria-labelledby="community-heading">
           <div className="flex items-center justify-between">
             <h1 id="community-heading" className="text-xl md:text-2xl font-bold text-gray-900">
               Local Community
@@ -75,11 +80,6 @@ const MainContent = () => {
             </div>
           )}
         </section>
-
-        {/* Discovery sidebar */}
-        <aside className="w-80 space-y-6 hidden lg:block" aria-label="Discovery and recommendations">
-          <DiscoverySidebar />
-        </aside>
       </div>
       
       <TranslationTestModal />
