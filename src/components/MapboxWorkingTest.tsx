@@ -14,20 +14,28 @@ export const MapboxWorkingTest = () => {
     const fetchToken = async () => {
       try {
         setStatus('🗝️ Fetching Mapbox token...');
+        console.log('🧪 MapboxTest: Fetching token...');
+        
         const { data, error } = await supabase.functions.invoke('get-mapbox-key');
         
+        console.log('🧪 MapboxTest: Response received:', { data, error });
+        
         if (error) {
+          console.error('🧪 MapboxTest: Token Error:', error);
           setStatus(`❌ Token Error: ${error.message}`);
           return;
         }
 
         if (data?.mapboxKey) {
+          console.log('🧪 MapboxTest: Token received:', data.mapboxKey.substring(0, 20) + '...');
           setStatus('✅ Token received successfully!');
           setMapboxToken(data.mapboxKey);
         } else {
+          console.error('🧪 MapboxTest: No token in response:', data);
           setStatus('❌ No token in response');
         }
       } catch (err) {
+        console.error('🧪 MapboxTest: Network Error:', err);
         setStatus(`❌ Network Error: ${err}`);
       }
     };
@@ -41,8 +49,10 @@ export const MapboxWorkingTest = () => {
 
     try {
       setStatus('🗺️ Initializing map...');
+      console.log('🧪 MapboxTest: Setting access token...');
       mapboxgl.accessToken = mapboxToken;
       
+      console.log('🧪 MapboxTest: Creating map instance...');
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v12',
@@ -50,6 +60,7 @@ export const MapboxWorkingTest = () => {
         zoom: 9
       });
 
+      console.log('🧪 MapboxTest: Adding test marker...');
       // Add test marker
       new mapboxgl.Marker({ color: '#ff0000' })
         .setLngLat([-74.5, 40])
@@ -57,11 +68,13 @@ export const MapboxWorkingTest = () => {
         .addTo(map.current);
 
       map.current.on('load', () => {
+        console.log('🧪 MapboxTest: Map loaded successfully!');
         setStatus('🎉 Mapbox Map Loaded Successfully!');
       });
 
       map.current.on('error', (e) => {
-        setStatus(`❌ Map Error: ${e.error.message}`);
+        console.error('🧪 MapboxTest: Map Error:', e);
+        setStatus(`❌ Map Error: ${e.error?.message || 'Unknown error'}`);
       });
 
     } catch (err) {
