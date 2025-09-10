@@ -5,7 +5,7 @@ import { ListView } from '@/components/views/ListView';
 import { FilterBar } from '@/components/filters/FilterBar';
 import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
 import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
-import { MapboxTest } from '@/components/MapboxTest';
+import { MapboxTestModal } from '@/components/pages/MapboxTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
 
@@ -82,12 +82,8 @@ const MainContent = () => {
         </aside>
       </div>
       
-      {/* Mapbox Test */}
-      <div className="mt-8">
-        <MapboxTest />
-      </div>
-      
       <TranslationTestModal />
+      <MapboxTestModal />
     </>
   );
 };
