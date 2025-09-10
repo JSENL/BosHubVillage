@@ -2,6 +2,8 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { UnifiedItemCard } from '@/components/UnifiedItemCard';
 import { LoadingGrid } from '@/components/common/LoadingState';
 import { EmptyState } from '@/components/common/EmptyState';
+import { usePagination } from '@/hooks/usePagination';
+import { PaginationControls } from '@/components/common/PaginationControls';
 
 interface ListViewProps {
   items: UnifiedItem[];
@@ -9,6 +11,16 @@ interface ListViewProps {
 }
 
 export const ListView = ({ items, isLoading = false }: ListViewProps) => {
+  const {
+    currentItems,
+    currentPage,
+    totalPages,
+    totalItems,
+    setCurrentPage,
+    hasNextPage,
+    hasPrevPage,
+  } = usePagination({ items, itemsPerPage: 12 });
+
   if (isLoading) {
     return <LoadingGrid count={6} />;
   }
@@ -23,14 +35,25 @@ export const ListView = ({ items, isLoading = false }: ListViewProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-      {items.map((item) => (
-        <UnifiedItemCard 
-          key={`${item.type}-${item.id}`} 
-          item={item} 
-          viewMode="grid"
-        />
-      ))}
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+        {currentItems.map((item) => (
+          <UnifiedItemCard 
+            key={`${item.type}-${item.id}`} 
+            item={item} 
+            viewMode="grid"
+          />
+        ))}
+      </div>
+      
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        hasNextPage={hasNextPage}
+        hasPrevPage={hasPrevPage}
+        totalItems={totalItems}
+      />
     </div>
   );
 };

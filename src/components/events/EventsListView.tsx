@@ -1,5 +1,7 @@
 import { EventCard } from '@/components/EventCard';
 import { Event } from '@/hooks/useEvents';
+import { usePagination } from '@/hooks/usePagination';
+import { PaginationControls } from '@/components/common/PaginationControls';
 
 interface EventsListViewProps {
   events: Event[];
@@ -7,6 +9,16 @@ interface EventsListViewProps {
 }
 
 export const EventsListView = ({ events, loading }: EventsListViewProps) => {
+  const {
+    currentItems: currentEvents,
+    currentPage,
+    totalPages,
+    totalItems,
+    setCurrentPage,
+    hasNextPage,
+    hasPrevPage,
+  } = usePagination({ items: events, itemsPerPage: 8 });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -29,15 +41,26 @@ export const EventsListView = ({ events, loading }: EventsListViewProps) => {
   }
 
   return (
-    <div className="space-y-4">
-      {events.map((event) => (
-        <div key={event.id} className="w-full">
-          <EventCard
-            event={event}
-            viewMode="list"
-          />
-        </div>
-      ))}
+    <div className="space-y-6">
+      <div className="space-y-4">
+        {currentEvents.map((event) => (
+          <div key={event.id} className="w-full">
+            <EventCard
+              event={event}
+              viewMode="list"
+            />
+          </div>
+        ))}
+      </div>
+      
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        hasNextPage={hasNextPage}
+        hasPrevPage={hasPrevPage}
+        totalItems={totalItems}
+      />
     </div>
   );
 };

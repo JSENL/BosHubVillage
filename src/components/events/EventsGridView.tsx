@@ -1,5 +1,7 @@
 import { EventCard } from '@/components/EventCard';
 import { Event } from '@/hooks/useEvents';
+import { usePagination } from '@/hooks/usePagination';
+import { PaginationControls } from '@/components/common/PaginationControls';
 
 interface EventsGridViewProps {
   events: Event[];
@@ -7,6 +9,16 @@ interface EventsGridViewProps {
 }
 
 export const EventsGridView = ({ events, loading }: EventsGridViewProps) => {
+  const {
+    currentItems: currentEvents,
+    currentPage,
+    totalPages,
+    totalItems,
+    setCurrentPage,
+    hasNextPage,
+    hasPrevPage,
+  } = usePagination({ items: events, itemsPerPage: 12 });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -29,14 +41,25 @@ export const EventsGridView = ({ events, loading }: EventsGridViewProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {events.map((event) => (
-        <EventCard
-          key={event.id}
-          event={event}
-          viewMode="grid"
-        />
-      ))}
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {currentEvents.map((event) => (
+          <EventCard
+            key={event.id}
+            event={event}
+            viewMode="grid"
+          />
+        ))}
+      </div>
+      
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        hasNextPage={hasNextPage}
+        hasPrevPage={hasPrevPage}
+        totalItems={totalItems}
+      />
     </div>
   );
 };
