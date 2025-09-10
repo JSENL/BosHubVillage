@@ -46,70 +46,80 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-3 shadow-sm w-full">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="text-base font-bold text-gray-900 line-clamp-2">{submission.title}</h3>
-          <div className="flex flex-col gap-1 text-xs text-gray-600 mt-1">
+    <div className="border border-border rounded-lg p-3 md:p-4 shadow-sm w-full bg-card">
+      <div className="flex flex-col gap-3 mb-3">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-sm md:text-base font-semibold text-foreground line-clamp-2 pr-2 flex-1">{submission.title}</h3>
+          <Badge variant="outline" className="text-orange-600 border-orange-600 flex-shrink-0 text-xs">
+            <Clock className="h-3 w-3 mr-1" />
+            {t('admin.pending')}
+          </Badge>
+        </div>
+        
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <div className="flex items-center">
-              <Calendar className="h-3 w-3 mr-1" />
-              {formatDate(submission.date_posted)}
+              <Calendar className="h-3 w-3 mr-1 flex-shrink-0" />
+              <span className="whitespace-nowrap">{formatDate(submission.date_posted)}</span>
             </div>
             <div className="flex items-center">
-              <MapPin className="h-3 w-3 mr-1" />
+              <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
               <span className="truncate">{submission.location}</span>
             </div>
           </div>
+          
           {submission.Address && (
-            <div className="flex items-center text-xs text-gray-600 mt-1">
-              <Building2 className="h-3 w-3 mr-1" />
-              <span className="font-medium">{t('forms.address')}:</span> 
-              <span className="truncate ml-1">{submission.Address}</span>
+            <div className="flex items-start text-xs text-muted-foreground">
+              <Building2 className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
+              <div>
+                <span className="font-medium">{t('forms.address')}:</span> 
+                <span className="ml-1 break-words">{submission.Address}</span>
+              </div>
             </div>
           )}
+          
           {submission.villages && submission.villages.length > 0 && (
-            <div className="flex items-center text-xs text-gray-600 mt-1">
+            <div className="text-xs text-muted-foreground">
               <span className="font-medium">{t('cards.villages')}:</span> 
-              <span className="truncate ml-1">{submission.villages.join(', ')}</span>
+              <span className="ml-1">{submission.villages.join(', ')}</span>
             </div>
           )}
-          <p className="text-xs text-gray-600 mt-1">{t('cards.source')}: {submission.source}</p>
+          
+          <p className="text-xs text-muted-foreground">{t('cards.source')}: {submission.source}</p>
+          
           {submission.latitude && submission.longitude && (
-            <p className="text-xs text-green-600 mt-1">
+            <p className="text-xs text-green-600">
               📍 {t('cards.geocoded')}: {submission.latitude}, {submission.longitude}
             </p>
           )}
         </div>
-        <Badge variant="outline" className="text-orange-600 border-orange-600">
-          <Clock className="h-3 w-3 mr-1" />
-          {t('admin.pending')}
-        </Badge>
       </div>
       
-      <p className="text-gray-600 mb-3 line-clamp-2 text-xs">{submission.content}</p>
+      <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{submission.content}</p>
       
       {selectedSubmission === submission.id ? (
-        <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+        <div className="space-y-3 bg-muted/50 p-3 md:p-4 rounded-lg">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               {t('admin.rejectionMessage')}
             </label>
-            <p className="text-xs text-gray-500 mb-2">
+            <p className="text-xs text-muted-foreground mb-2">
               {t('admin.rejectionHelp')}
             </p>
             <Textarea
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
               placeholder={t('admin.rejectionPlaceholder')}
-              rows={4}
-              className="resize-none"
+              rows={3}
+              className="resize-none text-xs md:text-sm"
             />
           </div>
-          <div className="flex space-x-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button
               onClick={() => handleStatusUpdate('approved')}
               disabled={actionLoading}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              size="sm"
+              className="bg-green-600 hover:bg-green-700 text-white flex-1 sm:flex-none"
             >
               <CheckCircle className="h-4 w-4 mr-2" />
               {t('admin.approve')}
@@ -118,6 +128,8 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
               onClick={() => handleStatusUpdate('rejected')}
               disabled={actionLoading}
               variant="destructive"
+              size="sm"
+              className="flex-1 sm:flex-none"
             >
               <XCircle className="h-4 w-4 mr-2" />
               {t('admin.reject')}
@@ -128,6 +140,8 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
                 setAdminNotes('');
               }}
               variant="outline"
+              size="sm"
+              className="flex-1 sm:flex-none"
             >
               {t('forms.cancel')}
             </Button>
@@ -136,7 +150,8 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
       ) : (
         <Button
           onClick={() => setSelectedSubmission(submission.id)}
-          className="bg-purple-600 hover:bg-purple-700 text-white"
+          className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto"
+          size="sm"
         >
           {t('admin.review')}
         </Button>

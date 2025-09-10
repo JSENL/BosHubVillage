@@ -69,31 +69,35 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-3 shadow-sm w-full">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <h3 className="text-base font-bold text-gray-900 line-clamp-2">{submission.title}</h3>
-          <div className="flex flex-col gap-1 text-xs text-gray-600 mt-1">
-            <Badge variant="secondary" className="w-fit text-xs">{submission.business_type}</Badge>
-            <div className="flex items-center">
-              <MapPin className="h-3 w-3 mr-1" />
+    <div className="border border-border rounded-lg p-3 md:p-4 shadow-sm w-full bg-card">
+      <div className="flex flex-col gap-3 mb-3">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-sm md:text-base font-semibold text-foreground line-clamp-2 pr-2 flex-1">{submission.title}</h3>
+          {getStatusBadge()}
+        </div>
+        
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary" className="text-xs">{submission.business_type}</Badge>
+            <div className="flex items-center text-xs text-muted-foreground">
+              <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
               <span className="truncate">{submission.neighborhood}</span>
             </div>
           </div>
-          <p className="text-xs text-gray-600 mt-1 truncate">{submission.address}</p>
+          
+          <p className="text-xs text-muted-foreground truncate">{submission.address}</p>
           {submission.latitude && submission.longitude && (
-            <p className="text-xs text-gray-500 mt-1">
-              {t('cards.coordinates')}: {Number(submission.latitude).toFixed(6)}, {Number(submission.longitude).toFixed(6)}
+            <p className="text-xs text-muted-foreground/70">
+              {t('cards.coordinates')}: {Number(submission.latitude).toFixed(4)}, {Number(submission.longitude).toFixed(4)}
             </p>
           )}
         </div>
-        {getStatusBadge()}
       </div>
       
       {submission.short_description && (
-        <p className="text-gray-600 mb-2 font-medium text-xs line-clamp-1">{submission.short_description}</p>
+        <p className="text-muted-foreground mb-2 font-medium text-xs line-clamp-1">{submission.short_description}</p>
       )}
-      <p className="text-gray-600 mb-3 line-clamp-2 text-xs">{submission.description}</p>
+      <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{submission.description}</p>
 
       {submission.status === 'approved' && submission.is_owner && (
         <Button variant="secondary" disabled className="mt-2">
@@ -111,27 +115,28 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
       
       {submission.status === 'pending' && (
         selectedSubmission === submission.id ? (
-          <div className="space-y-3 bg-gray-50 p-4 rounded-lg">
+          <div className="space-y-3 bg-muted/50 p-3 md:p-4 rounded-lg">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 {t('admin.rejectionMessage')}
               </label>
-              <p className="text-xs text-gray-500 mb-2">
+              <p className="text-xs text-muted-foreground mb-2">
                 {t('admin.rejectionHelp')}
               </p>
               <Textarea
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
                 placeholder={t('admin.rejectionPlaceholder')}
-                rows={4}
-                className="resize-none"
+                rows={3}
+                className="resize-none text-xs md:text-sm"
               />
             </div>
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 onClick={() => handleStatusUpdate('approved')}
                 disabled={actionLoading}
-                className="bg-green-600 hover:bg-green-700 text-white"
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 text-white flex-1 sm:flex-none"
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
                 {t('admin.approve')}
@@ -140,6 +145,8 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
                 onClick={() => handleStatusUpdate('rejected')}
                 disabled={actionLoading}
                 variant="destructive"
+                size="sm"
+                className="flex-1 sm:flex-none"
               >
                 <XCircle className="h-4 w-4 mr-2" />
                 {t('admin.reject')}
@@ -150,6 +157,8 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
                   setAdminNotes('');
                 }}
                 variant="outline"
+                size="sm"
+                className="flex-1 sm:flex-none"
               >
                 {t('forms.cancel')}
               </Button>
@@ -158,7 +167,8 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
         ) : (
           <Button
             onClick={() => setSelectedSubmission(submission.id)}
-            className="bg-purple-600 hover:bg-purple-700 text-white"
+            className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto"
+            size="sm"
           >
             {t('admin.review')}
           </Button>
