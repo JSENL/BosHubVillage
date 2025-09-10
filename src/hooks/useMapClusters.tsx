@@ -27,10 +27,34 @@ export const useMapClusters = ({
       hasMap: !!map,
       itemsCount: items?.length || 0,
       mapReady: map && map.loaded && map.loaded(),
+      styleLoaded: map && map.isStyleLoaded && map.isStyleLoaded(),
     });
 
     if (!map || !items || items.length === 0) {
+      console.log('🗺️ MapClusters: Not ready - missing map or items');
       return;
+    }
+
+    // Wait for map to be fully loaded and styled
+    if (!map.loaded() || !map.isStyleLoaded()) {
+      console.log('🗺️ MapClusters: Waiting for map to load and style to be ready...');
+      
+      const handleStyleLoad = () => {
+        console.log('🎨 Map style loaded, will add clustering...');
+        // Trigger re-run of effect by checking loaded state
+      };
+      
+      const handleLoad = () => {
+        console.log('🗺️ Map loaded, checking style...');
+      };
+
+      map.on('styledata', handleStyleLoad);
+      map.on('load', handleLoad);
+      
+      return () => {
+        map.off('styledata', handleStyleLoad);
+        map.off('load', handleLoad);
+      };
     }
 
     // Convert items to GeoJSON
@@ -61,22 +85,33 @@ export const useMapClusters = ({
       }).filter(Boolean) as GeoJSON.Feature[]
     };
 
-    console.log(`🗺️ Created GeoJSON with ${geojsonData.features.length} features`);
+    console.log(`🗺️ Map is ready! Creating GeoJSON with ${geojsonData.features.length} features`);
 
-    // Remove existing source and layers if they exist
-    if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
-    if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
-    if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
-    if (map.getSource(sourceId)) map.removeSource(sourceId);
+    // Check if source already exists and remove it first
+    const existingSource = map.getSource(sourceId);
+    if (existingSource) {
+      console.log('🧹 Removing existing source and layers...');
+      // Remove layers first, then source
+      if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
+      if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
+      if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
+      map.removeSource(sourceId);
+    }
 
-    // Add clustered source
-    map.addSource(sourceId, {
-      type: 'geojson',
-      data: geojsonData,
-      cluster: true,
-      clusterMaxZoom: 14, // Max zoom to cluster points on
-      clusterRadius: 50 // Radius of each cluster when clustering points
-    });
+    try {
+      // Add clustered source
+      map.addSource(sourceId, {
+        type: 'geojson',
+        data: geojsonData,
+        cluster: true,
+        clusterMaxZoom: 14, // Max zoom to cluster points on
+        clusterRadius: 50 // Radius of each cluster when clustering points
+      });
+      console.log('✅ Successfully added clustered source');
+    } catch (error) {
+      console.error('❌ Error adding source:', error);
+      return;
+    }
 
     // Add cluster circles layer
     map.addLayer({
