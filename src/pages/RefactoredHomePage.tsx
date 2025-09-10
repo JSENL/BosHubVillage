@@ -5,6 +5,7 @@ import { ListView } from '@/components/views/ListView';
 import { FilterBar } from '@/components/filters/FilterBar';
 import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
 import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
+import { MapboxTest } from '@/components/MapboxTest';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
 
@@ -79,6 +80,11 @@ const MainContent = () => {
         <aside className="w-80 space-y-6 hidden lg:block" aria-label="Discovery and recommendations">
           <DiscoverySidebar />
         </aside>
+      </div>
+      
+      {/* Mapbox Test */}
+      <div className="mt-8">
+        <MapboxTest />
       </div>
       
       <TranslationTestModal />
