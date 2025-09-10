@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useMapboxToken } from '@/contexts/MapboxContext';
-import { useMapMarkers } from '@/hooks/useMapMarkers';
+import { useMapClusters } from '@/hooks/useMapClusters';
 import { MapOverlays } from '@/components/map/MapOverlays';
 import { MapDebugOverlay } from '@/components/map/MapDebugOverlay';
 import { MapStateDebugger } from '@/components/MapStateDebugger';
@@ -102,7 +102,7 @@ export const EnhancedUniversalMap = ({
     }
   }, [mapInstance]);
 
-  useMapMarkers({
+  useMapClusters({
     map: mapInstance,
     items: filteredMappableItems,
     onMarkerClick: handleMarkerClick
