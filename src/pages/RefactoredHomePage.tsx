@@ -45,20 +45,18 @@ const MainContent = () => {
           
           {/* Map or List View */}
           {filters.viewMode === 'map' ? (
-            <div className="h-[calc(100vh-200px)]">
+            <div className="min-h-[540px]">
               <MapView
                 items={filteredItems}
                 selectedTypes={selectedTypesForMap}
-                height="calc(100vh-200px)"
+                height="540px"
               />
             </div>
           ) : (
-            <div className="h-[calc(100vh-200px)] overflow-y-auto">
-              <ListView
-                items={filteredItems}
-                isLoading={isLoading}
-              />
-            </div>
+            <ListView
+              items={filteredItems}
+              isLoading={isLoading}
+            />
           )}
 
           {/* Filter Bar */}
@@ -69,7 +67,7 @@ const MainContent = () => {
           
           {/* Full list view for map mode */}
           {filters.viewMode === 'map' && (
-            <div className="h-[calc(100vh-400px)] overflow-y-auto">
+            <div className="max-h-96 overflow-y-auto">
               <ListView
                 items={filteredItems}
                 isLoading={isLoading}

@@ -165,7 +165,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             <div className="flex-1 p-6">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1 min-w-0 mr-4">
-                  <h3 className="text-xl font-bold text-gray-900 hover:text-caribbean-teal mb-1 break-words overflow-wrap-anywhere">
+                  <h3 className="text-xl font-bold text-gray-900 hover:text-caribbean-teal mb-1 line-clamp-2 break-words">
                     {translatedFields.title}
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
@@ -259,7 +259,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             )}
           </div>
         </div>
-        <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal break-words overflow-wrap-anywhere">
+        <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal line-clamp-2 break-words">
           {translatedFields.title}
         </CardTitle>
         <div className="flex items-center space-x-1">
