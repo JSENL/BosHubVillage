@@ -52,6 +52,7 @@ const MainContent = () => {
           {filters.viewMode === 'map' ? (
             <div className="min-h-[540px]">
               <MapView
+                key={`map-view-${filters.viewMode}`}
                 items={filteredItems}
                 selectedTypes={selectedTypesForMap}
                 height="540px"

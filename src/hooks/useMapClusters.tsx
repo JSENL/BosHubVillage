@@ -28,10 +28,17 @@ export const useMapClusters = ({
       itemsCount: items?.length || 0,
       mapReady: map && map.loaded && map.loaded(),
       styleLoaded: map && map.isStyleLoaded && map.isStyleLoaded(),
+      mapRemoved: map && map._removed
     });
 
     if (!map || !items || items.length === 0) {
       console.log('🗺️ MapClusters: Not ready - missing map or items');
+      return;
+    }
+
+    // Additional check to ensure map is not removed
+    if (map._removed) {
+      console.log('🗺️ MapClusters: Map instance has been removed, skipping');
       return;
     }
 
@@ -262,6 +269,15 @@ export const useMapClusters = ({
           map.getCanvas().style.cursor = '';
         });
 
+        // Store event handlers for cleanup
+        const cleanupHandlers = () => {
+          if (map && !map._removed) {
+            map.off('click', clusterLayer, handleClusterClick);
+            map.off('click', unclusteredLayer, handlePointClick);
+            map.off('dblclick', unclusteredLayer, handlePointDoubleClick);
+          }
+        };
+
         // Fit bounds only on initial load
         if (geojsonData.features.length > 0 && !hasFitBoundsRef.current) {
           try {
@@ -293,7 +309,9 @@ export const useMapClusters = ({
     };
 
     // Wait for map to be ready or add clustering immediately if ready
-    if (map.loaded() && map.isStyleLoaded()) {
+    const isMapReady = map.loaded() && map.isStyleLoaded() && !map._removed;
+    
+    if (isMapReady) {
       console.log('🎯 Map is ready, adding clustering immediately');
       addClusteringToMap();
     } else {
@@ -301,30 +319,51 @@ export const useMapClusters = ({
       
       const handleStyleLoad = () => {
         console.log('🎨 Map style loaded, adding clustering...');
-        if (map.loaded() && map.isStyleLoaded()) {
+        if (map.loaded() && map.isStyleLoaded() && !map._removed) {
           addClusteringToMap();
         }
       };
       
       const handleLoad = () => {
         console.log('🗺️ Map loaded, checking style...');
-        if (map.loaded() && map.isStyleLoaded()) {
+        if (map.loaded() && map.isStyleLoaded() && !map._removed) {
           addClusteringToMap();
         }
       };
+
+      // Force clustering after a short delay as a fallback
+      const fallbackTimeout = setTimeout(() => {
+        if (map && map.loaded() && map.isStyleLoaded() && !map._removed) {
+          console.log('🔄 Fallback: Adding clustering after timeout');
+          addClusteringToMap();
+        }
+      }, 500);
 
       map.on('styledata', handleStyleLoad);
       map.on('load', handleLoad);
       
       return () => {
+        clearTimeout(fallbackTimeout);
         map.off('styledata', handleStyleLoad);
         map.off('load', handleLoad);
       };
     }
 
-    // Cleanup function  
+    // Cleanup function when component unmounts or dependencies change
     return () => {
-      // No need for cleanup since we're handling it in the event listeners setup
+      if (map && !map._removed) {
+        try {
+          // Remove layers first, then source
+          if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
+          if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
+          if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
+          if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
+          if (map.getSource(sourceId)) map.removeSource(sourceId);
+          console.log('🧹 Cleaned up clustering layers and sources');
+        } catch (error) {
+          console.warn('⚠️ Error during clustering cleanup:', error);
+        }
+      }
     };
   }, [map, items, onMarkerClick, onMarkerDoubleClick]);
 };
