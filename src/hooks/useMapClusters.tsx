@@ -73,6 +73,7 @@ export const useMapClusters = ({
       if (existingSource) {
         console.log('🧹 Removing existing source and layers...');
         // Remove layers first, then source
+        if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
         if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
         if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
         if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
@@ -156,6 +157,31 @@ export const useMapClusters = ({
           }
         });
 
+        // Add unclustered point labels (type letters)
+        map.addLayer({
+          id: unclusteredLayer + '-labels',
+          type: 'symbol',
+          source: sourceId,
+          filter: ['!', ['has', 'point_count']],
+          layout: {
+            'text-field': [
+              'case',
+              ['==', ['get', 'type'], 'event'], 'E',
+              ['==', ['get', 'type'], 'business'], 'B',
+              ['==', ['get', 'type'], 'local-service'], 'L',
+              ['==', ['get', 'type'], 'news'], 'N',
+              '?'
+            ],
+            'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+            'text-size': 11,
+            'text-allow-overlap': true,
+            'text-ignore-placement': true
+          },
+          paint: {
+            'text-color': '#ffffff'
+          }
+        });
+
         console.log('✅ Successfully added all clustering layers');
 
         // Add click handlers
@@ -181,7 +207,7 @@ export const useMapClusters = ({
 
         const handlePointClick = (e: mapboxgl.MapMouseEvent) => {
           const features = map.queryRenderedFeatures(e.point, {
-            layers: [unclusteredLayer]
+            layers: [unclusteredLayer, unclusteredLayer + '-labels']
           });
           
           if (features.length > 0 && onMarkerClick) {
@@ -197,7 +223,7 @@ export const useMapClusters = ({
 
         const handlePointDoubleClick = (e: mapboxgl.MapMouseEvent) => {
           const features = map.queryRenderedFeatures(e.point, {
-            layers: [unclusteredLayer]
+            layers: [unclusteredLayer, unclusteredLayer + '-labels']
           });
           
           if (features.length > 0 && onMarkerDoubleClick) {
@@ -227,6 +253,12 @@ export const useMapClusters = ({
           map.getCanvas().style.cursor = 'pointer';
         });
         map.on('mouseleave', unclusteredLayer, () => {
+          map.getCanvas().style.cursor = '';
+        });
+        map.on('mouseenter', unclusteredLayer + '-labels', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', unclusteredLayer + '-labels', () => {
           map.getCanvas().style.cursor = '';
         });
 
