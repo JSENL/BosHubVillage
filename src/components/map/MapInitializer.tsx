@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +11,7 @@ interface UseMapInitializerProps {
 export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitializerProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<mapboxgl.Map | null>(null);
+  const [mapInstance, setMapInstance] = useState<mapboxgl.Map | null>(null);
   const { i18n } = useTranslation();
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
       console.log('🧹 Cleaning up existing map before re-initialization...');
       mapInstanceRef.current.remove();
       mapInstanceRef.current = null;
+      setMapInstance(null);
     }
 
     if (!mapRef.current || !mapboxToken || isLoadingApiKey) {
@@ -27,6 +29,7 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
         hasToken: !!mapboxToken, 
         isLoading: isLoadingApiKey 
       });
+      setMapInstance(null);
       return;
     }
 
@@ -125,18 +128,20 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
     });
 
     mapInstanceRef.current = map;
+    setMapInstance(map); // This will trigger re-renders in components using this hook
 
     return () => {
       console.log('🧹 Cleaning up Mapbox map...');
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
+        setMapInstance(null);
       }
     };
   }, [mapboxToken, isLoadingApiKey]);
 
   return {
     mapRef,
-    mapInstance: mapInstanceRef.current
+    mapInstance // This now comes from state, so it will trigger re-renders
   };
 };

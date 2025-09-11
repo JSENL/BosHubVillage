@@ -19,7 +19,6 @@ export const MapView = ({ items, selectedTypes, height = "540px" }: MapViewProps
   return (
     <div className="relative w-full" style={{ height }}>
       <EnhancedUniversalMap
-        key={`enhanced-map-${selectedTypes.join('-')}-${items.length}`}
         items={items}
         height={height}
         selectedTypes={selectedTypes}

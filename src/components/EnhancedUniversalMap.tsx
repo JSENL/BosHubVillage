@@ -48,6 +48,9 @@ export const EnhancedUniversalMap = ({
     mapboxToken: mapboxToken ? 'Available' : 'Missing',
     isLoading: isLoadingApiKey,
     error: error || 'None',
+    mapInstance: mapInstance ? 'Created' : 'Not Created',
+    mapLoaded: mapInstance ? mapInstance.loaded() : false,
+    mapStyleLoaded: mapInstance ? mapInstance.isStyleLoaded() : false,
     itemsByType: items.reduce((acc, item) => {
       acc[item.type] = (acc[item.type] || 0) + 1;
       return acc;
@@ -102,6 +105,7 @@ export const EnhancedUniversalMap = ({
     }
   }, [mapInstance]);
 
+  // Use the map clusters hook with click handler - this must be called as a hook
   useMapClusters({
     map: mapInstance,
     items: filteredMappableItems,
