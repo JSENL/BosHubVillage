@@ -15,15 +15,12 @@ import SubmitLocalService from "./pages/SubmitLocalService";
 import SubmitNews from "./pages/SubmitNews";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "./components/routing/AdminRoute";
- 
- 
- import EventDetails from "./pages/EventDetails";
+import EventDetails from "./pages/EventDetails";
 import BusinessDetails from "./pages/BusinessDetails";
 import BusinessDashboard from "./pages/BusinessDashboard";
 import NewsDetails from "./pages/NewsDetails";
 import LocalServiceDetails from "./pages/LocalServiceDetails";
 import NewsPage from "./pages/NewsPage";
-
 import ContactAdmin from "./pages/ContactAdmin";
 import MyMessages from "./pages/MyMessages";
 import MySubmissions from "./pages/MySubmissions";
@@ -31,6 +28,7 @@ import NotFound from "./pages/NotFound";
 import UserProfile from "./pages/UserProfile";
 import { EditProfile } from "./pages/EditProfile";
 import { MapboxTest } from "./components/MapboxTest";
+import { FAQ } from "./pages/FAQ";
 
 // Recovery redirect component to handle email link redirects
 const RecoveryRedirect = () => {
@@ -79,6 +77,7 @@ const App = () => (
         <Route path="/user/:userId" element={<UserProfile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/mapbox-test" element={<MapboxTest />} />
+        <Route path="/faq" element={<FAQ />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -26,7 +26,8 @@ import {
   Heart,
   MessageCircle,
   ArrowLeft,
-  FileText
+  FileText,
+  HelpCircle
 } from 'lucide-react';
 
 export const Navigation = () => {
@@ -69,6 +70,15 @@ export const Navigation = () => {
             >
               <Newspaper className="h-4 w-4 mr-2" />
               {t('navigation.news')}
+            </Link>
+            
+            {/* FAQ Link */}
+            <Link 
+              to="/faq" 
+              className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+            >
+              <HelpCircle className="h-4 w-4 mr-2" />
+              FAQ
             </Link>
           </div>
           
