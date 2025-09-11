@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { Navigation } from '@/components/Navigation';
 import { Calendar, Building, Wrench, Newspaper, Map, Users, Star, MessageCircle, Search, Globe, Shield, Bookmark } from 'lucide-react';
 
 export const FAQ = () => {
@@ -240,7 +241,9 @@ export const FAQ = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
         <p className="text-muted-foreground text-lg">
@@ -296,6 +299,7 @@ export const FAQ = () => {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
