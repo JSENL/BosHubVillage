@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
@@ -5,10 +6,12 @@ import { Navigation } from '@/components/Navigation';
 import { Calendar, Building, Wrench, Newspaper, Map, Users, Star, MessageCircle, Search, Globe, Shield, Bookmark } from 'lucide-react';
 
 export const FAQ = () => {
+  const { t } = useTranslation();
   const featureCategories = [
     {
-      title: "Getting Started",
+      title: t('faq.gettingStarted'),
       icon: <Users className="h-5 w-5" />,
+      description: t('faq.gettingStartedDesc'),
       items: [
         {
           question: "What is this platform?",
@@ -25,8 +28,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Events",
+      title: t('faq.events'),
       icon: <Calendar className="h-5 w-5" />,
+      description: t('faq.eventsDesc'),
       items: [
         {
           question: "How do I find events?",
@@ -47,8 +51,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Businesses",
+      title: t('faq.businesses'),
       icon: <Building className="h-5 w-5" />,
+      description: t('faq.businessesDesc'),
       items: [
         {
           question: "How do I find local businesses?",
@@ -69,8 +74,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Local Services",
+      title: t('faq.localServices'),
       icon: <Wrench className="h-5 w-5" />,
+      description: t('faq.localServicesDesc'),
       items: [
         {
           question: "What are local services?",
@@ -87,8 +93,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "News & Updates",
+      title: t('faq.newsUpdates'),
       icon: <Newspaper className="h-5 w-5" />,
+      description: t('faq.newsUpdatesDesc'),
       items: [
         {
           question: "What kind of news is featured?",
@@ -105,8 +112,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Map Features",
+      title: t('faq.mapFeatures'),
       icon: <Map className="h-5 w-5" />,
+      description: t('faq.mapFeaturesDesc'),
       items: [
         {
           question: "How does the map work?",
@@ -123,8 +131,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Search & Filters",
+      title: t('faq.searchFilters'),
       icon: <Search className="h-5 w-5" />,
+      description: t('faq.searchFiltersDesc'),
       items: [
         {
           question: "How do I search for specific content?",
@@ -141,8 +150,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "User Features",
+      title: t('faq.userFeatures'),
       icon: <Users className="h-5 w-5" />,
+      description: t('faq.userFeaturesDesc'),
       items: [
         {
           question: "How do I create an account?",
@@ -163,8 +173,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Comments & Ratings",
+      title: t('faq.commentsRatings'),
       icon: <Star className="h-5 w-5" />,
+      description: t('faq.commentsRatingsDesc'),
       items: [
         {
           question: "How do I leave comments?",
@@ -181,8 +192,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Messaging",
+      title: t('faq.messaging'),
       icon: <MessageCircle className="h-5 w-5" />,
+      description: t('faq.messagingDesc'),
       items: [
         {
           question: "How do I message businesses?",
@@ -199,8 +211,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Languages & Accessibility",
+      title: t('faq.languagesAccessibility'),
       icon: <Globe className="h-5 w-5" />,
+      description: t('faq.languagesAccessibilityDesc'),
       items: [
         {
           question: "Is the site available in multiple languages?",
@@ -217,8 +230,9 @@ export const FAQ = () => {
       ]
     },
     {
-      title: "Submission Process",
+      title: t('faq.submissionProcess'),
       icon: <Shield className="h-5 w-5" />,
+      description: t('faq.submissionProcessDesc'),
       items: [
         {
           question: "Why do submissions need approval?",
@@ -245,9 +259,9 @@ export const FAQ = () => {
       <Navigation />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
+        <h1 className="text-4xl font-bold mb-4">{t('faq.title')}</h1>
         <p className="text-muted-foreground text-lg">
-          Everything you need to know about using our community platform
+          {t('faq.subtitle')}
         </p>
       </div>
 
@@ -260,7 +274,7 @@ export const FAQ = () => {
                 {category.title}
               </CardTitle>
               <CardDescription>
-                Learn about {category.title.toLowerCase()} features and how to use them
+                {category.description}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -285,12 +299,12 @@ export const FAQ = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
-            Still Have Questions?
+            {t('faq.stillHaveQuestions')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">
-            If you can't find the answer you're looking for, feel free to reach out to our support team or use the contact form.
+            {t('faq.contactMessage')}
           </p>
           <div className="flex gap-2 flex-wrap">
             <Badge variant="secondary">Community Support</Badge>
