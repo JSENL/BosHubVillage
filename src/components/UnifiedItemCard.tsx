@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar, MapPin, DollarSign, Users, Star, Building, Newspaper, Wrench } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   isHighlighted = false 
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const handleViewDetails = () => {
     const routePath = item.type === 'local-service' ? 'local-resource' : 
@@ -60,10 +62,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
 
   const getTypeLabel = () => {
     const labels = {
-      event: 'Events',
-      news: 'News',
-      business: 'Businesses',
-      'local-service': 'Local Services'
+      event: t('itemTypes.events'),
+      news: t('itemTypes.news'),
+      business: t('itemTypes.businesses'),
+      'local-service': t('itemTypes.localServices')
     };
     return labels[item.type] || 'View';
   };
@@ -146,7 +148,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                   </div>
                   {item.price !== undefined && (
                     <div className="text-lg font-bold text-caribbean-teal">
-                      {item.price === 0 ? 'Free' : `$${item.price}`}
+                      {item.price === 0 ? t('cards.free') : `$${item.price}`}
                     </div>
                   )}
                 </div>
@@ -208,7 +210,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             />
             {item.price !== undefined && (
               <div className="text-lg font-bold text-caribbean-teal">
-                {item.price === 0 ? 'Free' : `$${item.price}`}
+                {item.price === 0 ? t('cards.free') : `$${item.price}`}
               </div>
             )}
           </div>

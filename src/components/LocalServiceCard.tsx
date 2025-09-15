@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
@@ -10,6 +11,7 @@ interface LocalServiceCardProps {
 
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -56,7 +58,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         
         <div className="pt-1 border-t">
           <p className="text-xs text-gray-500">
-            Added {formatDate(localService.created_at)}
+            {t('cards.added')} {formatDate(localService.created_at)}
           </p>
         </div>
       </CardContent>

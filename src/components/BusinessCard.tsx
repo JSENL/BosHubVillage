@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
@@ -9,6 +10,7 @@ interface BusinessCardProps {
 }
 
 const BusinessCard = ({ business }: BusinessCardProps) => {
+  const { t } = useTranslation();
   return (
     <Link to={`/business/${business.id}`}>
       <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full min-h-[200px]">

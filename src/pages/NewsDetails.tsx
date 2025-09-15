@@ -25,7 +25,7 @@ const NewsDetails = () => {
         .single();
 
       if (error) throw error;
-      return data as News;
+      return data;
     },
     enabled: !!newsId
   });

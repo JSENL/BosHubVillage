@@ -4,7 +4,7 @@ import { MapView } from '@/components/views/MapView';
 import { ListView } from '@/components/views/ListView';
 import { FilterBar } from '@/components/filters/FilterBar';
 import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
-import { MapboxTestModal } from '@/components/pages/MapboxTestModal';
+import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
 
@@ -81,7 +81,7 @@ const MainContent = () => {
         </section>
       </div>
       
-      <MapboxTestModal />
+      <TranslationTestModal />
     </>
   );
 };

@@ -110,8 +110,8 @@ const LocalServiceDetails = () => {
         {user && (
           <div className="mt-8">
             <CommentForm 
-              onSubmit={(content) => addComment(content, 'local_service')}
-              placeholder="Leave a comment about this local service..."
+              user={user}
+              onSubmitComment={(content, rating) => addComment(content, rating)}
             />
           </div>
         )}
@@ -119,8 +119,10 @@ const LocalServiceDetails = () => {
         <div className="mt-6">
           <GenericCommentsList 
             comments={comments || []}
-            isLoading={commentsLoading}
-            emptyMessage="No comments yet. Be the first to share your thoughts!"
+            loading={commentsLoading}
+            user={user}
+            isAdmin={isAdmin}
+            onDeleteComment={async () => {}}
           />
         </div>
       </div>
