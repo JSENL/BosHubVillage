@@ -1,12 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Calendar, MapPin, DollarSign, Users, Star } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
-import { useContentTranslation } from '@/hooks/useTranslation';
-import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 interface Event {
   id: string;
@@ -29,18 +26,13 @@ interface EventCardProps {
 
 export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { getTranslatedField, currentLanguage } = useContentTranslation();
-  
-  // Auto-translate missing fields in the background and cache them
-  useAutoTranslate({ item: event, table: 'events', fields: ['title', 'description'] });
 
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, {
+    return new Date(dateString).toLocaleDateString('en-US', {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric'
@@ -51,17 +43,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
     const formatTime = (time: string) => {
       if (!time) return '';
       
-      if (currentLanguage === 'en') {
-        // 12-hour format for English
-        const [hours, minutes] = time.split(':');
-        const hour = parseInt(hours);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const hour12 = hour % 12 || 12;
-        return `${hour12}:${minutes} ${ampm}`;
-      } else {
-        // 24-hour format for other languages
-        return time;
-      }
+      // 12-hour format for English
+      const [hours, minutes] = time.split(':');
+      const hour = parseInt(hours);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour % 12 || 12;
+      return `${hour12}:${minutes} ${ampm}`;
     };
 
     if (!startTime && !endTime) return '';
@@ -80,26 +67,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const rating = Math.floor(Math.random() * 2) + 4; // 4-5 stars
   const reviewCount = Math.floor(Math.random() * 500) + 50;
 
-  // Get translated content from pre-populated database translations
-  const translatedTitle = getTranslatedField(event, 'title', 'events');
-  const translatedDescription = getTranslatedField(event, 'description', 'events');
-  const translatedLocation = getTranslatedField(event, 'location', 'events');
-  const translatedCategory = getTranslatedField(event, 'category', 'events');
-
-  // Helper function to format attendees text with translation
+  // Helper function to format attendees text
   const formatAttendeesText = (maxAttendees: number) => {
-    const translations = {
-      'en': `Up to ${maxAttendees} attendees`,
-      'es': `Hasta ${maxAttendees} asistentes`,
-      'fr': `Jusqu'à ${maxAttendees} participants`,
-      'zh': `最多 ${maxAttendees} 位参与者`,
-      'ar': `حتى ${maxAttendees} حضور`,
-      'it': `Fino a ${maxAttendees} partecipanti`,
-      'pt': `Até ${maxAttendees} participantes`,
-      'vi': `Tối đa ${maxAttendees} người tham dự`,
-      
-    };
-    return translations[currentLanguage] || translations['en'];
+    return `Up to ${maxAttendees} attendees`;
   };
 
   if (viewMode === 'list') {
@@ -117,7 +87,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1 min-w-0 mr-4">
                   <h3 className="text-xl font-bold text-gray-900 hover:text-yelp-red mb-1 line-clamp-2 break-words">
-                    {translatedTitle}
+                    {event.title}
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
                     {[...Array(5)].map((_, i) => (
@@ -131,15 +101,15 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
                 <div className="text-right flex-shrink-0">
                   <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray mb-2">
-                    <span className="truncate max-w-20">{translatedCategory}</span>
+                    <span className="truncate max-w-20">{event.category}</span>
                   </Badge>
                   <div className="text-lg font-bold text-yelp-red">
-                    {event.price === 0 ? t('cards.free') : `$${event.price}`}
+                    {event.price === 0 ? 'Free' : `$${event.price}`}
                   </div>
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{translatedDescription}</p>
+              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{event.description}</p>
               
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 <div className="flex items-center min-w-0">
@@ -148,7 +118,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
                 <div className="flex items-center min-w-0">
                   <MapPin className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
-                  <span className="truncate break-all min-w-0">{translatedLocation}</span>
+                  <span className="truncate break-all min-w-0">{event.location}</span>
                 </div>
                 {event.max_attendees && (
                   <div className="flex items-center">
@@ -173,14 +143,14 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between mb-1">
           <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray text-xs">
-            {translatedCategory}
+            {event.category}
           </Badge>
           <div className="text-sm font-bold text-yelp-red">
-            {event.price === 0 ? t('cards.free') : `$${event.price}`}
+            {event.price === 0 ? 'Free' : `$${event.price}`}
           </div>
         </div>
         <CardTitle className="text-sm text-gray-900 hover:text-yelp-red line-clamp-2 break-words">
-          {translatedTitle}
+          {event.title}
         </CardTitle>
         <div className="flex items-center space-x-1">
           {[...Array(5)].map((_, i) => (
@@ -195,7 +165,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       
       <CardContent className="pt-2">
         <CardDescription className="mb-2 line-clamp-2 text-gray-600 text-xs break-words">
-          {translatedDescription}
+          {event.description}
         </CardDescription>
         <div className="space-y-1 text-xs">
           <div className="flex items-center text-gray-600 min-w-0">
@@ -204,7 +174,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
           </div>
           <div className="flex items-center text-gray-600 min-w-0">
             <MapPin className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
-            <span className="truncate break-all min-w-0">{translatedLocation}</span>
+            <span className="truncate break-all min-w-0">{event.location}</span>
           </div>
           {event.max_attendees && (
             <div className="flex items-center text-gray-600">

@@ -1,32 +1,18 @@
-
-import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
 import { useNavigate } from 'react-router-dom';
-import { useContentTranslation } from '@/hooks/useTranslation';
-import { useAutoTranslate } from '@/hooks/useAutoTranslate';
-
 
 interface LocalServiceCardProps {
   localService: LocalResource;
 }
 
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
-  const { getTranslatedField, currentLanguage } = useContentTranslation();
-  
-  // Auto-translate missing fields in the background
-  useAutoTranslate({ item: localService, table: 'local_resources', fields: ['name', 'description', 'address'] });
-  // Get translated content from pre-populated database translations
-  const translatedName = getTranslatedField(localService, 'name', 'local_resources');
-  const translatedDescription = getTranslatedField(localService, 'description', 'local_resources');
-  const translatedAddress = getTranslatedField(localService, 'address', 'local_resources');
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, {
+    return new Date(dateString).toLocaleDateString('en-US', {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric'
@@ -42,7 +28,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2 break-words flex-1 min-w-0 mr-2">
-            {translatedName}
+            {localService.name}
           </CardTitle>
           <Badge variant="secondary" className="ml-2 flex-shrink-0 text-xs">
             <Building className="h-3 w-3 mr-1 flex-shrink-0" />
@@ -54,7 +40,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         <div className="flex items-start text-gray-600 min-w-0">
           <MapPin className="h-3 w-3 mr-2 mt-0.5 flex-shrink-0" />
           <div className="text-xs min-w-0 flex-1">
-            <p className="truncate break-all">{translatedAddress}</p>
+            <p className="truncate break-all">{localService.address}</p>
             <p className="text-xs text-gray-500 truncate">
               {localService.neighborhood}
               {localService.village && `, ${localService.village}`}
@@ -64,13 +50,13 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         
         {localService.description && (
           <p className="text-xs text-gray-600 line-clamp-2 break-words">
-            {translatedDescription}
+            {localService.description}
           </p>
         )}
         
         <div className="pt-1 border-t">
           <p className="text-xs text-gray-500">
-            {t('cards.added')} {formatDate(localService.created_at)}
+            Added {formatDate(localService.created_at)}
           </p>
         </div>
       </CardContent>

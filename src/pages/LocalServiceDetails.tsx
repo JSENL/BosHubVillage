@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,14 +9,10 @@ import { CommentForm } from '@/components/comments/CommentForm';
 import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
 import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
 import { Navigation } from '@/components/Navigation';
-import { useContentTranslation } from '@/hooks/useTranslation';
-import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
-  const { getTranslatedField } = useContentTranslation();
-  const { t } = useTranslation();
 
   const { data: resource, isLoading } = useQuery({
     queryKey: ['local-resource-details', serviceId],
@@ -31,26 +26,24 @@ const LocalServiceDetails = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!serviceId,
+    enabled: !!serviceId
   });
 
-  // Auto-translate resource fields - always call the hook
-  useAutoTranslate({ item: resource, table: 'local_resources', fields: ['name', 'description', 'address'] });
-
-  const {
-    comments,
-    isLoading: commentsLoading,
-    addComment,
-    replyToComment,
-    deleteComment,
-    isAddingComment
-  } = useLocalResourceComments(serviceId!);
+  const { 
+    comments, 
+    isLoading: commentsLoading, 
+    addComment 
+  } = useLocalResourceComments(serviceId as string);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">{t('common.loading')}</div>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+        <Navigation />
+        <div className="max-w-4xl mx-auto py-8 px-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4" />
+            <p>Loading...</p>
+          </div>
         </div>
       </div>
     );
@@ -58,9 +51,13 @@ const LocalServiceDetails = () => {
 
   if (!resource) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center py-8">{t('common.serviceNotFound')}</div>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
+        <Navigation />
+        <div className="max-w-4xl mx-auto py-8 px-4">
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-2">Service Not Found</h3>
+            <p className="text-gray-600">The local service you're looking for doesn't exist.</p>
+          </div>
         </div>
       </div>
     );
@@ -69,30 +66,33 @@ const LocalServiceDetails = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
-      <div className="max-w-4xl mx-auto space-y-6 p-4">
-
+      <div className="max-w-4xl mx-auto py-8 px-4">
         <Card>
           <CardHeader>
             <div className="flex justify-between items-start">
-              <div>
-                <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
-                  {getTranslatedField(resource, 'name', 'local_resources')}
-                </CardTitle>
-                <Badge variant="secondary" className="mb-2">
-                  <Building className="h-3 w-3 mr-1" />
-                  {resource.category}
-                </Badge>
-              </div>
+              <CardTitle className="text-2xl">{resource.name}</CardTitle>
+              <Badge variant="secondary">
+                <Building className="h-3 w-3 mr-1" />
+                {resource.category}
+              </Badge>
             </div>
-            <div className="flex items-center text-gray-600 mb-2">
-              <MapPin className="h-4 w-4 mr-1" />
-              {getTranslatedField(resource, 'address', 'local_resources')}, {resource.neighborhood}
-              {resource.village && ` - ${resource.village}`}
+          </CardHeader>
+          
+          <CardContent className="space-y-6">
+            <div className="flex items-center text-gray-600">
+              <MapPin className="h-4 w-4 mr-2" />
+              <span>{resource.address}</span>
             </div>
 
-            {/* Website Link */}
+            {resource.description && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">About</h3>
+                <p className="text-gray-700">{resource.description}</p>
+              </div>
+            )}
+
             {resource.website_link && (
-              <div className="mb-4">
+              <div>
                 <a
                   href={resource.website_link.startsWith('http') ? resource.website_link : `https://${resource.website_link}`}
                   target="_blank"
@@ -100,48 +100,29 @@ const LocalServiceDetails = () => {
                   className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  {t('common.visitWebsite')}
+                  Visit Website
                 </a>
               </div>
             )}
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {resource.description && (
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{t('common.about')}</h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    {getTranslatedField(resource, 'description', 'local_resources')}
-                  </p>
-                </div>
-              )}
-            </div>
           </CardContent>
         </Card>
 
-        {/* Comments Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold text-gray-900">{t('common.commentsAndReviews')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {user && (
-              <CommentForm
-                user={user}
-                onSubmitComment={addComment}
-              />
-            )}
-            
-            <GenericCommentsList
-              comments={comments}
-              loading={commentsLoading}
-              user={user}
-              isAdmin={isAdmin}
-              onDeleteComment={deleteComment}
-              onReplyToComment={replyToComment}
+        {user && (
+          <div className="mt-8">
+            <CommentForm 
+              onSubmit={(content) => addComment(content, 'local_service')}
+              placeholder="Leave a comment about this local service..."
             />
-          </CardContent>
-        </Card>
+          </div>
+        )}
+
+        <div className="mt-6">
+          <GenericCommentsList 
+            comments={comments || []}
+            isLoading={commentsLoading}
+            emptyMessage="No comments yet. Be the first to share your thoughts!"
+          />
+        </div>
       </div>
     </div>
   );

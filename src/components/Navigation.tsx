@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -13,7 +12,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/useAuth';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
-import { LanguageSelector } from '@/components/LanguageSelector';
 import { 
   Plus, 
   Calendar, 
@@ -34,7 +32,6 @@ export const Navigation = () => {
   const { user, isAdmin, signOut } = useAuth();
   const { ownedBusinesses } = useBusinessOwnership();
   const location = useLocation();
-  const { t } = useTranslation();
   const isHomePage = location.pathname === '/';
   const hasOwnedBusinesses = ownedBusinesses && ownedBusinesses.length > 0;
 
@@ -58,7 +55,7 @@ export const Navigation = () => {
                 className="hidden sm:flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                <span className="hidden md:inline">{t('navigation.backToHome')}</span>
+                <span className="hidden md:inline">Back to Home</span>
                 <span className="sm:inline md:hidden">Back</span>
               </Link>
             )}
@@ -69,7 +66,7 @@ export const Navigation = () => {
               className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
             >
               <Newspaper className="h-4 w-4 mr-2" />
-              {t('navigation.news')}
+              News
             </Link>
             
             {/* FAQ Link */}
@@ -83,38 +80,37 @@ export const Navigation = () => {
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <LanguageSelector />
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="bg-logo-bright-orange hover:bg-logo-bright-orange/90 text-white">
                     <Plus className="h-4 w-4 mr-2" />
-                    {t('navigation.submit')}
+                    Submit
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
                     <Link to="/submit-event" className="cursor-pointer">
                       <Calendar className="h-4 w-4 mr-2" />
-                      {t('navigation.submitEvent')}
+                      Submit Event
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/submit-business" className="cursor-pointer">
                       <Building className="h-4 w-4 mr-2" />
-                      {t('navigation.submitBusiness')}
+                      Submit Business
                     </Link>
                   </DropdownMenuItem>
                    <DropdownMenuItem asChild>
                      <Link to="/submit-news" className="cursor-pointer">
                         <Newspaper className="h-4 w-4 mr-2" />
-                        {t('navigation.submitNews')}
+                        Submit News
                      </Link>
                    </DropdownMenuItem>
                    <DropdownMenuItem asChild>
                      <Link to="/submit-local-resource" className="cursor-pointer">
                         <Heart className="h-4 w-4 mr-2" />
-                        {t('navigation.submitLocalService')}
+                        Submit Local Service
                      </Link>
                    </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -144,26 +140,26 @@ export const Navigation = () => {
                     <DropdownMenuItem asChild>
                       <Link to="/contact-admin" className="cursor-pointer">
                          <MessageCircle className="h-4 w-4 mr-2" />
-                         {t('navigation.contactAdmin')}
+                         Contact Admin
                       </Link>
                     </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/my-messages" className="cursor-pointer">
                        <MessageCircle className="h-4 w-4 mr-2" />
-                       {t('navigation.myMessages')}
+                       My Messages
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/my-submissions" className="cursor-pointer">
                        <FileText className="h-4 w-4 mr-2" />
-                       {t('navigation.mySubmissions')}
+                       My Submissions
                     </Link>
                   </DropdownMenuItem>
                   {hasOwnedBusinesses && (
                     <DropdownMenuItem asChild>
                       <Link to="/business-dashboard" className="cursor-pointer">
                          <Building className="h-4 w-4 mr-2" />
-                         {t('navigation.businessDashboard')}
+                         Business Dashboard
                       </Link>
                     </DropdownMenuItem>
                   )}
@@ -173,7 +169,7 @@ export const Navigation = () => {
                       <DropdownMenuItem asChild>
                         <Link to="/admin" className="cursor-pointer">
                            <Settings className="h-4 w-4 mr-2" />
-                           {t('navigation.adminDashboard')}
+                           Admin Dashboard
                           <Badge variant="secondary" className="ml-2">Admin</Badge>
                         </Link>
                       </DropdownMenuItem>
@@ -181,13 +177,13 @@ export const Navigation = () => {
                   )}
                   <DropdownMenuItem onClick={signOut} className="cursor-pointer">
                      <LogOut className="h-4 w-4 mr-2" />
-                     {t('navigation.signOut')}
+                     Sign Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Link to="/auth">
-                <Button variant="outline">{t('navigation.signIn')}</Button>
+                <Button variant="outline">Sign In</Button>
               </Link>
             )}
           </div>

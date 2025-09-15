@@ -1,9 +1,7 @@
-
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { createPopupContent } from '@/utils/mapPopupContent';
-import { useMapTranslations } from '@/hooks/useMapTranslations';
 
 interface UseMapMarkersProps {
   map: mapboxgl.Map | null;
@@ -17,7 +15,6 @@ export const useMapMarkers = ({
   onMarkerClick
 }: UseMapMarkersProps) => {
   const markersRef = useRef<mapboxgl.Marker[]>([]);
-  const { getTranslatedMapData, isTranslationEnabled } = useMapTranslations();
 
   useEffect(() => {
     if (!map) {
@@ -98,9 +95,6 @@ export const useMapMarkers = ({
           .setLngLat([lng, lat])
           .addTo(map);
 
-        // Get translations if enabled
-        const translationData = isTranslationEnabled ? getTranslatedMapData(item) : undefined;
-
         // Create popup instance with enhanced styling
         const popup = new mapboxgl.Popup({
           offset: 25,
@@ -109,7 +103,7 @@ export const useMapMarkers = ({
           maxWidth: '340px',
           className: 'custom-popup'
         })
-          .setHTML(createPopupContent(item, translationData));
+          .setHTML(createPopupContent(item));
 
         // Add popup to marker with click event
         marker.setPopup(popup);

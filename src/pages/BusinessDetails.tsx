@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
@@ -10,14 +9,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
 import BusinessMessage from '@/components/BusinessMessage';
-import { useContentTranslation } from '@/hooks/useTranslation';
-import { useAutoTranslate } from '@/hooks/useAutoTranslate';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
   const navigate = useNavigate();
-  const { getTranslatedField, currentLanguage } = useContentTranslation();
-  const { t } = useTranslation();
 
   const { data: business, isLoading, error } = useQuery({
     queryKey: ['business', businessId],
@@ -38,9 +33,6 @@ const BusinessDetails = () => {
     enabled: !!businessId,
   });
 
-  // Auto-translate business fields - always call the hook
-  useAutoTranslate({ item: business, table: 'business', fields: ['title', 'description', 'short_description', 'address'] });
-
   if (isLoading) {
     return (
       <>
@@ -49,7 +41,7 @@ const BusinessDetails = () => {
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4" />
-              <p>{t('common.loading')}</p>
+              <p>Loading...</p>
             </div>
           </div>
         </div>
@@ -66,9 +58,9 @@ const BusinessDetails = () => {
             <Card>
               <CardContent className="p-8 text-center">
                 <Building className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-xl font-semibold mb-2">{t('common.businessNotFound')}</h3>
+                <h3 className="text-xl font-semibold mb-2">Business Not Found</h3>
                 <p className="text-gray-600 mb-4">The business you're looking for doesn't exist.</p>
-                <Button onClick={() => navigate('/')}>{t('common.goHome')}</Button>
+                <Button onClick={() => navigate('/')}>Go Home</Button>
               </CardContent>
             </Card>
           </div>
@@ -87,7 +79,7 @@ const BusinessDetails = () => {
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-3xl mb-2">{getTranslatedField(business, 'title', 'business')}</CardTitle>
+                  <CardTitle className="text-3xl mb-2">{business.title}</CardTitle>
                   <div className="flex items-center space-x-4 mb-4">
                     <Badge variant="secondary">
                       <Building className="h-3 w-3 mr-1" />
@@ -103,12 +95,12 @@ const BusinessDetails = () => {
               
               <div className="flex items-center text-gray-600 mb-4">
                 <MapPin className="h-4 w-4 mr-2" />
-                <span>{getTranslatedField(business, 'address', 'business')}</span>
+                <span>{business.address}</span>
               </div>
 
               {business.short_description && (
                 <p className="text-lg text-gray-700 font-medium">
-                  {getTranslatedField(business, 'short_description', 'business')}
+                  {business.short_description}
                 </p>
               )}
 
@@ -122,7 +114,7 @@ const BusinessDetails = () => {
                     className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
-                    {t('common.visitWebsite')}
+                    Visit Website
                   </a>
                 </div>
               )}
@@ -130,13 +122,13 @@ const BusinessDetails = () => {
 
             <CardContent className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold mb-2">{t('common.about')}</h3>
-                <p className="text-gray-700 whitespace-pre-wrap">{getTranslatedField(business, 'description', 'business')}</p>
+                <h3 className="text-lg font-semibold mb-2">About</h3>
+                <p className="text-gray-700 whitespace-pre-wrap">{business.description}</p>
               </div>
 
               {business.latitude && business.longitude && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">{t('common.location')}</h3>
+                  <h3 className="text-lg font-semibold mb-2">Location</h3>
                   <p className="text-sm text-gray-600">
                     Coordinates: {Number(business.latitude).toFixed(6)}, {Number(business.longitude).toFixed(6)}
                   </p>
@@ -145,7 +137,7 @@ const BusinessDetails = () => {
 
               <div className="flex items-center text-sm text-gray-500">
                 <Clock className="h-4 w-4 mr-1" />
-                <span>{t('common.addedOn')} {new Date(business.created_at).toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage)}</span>
+                <span>Added on {new Date(business.created_at).toLocaleDateString('en-US')}</span>
               </div>
 
               <div className="mt-4">

@@ -6,11 +6,6 @@ import { SectionMap } from "@/components/SectionMap";
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
-import { TranslationManager } from "@/components/TranslationManager";
-import { TranslationTest } from "@/components/TranslationTest";
-import { SpanishUIDemo } from "@/components/SpanishUIDemo";
-import { TranslationVerification } from "@/components/TranslationVerification";
-import { HeroTranslationTest } from "@/components/HeroTranslationTest";
 import { useAuth } from '@/hooks/useAuth';
 
 interface ContentSectionProps {
@@ -27,6 +22,7 @@ export const ContentSection = ({
   isLoading
 }: ContentSectionProps) => {
   const { isAdmin } = useAuth();
+  
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -53,33 +49,6 @@ export const ContentSection = ({
 
   return (
     <div className="space-y-6">
-      <TranslationManager 
-        items={filteredItems.map(item => ({
-          id: item.id,
-          table: item.type === 'local-service' ? 'local_resources' : item.type as any,
-          title: item.title || item.name
-        }))}
-      />
-      
-      {isAdmin && (
-        <>
-          <div className="mb-4">
-            <HeroTranslationTest />
-          </div>
-          
-          <div className="mb-4">
-            <TranslationVerification />
-          </div>
-          
-          <div className="mb-4">
-            <SpanishUIDemo />
-          </div>
-          
-          <div className="mb-4">
-            <TranslationTest />
-          </div>
-        </>
-      )}
       {/* Display total count */}
       <div className="text-center text-muted-foreground">
         Showing {filteredItems.length} items

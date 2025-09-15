@@ -7,7 +7,6 @@ import { MapViewSection } from './MapViewSection';
 import { ListViewSection } from './ListViewSection';
 import { SearchSection } from './SearchSection';
 import { ItemGrid } from './ItemGrid';
-import { TranslationTestModal } from './TranslationTestModal';
 import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
 import { useDataContext } from './DataProvider';
 import { useFilterContext } from './FilterProvider';
@@ -84,8 +83,6 @@ const MapViewContent = () => {
           </aside>
         </div>
       </main>
-      
-      <TranslationTestModal />
     </div>
   );
 };
