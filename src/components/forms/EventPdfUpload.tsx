@@ -39,7 +39,7 @@ export const EventPdfUpload: React.FC<EventPdfUploadProps> = ({ onEventDataExtra
       const formData = new FormData();
       formData.append('pdf', selectedFile);
 
-      const response = await fetch('/api/extract-event-data', {
+      const response = await fetch('https://mecotkulcgdbilaksddu.supabase.co/functions/v1/extract-event-data', {
         method: 'POST',
         body: formData,
       });

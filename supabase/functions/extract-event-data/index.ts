@@ -1,12 +1,193 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+// Function to parse event data from extracted text using regex patterns
+function parseEventDataFromText(text: string) {
+  const eventData = {
+    title: '',
+    description: '',
+    date: '',
+    startTime: '',
+    endTime: '',
+    location: '',
+    category: '',
+    price: 0,
+    maxAttendees: null,
+    website: '',
+    registrationRequired: false
+  };
+
+  // Extract title (look for common title patterns)
+  const titlePatterns = [
+    /(?:event|title|name):\s*(.+)/i,
+    /^(.+)(?:\n|\r\n)/,
+    /(?:^|\n)([A-Z][A-Za-z\s]{10,50})(?:\n|\r\n)/
+  ];
+  
+  for (const pattern of titlePatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      eventData.title = match[1].trim();
+      break;
+    }
+  }
+
+  // Extract date (various date formats)
+  const datePatterns = [
+    /(?:date|when):\s*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i,
+    /(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/,
+    /(\d{4}-\d{2}-\d{2})/,
+    /(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+\d{4}/i
+  ];
+
+  for (const pattern of datePatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      // Convert to YYYY-MM-DD format if needed
+      const dateStr = match[1];
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) {
+        eventData.date = date.toISOString().split('T')[0];
+        break;
+      }
+    }
+  }
+
+  // Extract time (start and end times)
+  const timePatterns = [
+    /(?:time|when):\s*(\d{1,2}:\d{2}(?:\s*[ap]m)?)\s*(?:to|-)?\s*(\d{1,2}:\d{2}(?:\s*[ap]m)?)?/i,
+    /(\d{1,2}:\d{2}(?:\s*[ap]m)?)\s*(?:to|-)?\s*(\d{1,2}:\d{2}(?:\s*[ap]m)?)/i
+  ];
+
+  for (const pattern of timePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      if (match[1]) {
+        eventData.startTime = normalizeTime(match[1]);
+      }
+      if (match[2]) {
+        eventData.endTime = normalizeTime(match[2]);
+      }
+      break;
+    }
+  }
+
+  // Extract location
+  const locationPatterns = [
+    /(?:location|venue|where|address):\s*(.+?)(?:\n|$)/i,
+    /(?:at|@)\s+([A-Za-z\s,]+(?:street|avenue|road|boulevard|center|hall|park|building))/i
+  ];
+
+  for (const pattern of locationPatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      eventData.location = match[1].trim();
+      break;
+    }
+  }
+
+  // Extract price
+  const pricePatterns = [
+    /(?:price|cost|fee):\s*\$?(\d+(?:\.\d{2})?)/i,
+    /\$(\d+(?:\.\d{2})?)/,
+    /free/i
+  ];
+
+  for (const pattern of pricePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      if (pattern.toString().includes('free')) {
+        eventData.price = 0;
+      } else if (match[1]) {
+        eventData.price = parseFloat(match[1]);
+      }
+      break;
+    }
+  }
+
+  // Extract website/URL
+  const urlPattern = /https?:\/\/[^\s]+/i;
+  const urlMatch = text.match(urlPattern);
+  if (urlMatch) {
+    eventData.website = urlMatch[0];
+  }
+
+  // Extract capacity/max attendees
+  const capacityPatterns = [
+    /(?:capacity|max|maximum|limit):\s*(\d+)/i,
+    /(\d+)\s*(?:people|attendees|guests|seats)/i
+  ];
+
+  for (const pattern of capacityPatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      eventData.maxAttendees = parseInt(match[1]);
+      break;
+    }
+  }
+
+  // Check for registration requirement
+  const registrationPattern = /(?:registration|rsvp|sign\s*up|register)\s*(?:required|needed)/i;
+  eventData.registrationRequired = registrationPattern.test(text);
+
+  // Set description to first few sentences if no specific description found
+  if (!eventData.description) {
+    const sentences = text.split(/[.!?]+/).slice(0, 3);
+    eventData.description = sentences.join('. ').trim().substring(0, 500);
+  }
+
+  // Try to determine category based on keywords
+  const categoryKeywords = {
+    'conference': ['conference', 'summit', 'symposium', 'seminar'],
+    'workshop': ['workshop', 'training', 'course', 'class'],
+    'social': ['party', 'celebration', 'gathering', 'meetup'],
+    'sports': ['game', 'match', 'tournament', 'sports'],
+    'music': ['concert', 'music', 'performance', 'show'],
+    'food': ['dinner', 'lunch', 'food', 'restaurant', 'culinary'],
+    'education': ['lecture', 'presentation', 'educational', 'learning']
+  };
+
+  for (const [category, keywords] of Object.entries(categoryKeywords)) {
+    if (keywords.some(keyword => text.toLowerCase().includes(keyword))) {
+      eventData.category = category;
+      break;
+    }
+  }
+
+  return eventData;
+}
+
+// Helper function to normalize time format
+function normalizeTime(timeStr: string): string {
+  const time = timeStr.toLowerCase().trim();
+  
+  // If already in 24-hour format, return as is
+  if (/^\d{2}:\d{2}$/.test(time)) {
+    return time;
+  }
+  
+  // Convert 12-hour format to 24-hour format
+  const match = time.match(/(\d{1,2}):(\d{2})\s*(am|pm)?/);
+  if (match) {
+    let hours = parseInt(match[1]);
+    const minutes = match[2];
+    const period = match[3];
+    
+    if (period === 'pm' && hours !== 12) {
+      hours += 12;
+    } else if (period === 'am' && hours === 12) {
+      hours = 0;
+    }
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes}`;
+  }
+  
+  return timeStr;
+}
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -26,99 +207,27 @@ serve(async (req) => {
 
     console.log('Processing PDF file:', pdfFile.name);
     
-    // Convert PDF to base64 for processing
+    // Extract text from PDF using pure JavaScript
     const arrayBuffer = await pdfFile.arrayBuffer();
-    const base64Pdf = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-    
-    // Use a simple text extraction approach for PDFs
-    // In a real implementation, you'd use a proper PDF parsing library
     let extractedText = '';
     
     try {
-      // Simple text extraction - in production you'd use pdf-parse or similar
-      const decoder = new TextDecoder();
-      const uint8Array = new Uint8Array(arrayBuffer);
-      extractedText = decoder.decode(uint8Array);
+      // Import pdf-parse for Deno
+      const { default: pdfParse } = await import('https://esm.sh/pdf-parse@1.1.1');
       
-      // Clean up the text to get readable content
-      extractedText = extractedText.replace(/[^\x20-\x7E\n]/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-        
+      // Parse PDF and extract text
+      const data = await pdfParse(new Uint8Array(arrayBuffer));
+      extractedText = data.text;
+      
       console.log('Extracted text length:', extractedText.length);
+      console.log('Number of pages:', data.numpages);
     } catch (error) {
-      console.error('Text extraction error:', error);
+      console.error('PDF parsing error:', error);
       extractedText = 'Unable to extract text from PDF. Please fill the form manually.';
     }
 
-    // Use OpenAI to parse the extracted text and structure it as event data
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
-    }
-
-    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `Extract event information from the following text and return a JSON object with these fields:
-            {
-              "title": "event title",
-              "description": "event description",
-              "date": "YYYY-MM-DD format",
-              "startTime": "HH:MM format",
-              "endTime": "HH:MM format",
-              "location": "event location/venue",
-              "category": "event category",
-              "price": "numeric value or 0 for free",
-              "maxAttendees": "numeric value or null",
-              "website": "website URL if mentioned",
-              "registrationRequired": boolean
-            }
-            
-            If any field cannot be determined from the text, set it to null or appropriate default value.`
-          },
-          {
-            role: 'user',
-            content: `Please extract event information from this text: ${extractedText.substring(0, 3000)}`
-          }
-        ],
-        temperature: 0.3,
-        max_tokens: 500
-      }),
-    });
-
-    const openAIResult = await openAIResponse.json();
-    console.log('OpenAI response:', openAIResult);
-    
-    let eventData = {};
-    try {
-      const content = openAIResult.choices?.[0]?.message?.content;
-      if (content) {
-        eventData = JSON.parse(content);
-      }
-    } catch (parseError) {
-      console.error('Error parsing OpenAI response:', parseError);
-      eventData = {
-        title: '',
-        description: extractedText.substring(0, 500),
-        date: '',
-        startTime: '',
-        endTime: '',
-        location: '',
-        category: '',
-        price: 0,
-        maxAttendees: null,
-        website: '',
-        registrationRequired: false
-      };
-    }
+    // Parse the extracted text using regex patterns to find event information
+    const eventData = parseEventDataFromText(extractedText);
 
     console.log('Extracted event data:', eventData);
 
