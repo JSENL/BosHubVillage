@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEventFilterOptions } from '@/hooks/useDatabaseFilterOptions';
+import { useTranslation } from 'react-i18next';
 
 interface SearchBarProps {
   searchQuery: string;
@@ -13,9 +14,10 @@ interface SearchBarProps {
 
 const SearchBar = ({ searchQuery, onSearchChange, selectedCategory, onCategoryChange }: SearchBarProps) => {
   const { categories } = useEventFilterOptions();
+  const { t } = useTranslation();
 
   const categoryOptions = [
-    { value: 'all', label: 'All Categories' },
+    { value: 'all', label: t('common.all') + ' ' + t('common.category') },
     ...categories.map(category => ({
       value: category,
       label: category.charAt(0).toUpperCase() + category.slice(1)
@@ -27,7 +29,7 @@ const SearchBar = ({ searchQuery, onSearchChange, selectedCategory, onCategoryCh
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
-          placeholder="Search events..."
+          placeholder={t('forms.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="pl-10 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
@@ -36,7 +38,7 @@ const SearchBar = ({ searchQuery, onSearchChange, selectedCategory, onCategoryCh
       
       <Select value={selectedCategory} onValueChange={onCategoryChange}>
         <SelectTrigger className="w-full md:w-[200px] border-purple-200 focus:border-purple-400 focus:ring-purple-400">
-          <SelectValue placeholder="Category" />
+          <SelectValue placeholder={t('common.category')} />
         </SelectTrigger>
         <SelectContent>
           {categoryOptions.map((category) => (

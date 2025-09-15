@@ -92,7 +92,17 @@ export const TranslationTestComponent = () => {
       'cards.viewDetails',
       'cards.free',
       'itemTypes.events',
-      'itemTypes.businesses'
+      'itemTypes.businesses',
+      'common.submit',
+      'common.cancel',
+      'common.save',
+      'common.edit',
+      'common.delete',
+      'forms.searchPlaceholder',
+      'forms.enterName',
+      'forms.selectCategory',
+      'messages.saveSuccess',
+      'messages.deleteError'
     ];
     
     const passed = testKeys.every(key => {

@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Business } from '@/types/business';
+import { useTranslation } from 'react-i18next';
 
 interface EditBusinessDialogProps {
   business: Business;
@@ -17,6 +18,7 @@ interface EditBusinessDialogProps {
 }
 
 export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: EditBusinessDialogProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: business.title,
@@ -194,10 +196,10 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Updating...' : 'Update Business'}
+              {loading ? t('common.loading') : t('common.update') + ' ' + t('itemTypes.businesses').slice(0, -1)}
             </Button>
           </div>
         </form>

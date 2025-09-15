@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Event } from '@/hooks/useEvents';
+import { useTranslation } from 'react-i18next';
 
 interface EditEventDialogProps {
   event: Event;
@@ -17,6 +18,7 @@ interface EditEventDialogProps {
 }
 
 export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEventDialogProps) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   
   // Helper function to format date properly without timezone issues
@@ -268,10 +270,10 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Updating...' : 'Update Event'}
+              {loading ? t('common.loading') : t('common.update') + ' ' + t('itemTypes.events').slice(0, -1)}
             </Button>
           </div>
         </form>
