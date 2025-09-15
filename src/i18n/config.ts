@@ -212,6 +212,17 @@ const resources = {
         confirmDelete: "Are you sure you want to delete this item?",
         confirmAction: "Are you sure you want to continue?",
         unsavedChanges: "You have unsaved changes. Are you sure you want to leave?"
+      },
+      pdf: {
+        upload: {
+          title: 'PDF Event Data Extraction',
+          description: 'Upload a PDF containing event information to automatically fill the form fields',
+          selectFile: 'Select PDF File',
+          processing: 'Processing...',
+          process: 'Process PDF',
+          extractedText: 'Extracted Text',
+          note: 'Note: This feature uses PDF text extraction and OCR to automatically populate form fields. Please review and verify all extracted information.'
+        }
       }
     }
   },

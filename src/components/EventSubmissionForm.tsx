@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { useEventCategories } from '@/hooks/useCategories';
+import { EventPdfUpload } from '@/components/forms/EventPdfUpload';
 
 interface EventSubmissionFormProps {
   onClose?: () => void;
@@ -142,6 +143,24 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
     }));
   };
 
+  const handleEventDataExtracted = (eventData: any) => {
+    setFormData(prev => ({
+      ...prev,
+      ...eventData,
+      // Convert price to string for the form
+      price: eventData.price ? eventData.price.toString() : '',
+      // Convert maxAttendees to string for the form
+      max_attendees: eventData.maxAttendees ? eventData.maxAttendees.toString() : '',
+      // Map website to website_link
+      website_link: eventData.website || '',
+      // Map startTime to start_time and endTime to end_time
+      start_time: eventData.startTime || '',
+      end_time: eventData.endTime || '',
+      // Map registrationRequired to registration_required
+      registration_required: eventData.registrationRequired || false,
+    }));
+  };
+
   return (
     <Card className="border-0 shadow-none">
       <CardHeader>
@@ -155,6 +174,9 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         )}
       </CardHeader>
       <CardContent>
+        {/* PDF Upload Component */}
+        <EventPdfUpload onEventDataExtracted={handleEventDataExtracted} />
+        
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
           <div className="space-y-4">
