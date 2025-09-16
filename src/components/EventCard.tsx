@@ -71,7 +71,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
 
   // Helper function to format attendees text
   const formatAttendeesText = (maxAttendees: number) => {
-    return `Up to ${maxAttendees} attendees`;
+    return t('cards.upToAttendees', { count: maxAttendees });
   };
 
   if (viewMode === 'list') {
@@ -98,7 +98,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                         className={`h-4 w-4 ${i < rating ? 'text-yelp-orange fill-current' : 'text-gray-300'}`} 
                       />
                     ))}
-                    <span className="text-sm text-gray-600 ml-2 truncate">{reviewCount} reviews</span>
+                    <span className="text-sm text-gray-600 ml-2 truncate">{t('cards.reviews', { count: reviewCount })}</span>
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">

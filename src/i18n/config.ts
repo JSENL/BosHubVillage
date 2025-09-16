@@ -31,7 +31,9 @@ const resources = {
         time: "Time",
         price: "Price",
         added: "Added",
-        source: "Source"
+        source: "Source",
+        upToAttendees: "Up to {{count}} attendees",
+        reviews: "{{count}} reviews"
       },
       // Item types
       itemTypes: {
@@ -252,7 +254,9 @@ const resources = {
         time: "Hora",
         price: "Precio",
         added: "Agregado",
-        source: "Fuente"
+        source: "Fuente",
+        upToAttendees: "Hasta {{count}} asistentes",
+        reviews: "{{count}} reseñas"
       },
       itemTypes: {
         events: "Eventos",
@@ -460,7 +464,9 @@ const resources = {
         time: "Heure",
         price: "Prix",
         added: "Ajouté",
-        source: "Source"
+        source: "Source",
+        upToAttendees: "Jusqu'à {{count}} participants",
+        reviews: "{{count}} avis"
       },
       itemTypes: {
         events: "Événements",
@@ -668,7 +674,9 @@ const resources = {
         time: "Thời Gian", 
         price: "Giá",
         added: "Đã Thêm",
-        source: "Nguồn"
+        source: "Nguồn",
+        upToAttendees: "Tối đa {{count}} người tham gia",
+        reviews: "{{count}} đánh giá"
       },
       itemTypes: {
         events: "Sự Kiện",
@@ -876,7 +884,9 @@ const resources = {
         time: "Hora",
         price: "Preço",
         added: "Adicionado",
-        source: "Fonte"
+        source: "Fonte",
+        upToAttendees: "Até {{count}} participantes",
+        reviews: "{{count}} avaliações"
       },
       itemTypes: {
         events: "Eventos",
