@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
+import { TranslatedText } from '@/components/common/TranslatedText';
 
 interface Event {
   id: string;
@@ -89,7 +90,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1 min-w-0 mr-4">
                   <h3 className="text-xl font-bold text-gray-900 hover:text-yelp-red mb-1 line-clamp-2 break-words">
-                    {event.title}
+                    <TranslatedText text={event.title} />
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
                     {[...Array(5)].map((_, i) => (
@@ -111,7 +112,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{event.description}</p>
+              <p className="text-gray-600 mb-4 line-clamp-2 break-words">
+                <TranslatedText text={event.description} />
+              </p>
               
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 <div className="flex items-center min-w-0">
@@ -152,7 +155,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
           </div>
         </div>
         <CardTitle className="text-sm text-gray-900 hover:text-yelp-red line-clamp-2 break-words">
-          {event.title}
+          <TranslatedText text={event.title} />
         </CardTitle>
         <div className="flex items-center space-x-1">
           {[...Array(5)].map((_, i) => (
@@ -167,7 +170,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       
       <CardContent className="pt-2">
         <CardDescription className="mb-2 line-clamp-2 text-gray-600 text-xs break-words">
-          {event.description}
+          <TranslatedText text={event.description} />
         </CardDescription>
         <div className="space-y-1 text-xs">
           <div className="flex items-center text-gray-600 min-w-0">

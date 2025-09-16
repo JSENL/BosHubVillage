@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
 import { Business } from '@/types/business';
 import { Link } from 'react-router-dom';
+import { TranslatedText } from '@/components/common/TranslatedText';
 
 interface BusinessCardProps {
   business: Business;
@@ -18,7 +19,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
           <div className="flex justify-between items-start">
             <div className="flex-1 min-w-0">
               <CardTitle className="text-base font-semibold line-clamp-2 break-words">
-                {business.title}
+                <TranslatedText text={business.title} />
               </CardTitle>
               <Badge variant="secondary" className="mb-2 text-xs">
                 <Building className="h-3 w-3 mr-1 flex-shrink-0" />
@@ -34,11 +35,11 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
         <CardContent className="pt-2">
           {business.short_description && (
             <p className="text-gray-700 line-clamp-1 mb-1 text-xs break-words">
-              {business.short_description}
+              <TranslatedText text={business.short_description} />
             </p>
           )}
           <p className="text-gray-700 line-clamp-2 text-xs break-words">
-            {business.description}
+            <TranslatedText text={business.description} />
           </p>
         </CardContent>
       </Card>

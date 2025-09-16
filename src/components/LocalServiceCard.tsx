@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Building } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
 import { useNavigate } from 'react-router-dom';
+import { TranslatedText } from '@/components/common/TranslatedText';
 
 interface LocalServiceCardProps {
   localService: LocalResource;
@@ -30,7 +31,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2 break-words flex-1 min-w-0 mr-2">
-            {localService.name}
+            <TranslatedText text={localService.name} />
           </CardTitle>
           <Badge variant="secondary" className="ml-2 flex-shrink-0 text-xs">
             <Building className="h-3 w-3 mr-1 flex-shrink-0" />
@@ -52,7 +53,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         
         {localService.description && (
           <p className="text-xs text-gray-600 line-clamp-2 break-words">
-            {localService.description}
+            <TranslatedText text={localService.description} />
           </p>
         )}
         
