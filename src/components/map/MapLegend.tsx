@@ -17,7 +17,7 @@ export const MapLegend = () => {
             <div key={item.letter} className="flex items-center gap-2">
               <Badge 
                 variant="secondary" 
-                className="text-white font-bold w-6 h-6 rounded-full flex items-center justify-center text-xs p-0"
+                className="text-white font-bold w-7 h-7 rounded-full flex items-center justify-center text-xs min-w-7"
                 style={{ backgroundColor: item.color }}
               >
                 {item.letter}
