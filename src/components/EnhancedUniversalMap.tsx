@@ -26,7 +26,7 @@ interface EnhancedUniversalMapProps {
 
 export const EnhancedUniversalMap = ({ 
   items, 
-  height = "540px", 
+  height = "100%", 
   selectedTypes,
   onItemClick,
   viewMode = 'map'

@@ -65,7 +65,7 @@ export const MapViewSection = () => {
       </div>
       
       {/* Map view content */}
-      <div className="h-[250px] md:h-[600px] w-full relative">
+      <div className="h-[50vh] min-h-[350px] sm:h-[55vh] md:h-[60vh] lg:h-[65vh] xl:h-[70vh] max-h-[900px] w-full relative">
         {isRefreshingMap && (
           <div className="absolute inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center z-10">
             <div className="bg-white p-4 rounded-lg shadow-md flex items-center gap-2">

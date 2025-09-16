@@ -49,11 +49,11 @@ const MainContent = () => {
           
           {/* Map or List View */}
           {filters.viewMode === 'map' ? (
-            <div className="min-h-[540px]">
+            <div className="h-[60vh] min-h-[400px] max-h-[800px] sm:h-[65vh] lg:h-[70vh] xl:h-[75vh]">
               <MapView
                 items={filteredItems}
                 selectedTypes={selectedTypesForMap}
-                height="540px"
+                height="100%"
               />
             </div>
           ) : (

@@ -9,7 +9,7 @@ interface MapViewProps {
   height?: string;
 }
 
-export const MapView = ({ items, selectedTypes, height = "540px" }: MapViewProps) => {
+export const MapView = ({ items, selectedTypes, height = "100%" }: MapViewProps) => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
 
   const handleMarkerClick = (item: UnifiedItem) => {
@@ -17,7 +17,7 @@ export const MapView = ({ items, selectedTypes, height = "540px" }: MapViewProps
   };
 
   return (
-    <div className="relative w-full" style={{ height }}>
+    <div className="relative w-full h-full" style={{ height }}>
       <EnhancedUniversalMap
         items={items}
         height={height}
