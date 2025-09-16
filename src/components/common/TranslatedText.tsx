@@ -13,8 +13,11 @@ export const TranslatedText = ({ text, className, fallback }: TranslatedTextProp
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    console.log('TranslatedText: Language changed to:', currentLanguage, 'for text:', text);
+    
     const handleTranslation = async () => {
       if (currentLanguage === 'en' || !text) {
+        console.log('TranslatedText: Using original text (English or empty)');
         setTranslatedText(text);
         return;
       }
@@ -22,6 +25,7 @@ export const TranslatedText = ({ text, className, fallback }: TranslatedTextProp
       setIsLoading(true);
       try {
         const translated = await translateText(text);
+        console.log('TranslatedText: Translated from', text, 'to', translated);
         setTranslatedText(translated);
       } catch (error) {
         console.error('Translation failed:', error);
@@ -32,7 +36,7 @@ export const TranslatedText = ({ text, className, fallback }: TranslatedTextProp
     };
 
     handleTranslation();
-  }, [text, currentLanguage, translateText, fallback]);
+  }, [text, currentLanguage, translateText]); // Add translateText back since it's now memoized
 
   if (isLoading && currentLanguage !== 'en') {
     return (
