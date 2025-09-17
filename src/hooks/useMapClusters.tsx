@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { validateCoordinates, getMarkerColor } from '@/utils/mapMarkerUtils';
+import { groupItemsByLocation } from '@/utils/mapLocationGrouping';
+import { createMultiItemPopupContent } from '@/utils/mapMultiEventPopup';
 
 interface UseMapClustersProps {
   map: mapboxgl.Map | null;
@@ -45,32 +47,31 @@ export const useMapClusters = ({
     const addClusteringToMap = () => {
       console.log('🎯 Adding clustering to map...');
       
-      // Convert items to GeoJSON
-      const validItems = items.filter(item => validateCoordinates(item));
+      // Group items by location to handle multiple items at same location
+      const locationGroups = groupItemsByLocation(items);
       
       const geojsonData: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
-        features: validItems.map((item) => {
-          const coords = validateCoordinates(item);
-          if (!coords) return null;
-          
+        features: locationGroups.map((group) => {
           return {
             type: 'Feature',
             properties: {
-              id: item.id,
-              title: item.title,
-              description: item.description || '',
-              type: item.type,
-              category: item.category || '',
-              address: item.address || '',
-              itemData: JSON.stringify(item) // Store full item data
+              id: group.primaryItem.id,
+              title: group.primaryItem.title,
+              description: group.primaryItem.description || '',
+              type: group.primaryItem.type,
+              category: group.primaryItem.category || '',
+              address: group.primaryItem.address || '',
+              itemCount: group.items.length,
+              allItemsData: JSON.stringify(group.items), // Store all items at this location
+              primaryItemData: JSON.stringify(group.primaryItem)
             },
             geometry: {
               type: 'Point',
-              coordinates: [coords.lng, coords.lat]
+              coordinates: [group.location.lng, group.location.lat]
             }
           };
-        }).filter(Boolean) as GeoJSON.Feature[]
+        })
       };
 
       console.log(`🗺️ Creating GeoJSON with ${geojsonData.features.length} features`);
@@ -164,7 +165,7 @@ export const useMapClusters = ({
           }
         });
 
-        // Add unclustered point labels (type letters)
+        // Add unclustered point labels (type letters with count for multi-item locations)
         map.addLayer({
           id: unclusteredLayer + '-labels',
           type: 'symbol',
@@ -173,14 +174,33 @@ export const useMapClusters = ({
           layout: {
             'text-field': [
               'case',
-              ['==', ['get', 'type'], 'event'], 'E',
-              ['==', ['get', 'type'], 'business'], 'B',
-              ['==', ['get', 'type'], 'local-service'], 'L',
-              ['==', ['get', 'type'], 'news'], 'N',
-              '?'
+              ['>', ['get', 'itemCount'], 1],
+              ['concat', 
+                [
+                  'case',
+                  ['==', ['get', 'type'], 'event'], 'E',
+                  ['==', ['get', 'type'], 'business'], 'B',
+                  ['==', ['get', 'type'], 'local-service'], 'L',
+                  ['==', ['get', 'type'], 'news'], 'N',
+                  '?'
+                ],
+                ['to-string', ['get', 'itemCount']]
+              ],
+              [
+                'case',
+                ['==', ['get', 'type'], 'event'], 'E',
+                ['==', ['get', 'type'], 'business'], 'B',
+                ['==', ['get', 'type'], 'local-service'], 'L',
+                ['==', ['get', 'type'], 'news'], 'N',
+                '?'
+              ]
             ],
             'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-            'text-size': 11,
+            'text-size': [
+              'case',
+              ['>', ['get', 'itemCount'], 1], 10, // Smaller text for count
+              11 // Normal size for single items
+            ],
             'text-allow-overlap': true,
             'text-ignore-placement': true
           },
@@ -217,11 +237,30 @@ export const useMapClusters = ({
             layers: [unclusteredLayer, unclusteredLayer + '-labels']
           });
           
-          if (features.length > 0 && onMarkerClick) {
+          if (features.length > 0) {
             const feature = features[0];
             try {
-              const itemData = JSON.parse(feature.properties?.itemData || '{}');
-              onMarkerClick(itemData as UnifiedItem);
+              const allItemsData = JSON.parse(feature.properties?.allItemsData || '[]');
+              const primaryItemData = JSON.parse(feature.properties?.primaryItemData || '{}');
+              
+              // Create and show custom popup for multiple items
+              const popupContent = createMultiItemPopupContent(allItemsData);
+              
+              const popup = new mapboxgl.Popup({
+                offset: 35,
+                closeButton: true,
+                closeOnClick: false,
+                maxWidth: '400px',
+                className: 'multi-item-popup'
+              })
+                .setLngLat((feature.geometry as GeoJSON.Point).coordinates as [number, number])
+                .setHTML(popupContent)
+                .addTo(map);
+              
+              // Also trigger the click handler for the primary item
+              if (onMarkerClick) {
+                onMarkerClick(primaryItemData as UnifiedItem);
+              }
             } catch (error) {
               console.error('Error parsing item data:', error);
             }
@@ -236,8 +275,8 @@ export const useMapClusters = ({
           if (features.length > 0 && onMarkerDoubleClick) {
             const feature = features[0];
             try {
-              const itemData = JSON.parse(feature.properties?.itemData || '{}');
-              onMarkerDoubleClick(itemData as UnifiedItem);
+              const primaryItemData = JSON.parse(feature.properties?.primaryItemData || '{}');
+              onMarkerDoubleClick(primaryItemData as UnifiedItem);
             } catch (error) {
               console.error('Error parsing item data:', error);
             }

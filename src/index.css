@@ -4,6 +4,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mapbox popup styles for multi-item locations */
+.multi-item-popup .mapboxgl-popup-content {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.multi-item-popup .mapboxgl-popup-tip {
+  border-top-color: white !important;
+}
+
 /* Ensure Mapbox tiles render properly */
 .mapboxgl-map {
   font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
