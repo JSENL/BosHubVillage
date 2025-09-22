@@ -2,7 +2,7 @@ import { EventCard } from "@/components/EventCard";
 import NewsCard from "@/components/NewsCard";
 import BusinessCard from "@/components/BusinessCard";
 import LocalServiceCard from "@/components/LocalServiceCard";
-import { SectionMap } from "@/components/SectionMap";
+
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
@@ -37,7 +37,6 @@ export const ContentSection = ({
   if (filters.viewMode === 'map') {
     return (
       <div className="space-y-6">
-        <SectionMap />
         <EnhancedUniversalMap 
           items={allItems} 
           height="600px"

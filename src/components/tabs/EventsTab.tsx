@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { EventCard } from "@/components/EventCard";
 import { EventFiltersEnhanced } from "@/components/EventFiltersEnhanced";
-import { SectionMap } from "@/components/SectionMap";
+
 import { useEventsWithFilters } from "@/hooks/useEventsWithFilters";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { geocodeEvents } from "@/utils/geocodeEvents";
@@ -61,7 +61,7 @@ export const EventsTab = () => {
       <div className="space-y-4">
         <h2 className="text-2xl font-bold text-gray-900">Local Events</h2>
         
-        <SectionMap height="400px" />
+        {/* Events map handled by EventsContent component */}
         
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />

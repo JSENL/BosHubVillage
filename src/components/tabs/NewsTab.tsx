@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { SectionMap } from "@/components/SectionMap";
+
 import { UniversalFilters } from "@/components/UniversalFilters";
 import NewsCard from "@/components/NewsCard";
 import { useNews } from "@/hooks/useNews";
@@ -99,7 +99,7 @@ export const NewsTab = () => {
         itemType="news"
       />
       
-      <SectionMap height="400px" />
+      {/* News map will be added to news page separately */}
       
       <div className="mb-4 text-sm text-gray-500">
         Total news items: {allNews.length}
