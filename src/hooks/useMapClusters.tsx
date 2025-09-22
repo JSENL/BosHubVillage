@@ -23,6 +23,7 @@ export const useMapClusters = ({
   const clusterCountLayer = 'cluster-count';
   const unclusteredLayer = 'unclustered-point';
   const hasFitBoundsRef = useRef(false);
+  const activePopupRef = useRef<mapboxgl.Popup | null>(null); // Track active popup
 
   useEffect(() => {
     console.log('🎯 useMapClusters called with:', {
@@ -42,6 +43,12 @@ export const useMapClusters = ({
     if (map._removed) {
       console.log('🗺️ MapClusters: Map instance has been removed, skipping');
       return;
+    }
+
+    // Close any existing popups when map data changes
+    if (activePopupRef.current) {
+      activePopupRef.current.remove();
+      activePopupRef.current = null;
     }
 
     const addClusteringToMap = () => {
@@ -243,6 +250,12 @@ export const useMapClusters = ({
               const allItemsData = JSON.parse(feature.properties?.allItemsData || '[]');
               const primaryItemData = JSON.parse(feature.properties?.primaryItemData || '{}');
               
+              // Close any existing popup first
+              if (activePopupRef.current) {
+                activePopupRef.current.remove();
+                activePopupRef.current = null;
+              }
+              
               // Create and show custom popup for multiple items
               const popupContent = createMultiItemPopupContent(allItemsData);
               
@@ -256,6 +269,14 @@ export const useMapClusters = ({
                 .setLngLat((feature.geometry as GeoJSON.Point).coordinates as [number, number])
                 .setHTML(popupContent)
                 .addTo(map);
+              
+              // Store the active popup reference
+              activePopupRef.current = popup;
+              
+              // Clean up popup reference when it's closed
+              popup.on('close', () => {
+                activePopupRef.current = null;
+              });
               
               // Also trigger the click handler for the primary item
               if (onMarkerClick) {
@@ -392,6 +413,12 @@ export const useMapClusters = ({
     return () => {
       if (map && !map._removed) {
         try {
+          // Close any active popup
+          if (activePopupRef.current) {
+            activePopupRef.current.remove();
+            activePopupRef.current = null;
+          }
+          
           // Remove layers first, then source
           if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
           if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
