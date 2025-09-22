@@ -38,7 +38,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
     return new Date(dateString).toLocaleDateString('en-US', {
       month: '2-digit',
       day: '2-digit',
-      year: 'numeric'
+      year: '2-digit'
     });
   };
 
@@ -119,7 +119,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
               <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                 <div className="flex items-center min-w-0">
                   <Calendar className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
-                  <span className="truncate">{formatDate(event.date)} {formatTimeRange(event.start_time, event.end_time)}</span>
+                  <span className="truncate">{formatDate(event.date)}</span>
+                </div>
+                <div className="flex items-center min-w-0">
+                  <span className="text-xs truncate">{formatTimeRange(event.start_time, event.end_time)}</span>
                 </div>
                 <div className="flex items-center min-w-0">
                   <MapPin className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
@@ -175,7 +178,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
         <div className="space-y-1 text-xs">
           <div className="flex items-center text-gray-600 min-w-0">
             <Calendar className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
-            <span className="truncate">{formatDate(event.date)} {formatTimeRange(event.start_time, event.end_time)}</span>
+            <span className="truncate">{formatDate(event.date)}</span>
+          </div>
+          <div className="flex items-center text-gray-600 min-w-0 ml-5">
+            <span className="text-xs truncate">{formatTimeRange(event.start_time, event.end_time)}</span>
           </div>
           <div className="flex items-center text-gray-600 min-w-0">
             <MapPin className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
