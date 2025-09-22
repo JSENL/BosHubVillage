@@ -13,8 +13,6 @@ import { toast } from 'sonner';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { useEventCategories } from '@/hooks/useCategories';
-import { EventPdfUpload } from '@/components/forms/EventPdfUpload';
-import { PdfExtractionTester } from '@/components/forms/PdfExtractionTester';
 
 interface EventSubmissionFormProps {
   onClose?: () => void;
@@ -175,11 +173,6 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         )}
       </CardHeader>
       <CardContent>
-        {/* PDF Extraction Tester - Development Tool */}
-        <PdfExtractionTester onEventDataExtracted={handleEventDataExtracted} />
-        
-        {/* PDF Upload Component */}
-        <EventPdfUpload onEventDataExtracted={handleEventDataExtracted} />
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
