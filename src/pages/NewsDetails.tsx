@@ -10,6 +10,7 @@ import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import NewsComments from '@/components/NewsComments';
+import { BookmarkButton } from '@/components/social/BookmarkButton';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -71,7 +72,15 @@ const NewsDetails = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl mb-4">{news.title}</CardTitle>
+            <div className="flex items-center justify-between mb-4">
+              <CardTitle className="text-3xl">{news.title}</CardTitle>
+              <BookmarkButton 
+                itemType="news" 
+                itemId={news.id} 
+                size="lg"
+                showText={true}
+              />
+            </div>
             
             <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
               <div className="flex items-center">

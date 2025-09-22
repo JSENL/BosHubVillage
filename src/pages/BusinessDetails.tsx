@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
 import BusinessMessage from '@/components/BusinessMessage';
+import { BookmarkButton } from '@/components/social/BookmarkButton';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -78,8 +79,16 @@ const BusinessDetails = () => {
           <Card>
             <CardHeader>
               <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-3xl mb-2">{business.title}</CardTitle>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <CardTitle className="text-3xl">{business.title}</CardTitle>
+                    <BookmarkButton 
+                      itemType="business" 
+                      itemId={business.id} 
+                      size="lg"
+                      showText={true}
+                    />
+                  </div>
                   <div className="flex items-center space-x-4 mb-4">
                     <Badge variant="secondary">
                       <Building className="h-3 w-3 mr-1" />

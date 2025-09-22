@@ -9,6 +9,7 @@ import { CommentForm } from '@/components/comments/CommentForm';
 import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
 import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
 import { Navigation } from '@/components/Navigation';
+import { BookmarkButton } from '@/components/social/BookmarkButton';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
@@ -70,11 +71,21 @@ const LocalServiceDetails = () => {
         <Card>
           <CardHeader>
             <div className="flex justify-between items-start">
-              <CardTitle className="text-2xl">{resource.name}</CardTitle>
-              <Badge variant="secondary">
-                <Building className="h-3 w-3 mr-1" />
-                {resource.category}
-              </Badge>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <CardTitle className="text-2xl">{resource.name}</CardTitle>
+                  <BookmarkButton 
+                    itemType="local_service" 
+                    itemId={resource.id} 
+                    size="lg"
+                    showText={true}
+                  />
+                </div>
+                <Badge variant="secondary">
+                  <Building className="h-3 w-3 mr-1" />
+                  {resource.category}
+                </Badge>
+              </div>
             </div>
           </CardHeader>
           

@@ -9,6 +9,7 @@ import { Navigation } from '@/components/Navigation';
 import { SocialShare } from '@/components/SocialShare';
 import { CalendarShare } from '@/components/CalendarShare';
 import { EventRegistrationForm } from '@/components/EventRegistrationForm';
+import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { useState } from 'react';
 
 const EventDetails = () => {
@@ -54,7 +55,15 @@ const EventDetails = () => {
             Back to Events
           </Button>
 
-          <h1 className="text-3xl font-bold mb-4">{event.title}</h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold">{event.title}</h1>
+            <BookmarkButton 
+              itemType="event" 
+              itemId={event.id} 
+              size="lg"
+              showText={true}
+            />
+          </div>
           
           <div className="grid md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
