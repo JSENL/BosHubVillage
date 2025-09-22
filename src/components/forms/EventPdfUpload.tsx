@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { FileText, Upload, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EventPdfUploadProps {
   onEventDataExtracted: (eventData: any) => void;
@@ -39,16 +40,13 @@ export const EventPdfUpload: React.FC<EventPdfUploadProps> = ({ onEventDataExtra
       const formData = new FormData();
       formData.append('pdf', selectedFile);
 
-      const response = await fetch('https://mecotkulcgdbilaksddu.supabase.co/functions/v1/extract-event-data', {
-        method: 'POST',
+      const { data: result, error } = await supabase.functions.invoke('extract-event-data', {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to process PDF');
+      if (error) {
+        throw new Error(error.message || 'Failed to process PDF');
       }
-
-      const result = await response.json();
       
       setExtractedText(result.extractedText);
       setStatus('success');
