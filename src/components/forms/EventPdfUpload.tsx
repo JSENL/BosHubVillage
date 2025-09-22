@@ -36,7 +36,27 @@ export const EventPdfUpload: React.FC<EventPdfUploadProps> = ({ onEventDataExtra
     setIsProcessing(true);
     setStatus('processing');
 
+    let extractionId: string | null = null;
+
     try {
+      // First, create a record in the pdf_extractions table
+      const { data: extraction, error: insertError } = await supabase
+        .from('pdf_extractions')
+        .insert([
+          {
+            original_filename: selectedFile.name,
+            status: 'processing'
+          }
+        ])
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('Error creating extraction record:', insertError);
+      } else {
+        extractionId = extraction.id;
+      }
+
       const formData = new FormData();
       formData.append('pdf', selectedFile);
 
@@ -51,6 +71,18 @@ export const EventPdfUpload: React.FC<EventPdfUploadProps> = ({ onEventDataExtra
       setExtractedText(result.extractedText);
       setStatus('success');
       
+      // Update the extraction record with results
+      if (extractionId) {
+        await supabase
+          .from('pdf_extractions')
+          .update({
+            extracted_text: result.extractedText,
+            parsed_event_data: result.eventData,
+            status: 'success'
+          })
+          .eq('id', extractionId);
+      }
+      
       // Parse the extracted data and fill the form
       onEventDataExtracted(result.eventData);
       
@@ -58,6 +90,18 @@ export const EventPdfUpload: React.FC<EventPdfUploadProps> = ({ onEventDataExtra
     } catch (error) {
       console.error('Error processing PDF:', error);
       setStatus('error');
+      
+      // Update the extraction record with error
+      if (extractionId) {
+        await supabase
+          .from('pdf_extractions')
+          .update({
+            status: 'error',
+            error_message: error instanceof Error ? error.message : 'Unknown error'
+          })
+          .eq('id', extractionId);
+      }
+      
       toast.error('Failed to process PDF. Please try again or fill the form manually.');
     } finally {
       setIsProcessing(false);

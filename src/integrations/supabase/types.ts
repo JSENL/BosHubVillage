@@ -1403,6 +1403,42 @@ export type Database = {
         }
         Relationships: []
       }
+      pdf_extractions: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          extracted_text: string | null
+          id: string
+          original_filename: string
+          parsed_event_data: Json | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          extracted_text?: string | null
+          id?: string
+          original_filename: string
+          parsed_event_data?: Json | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          extracted_text?: string | null
+          id?: string
+          original_filename?: string
+          parsed_event_data?: Json | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
