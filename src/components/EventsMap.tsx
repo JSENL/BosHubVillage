@@ -7,7 +7,7 @@ import { EventsSidebar } from './map/EventsSidebar';
 import { useEventHighlight } from '@/hooks/useEventHighlight';
 import { useMapboxToken } from '@/contexts/MapboxContext';
 import { useMapboxMap } from '@/hooks/useMapboxMap';
-import { useMapMarkers } from '@/hooks/useMapMarkers';
+
 
 interface EventsMapProps {
   searchQuery: string;
@@ -73,12 +73,8 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
     }
   };
 
-  // Add markers for unified events
-  useMapMarkers({
-    map: mapInstance,
-    items: unifiedEvents,
-    onMarkerClick: handleMarkerClick
-  });
+  // Markers are handled by useMapClusters in EnhancedUniversalMap
+  // No need for additional useMapMarkers call here
 
   const handleEventClick = (event: Event) => {
     navigate(`/event/${event.id}`);
