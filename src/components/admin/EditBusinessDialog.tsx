@@ -1,17 +1,20 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Business } from '@/types/business';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 
 interface EditBusinessDialogProps {
-  business: Business;
+  business: any; // Extended Business with owner info
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onUpdate: () => void;
@@ -20,6 +23,9 @@ interface EditBusinessDialogProps {
 export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: EditBusinessDialogProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [ownerLoading, setOwnerLoading] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string>('');
+  
   const [formData, setFormData] = useState({
     title: business.title,
     business_type: business.business_type,
@@ -32,6 +38,30 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
     latitude: business.latitude?.toString() || '',
     longitude: business.longitude?.toString() || '',
   });
+
+  // Fetch all users for owner assignment
+  const { data: users = [] } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .order('full_name');
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: open
+  });
+
+  // Set current owner when dialog opens
+  useEffect(() => {
+    if (business?.business_owner && business.business_owner.length > 0) {
+      setSelectedUserId(business.business_owner[0].owner_id);
+    } else {
+      setSelectedUserId('');
+    }
+  }, [business]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,13 +121,83 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
     }
   };
 
+  const handleChangeOwner = async () => {
+    if (!selectedUserId) {
+      toast.error('Please select a user to assign as owner');
+      return;
+    }
+
+    setOwnerLoading(true);
+    try {
+      // First, remove any existing business owner
+      const { error: deleteError } = await supabase
+        .from('business_owner')
+        .delete()
+        .eq('business_id', business.id);
+
+      if (deleteError) throw deleteError;
+
+      // Then, insert the new business owner
+      const { error: insertError } = await supabase
+        .from('business_owner')
+        .insert({
+          business_id: business.id,
+          owner_id: selectedUserId
+        });
+
+      if (insertError) throw insertError;
+
+      toast.success('Business owner updated successfully');
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error updating business owner:', error);
+      toast.error('Failed to update business owner');
+    } finally {
+      setOwnerLoading(false);
+    }
+  };
+
+  const handleRemoveOwner = async () => {
+    if (!business?.business_owner || business.business_owner.length === 0) {
+      toast.error('No owner to remove');
+      return;
+    }
+
+    setOwnerLoading(true);
+    try {
+      const { error } = await supabase
+        .from('business_owner')
+        .delete()
+        .eq('business_id', business.id);
+
+      if (error) throw error;
+
+      toast.success('Business owner removed successfully');
+      setSelectedUserId('');
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error removing business owner:', error);
+      toast.error('Failed to remove business owner');
+    } finally {
+      setOwnerLoading(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Business</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        
+        <Tabs defaultValue="details" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="details">Business Details</TabsTrigger>
+            <TabsTrigger value="owner">Business Owner</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="details">
+            <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="title">Business Name</Label>
             <Input
@@ -194,15 +294,83 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
             </div>
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? t('common.loading') : t('common.update') + ' ' + t('itemTypes.businesses').slice(0, -1)}
-            </Button>
-          </div>
-        </form>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                  {t('common.cancel')}
+                </Button>
+                <Button type="submit" disabled={loading}>
+                  {loading ? t('common.loading') : t('common.update') + ' ' + t('itemTypes.businesses').slice(0, -1)}
+                </Button>
+              </div>
+            </form>
+          </TabsContent>
+          
+          <TabsContent value="owner" className="space-y-4">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Current Business Owner</h3>
+                {business?.business_owner && business.business_owner.length > 0 ? (
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <div className="font-medium">
+                      {business.business_owner[0].profiles?.full_name || 'Unknown'}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {business.business_owner[0].profiles?.email || 'No email'}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-3 bg-gray-50 rounded-lg text-gray-500">
+                    No owner assigned
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="newOwner">Assign New Owner</Label>
+                <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a user to assign as owner..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.map((user) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.full_name || user.email} ({user.email})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button
+                  onClick={handleChangeOwner}
+                  disabled={ownerLoading || !selectedUserId}
+                >
+                  {ownerLoading ? 'Updating...' : 'Assign Owner'}
+                </Button>
+                
+                {business?.business_owner && business.business_owner.length > 0 && (
+                  <Button
+                    onClick={handleRemoveOwner}
+                    disabled={ownerLoading}
+                    variant="destructive"
+                  >
+                    {ownerLoading ? 'Removing...' : 'Remove Owner'}
+                  </Button>
+                )}
+                
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => onOpenChange(false)}
+                  className="ml-auto"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

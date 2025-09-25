@@ -20,7 +20,6 @@ import { Business } from '@/types/business';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { EditBusinessDialog } from './EditBusinessDialog';
-import { ChangeBusinessOwnerDialog } from './ChangeBusinessOwnerDialog';
 
 interface PublishedBusinessTableProps {
   businesses: any[];
@@ -29,8 +28,7 @@ interface PublishedBusinessTableProps {
 
 export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusinessTableProps) => {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [editingBusiness, setEditingBusiness] = useState<Business | null>(null);
-  const [changingOwnerBusiness, setChangingOwnerBusiness] = useState<any | null>(null);
+  const [editingBusiness, setEditingBusiness] = useState<any | null>(null);
 
   const handleDeleteBusiness = async (businessId: string) => {
     if (!confirm('Are you sure you want to delete this business? This action cannot be undone.')) {
@@ -128,29 +126,19 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        {business.business_owner && business.business_owner.length > 0 ? (
-                          <div>
-                            <div className="text-sm font-medium">
-                              {business.business_owner[0].profiles?.full_name || 'Unknown'}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {business.business_owner[0].profiles?.email || 'No email'}
-                            </div>
+                    <div>
+                      {business.business_owner && business.business_owner.length > 0 ? (
+                        <div>
+                          <div className="text-sm font-medium">
+                            {business.business_owner[0].profiles?.full_name || 'Unknown'}
                           </div>
-                        ) : (
-                          <div className="text-sm text-gray-400">No owner assigned</div>
-                        )}
-                      </div>
-                      <Button
-                        onClick={() => setChangingOwnerBusiness(business)}
-                        variant="ghost"
-                        size="sm"
-                        className="ml-2"
-                      >
-                        <UserCog className="h-4 w-4" />
-                      </Button>
+                          <div className="text-xs text-gray-500">
+                            {business.business_owner[0].profiles?.email || 'No email'}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-400">No owner assigned</div>
+                      )}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -204,15 +192,6 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
           business={editingBusiness}
           open={!!editingBusiness}
           onOpenChange={(open) => !open && setEditingBusiness(null)}
-          onUpdate={onUpdate}
-        />
-      )}
-
-      {changingOwnerBusiness && (
-        <ChangeBusinessOwnerDialog
-          business={changingOwnerBusiness}
-          open={!!changingOwnerBusiness}
-          onOpenChange={(open) => !open && setChangingOwnerBusiness(null)}
           onUpdate={onUpdate}
         />
       )}
