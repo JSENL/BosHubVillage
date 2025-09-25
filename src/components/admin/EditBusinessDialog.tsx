@@ -59,7 +59,7 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
     if (business?.business_owner && business.business_owner.length > 0) {
       setSelectedUserId(business.business_owner[0].owner_id);
     } else {
-      setSelectedUserId('');
+      setSelectedUserId('none');
     }
   }, [business]);
 
@@ -132,8 +132,8 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
 
       if (deleteError) throw deleteError;
 
-      // If a user is selected, assign them as the new owner
-      if (selectedUserId) {
+      // If a user is selected (not "none"), assign them as the new owner
+      if (selectedUserId && selectedUserId !== 'none') {
         const { error: insertError } = await supabase
           .from('business_owner')
           .insert({
@@ -306,7 +306,7 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
                     <SelectValue placeholder="Select owner assignment..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">No owner assigned</SelectItem>
+                    <SelectItem value="none">No owner assigned</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id}>
                         {user.full_name || user.email} ({user.email})
@@ -321,7 +321,7 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
                   onClick={handleChangeOwner}
                   disabled={ownerLoading}
                 >
-                  {ownerLoading ? 'Updating...' : selectedUserId ? 'Assign Owner' : 'Remove Owner'}
+                  {ownerLoading ? 'Updating...' : (selectedUserId && selectedUserId !== 'none') ? 'Assign Owner' : 'Remove Owner'}
                 </Button>
                 
                 <Button 
