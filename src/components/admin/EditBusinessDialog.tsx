@@ -122,11 +122,6 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
   };
 
   const handleChangeOwner = async () => {
-    if (!selectedUserId) {
-      toast.error('Please select a user to assign as owner');
-      return;
-    }
-
     setOwnerLoading(true);
     try {
       // First, remove any existing business owner
@@ -137,17 +132,21 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
 
       if (deleteError) throw deleteError;
 
-      // Then, insert the new business owner
-      const { error: insertError } = await supabase
-        .from('business_owner')
-        .insert({
-          business_id: business.id,
-          owner_id: selectedUserId
-        });
+      // If a user is selected, assign them as the new owner
+      if (selectedUserId) {
+        const { error: insertError } = await supabase
+          .from('business_owner')
+          .insert({
+            business_id: business.id,
+            owner_id: selectedUserId
+          });
 
-      if (insertError) throw insertError;
+        if (insertError) throw insertError;
+        toast.success('Business owner updated successfully');
+      } else {
+        toast.success('Business owner removed successfully');
+      }
 
-      toast.success('Business owner updated successfully');
       onUpdate();
     } catch (error: any) {
       console.error('Error updating business owner:', error);
@@ -157,31 +156,6 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
     }
   };
 
-  const handleRemoveOwner = async () => {
-    if (!business?.business_owner || business.business_owner.length === 0) {
-      toast.error('No owner to remove');
-      return;
-    }
-
-    setOwnerLoading(true);
-    try {
-      const { error } = await supabase
-        .from('business_owner')
-        .delete()
-        .eq('business_id', business.id);
-
-      if (error) throw error;
-
-      toast.success('Business owner removed successfully');
-      setSelectedUserId('');
-      onUpdate();
-    } catch (error: any) {
-      console.error('Error removing business owner:', error);
-      toast.error('Failed to remove business owner');
-    } finally {
-      setOwnerLoading(false);
-    }
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -326,12 +300,13 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
               </div>
 
               <div>
-                <Label htmlFor="newOwner">Assign New Owner</Label>
+                <Label htmlFor="newOwner">Assign Owner</Label>
                 <Select value={selectedUserId} onValueChange={setSelectedUserId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a user to assign as owner..." />
+                    <SelectValue placeholder="Select owner assignment..." />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="">No owner assigned</SelectItem>
                     {users.map((user) => (
                       <SelectItem key={user.id} value={user.id}>
                         {user.full_name || user.email} ({user.email})
@@ -344,20 +319,10 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
               <div className="flex gap-2 pt-4">
                 <Button
                   onClick={handleChangeOwner}
-                  disabled={ownerLoading || !selectedUserId}
+                  disabled={ownerLoading}
                 >
-                  {ownerLoading ? 'Updating...' : 'Assign Owner'}
+                  {ownerLoading ? 'Updating...' : selectedUserId ? 'Assign Owner' : 'Remove Owner'}
                 </Button>
-                
-                {business?.business_owner && business.business_owner.length > 0 && (
-                  <Button
-                    onClick={handleRemoveOwner}
-                    disabled={ownerLoading}
-                    variant="destructive"
-                  >
-                    {ownerLoading ? 'Removing...' : 'Remove Owner'}
-                  </Button>
-                )}
                 
                 <Button 
                   type="button" 
