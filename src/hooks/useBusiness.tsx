@@ -8,30 +8,43 @@ export const useBusiness = () => {
     queryFn: async () => {
       console.log('Fetching businesses from Supabase...');
       
-      const { data, error } = await supabase
+      // First get basic business data, then manually fetch owners
+      const { data: businessData, error: businessError } = await supabase
         .from('business')
-        .select(`
-          *,
-          business_owner (
-            id,
-            owner_id,
-            profiles:owner_id (
-              id,
-              full_name,
-              email
-            )
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Error fetching businesses:', error);
-        throw error;
+
+      if (businessError) {
+        console.error('Error fetching businesses:', businessError);
+        throw businessError;
       }
+
+      // Then fetch business owners with profiles for each business
+      const businessesWithOwners = await Promise.all(
+        (businessData || []).map(async (business) => {
+          const { data: ownerData } = await supabase
+            .from('business_owner')
+            .select(`
+              id,
+              owner_id,
+              profiles (
+                id,
+                full_name,
+                email
+              )
+            `)
+            .eq('business_id', business.id);
+
+          return {
+            ...business,
+            business_owner: ownerData || []
+          };
+        })
+      );
+
+      console.log(`Fetched ${businessesWithOwners?.length || 0} business items from Supabase with owners`);
       
-      console.log(`Fetched ${data?.length || 0} business items from Supabase`);
-      
-      return (data || []) as any[];
+      return businessesWithOwners;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
