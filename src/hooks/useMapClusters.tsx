@@ -71,7 +71,8 @@ export const useMapClusters = ({
               address: group.primaryItem.address || '',
               itemCount: group.items.length,
               allItemsData: JSON.stringify(group.items), // Store all items at this location
-              primaryItemData: JSON.stringify(group.primaryItem)
+              primaryItemData: JSON.stringify(group.primaryItem),
+              isSponsored: group.primaryItem.is_sponsored || false
             },
             geometry: {
               type: 'Point',
@@ -87,11 +88,13 @@ export const useMapClusters = ({
       const existingSource = map.getSource(sourceId);
       if (existingSource) {
         console.log('🧹 Removing existing source and layers...');
-        // Remove layers first, then source
-        if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
-        if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
-        if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
-        if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
+          // Remove layers first, then source
+          if (map.getLayer(unclusteredLayer + '-sponsored-labels')) map.removeLayer(unclusteredLayer + '-sponsored-labels');
+          if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
+          if (map.getLayer(unclusteredLayer + '-sponsored')) map.removeLayer(unclusteredLayer + '-sponsored');
+          if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
+          if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
+          if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
         map.removeSource(sourceId);
       }
 
@@ -152,12 +155,25 @@ export const useMapClusters = ({
           }
         });
 
-        // Add unclustered points layer
+        // Add star icon for sponsored markers
+        if (!map.hasImage('star-marker')) {
+          // Create star icon
+          const starSvg = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          `;
+          const starIcon = new Image(24, 24);
+          starIcon.onload = () => map.addImage('star-marker', starIcon);
+          starIcon.src = 'data:image/svg+xml;base64,' + btoa(starSvg);
+        }
+
+        // Add non-sponsored unclustered points (circles)
         map.addLayer({
           id: unclusteredLayer,
           type: 'circle',
           source: sourceId,
-          filter: ['!', ['has', 'point_count']],
+          filter: ['all', ['!', ['has', 'point_count']], ['!=', ['get', 'isSponsored'], true]],
           paint: {
             'circle-color': [
               'case',
@@ -172,12 +188,35 @@ export const useMapClusters = ({
           }
         });
 
-        // Add unclustered point labels (type letters with count for multi-item locations)
+        // Add sponsored unclustered points (stars)
+        map.addLayer({
+          id: unclusteredLayer + '-sponsored',
+          type: 'symbol',
+          source: sourceId,
+          filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'isSponsored'], true]],
+          layout: {
+            'icon-image': 'star-marker',
+            'icon-size': 1.5,
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true
+          },
+          paint: {
+            'icon-color': [
+              'case',
+              ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
+              ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
+              ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
+              getMarkerColor('default')
+            ]
+          }
+        });
+
+        // Add non-sponsored point labels (type letters with count for multi-item locations)
         map.addLayer({
           id: unclusteredLayer + '-labels',
           type: 'symbol',
           source: sourceId,
-          filter: ['!', ['has', 'point_count']],
+          filter: ['all', ['!', ['has', 'point_count']], ['!=', ['get', 'isSponsored'], true]],
           layout: {
             'text-field': [
               'case',
@@ -216,6 +255,59 @@ export const useMapClusters = ({
           }
         });
 
+        // Add sponsored point labels (type letters with count for multi-item locations)
+        map.addLayer({
+          id: unclusteredLayer + '-sponsored-labels',
+          type: 'symbol',
+          source: sourceId,
+          filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'isSponsored'], true]],
+          layout: {
+            'text-field': [
+              'case',
+              ['>', ['get', 'itemCount'], 1],
+              ['concat', 
+                [
+                  'case',
+                  ['==', ['get', 'type'], 'event'], 'E',
+                  ['==', ['get', 'type'], 'business'], 'B',
+                  ['==', ['get', 'type'], 'local-service'], 'L',
+                  ['==', ['get', 'type'], 'news'], 'N',
+                  '?'
+                ],
+                ['to-string', ['get', 'itemCount']]
+              ],
+              [
+                'case',
+                ['==', ['get', 'type'], 'event'], 'E',
+                ['==', ['get', 'type'], 'business'], 'B',
+                ['==', ['get', 'type'], 'local-service'], 'L',
+                ['==', ['get', 'type'], 'news'], 'N',
+                '?'
+              ]
+            ],
+            'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+            'text-size': [
+              'case',
+              ['>', ['get', 'itemCount'], 1], 10, // Smaller text for count
+              11 // Normal size for single items
+            ],
+            'text-allow-overlap': true,
+            'text-ignore-placement': true,
+            'text-offset': [0, 0.2]
+          },
+          paint: {
+            'text-color': '#ffffff',
+            'text-halo-color': [
+              'case',
+              ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
+              ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
+              ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
+              getMarkerColor('default')
+            ],
+            'text-halo-width': 1
+          }
+        });
+
         console.log('✅ Successfully added all clustering layers');
 
         // Add click handlers
@@ -241,7 +333,7 @@ export const useMapClusters = ({
 
         const handlePointClick = (e: mapboxgl.MapMouseEvent) => {
           const features = map.queryRenderedFeatures(e.point, {
-            layers: [unclusteredLayer, unclusteredLayer + '-labels']
+            layers: [unclusteredLayer, unclusteredLayer + '-labels', unclusteredLayer + '-sponsored', unclusteredLayer + '-sponsored-labels']
           });
           
           if (features.length > 0) {
@@ -290,7 +382,7 @@ export const useMapClusters = ({
 
         const handlePointDoubleClick = (e: mapboxgl.MapMouseEvent) => {
           const features = map.queryRenderedFeatures(e.point, {
-            layers: [unclusteredLayer, unclusteredLayer + '-labels']
+            layers: [unclusteredLayer, unclusteredLayer + '-labels', unclusteredLayer + '-sponsored', unclusteredLayer + '-sponsored-labels']
           });
           
           if (features.length > 0 && onMarkerDoubleClick) {
@@ -307,7 +399,9 @@ export const useMapClusters = ({
         // Add event listeners
         map.on('click', clusterLayer, handleClusterClick);
         map.on('click', unclusteredLayer, handlePointClick);
+        map.on('click', unclusteredLayer + '-sponsored', handlePointClick);
         map.on('dblclick', unclusteredLayer, handlePointDoubleClick);
+        map.on('dblclick', unclusteredLayer + '-sponsored', handlePointDoubleClick);
 
         // Change cursor on hover
         map.on('mouseenter', clusterLayer, () => {
@@ -322,10 +416,22 @@ export const useMapClusters = ({
         map.on('mouseleave', unclusteredLayer, () => {
           map.getCanvas().style.cursor = '';
         });
+        map.on('mouseenter', unclusteredLayer + '-sponsored', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', unclusteredLayer + '-sponsored', () => {
+          map.getCanvas().style.cursor = '';
+        });
         map.on('mouseenter', unclusteredLayer + '-labels', () => {
           map.getCanvas().style.cursor = 'pointer';
         });
         map.on('mouseleave', unclusteredLayer + '-labels', () => {
+          map.getCanvas().style.cursor = '';
+        });
+        map.on('mouseenter', unclusteredLayer + '-sponsored-labels', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', unclusteredLayer + '-sponsored-labels', () => {
           map.getCanvas().style.cursor = '';
         });
 
@@ -334,7 +440,9 @@ export const useMapClusters = ({
           if (map && !map._removed) {
             map.off('click', clusterLayer, handleClusterClick);
             map.off('click', unclusteredLayer, handlePointClick);
+            map.off('click', unclusteredLayer + '-sponsored', handlePointClick);
             map.off('dblclick', unclusteredLayer, handlePointDoubleClick);
+            map.off('dblclick', unclusteredLayer + '-sponsored', handlePointDoubleClick);
           }
         };
 
@@ -420,7 +528,9 @@ export const useMapClusters = ({
           }
           
           // Remove layers first, then source
+          if (map.getLayer(unclusteredLayer + '-sponsored-labels')) map.removeLayer(unclusteredLayer + '-sponsored-labels');
           if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
+          if (map.getLayer(unclusteredLayer + '-sponsored')) map.removeLayer(unclusteredLayer + '-sponsored');
           if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
           if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
           if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
