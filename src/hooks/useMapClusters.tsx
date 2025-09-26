@@ -157,15 +157,45 @@ export const useMapClusters = ({
 
         // Add star icon for sponsored markers
         if (!map.hasImage('star-marker')) {
-          // Create star icon
-          const starSvg = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-          `;
-          const starIcon = new Image(24, 24);
-          starIcon.onload = () => map.addImage('star-marker', starIcon);
-          starIcon.src = 'data:image/svg+xml;base64,' + btoa(starSvg);
+          // Create star icon using canvas for better compatibility
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d')!;
+          canvas.width = 24;
+          canvas.height = 24;
+          
+          // Draw star shape
+          ctx.fillStyle = '#FFD700'; // Gold color for visibility
+          ctx.beginPath();
+          const centerX = 12, centerY = 12, spikes = 5, outerRadius = 10, innerRadius = 5;
+          
+          let rot = Math.PI / 2 * 3;
+          let x = centerX;
+          let y = centerY;
+          const step = Math.PI / spikes;
+          
+          ctx.moveTo(centerX, centerY - outerRadius);
+          for (let i = 0; i < spikes; i++) {
+            x = centerX + Math.cos(rot) * outerRadius;
+            y = centerY + Math.sin(rot) * outerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+            
+            x = centerX + Math.cos(rot) * innerRadius;
+            y = centerY + Math.sin(rot) * innerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+          }
+          ctx.lineTo(centerX, centerY - outerRadius);
+          ctx.closePath();
+          ctx.fill();
+          
+          // Convert canvas to ImageData for Mapbox
+          const imageData = ctx.getImageData(0, 0, 24, 24);
+          map.addImage('star-marker', {
+            width: 24,
+            height: 24,
+            data: new Uint8Array(imageData.data.buffer)
+          });
         }
 
         // Add non-sponsored unclustered points (circles)
