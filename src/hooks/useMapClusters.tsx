@@ -57,9 +57,16 @@ export const useMapClusters = ({
       // Group items by location to handle multiple items at same location
       const locationGroups = groupItemsByLocation(items);
       
-      const geojsonData: GeoJSON.FeatureCollection = {
+      // Separate sponsored and regular items
+      const regularGroups = locationGroups.filter(group => !group.primaryItem.is_sponsored);
+      const sponsoredGroups = locationGroups.filter(group => group.primaryItem.is_sponsored);
+      
+      console.log(`🗺️ Split items: ${regularGroups.length} regular groups, ${sponsoredGroups.length} sponsored groups`);
+      
+      // Create GeoJSON for regular items (will be clustered)
+      const regularGeojsonData: GeoJSON.FeatureCollection = {
         type: 'FeatureCollection',
-        features: locationGroups.map((group) => {
+        features: regularGroups.map((group) => {
           return {
             type: 'Feature',
             properties: {
@@ -70,9 +77,35 @@ export const useMapClusters = ({
               category: group.primaryItem.category || '',
               address: group.primaryItem.address || '',
               itemCount: group.items.length,
-              allItemsData: JSON.stringify(group.items), // Store all items at this location
+              allItemsData: JSON.stringify(group.items),
               primaryItemData: JSON.stringify(group.primaryItem),
-              isSponsored: group.primaryItem.is_sponsored || false
+              isSponsored: false
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [group.location.lng, group.location.lat]
+            }
+          };
+        })
+      };
+      
+      // Create GeoJSON for sponsored items (will NOT be clustered)
+      const sponsoredGeojsonData: GeoJSON.FeatureCollection = {
+        type: 'FeatureCollection',
+        features: sponsoredGroups.map((group) => {
+          return {
+            type: 'Feature',
+            properties: {
+              id: group.primaryItem.id,
+              title: group.primaryItem.title,
+              description: group.primaryItem.description || '',
+              type: group.primaryItem.type,
+              category: group.primaryItem.category || '',
+              address: group.primaryItem.address || '',
+              itemCount: group.items.length,
+              allItemsData: JSON.stringify(group.items),
+              primaryItemData: JSON.stringify(group.primaryItem),
+              isSponsored: true
             },
             geometry: {
               type: 'Point',
@@ -82,78 +115,95 @@ export const useMapClusters = ({
         })
       };
 
-      console.log(`🗺️ Creating GeoJSON with ${geojsonData.features.length} features`);
+      console.log(`🗺️ Creating GeoJSON: ${regularGeojsonData.features.length} regular features, ${sponsoredGeojsonData.features.length} sponsored features`);
 
-      // Check if source already exists and remove it first
-      const existingSource = map.getSource(sourceId);
-      if (existingSource) {
-        console.log('🧹 Removing existing source and layers...');
-          // Remove layers first, then source
-          if (map.getLayer(unclusteredLayer + '-sponsored-labels')) map.removeLayer(unclusteredLayer + '-sponsored-labels');
-          if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
-          if (map.getLayer(unclusteredLayer + '-sponsored')) map.removeLayer(unclusteredLayer + '-sponsored');
-          if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
-          if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
-          if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
-        map.removeSource(sourceId);
+      // Check if sources already exist and remove them first
+      const existingRegularSource = map.getSource(sourceId);
+      const existingSponsoredSource = map.getSource(sourceId + '-sponsored');
+      
+      if (existingRegularSource || existingSponsoredSource) {
+        console.log('🧹 Removing existing sources and layers...');
+        // Remove layers first, then sources
+        if (map.getLayer(unclusteredLayer + '-sponsored-labels')) map.removeLayer(unclusteredLayer + '-sponsored-labels');
+        if (map.getLayer(unclusteredLayer + '-labels')) map.removeLayer(unclusteredLayer + '-labels');
+        if (map.getLayer(unclusteredLayer + '-sponsored')) map.removeLayer(unclusteredLayer + '-sponsored');
+        if (map.getLayer(unclusteredLayer)) map.removeLayer(unclusteredLayer);
+        if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
+        if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
+        if (existingRegularSource) map.removeSource(sourceId);
+        if (existingSponsoredSource) map.removeSource(sourceId + '-sponsored');
       }
 
       try {
-        // Add clustered source
-        map.addSource(sourceId, {
-          type: 'geojson',
-          data: geojsonData,
-          cluster: true,
-          clusterMaxZoom: 14, // Max zoom to cluster points on
-          clusterRadius: 50 // Radius of each cluster when clustering points
-        });
-        console.log('✅ Successfully added clustered source');
+        // Add clustered source for regular items
+        if (regularGeojsonData.features.length > 0) {
+          map.addSource(sourceId, {
+            type: 'geojson',
+            data: regularGeojsonData,
+            cluster: true,
+            clusterMaxZoom: 14, // Max zoom to cluster points on
+            clusterRadius: 50 // Radius of each cluster when clustering points
+          });
+          console.log('✅ Successfully added regular clustered source');
+        }
+        
+        // Add non-clustered source for sponsored items
+        if (sponsoredGeojsonData.features.length > 0) {
+          map.addSource(sourceId + '-sponsored', {
+            type: 'geojson',
+            data: sponsoredGeojsonData,
+            cluster: false // Sponsored items should not cluster
+          });
+          console.log('✅ Successfully added sponsored non-clustered source');
+        }
 
-        // Add cluster circles layer
-        map.addLayer({
-          id: clusterLayer,
-          type: 'circle',
-          source: sourceId,
-          filter: ['has', 'point_count'],
-          paint: {
-            'circle-color': [
-              'step',
-              ['get', 'point_count'],
-              'hsl(210, 75%, 55%)', // Blue for small clusters
-              10,
-              'hsl(35, 85%, 65%)', // Orange for medium clusters  
-              30,
-              'hsl(5, 75%, 55%)' // Red for large clusters
-            ],
-            'circle-radius': [
-              'step',
-              ['get', 'point_count'],
-              20, // Small clusters
-              10,
-              25, // Medium clusters
-              30,
-              30 // Large clusters
-            ],
-            'circle-stroke-width': 3,
-            'circle-stroke-color': '#ffffff'
-          }
-        });
+        // Add cluster circles layer (only if regular items exist)
+        if (regularGeojsonData.features.length > 0) {
+          map.addLayer({
+            id: clusterLayer,
+            type: 'circle',
+            source: sourceId,
+            filter: ['has', 'point_count'],
+            paint: {
+              'circle-color': [
+                'step',
+                ['get', 'point_count'],
+                'hsl(210, 75%, 55%)', // Blue for small clusters
+                10,
+                'hsl(35, 85%, 65%)', // Orange for medium clusters  
+                30,
+                'hsl(5, 75%, 55%)' // Red for large clusters
+              ],
+              'circle-radius': [
+                'step',
+                ['get', 'point_count'],
+                20, // Small clusters
+                10,
+                25, // Medium clusters
+                30,
+                30 // Large clusters
+              ],
+              'circle-stroke-width': 3,
+              'circle-stroke-color': '#ffffff'
+            }
+          });
 
-        // Add cluster count labels
-        map.addLayer({
-          id: clusterCountLayer,
-          type: 'symbol',
-          source: sourceId,
-          filter: ['has', 'point_count'],
-          layout: {
-            'text-field': '{point_count_abbreviated}',
-            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-            'text-size': 14
-          },
-          paint: {
-            'text-color': '#ffffff'
-          }
-        });
+          // Add cluster count labels
+          map.addLayer({
+            id: clusterCountLayer,
+            type: 'symbol',
+            source: sourceId,
+            filter: ['has', 'point_count'],
+            layout: {
+              'text-field': '{point_count_abbreviated}',
+              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+              'text-size': 14
+            },
+            paint: {
+              'text-color': '#ffffff'
+            }
+          });
+        }
 
         // Add star icon for sponsored markers
         console.log('🌟 Creating sponsored star icon with glow effect');
@@ -209,61 +259,75 @@ export const useMapClusters = ({
           console.log('🎯 Star marker image added to map successfully');
         }
 
-        // Add non-sponsored unclustered points (circles)
-        map.addLayer({
-          id: unclusteredLayer,
-          type: 'circle',
-          source: sourceId,
-          filter: ['all', ['!', ['has', 'point_count']], ['!=', ['get', 'isSponsored'], true]],
-          paint: {
-            'circle-color': [
-              'case',
-              ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
-              ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
-              ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
-              getMarkerColor('default')
-            ],
-            'circle-radius': 12,
-            'circle-stroke-width': 3,
-            'circle-stroke-color': '#ffffff'
-          }
-        });
+        // Add non-sponsored unclustered points (circles) - only if regular items exist
+        if (regularGeojsonData.features.length > 0) {
+          map.addLayer({
+            id: unclusteredLayer,
+            type: 'circle',
+            source: sourceId,
+            filter: ['!', ['has', 'point_count']], // No need to filter sponsored since they're in separate source
+            paint: {
+              'circle-color': [
+                'case',
+                ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
+                ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
+                ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
+                getMarkerColor('default')
+              ],
+              'circle-radius': 12,
+              'circle-stroke-width': 3,
+              'circle-stroke-color': '#ffffff'
+            }
+          });
+        }
 
-        // Add sponsored unclustered points (stars)
-        console.log('🔍 Adding sponsored star layer to map');
-        map.addLayer({
-          id: unclusteredLayer + '-sponsored',
-          type: 'symbol',
-          source: sourceId,
-          filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'isSponsored'], true]],
-          layout: {
-            'icon-image': 'star-marker',
-            'icon-size': 1.5,
-            'icon-allow-overlap': true,
-            'icon-ignore-placement': true
-          },
-          paint: {
-            'icon-color': [
-              'case',
-              ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
-              ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
-              ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
-              getMarkerColor('default')
-            ]
-          }
-        });
+        // Add sponsored unclustered points (stars) - only if sponsored items exist
+        if (sponsoredGeojsonData.features.length > 0) {
+          console.log('🔍 Adding sponsored star layer to map');
+          map.addLayer({
+            id: unclusteredLayer + '-sponsored',
+            type: 'symbol',
+            source: sourceId + '-sponsored', // Use sponsored source
+            layout: {
+              'icon-image': 'star-marker',
+              'icon-size': 1.5,
+              'icon-allow-overlap': true,
+              'icon-ignore-placement': true
+            },
+            paint: {
+              'icon-color': [
+                'case',
+                ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
+                ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
+                ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
+                getMarkerColor('default')
+              ]
+            }
+          });
+        }
 
         // Add non-sponsored point labels (type letters with count for multi-item locations)
-        map.addLayer({
-          id: unclusteredLayer + '-labels',
-          type: 'symbol',
-          source: sourceId,
-          filter: ['all', ['!', ['has', 'point_count']], ['!=', ['get', 'isSponsored'], true]],
-          layout: {
-            'text-field': [
-              'case',
-              ['>', ['get', 'itemCount'], 1],
-              ['concat', 
+        if (regularGeojsonData.features.length > 0) {
+          map.addLayer({
+            id: unclusteredLayer + '-labels',
+            type: 'symbol',
+            source: sourceId,
+            filter: ['!', ['has', 'point_count']], // No need to filter sponsored since they're in separate source
+            layout: {
+              'text-field': [
+                'case',
+                ['>', ['get', 'itemCount'], 1],
+                ['concat', 
+                  [
+                    'case',
+                    ['==', ['get', 'type'], 'event'], 'E',
+                    ['==', ['get', 'type'], 'business'], 'B',
+                    ['==', ['get', 'type'], 'local-service'], 'L',
+                    ['==', ['get', 'type'], 'news'], 'N',
+                    '?'
+                  ],
+                  ['to-string', ['get', 'itemCount']]
+                ],
                 [
                   'case',
                   ['==', ['get', 'type'], 'event'], 'E',
@@ -271,43 +335,44 @@ export const useMapClusters = ({
                   ['==', ['get', 'type'], 'local-service'], 'L',
                   ['==', ['get', 'type'], 'news'], 'N',
                   '?'
-                ],
-                ['to-string', ['get', 'itemCount']]
+                ]
               ],
-              [
+              'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+              'text-size': [
                 'case',
-                ['==', ['get', 'type'], 'event'], 'E',
-                ['==', ['get', 'type'], 'business'], 'B',
-                ['==', ['get', 'type'], 'local-service'], 'L',
-                ['==', ['get', 'type'], 'news'], 'N',
-                '?'
-              ]
-            ],
-            'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-            'text-size': [
-              'case',
-              ['>', ['get', 'itemCount'], 1], 10, // Smaller text for count
-              11 // Normal size for single items
-            ],
-            'text-allow-overlap': true,
-            'text-ignore-placement': true
-          },
-          paint: {
-            'text-color': '#ffffff'
-          }
-        });
+                ['>', ['get', 'itemCount'], 1], 10, // Smaller text for count
+                11 // Normal size for single items
+              ],
+              'text-allow-overlap': true,
+              'text-ignore-placement': true
+            },
+            paint: {
+              'text-color': '#ffffff'
+            }
+          });
+        }
 
         // Add sponsored point labels (type letters with count for multi-item locations)
-        map.addLayer({
-          id: unclusteredLayer + '-sponsored-labels',
-          type: 'symbol',
-          source: sourceId,
-          filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'isSponsored'], true]],
-          layout: {
-            'text-field': [
-              'case',
-              ['>', ['get', 'itemCount'], 1],
-              ['concat', 
+        if (sponsoredGeojsonData.features.length > 0) {
+          map.addLayer({
+            id: unclusteredLayer + '-sponsored-labels',
+            type: 'symbol',
+            source: sourceId + '-sponsored', // Use sponsored source
+            layout: {
+              'text-field': [
+                'case',
+                ['>', ['get', 'itemCount'], 1],
+                ['concat', 
+                  [
+                    'case',
+                    ['==', ['get', 'type'], 'event'], 'E',
+                    ['==', ['get', 'type'], 'business'], 'B',
+                    ['==', ['get', 'type'], 'local-service'], 'L',
+                    ['==', ['get', 'type'], 'news'], 'N',
+                    '?'
+                  ],
+                  ['to-string', ['get', 'itemCount']]
+                ],
                 [
                   'case',
                   ['==', ['get', 'type'], 'event'], 'E',
@@ -315,40 +380,31 @@ export const useMapClusters = ({
                   ['==', ['get', 'type'], 'local-service'], 'L',
                   ['==', ['get', 'type'], 'news'], 'N',
                   '?'
-                ],
-                ['to-string', ['get', 'itemCount']]
+                ]
               ],
-              [
+              'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
+              'text-size': [
                 'case',
-                ['==', ['get', 'type'], 'event'], 'E',
-                ['==', ['get', 'type'], 'business'], 'B',
-                ['==', ['get', 'type'], 'local-service'], 'L',
-                ['==', ['get', 'type'], 'news'], 'N',
-                '?'
-              ]
-            ],
-            'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-            'text-size': [
-              'case',
-              ['>', ['get', 'itemCount'], 1], 10, // Smaller text for count
-              11 // Normal size for single items
-            ],
-            'text-allow-overlap': true,
-            'text-ignore-placement': true,
-            'text-offset': [0, 0.2]
-          },
-          paint: {
-            'text-color': '#ffffff',
-            'text-halo-color': [
-              'case',
-              ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
-              ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
-              ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
-              getMarkerColor('default')
-            ],
-            'text-halo-width': 1
-          }
-        });
+                ['>', ['get', 'itemCount'], 1], 10, // Smaller text for count
+                11 // Normal size for single items
+              ],
+              'text-allow-overlap': true,
+              'text-ignore-placement': true,
+              'text-offset': [0, 0.2]
+            },
+            paint: {
+              'text-color': '#ffffff',
+              'text-halo-color': [
+                'case',
+                ['==', ['get', 'type'], 'event'], getMarkerColor('event'),
+                ['==', ['get', 'type'], 'business'], getMarkerColor('business'),
+                ['==', ['get', 'type'], 'local-service'], getMarkerColor('local-service'),
+                getMarkerColor('default')
+              ],
+              'text-halo-width': 1
+            }
+          });
+        }
 
         console.log('✅ Successfully added all clustering layers');
 
@@ -489,9 +545,10 @@ export const useMapClusters = ({
         };
 
         // Fit bounds only on initial load
-        if (geojsonData.features.length > 0 && !hasFitBoundsRef.current) {
+        const allFeatures = [...regularGeojsonData.features, ...sponsoredGeojsonData.features];
+        if (allFeatures.length > 0 && !hasFitBoundsRef.current) {
           try {
-            const coordinates = geojsonData.features.map(feature => 
+            const coordinates = allFeatures.map(feature => 
               (feature.geometry as GeoJSON.Point).coordinates as [number, number]
             );
             
@@ -577,6 +634,7 @@ export const useMapClusters = ({
           if (map.getLayer(clusterCountLayer)) map.removeLayer(clusterCountLayer);
           if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
           if (map.getSource(sourceId)) map.removeSource(sourceId);
+          if (map.getSource(sourceId + '-sponsored')) map.removeSource(sourceId + '-sponsored');
           console.log('🧹 Cleaned up clustering layers and sources');
         } catch (error) {
           console.warn('⚠️ Error during clustering cleanup:', error);
