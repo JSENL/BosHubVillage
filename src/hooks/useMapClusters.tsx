@@ -164,6 +164,7 @@ export const useMapClusters = ({
           canvas.width = 24;
           canvas.height = 24;
           
+          console.log('✨ Adding glow effect to star icon');
           // Add glow effect
           ctx.shadowColor = '#FFD700';  // Gold glow
           ctx.shadowBlur = 15;          // Glow intensity
@@ -172,6 +173,7 @@ export const useMapClusters = ({
           
           // Draw star shape
           ctx.fillStyle = '#FFD700'; // Gold color for visibility
+          console.log('⭐ Drawing star shape with glow');
           ctx.beginPath();
           const centerX = 12, centerY = 12, spikes = 5, outerRadius = 10, innerRadius = 5;
           
@@ -196,6 +198,7 @@ export const useMapClusters = ({
           ctx.closePath();
           ctx.fill();
           
+          console.log('🎨 Star canvas created, converting to ImageData');
           // Convert canvas to ImageData for Mapbox
           const imageData = ctx.getImageData(0, 0, 24, 24);
           map.addImage('star-marker', {
@@ -203,6 +206,7 @@ export const useMapClusters = ({
             height: 24,
             data: new Uint8Array(imageData.data.buffer)
           });
+          console.log('🎯 Star marker image added to map successfully');
         }
 
         // Add non-sponsored unclustered points (circles)
@@ -226,6 +230,7 @@ export const useMapClusters = ({
         });
 
         // Add sponsored unclustered points (stars)
+        console.log('🔍 Adding sponsored star layer to map');
         map.addLayer({
           id: unclusteredLayer + '-sponsored',
           type: 'symbol',

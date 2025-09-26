@@ -34,7 +34,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
   })));
 
   // Transform businesses
-  items.push(...data.businesses.map(business => ({
+  const businessItems = data.businesses.map(business => ({
     id: business.id,
     title: business.title,
     description: business.description || '',
@@ -48,10 +48,18 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     neighborhoods: business.neighborhood,
     is_sponsored: business.is_sponsored || false,
     originalData: business
-  })));
+  }));
+  
+  businessItems.forEach(item => {
+    if (item.is_sponsored) {
+      console.log('💎 Found sponsored business:', item.title, 'coordinates:', item.latitude, item.longitude);
+    }
+  });
+  
+  items.push(...businessItems);
 
   // Transform business submissions
-  items.push(...data.businessSubmissions.map(businessSubmission => ({
+  const businessSubmissionItems = data.businessSubmissions.map(businessSubmission => ({
     id: businessSubmission.id,
     title: businessSubmission.title,
     description: businessSubmission.description || '',
@@ -65,7 +73,15 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     villages: undefined,
     is_sponsored: businessSubmission.is_sponsored || false,
     originalData: businessSubmission
-  })));
+  }));
+  
+  businessSubmissionItems.forEach(item => {
+    if (item.is_sponsored) {
+      console.log('💎 Found sponsored business submission:', item.title, 'coordinates:', item.latitude, item.longitude);
+    }
+  });
+  
+  items.push(...businessSubmissionItems);
 
   // Transform local services
   items.push(...data.localServices.map(localService => ({
