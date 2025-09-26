@@ -63,6 +63,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     business_type: businessSubmission.business_type,
     neighborhoods: businessSubmission.neighborhood,
     villages: undefined,
+    is_sponsored: businessSubmission.is_sponsored || false,
     originalData: businessSubmission
   })));
 
@@ -96,7 +97,26 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     name: localServiceSubmission.name,
     neighborhoods: localServiceSubmission.neighborhood,
     villages: localServiceSubmission.village,
+    is_sponsored: localServiceSubmission.is_sponsored || false,
     originalData: localServiceSubmission
+  })));
+
+  // Transform news
+  items.push(...data.news.map(newsItem => ({
+    id: newsItem.id,
+    title: newsItem.title,
+    description: newsItem.content || '',
+    latitude: newsItem.latitude,
+    longitude: newsItem.longitude,
+    type: 'news' as const,
+    address: newsItem.Address || newsItem.location,
+    location: newsItem.location,
+    content: newsItem.content,
+    source: newsItem.source,
+    date: newsItem.date_posted,
+    villages: newsItem.villages,
+    is_sponsored: newsItem.is_sponsored || false,
+    originalData: newsItem
   })));
 
   return items;
