@@ -163,6 +163,12 @@ export const useMapClusters = ({
           canvas.width = 24;
           canvas.height = 24;
           
+          // Add glow effect
+          ctx.shadowColor = '#FFD700';  // Gold glow
+          ctx.shadowBlur = 15;          // Glow intensity
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          
           // Draw star shape
           ctx.fillStyle = '#FFD700'; // Gold color for visibility
           ctx.beginPath();
