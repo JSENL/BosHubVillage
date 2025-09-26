@@ -29,6 +29,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     price: Number(event.price || 0),
     neighborhoods: event.neighborhoods,
     villages: event.villages,
+    is_sponsored: event.is_sponsored || false,
     originalData: event
   })));
 
@@ -45,6 +46,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     business_type: business.business_type,
     villages: business.villages,
     neighborhoods: business.neighborhood,
+    is_sponsored: business.is_sponsored || false,
     originalData: business
   })));
 
@@ -77,6 +79,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     name: localService.name,
     neighborhoods: localService.neighborhood,
     villages: localService.village,
+    is_sponsored: localService.is_sponsored || false,
     originalData: localService
   })));
 
