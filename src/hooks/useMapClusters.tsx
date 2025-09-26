@@ -156,6 +156,7 @@ export const useMapClusters = ({
         });
 
         // Add star icon for sponsored markers
+        console.log('🌟 Creating sponsored star icon with glow effect');
         if (!map.hasImage('star-marker')) {
           // Create star icon using canvas for better compatibility
           const canvas = document.createElement('canvas');
