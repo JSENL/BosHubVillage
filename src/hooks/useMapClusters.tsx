@@ -26,16 +26,7 @@ export const useMapClusters = ({
   const activePopupRef = useRef<mapboxgl.Popup | null>(null); // Track active popup
 
   useEffect(() => {
-    console.log('🎯 useMapClusters called with:', {
-      hasMap: !!map,
-      itemsCount: items?.length || 0,
-      mapReady: map && map.loaded && map.loaded(),
-      styleLoaded: map && map.isStyleLoaded && map.isStyleLoaded(),
-      mapRemoved: map && map._removed
-    });
-
     if (!map || !items || items.length === 0) {
-      console.log('🗺️ MapClusters: Not ready - missing map or items');
       return;
     }
 
@@ -52,8 +43,6 @@ export const useMapClusters = ({
     }
 
     const addClusteringToMap = () => {
-      console.log('🎯 Adding clustering to map...');
-      
       // Group items by location to handle multiple items at same location
       const locationGroups = groupItemsByLocation(items);
       
@@ -206,7 +195,6 @@ export const useMapClusters = ({
         }
 
         // Add star icon for sponsored markers
-        console.log('🌟 Creating sponsored star icon with glow effect');
         if (!map.hasImage('star-marker')) {
           // Create star icon using canvas for better compatibility
           const canvas = document.createElement('canvas');
@@ -214,7 +202,6 @@ export const useMapClusters = ({
           canvas.width = 24;
           canvas.height = 24;
           
-          console.log('✨ Adding glow effect to star icon');
           // Add glow effect
           ctx.shadowColor = '#FFD700';  // Gold glow
           ctx.shadowBlur = 15;          // Glow intensity
@@ -223,7 +210,6 @@ export const useMapClusters = ({
           
           // Draw star shape
           ctx.fillStyle = '#FFD700'; // Gold color for visibility
-          console.log('⭐ Drawing star shape with glow');
           ctx.beginPath();
           const centerX = 12, centerY = 12, spikes = 5, outerRadius = 10, innerRadius = 5;
           
@@ -248,7 +234,6 @@ export const useMapClusters = ({
           ctx.closePath();
           ctx.fill();
           
-          console.log('🎨 Star canvas created, converting to ImageData');
           // Convert canvas to ImageData for Mapbox
           const imageData = ctx.getImageData(0, 0, 24, 24);
           map.addImage('star-marker', {
@@ -256,7 +241,6 @@ export const useMapClusters = ({
             height: 24,
             data: new Uint8Array(imageData.data.buffer)
           });
-          console.log('🎯 Star marker image added to map successfully');
         }
 
         // Add non-sponsored unclustered points (circles) - only if regular items exist
@@ -283,7 +267,6 @@ export const useMapClusters = ({
 
         // Add sponsored unclustered points (stars) - only if sponsored items exist
         if (sponsoredGeojsonData.features.length > 0) {
-          console.log('🔍 Adding sponsored star layer to map');
           map.addLayer({
             id: unclusteredLayer + '-sponsored',
             type: 'symbol',
@@ -430,8 +413,27 @@ export const useMapClusters = ({
         };
 
         const handlePointClick = (e: mapboxgl.MapMouseEvent) => {
+          // Only query layers that exist
+          const layersToQuery = [];
+          if (map.getLayer(unclusteredLayer)) {
+            layersToQuery.push(unclusteredLayer);
+          }
+          if (map.getLayer(unclusteredLayer + '-labels')) {
+            layersToQuery.push(unclusteredLayer + '-labels');
+          }
+          if (map.getLayer(unclusteredLayer + '-sponsored')) {
+            layersToQuery.push(unclusteredLayer + '-sponsored');
+          }
+          if (map.getLayer(unclusteredLayer + '-sponsored-labels')) {
+            layersToQuery.push(unclusteredLayer + '-sponsored-labels');
+          }
+          
+          if (layersToQuery.length === 0) {
+            return; // No layers to query
+          }
+          
           const features = map.queryRenderedFeatures(e.point, {
-            layers: [unclusteredLayer, unclusteredLayer + '-labels', unclusteredLayer + '-sponsored', unclusteredLayer + '-sponsored-labels']
+            layers: layersToQuery
           });
           
           if (features.length > 0) {
@@ -479,8 +481,27 @@ export const useMapClusters = ({
         };
 
         const handlePointDoubleClick = (e: mapboxgl.MapMouseEvent) => {
+          // Only query layers that exist
+          const layersToQuery = [];
+          if (map.getLayer(unclusteredLayer)) {
+            layersToQuery.push(unclusteredLayer);
+          }
+          if (map.getLayer(unclusteredLayer + '-labels')) {
+            layersToQuery.push(unclusteredLayer + '-labels');
+          }
+          if (map.getLayer(unclusteredLayer + '-sponsored')) {
+            layersToQuery.push(unclusteredLayer + '-sponsored');
+          }
+          if (map.getLayer(unclusteredLayer + '-sponsored-labels')) {
+            layersToQuery.push(unclusteredLayer + '-sponsored-labels');
+          }
+          
+          if (layersToQuery.length === 0) {
+            return; // No layers to query
+          }
+          
           const features = map.queryRenderedFeatures(e.point, {
-            layers: [unclusteredLayer, unclusteredLayer + '-labels', unclusteredLayer + '-sponsored', unclusteredLayer + '-sponsored-labels']
+            layers: layersToQuery
           });
           
           if (features.length > 0 && onMarkerDoubleClick) {
@@ -579,20 +600,17 @@ export const useMapClusters = ({
     const isMapReady = map.loaded() && map.isStyleLoaded() && !map._removed;
     
     if (isMapReady) {
-      console.log('🎯 Map is ready, adding clustering immediately');
       addClusteringToMap();
     } else {
       console.log('🗺️ MapClusters: Waiting for map to load and style to be ready...');
       
       const handleStyleLoad = () => {
-        console.log('🎨 Map style loaded, adding clustering...');
         if (map.loaded() && map.isStyleLoaded() && !map._removed) {
           addClusteringToMap();
         }
       };
       
       const handleLoad = () => {
-        console.log('🗺️ Map loaded, checking style...');
         if (map.loaded() && map.isStyleLoaded() && !map._removed) {
           addClusteringToMap();
         }
@@ -601,7 +619,6 @@ export const useMapClusters = ({
       // Force clustering after a short delay as a fallback
       const fallbackTimeout = setTimeout(() => {
         if (map && map.loaded() && map.isStyleLoaded() && !map._removed) {
-          console.log('🔄 Fallback: Adding clustering after timeout');
           addClusteringToMap();
         }
       }, 500);
@@ -635,7 +652,6 @@ export const useMapClusters = ({
           if (map.getLayer(clusterLayer)) map.removeLayer(clusterLayer);
           if (map.getSource(sourceId)) map.removeSource(sourceId);
           if (map.getSource(sourceId + '-sponsored')) map.removeSource(sourceId + '-sponsored');
-          console.log('🧹 Cleaned up clustering layers and sources');
         } catch (error) {
           console.warn('⚠️ Error during clustering cleanup:', error);
         }

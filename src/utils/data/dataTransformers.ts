@@ -50,12 +50,6 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     originalData: business
   }));
   
-  businessItems.forEach(item => {
-    if (item.is_sponsored) {
-      console.log('💎 Found sponsored business:', item.title, 'coordinates:', item.latitude, item.longitude);
-    }
-  });
-  
   items.push(...businessItems);
 
   // Transform business submissions
@@ -74,12 +68,6 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     is_sponsored: businessSubmission.is_sponsored || false,
     originalData: businessSubmission
   }));
-  
-  businessSubmissionItems.forEach(item => {
-    if (item.is_sponsored) {
-      console.log('💎 Found sponsored business submission:', item.title, 'coordinates:', item.latitude, item.longitude);
-    }
-  });
   
   items.push(...businessSubmissionItems);
 
