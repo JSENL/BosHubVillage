@@ -127,11 +127,22 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
       console.error('❌ Mapbox map error:', e);
     });
 
+    // Listen for container resize events
+    const handleContainerResize = () => {
+      if (map && !map._removed) {
+        console.log('🔄 Resizing map due to container change...');
+        map.resize();
+      }
+    };
+
+    window.addEventListener('mapContainerResized', handleContainerResize);
+
     mapInstanceRef.current = map;
     setMapInstance(map); // This will trigger re-renders in components using this hook
 
     return () => {
       console.log('🧹 Cleaning up Mapbox map...');
+      window.removeEventListener('mapContainerResized', handleContainerResize);
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
