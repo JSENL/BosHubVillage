@@ -7,6 +7,7 @@ import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
 import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 
 const MainContent = () => {
   const { 
@@ -53,28 +54,34 @@ const MainContent = () => {
           
           {/* Map or List View */}
           {filters.viewMode === 'map' ? (
-            <div className="h-[60vh] min-h-[400px] max-h-[800px] sm:h-[65vh] lg:h-[70vh] xl:h-[75vh]">
-              <MapView
-                items={filteredItems}
-                selectedTypes={selectedTypesForMap}
-                height="100%"
-              />
-            </div>
+            <ResizablePanelGroup 
+              direction="vertical" 
+              className="min-h-[600px] rounded-lg border"
+            >
+              <ResizablePanel defaultSize={60} minSize={30}>
+                <div className="h-full">
+                  <MapView
+                    items={filteredItems}
+                    selectedTypes={selectedTypesForMap}
+                    height="100%"
+                  />
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={40} minSize={20}>
+                <div className="h-full overflow-y-auto p-4 bg-background">
+                  <ListView
+                    items={filteredItems}
+                    isLoading={isLoading}
+                  />
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           ) : (
             <ListView
               items={filteredItems}
               isLoading={isLoading}
             />
-          )}
-          
-          {/* Full list view for map mode */}
-          {filters.viewMode === 'map' && (
-            <div className="max-h-96 overflow-y-auto">
-              <ListView
-                items={filteredItems}
-                isLoading={isLoading}
-              />
-            </div>
           )}
         </section>
       </div>
