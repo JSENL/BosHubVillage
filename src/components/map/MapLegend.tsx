@@ -1,7 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-export const MapLegend = () => {
+interface MapLegendProps {
+  scale?: number;
+}
+
+export const MapLegend = ({ scale = 1 }: MapLegendProps) => {
   const legendItems = [
     { letter: 'E', label: 'Event', color: 'hsl(0, 70%, 55%)' },
     { letter: 'B', label: 'Business', color: 'hsl(220, 90%, 56%)' },
@@ -9,7 +13,10 @@ export const MapLegend = () => {
   ];
 
   return (
-    <Card className="absolute bottom-4 left-4 z-10 bg-white/90 backdrop-blur-sm border shadow-lg">
+    <Card 
+      className="absolute bottom-4 left-4 z-10 bg-white/90 backdrop-blur-sm border shadow-lg origin-bottom-left transition-transform duration-200"
+      style={{ transform: `scale(${scale})` }}
+    >
       <CardContent className="p-3">
         <h4 className="text-sm font-semibold mb-2 text-gray-800">Map Legend</h4>
         <div className="space-y-1">

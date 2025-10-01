@@ -33,6 +33,8 @@ export const EnhancedUniversalMap = ({
 }: EnhancedUniversalMapProps) => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
+  const [containerScale, setContainerScale] = useState(1);
+  const containerRef = useState<HTMLDivElement | null>(null)[0];
   const { mapboxToken, isLoadingApiKey, error } = useMapboxToken();
   const { filteredMappableItems } = useItemFiltering({ 
     items: items, // Use the pre-filtered items directly 
@@ -111,6 +113,28 @@ export const EnhancedUniversalMap = ({
     items: filteredMappableItems,
     onMarkerClick: handleMarkerClick
   });
+
+  // Monitor container size and calculate scale factor
+  useEffect(() => {
+    const mapContainer = mapRef.current?.parentElement;
+    if (!mapContainer) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.contentRect.width;
+        // Base scale on 1200px as the reference width
+        const scale = Math.max(0.5, Math.min(1, width / 1200));
+        setContainerScale(scale);
+        console.log('📏 Container width:', width, 'Scale:', scale);
+      }
+    });
+
+    resizeObserver.observe(mapContainer);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [mapRef]);
 
   // Force map resize when container dimensions change or component mounts
   useEffect(() => {
@@ -203,8 +227,8 @@ export const EnhancedUniversalMap = ({
                 height: '100%'
               }}
             />
-            <MapSearchBox onLocationFound={handleLocationSearch} />
-            <MapLegend />
+            <MapSearchBox onLocationFound={handleLocationSearch} scale={containerScale} />
+            <MapLegend scale={containerScale} />
             <ClearDirectionsButton 
               onClear={clearDirections}
               isVisible={!!route}

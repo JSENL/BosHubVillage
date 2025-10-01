@@ -7,9 +7,10 @@ import { toast } from 'sonner';
 
 interface MapSearchBoxProps {
   onLocationFound: (lat: number, lng: number, address: string) => void;
+  scale?: number;
 }
 
-export const MapSearchBox = ({ onLocationFound }: MapSearchBoxProps) => {
+export const MapSearchBox = ({ onLocationFound, scale = 1 }: MapSearchBoxProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [position, setPosition] = useState({ x: 16, y: 16 });
@@ -86,11 +87,12 @@ export const MapSearchBox = ({ onLocationFound }: MapSearchBoxProps) => {
 
   return (
     <div 
-      className="absolute z-10 w-80"
+      className="absolute z-10 w-80 origin-top-left transition-transform duration-200"
       style={{ 
         left: `${position.x}px`, 
         top: `${position.y}px`,
-        cursor: isDragging ? 'grabbing' : 'default'
+        cursor: isDragging ? 'grabbing' : 'default',
+        transform: `scale(${scale})`
       }}
     >
       <div className="bg-background/95 backdrop-blur-sm border rounded-lg shadow-lg overflow-hidden">
