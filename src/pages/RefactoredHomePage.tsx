@@ -1,4 +1,4 @@
-import { HeroSection } from "@/components/HeroSection";
+
 import { AppLayout } from '@/components/layout/AppLayout';
 import { MapView } from '@/components/views/MapView';
 import { ListView } from '@/components/views/ListView';
@@ -23,8 +23,6 @@ const MainContent = () => {
 
   return (
     <>
-      <HeroSection />
-      
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Discovery sidebar - shows at top on mobile, side on desktop */}
         <aside className="w-full lg:w-80 lg:order-2" aria-label="Discovery and recommendations">
@@ -46,6 +44,12 @@ const MainContent = () => {
               </button>
             </div>
           </div>
+
+          {/* Filter Bar */}
+          <FilterBar
+            allItems={allItems}
+            filteredItemsCount={filteredItems.length}
+          />
           
           {/* Map or List View */}
           {filters.viewMode === 'map' ? (
@@ -62,12 +66,6 @@ const MainContent = () => {
               isLoading={isLoading}
             />
           )}
-
-          {/* Filter Bar */}
-          <FilterBar
-            allItems={allItems}
-            filteredItemsCount={filteredItems.length}
-          />
           
           {/* Full list view for map mode */}
           {filters.viewMode === 'map' && (
