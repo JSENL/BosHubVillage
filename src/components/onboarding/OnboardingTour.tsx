@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
 import {
   Dialog,
@@ -11,6 +11,10 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
 type TourType = 'event' | 'business' | 'resource' | null;
+
+export interface OnboardingTourRef {
+  openTour: () => void;
+}
 
 const eventSteps: Step[] = [
   {
@@ -96,7 +100,7 @@ const resourceSteps: Step[] = [
   },
 ];
 
-export const OnboardingTour = () => {
+export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
   const [showWelcome, setShowWelcome] = useState(false);
   const [activeTour, setActiveTour] = useState<TourType>(null);
   const [runTour, setRunTour] = useState(false);
@@ -108,6 +112,13 @@ export const OnboardingTour = () => {
       setShowWelcome(true);
     }
   }, []);
+
+  // Expose method to parent component to open tour manually
+  useImperativeHandle(ref, () => ({
+    openTour: () => {
+      setShowWelcome(true);
+    }
+  }));
 
   const handleTourChoice = (choice: TourType) => {
     if (choice === null) {
@@ -216,4 +227,4 @@ export const OnboardingTour = () => {
       )}
     </>
   );
-};
+});

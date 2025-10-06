@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { MapView } from '@/components/views/MapView';
 import { ListView } from '@/components/views/ListView';
@@ -7,7 +8,9 @@ import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
-import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
+import { OnboardingTour, OnboardingTourRef } from '@/components/onboarding/OnboardingTour';
+import { Button } from '@/components/ui/button';
+import { HelpCircle } from 'lucide-react';
 
 const MainContent = () => {
   const { 
@@ -17,6 +20,12 @@ const MainContent = () => {
     updateFilter, 
     filteredItems 
   } = useAppState();
+  
+  const tourRef = useRef<OnboardingTourRef>(null);
+
+  const handleHelpClick = () => {
+    tourRef.current?.openTour();
+  };
 
   const selectedTypesForMap = filters.selectedType === 'all' 
     ? ['event', 'business', 'local-service', 'news'] 
@@ -24,6 +33,16 @@ const MainContent = () => {
 
   return (
     <>
+      {/* Help Button - Fixed position */}
+      <Button
+        onClick={handleHelpClick}
+        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg"
+        size="icon"
+        title="Need help? Start the tour"
+      >
+        <HelpCircle className="h-6 w-6" />
+      </Button>
+
       <ResizablePanelGroup direction="horizontal" className="gap-6">
         {/* Main content */}
         <ResizablePanel defaultSize={70} minSize={40}>
@@ -96,6 +115,8 @@ const MainContent = () => {
           <DiscoverySidebar />
         </aside>
       </ResizablePanelGroup>
+
+      <OnboardingTour ref={tourRef} />
       
       <TranslationTestModal />
     </>
@@ -107,7 +128,6 @@ export const RefactoredHomePage = () => {
     <AppStateProvider>
       <AppLayout>
         <MainContent />
-        <OnboardingTour />
       </AppLayout>
     </AppStateProvider>
   );
