@@ -93,13 +93,13 @@ export const Navigation = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild data-tour="submit-event">
                     <Link to="/submit-event" className="cursor-pointer">
                       <Calendar className="h-4 w-4 mr-2" />
                       {t('navigation.submitEvent')}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild data-tour="submit-business">
                     <Link to="/submit-business" className="cursor-pointer">
                       <Building className="h-4 w-4 mr-2" />
                       {t('navigation.submitBusiness')}
@@ -111,7 +111,7 @@ export const Navigation = () => {
                         {t('navigation.submitNews')}
                      </Link>
                    </DropdownMenuItem>
-                   <DropdownMenuItem asChild>
+                   <DropdownMenuItem asChild data-tour="submit-resource">
                      <Link to="/submit-local-resource" className="cursor-pointer">
                         <Heart className="h-4 w-4 mr-2" />
                         {t('navigation.submitLocalService')}

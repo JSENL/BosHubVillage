@@ -16,7 +16,7 @@ interface ViewToggleProps {
 export const ViewToggle = ({ viewMode, onViewModeChange }: ViewToggleProps) => {
   const { t } = useTranslation();
   return (
-    <div className="flex justify-center sm:justify-end">
+    <div className="flex justify-center sm:justify-end" data-tour="view-toggle">
       <ToggleGroup
         type="single"
         value={viewMode}

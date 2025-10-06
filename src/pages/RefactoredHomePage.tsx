@@ -1,4 +1,3 @@
-
 import { AppLayout } from '@/components/layout/AppLayout';
 import { MapView } from '@/components/views/MapView';
 import { ListView } from '@/components/views/ListView';
@@ -8,6 +7,7 @@ import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
+import { OnboardingTour } from '@/components/onboarding/OnboardingTour';
 
 const MainContent = () => {
   const { 
@@ -107,6 +107,7 @@ export const RefactoredHomePage = () => {
     <AppStateProvider>
       <AppLayout>
         <MainContent />
+        <OnboardingTour />
       </AppLayout>
     </AppStateProvider>
   );

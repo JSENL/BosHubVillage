@@ -16,10 +16,12 @@ export const FilterBar = ({
   return (
     <div className="space-y-4">
       {/* Search Section */}
-      <SearchSection />
+      <div data-tour="search">
+        <SearchSection />
+      </div>
       
       {/* Filters */}
-      <div className="bg-white rounded-lg border shadow-sm">
+      <div className="bg-white rounded-lg border shadow-sm" data-tour="filters">
         <UniversalFilters
           allItems={allItems}
           searchTerm={filters.searchTerm}
