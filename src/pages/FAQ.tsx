@@ -23,7 +23,11 @@ export const FAQ = () => {
         },
         {
           question: "How do I navigate the site?",
-          answer: "Use the main navigation to switch between Events, Businesses, Local Services, and News. You can view content in either list format or on an interactive map. Use the search bar and filters to find exactly what you're looking for."
+          answer: "Use the main navigation to switch between Events, Businesses, Local Services, and News. You can view content in grid, list, map, or calendar formats. Use the search bar and filters to find exactly what you're looking for. The interface features resizable panels to customize your viewing experience."
+        },
+        {
+          question: "Is there a tutorial for new users?",
+          answer: "Yes! First-time users are greeted with an interactive onboarding tour. Choose whether you're posting an event, business, or local resource, and we'll guide you through the relevant features step-by-step. You can restart the tour anytime by clearing your browser's local storage."
         }
       ]
     },
@@ -34,7 +38,7 @@ export const FAQ = () => {
       items: [
         {
           question: "How do I find events?",
-          answer: "Browse events on the Events page using list or map view. Filter by date, category, type (free/paid), or location. Use the calendar view to see events by date, or search for specific events using keywords."
+          answer: "Browse events using grid, list, map, or calendar views. Filter by date, category, type (free/paid), neighborhood, or village. Use the calendar view to see events by specific dates, or the map to find events near you. The search bar lets you find events by keywords."
         },
         {
           question: "Can I submit my own events?",
@@ -118,15 +122,19 @@ export const FAQ = () => {
       items: [
         {
           question: "How does the map work?",
-          answer: "The interactive map shows all events, businesses, and services with color-coded markers (E for Events, B for Businesses, L for Local Services, N for News). Click markers to see details, or use clustering to explore dense areas."
+          answer: "The interactive map shows all events, businesses, and services with color-coded markers (E for Events in red, B for Businesses in blue, L for Local Services in orange, N for News in purple). Click markers to see details, use clustering to explore dense areas, and resize the map panel for better viewing."
         },
         {
           question: "Can I get directions?",
-          answer: "Yes! Click on any map marker and select 'Get Directions' to see turn-by-turn directions. You can also open directions in external map apps like Google Maps or Apple Maps."
+          answer: "Yes! Click on any map marker and select 'Get Directions' to see turn-by-turn directions with distance and time estimates. You can also open directions in external map apps like Google Maps or Apple Maps for navigation."
         },
         {
           question: "What do the map markers mean?",
-          answer: "Blue markers with 'E' are Events, Green markers with 'B' are Businesses, Orange markers with 'L' are Local Services, and Red markers with 'N' are News locations. Clustered areas show numbers indicating how many items are in that area."
+          answer: "Red markers with 'E' are Events, Blue markers with 'B' are Businesses, Orange markers with 'L' are Local Services, and Purple markers with 'N' are News locations. Clustered areas show numbers indicating how many items are in that area. Click clusters to zoom in."
+        },
+        {
+          question: "Can I search locations on the map?",
+          answer: "Yes! The map includes a search box that lets you find specific addresses or locations. You can also drag the search box to reposition it on the map for better visibility. The map legend helps you identify different marker types."
         }
       ]
     },
@@ -141,11 +149,15 @@ export const FAQ = () => {
         },
         {
           question: "What filters are available?",
-          answer: "Filters vary by section but include categories, dates (for events), location/neighborhood, type (free/paid for events), and more. Use the 'Clear All' button to reset filters."
+          answer: "Filters vary by section but include categories, dates (for events), location/neighborhood/village, type (free/paid for events), and more. Use the 'Clear All' button to reset filters. Filters work seamlessly across all view modes (grid, list, map, calendar)."
         },
         {
           question: "Can I save my search preferences?",
-          answer: "Currently, search preferences reset when you navigate away, but you can bookmark specific listings that interest you for easy access later."
+          answer: "Currently, search preferences reset when you navigate away, but you can bookmark specific listings that interest you for easy access later. Your view mode preference (grid/list/map/calendar) persists across sessions."
+        },
+        {
+          question: "How do I use the calendar view?",
+          answer: "Switch to calendar view using the view toggle to see events organized by date. Click on any date to see all events scheduled for that day. This is perfect for planning your week or finding events on specific dates."
         }
       ]
     },
@@ -168,7 +180,11 @@ export const FAQ = () => {
         },
         {
           question: "Can I bookmark items?",
-          answer: "Yes! Registered users can bookmark events, businesses, services, and news articles. Access your bookmarks through your profile to easily return to interesting content."
+          answer: "Yes! Registered users can bookmark events, businesses, services, and news articles. Access your bookmarks through your profile or the Discovery sidebar to easily return to interesting content. Bookmarks sync across your devices when logged in."
+        },
+        {
+          question: "What is the Discovery sidebar?",
+          answer: "The Discovery sidebar shows trending content, suggested connections, and your bookmarked items. You can resize or collapse this panel to focus on main content. It helps you discover new events, businesses, and community connections based on your interests."
         }
       ]
     },

@@ -15,27 +15,27 @@ type TourType = 'event' | 'business' | 'resource' | null;
 const eventSteps: Step[] = [
   {
     target: 'body',
-    content: "Let me show you how to post and explore events!",
+    content: "Let me show you how to post and explore events! You can browse events, submit your own, use filters, and view them on an interactive map.",
     placement: 'center',
   },
   {
     target: '[data-tour="submit-event"]',
-    content: "Click here to submit a new event to the community.",
+    content: "Click here to submit a new event. Include details like title, date, time, location, category, and whether it's free or paid. Events are reviewed before being published.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="view-toggle"]',
-    content: "Switch between map and list views to explore events.",
+    content: "Switch between grid, list, map, and calendar views to explore events in different ways. Each view helps you discover events differently.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="filters"]',
-    content: "Use filters to find specific events by category, date, or location.",
+    content: "Use filters to find specific events by category, date range, type (free/paid), neighborhood, or village. Click 'Clear All' to reset filters.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="search"]',
-    content: "Search for events by keywords.",
+    content: "Search for events using keywords like event names, descriptions, or locations. Combine search with filters for precise results.",
     disableBeacon: true,
   },
 ];
@@ -43,27 +43,27 @@ const eventSteps: Step[] = [
 const businessSteps: Step[] = [
   {
     target: 'body',
-    content: "Let me show you how to post and discover businesses!",
+    content: "Let me show you how to post and discover businesses! You can add your business, browse the directory, contact businesses, and leave reviews.",
     placement: 'center',
   },
   {
     target: '[data-tour="submit-business"]',
-    content: "Click here to submit your business to the directory.",
+    content: "Click here to submit your business listing. Include business name, description, category, contact info, hours, and location. Listings are reviewed before publication.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="view-toggle"]',
-    content: "Switch between map and list views to explore businesses.",
+    content: "Switch between grid, list, and map views to explore businesses. Map view shows all businesses with color-coded markers for easy discovery.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="filters"]',
-    content: "Use filters to find businesses by category or location.",
+    content: "Use filters to find businesses by category, location, or neighborhood. You can also bookmark businesses and send direct messages to business owners.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="search"]',
-    content: "Search for specific businesses.",
+    content: "Search for businesses by name, category, or keywords. Click on any business to view details, contact info, hours, and customer reviews.",
     disableBeacon: true,
   },
 ];
@@ -71,27 +71,27 @@ const businessSteps: Step[] = [
 const resourceSteps: Step[] = [
   {
     target: 'body',
-    content: "Let me show you how to post and find local resources!",
+    content: "Let me show you how to post and find local resources! Discover service providers like plumbers, electricians, tutors, and more in your area.",
     placement: 'center',
   },
   {
     target: '[data-tour="submit-resource"]',
-    content: "Click here to submit a local resource or service.",
+    content: "Click here to submit a local resource or service. Include service description, categories, contact info, coverage area, and certifications. Submissions are reviewed before publication.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="view-toggle"]',
-    content: "Switch between map and list views to explore resources.",
+    content: "Switch between grid, list, and map views to find local services. The map shows service providers near you with location markers.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="filters"]',
-    content: "Use filters to find resources by category or location.",
+    content: "Use filters to find services by category, location, or service type. Filter by neighborhood to find providers in your specific area.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="search"]',
-    content: "Search for specific resources.",
+    content: "Search for specific services using keywords. Find plumbers, electricians, tutors, cleaners, or any professional service you need.",
     disableBeacon: true,
   },
 ];
