@@ -42,6 +42,12 @@ const eventSteps: Step[] = [
     content: "Search for events using keywords like event names, descriptions, or locations. Combine search with filters for precise results.",
     disableBeacon: true,
   },
+  {
+    target: 'body',
+    content: "Ready to submit your own event? Click 'Submit Event' in the navigation menu to create your listing. Fill out the form with event details, and it will be reviewed by our team before being published to the platform.",
+    placement: 'center',
+    disableBeacon: true,
+  },
 ];
 
 const businessSteps: Step[] = [
@@ -70,6 +76,12 @@ const businessSteps: Step[] = [
     content: "Search for businesses by name, category, or keywords. Click on any business to view details, contact info, hours, and customer reviews.",
     disableBeacon: true,
   },
+  {
+    target: 'body',
+    content: "Ready to list your business? Click 'Submit Business' in the navigation menu. Complete the form with your business information, and our team will review it before publishing to the directory.",
+    placement: 'center',
+    disableBeacon: true,
+  },
 ];
 
 const resourceSteps: Step[] = [
@@ -96,6 +108,12 @@ const resourceSteps: Step[] = [
   {
     target: '[data-tour="search"]',
     content: "Search for specific services using keywords. Find plumbers, electricians, tutors, cleaners, or any professional service you need.",
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "Ready to add your service? Click 'Submit Local Resource' in the navigation menu. Fill out the form with service details, and it will be reviewed before being published to help others find your services.",
+    placement: 'center',
     disableBeacon: true,
   },
 ];
