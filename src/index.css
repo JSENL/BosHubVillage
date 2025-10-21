@@ -46,19 +46,19 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 25% 15%;
 
-    --primary: 210 75% 45%;
+    --primary: 210 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 15 85% 65%;
+    --secondary: 15 75% 62%;
     --secondary-foreground: 220 25% 15%;
 
     --muted: 210 25% 93%;
     --muted-foreground: 220 15% 45%;
 
-    --accent: 135 65% 45%;
+    --accent: 135 60% 48%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 5 75% 55%;
+    --destructive: 5 70% 52%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 210 25% 88%;
@@ -68,13 +68,13 @@
     --radius: 0.5rem;
 
     /* Logo-inspired color palette */
-    --vibrant-blue: 210 75% 45%;
-    --deep-blue: 220 85% 35%;
-    --coral-orange: 15 85% 65%;
-    --bright-orange: 25 95% 60%;
-    --warm-red: 5 75% 55%;
-    --forest-green: 135 65% 45%;
-    --sage-green: 90 35% 55%;
+    --vibrant-blue: 210 70% 50%;
+    --deep-blue: 220 75% 40%;
+    --coral-orange: 15 75% 62%;
+    --bright-orange: 25 85% 58%;
+    --warm-red: 5 70% 52%;
+    --forest-green: 135 60% 48%;
+    --sage-green: 90 30% 52%;
     --charcoal: 220 25% 15%;
     --cream: 45 25% 95%;
     
@@ -148,10 +148,10 @@
   }
   
   .logo-shadow {
-    box-shadow: 0 4px 6px -1px hsla(var(--vibrant-blue), 0.15), 0 2px 4px -1px hsla(var(--vibrant-blue), 0.1);
+    box-shadow: 0 2px 4px -1px hsla(var(--vibrant-blue), 0.08), 0 1px 2px -1px hsla(var(--vibrant-blue), 0.06);
   }
   
   .logo-shadow-lg {
-    box-shadow: 0 20px 25px -5px hsla(var(--vibrant-blue), 0.15), 0 10px 10px -5px hsla(var(--vibrant-blue), 0.1);
+    box-shadow: 0 10px 15px -3px hsla(var(--vibrant-blue), 0.08), 0 4px 6px -2px hsla(var(--vibrant-blue), 0.06);
   }
 }

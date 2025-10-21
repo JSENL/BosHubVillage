@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 
 const NewsHeader = () => {
   return (
-    <header className="bg-white border-b-4 border-red-600">
+    <header className="bg-card border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-6">
           <div className="flex items-center justify-end mb-4">
@@ -15,10 +15,10 @@ const NewsHeader = () => {
           </div>
           
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-2">
               HubVillage News
             </h1>
-            <p className="text-lg text-gray-600">Your Community's Voice</p>
+            <p className="text-lg text-muted-foreground">Your Community's Voice</p>
           </div>
         </div>
       </div>
