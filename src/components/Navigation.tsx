@@ -39,7 +39,7 @@ export const Navigation = () => {
   const hasOwnedBusinesses = ownedBusinesses && ownedBusinesses.length > 0;
 
   return (
-    <nav className="bg-white shadow-lg border-b">
+    <nav className="bg-card shadow-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16">
           <div className="flex items-center space-x-4 sm:space-x-8">
