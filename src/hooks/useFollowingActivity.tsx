@@ -44,12 +44,11 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
 
       // Fetch posts (events, news, businesses, local services) if needed
       if (filterType === 'post' || filterType === 'all') {
-        // Events
+        // Events (no status column - all events in this table are approved)
         const eventsResponse = await (supabase as any)
           .from('events')
           .select('id, title, created_at, created_by')
           .in('created_by', followingIds)
-          .eq('status', 'approved')
           .order('created_at', { ascending: false })
           .limit(10);
 
@@ -80,12 +79,11 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
           }
         }
 
-        // News
+        // News (no status column - all news in this table are approved)
         const newsResponse = await (supabase as any)
           .from('news')
           .select('id, title, created_at, created_by')
           .in('created_by', followingIds)
-          .eq('status', 'approved')
           .order('created_at', { ascending: false })
           .limit(10);
 
@@ -116,12 +114,11 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
           }
         }
 
-        // Businesses
+        // Businesses (no status column - all businesses in this table are approved)
         const businessesResponse: any = await (supabase as any)
           .from('businesses')
           .select('id, name, created_at, created_by')
           .in('created_by', followingIds)
-          .eq('status', 'approved')
           .order('created_at', { ascending: false })
           .limit(10);
 
@@ -152,12 +149,11 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
           }
         }
 
-        // Local Services
+        // Local Services (no status column - all services in this table are approved)
         const servicesResponse: any = await (supabase as any)
           .from('local_services')
           .select('id, name, created_at, created_by')
           .in('created_by', followingIds)
-          .eq('status', 'approved')
           .order('created_at', { ascending: false })
           .limit(10);
 
