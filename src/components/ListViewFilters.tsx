@@ -90,7 +90,7 @@ export const ListViewFilters = ({
                 <span className="font-semibold text-gray-900">
                   {isFiltersOpen ? t('filters.hideFilters') : t('filters.showFilters')}
                 </span>
-                <span className="text-sm text-gray-500">({filteredItemsCount} {t('filters.itemsFound')})</span>
+                <span className="text-sm text-gray-500">({t('filters.resultsCount', { count: filteredItemsCount })})</span>
               </div>
               {isFiltersOpen ? (
                 <ChevronUp className="h-4 w-4 text-gray-500" />

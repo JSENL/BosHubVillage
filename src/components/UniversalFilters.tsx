@@ -110,7 +110,7 @@ export const UniversalFilters = ({
       />
 
       <div className="text-xs sm:text-sm text-gray-600">
-        {filteredItemsCount} {selectedType === 'all' ? t('filters.itemsFound') : selectedType === 'business' ? t('types.businesses') : itemType} {t('common.found')}
+        {t('filters.resultsCount', { count: filteredItemsCount })}
       </div>
     </div>
   );

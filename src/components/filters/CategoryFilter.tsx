@@ -15,7 +15,7 @@ export const CategoryFilter = ({
 }: CategoryFilterProps) => {
   const { t } = useTranslation();
   const categoryOptions = [
-    { value: 'all', label: t('filters.allCategories') },
+    { value: 'all', label: t('common.category') },
     ...availableCategories.map(category => ({
       value: category,
       label: category.charAt(0).toUpperCase() + category.slice(1)

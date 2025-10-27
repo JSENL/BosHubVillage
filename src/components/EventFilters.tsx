@@ -30,7 +30,7 @@ export const EventFilters = ({
   filteredEventsCount
 }: EventFiltersProps) => {
   const categories = [
-    { value: 'all', label: 'All Categories' },
+    { value: 'all', label: 'Categories' },
     { value: 'business', label: 'Business' },
     { value: 'events', label: 'Events' },
     { value: 'news', label: 'News' },

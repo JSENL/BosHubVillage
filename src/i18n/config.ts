@@ -73,8 +73,38 @@ const resources = {
         submissionProcess: "Submission Process",
         submissionProcessDesc: "Learn about submission process features and how to use them"
       },
+      // Types
+      types: {
+        all: "All Types",
+        event: "Events",
+        events: "Events",
+        business: "Businesses",
+        businesses: "Businesses",
+        news: "News",
+        localService: "Local Services",
+        services: "Local Services"
+      },
+      // Filters
+      filters: {
+        filters: "Filters",
+        type: "Type",
+        category: "Category",
+        allCategories: "All Categories",
+        location: "Location",
+        neighborhood: "Neighborhood",
+        village: "Village",
+        dateTime: "Date & Time",
+        date: "Date",
+        time: "Time",
+        price: "Price",
+        clearAll: "Clear All",
+        showFilters: "Show Filters",
+        hideFilters: "Hide Filters",
+        resultsCount: "{{count}} results found"
+      },
       // Common UI elements
       common: {
+        found: "",
         submit: "Submit",
         cancel: "Cancel",
         save: "Save",
@@ -294,8 +324,38 @@ const resources = {
         submissionProcess: "Proceso de Envío",
         submissionProcessDesc: "Aprende sobre las funciones del proceso de envío y cómo usarlas"
       },
+      // Types
+      types: {
+        all: "Todos los Tipos",
+        event: "Eventos",
+        events: "Eventos",
+        business: "Negocios",
+        businesses: "Negocios",
+        news: "Noticias",
+        localService: "Servicios Locales",
+        services: "Servicios Locales"
+      },
+      // Filters
+      filters: {
+        filters: "Filtros",
+        type: "Tipo",
+        category: "Categoría",
+        allCategories: "Todas las Categorías",
+        location: "Ubicación",
+        neighborhood: "Barrio",
+        village: "Aldea",
+        dateTime: "Fecha y Hora",
+        date: "Fecha",
+        time: "Hora",
+        price: "Precio",
+        clearAll: "Limpiar Todo",
+        showFilters: "Mostrar Filtros",
+        hideFilters: "Ocultar Filtros",
+        resultsCount: "{{count}} resultados encontrados"
+      },
       // Common UI elements
       common: {
+        found: "",
         submit: "Enviar",
         cancel: "Cancelar",
         save: "Guardar",
@@ -504,8 +564,38 @@ const resources = {
         submissionProcess: "Processus de Soumission",
         submissionProcessDesc: "Apprenez les fonctionnalités du processus de soumission et comment les utiliser"
       },
+      // Types
+      types: {
+        all: "Tous les Types",
+        event: "Événements",
+        events: "Événements",
+        business: "Entreprises",
+        businesses: "Entreprises",
+        news: "Actualités",
+        localService: "Services Locaux",
+        services: "Services Locaux"
+      },
+      // Filters
+      filters: {
+        filters: "Filtres",
+        type: "Type",
+        category: "Catégorie",
+        allCategories: "Toutes les Catégories",
+        location: "Emplacement",
+        neighborhood: "Quartier",
+        village: "Village",
+        dateTime: "Date et Heure",
+        date: "Date",
+        time: "Heure",
+        price: "Prix",
+        clearAll: "Tout Effacer",
+        showFilters: "Afficher les Filtres",
+        hideFilters: "Masquer les Filtres",
+        resultsCount: "{{count}} résultats trouvés"
+      },
       // Common UI elements
       common: {
+        found: "",
         submit: "Soumettre",
         cancel: "Annuler",
         save: "Enregistrer",
@@ -714,8 +804,38 @@ const resources = {
         submissionProcess: "Quy Trình Gửi",
         submissionProcessDesc: "Tìm hiểu về các tính năng quy trình gửi và cách sử dụng chúng"
       },
+      // Types
+      types: {
+        all: "Tất Cả Loại",
+        event: "Sự Kiện",
+        events: "Sự Kiện",
+        business: "Doanh Nghiệp",
+        businesses: "Doanh Nghiệp",
+        news: "Tin Tức",
+        localService: "Dịch Vụ Địa Phương",
+        services: "Dịch Vụ Địa Phương"
+      },
+      // Filters
+      filters: {
+        filters: "Bộ Lọc",
+        type: "Loại",
+        category: "Danh Mục",
+        allCategories: "Tất Cả Danh Mục",
+        location: "Vị Trí",
+        neighborhood: "Khu Vực",
+        village: "Làng",
+        dateTime: "Ngày và Giờ",
+        date: "Ngày",
+        time: "Giờ",
+        price: "Giá",
+        clearAll: "Xóa Tất Cả",
+        showFilters: "Hiển Thị Bộ Lọc",
+        hideFilters: "Ẩn Bộ Lọc",
+        resultsCount: "Đã tìm thấy {{count}} kết quả"
+      },
       // Common UI elements
       common: {
+        found: "",
         submit: "Gửi",
         cancel: "Hủy",
         save: "Lưu",
@@ -924,8 +1044,38 @@ const resources = {
         submissionProcess: "Processo de Submissão",
         submissionProcessDesc: "Aprenda sobre recursos do processo de submissão e como usá-los"
       },
+      // Types
+      types: {
+        all: "Todos os Tipos",
+        event: "Eventos",
+        events: "Eventos",
+        business: "Negócios",
+        businesses: "Negócios",
+        news: "Notícias",
+        localService: "Serviços Locais",
+        services: "Serviços Locais"
+      },
+      // Filters
+      filters: {
+        filters: "Filtros",
+        type: "Tipo",
+        category: "Categoria",
+        allCategories: "Todas as Categorias",
+        location: "Localização",
+        neighborhood: "Bairro",
+        village: "Vila",
+        dateTime: "Data e Hora",
+        date: "Data",
+        time: "Hora",
+        price: "Preço",
+        clearAll: "Limpar Tudo",
+        showFilters: "Mostrar Filtros",
+        hideFilters: "Ocultar Filtros",
+        resultsCount: "{{count}} resultados encontrados"
+      },
       // Common UI elements
       common: {
+        found: "",
         submit: "Enviar",
         cancel: "Cancelar",
         save: "Salvar",
