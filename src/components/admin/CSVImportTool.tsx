@@ -37,6 +37,25 @@ export const CSVImportTool = () => {
   const [previewData, setPreviewData] = useState<CSVRow[]>([]);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [validCategories, setValidCategories] = useState<string[]>([]);
+
+  // Fetch valid categories on mount
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      if (dataType === 'local_resources') {
+        const { data } = await supabase
+          .from('local_resources')
+          .select('category');
+        
+        if (data) {
+          const categories = [...new Set(data.map(item => item.category))].sort();
+          setValidCategories(categories);
+          console.log('📋 Valid local resource categories:', categories);
+        }
+      }
+    };
+    fetchCategories();
+  }, [dataType]);
 
   // Sample CSV templates for different data types with longitude/latitude columns
   const csvTemplates = {
@@ -45,8 +64,8 @@ Sample Community Event,Community,2024-12-25,10:00,12:00,Community Center,123 Mai
     business: `title,business_type,address,neighborhood,description,short_description,website_link,villages,longitude,latitude
 Sample Business,Restaurant,456 Main St Boston MA,Downtown,A great local restaurant,Great food and service,https://restaurant.com,Back Bay,-71.0589,42.3601`,
     local_resources: `name,category,address,neighborhood,village,description,latitude,longitude,website_link
-Sample Resource,Healthcare,789 Main St Boston MA,Downtown,Back Bay,A helpful community resource,42.3601,-71.0589,https://resource.com
-Another Resource,Education,456 Oak St Boston MA,South End,,,,,`
+Sample Resource,Healthcare / Community Clinic,789 Main St Boston MA,Downtown,Back Bay,A helpful community resource,42.3601,-71.0589,https://resource.com
+Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South End,Dudley/Nubian Square,Educational urban farming,42.3301,-71.0829,https://education.com`
   };
 
   const downloadTemplate = (type: DataType) => {
@@ -521,6 +540,21 @@ Another Resource,Education,456 Oak St Boston MA,South End,,,,,`
             </SelectContent>
           </Select>
         </div>
+
+        {/* Valid Categories Display for Local Resources */}
+        {dataType === 'local_resources' && validCategories.length > 0 && (
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
+            <p className="text-sm font-medium text-blue-900 mb-2">📋 Valid Categories for Local Resources:</p>
+            <div className="text-xs text-blue-700 space-y-1 max-h-40 overflow-y-auto">
+              {validCategories.map(cat => (
+                <div key={cat} className="font-mono bg-white px-2 py-1 rounded">• {cat}</div>
+              ))}
+            </div>
+            <p className="text-xs text-blue-600 mt-3 italic">
+              ⚠️ Use these exact category names (including capitalization and spaces) in your CSV file
+            </p>
+          </div>
+        )}
 
         {/* Template Download */}
         <div className="flex items-center gap-2">
