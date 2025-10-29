@@ -45,7 +45,8 @@ Sample Community Event,Community,2024-12-25,10:00,12:00,Community Center,123 Mai
     business: `title,business_type,address,neighborhood,description,short_description,website_link,villages,longitude,latitude
 Sample Business,Restaurant,456 Main St Boston MA,Downtown,A great local restaurant,Great food and service,https://restaurant.com,Back Bay,-71.0589,42.3601`,
     local_resources: `name,category,address,neighborhood,village,description,latitude,longitude,website_link
-Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community resource,42.3601,-71.0589,https://resource.com`
+Sample Resource,Healthcare,789 Main St Boston MA,Downtown,Back Bay,A helpful community resource,42.3601,-71.0589,https://resource.com
+Another Resource,Education,456 Oak St Boston MA,South End,,,,,`
   };
 
   const downloadTemplate = (type: DataType) => {
@@ -182,20 +183,21 @@ Sample Resource,Healthcare,789 Main St,Downtown,Back Bay,A helpful community res
         break;
       
       case 'local_resources':
-        const requiredFields = ['name', 'category', 'address', 'neighborhood', 'village', 'description', 'latitude', 'longitude', 'website_link'];
-        const missingFields = requiredFields.filter(field => !row[field] || row[field].toString().trim() === '');
-        if (missingFields.length > 0) {
-          return `Missing required fields: ${missingFields.join(', ')}`;
+        // Only name, category, address, and neighborhood are required
+        if (!row.name || !row.category || !row.address || !row.neighborhood) {
+          return 'Missing required fields: name, category, address, or neighborhood';
         }
         
-        // Validate latitude and longitude are valid numbers
-        const lat = parseFloat(row.latitude?.toString() || '');
-        const lng = parseFloat(row.longitude?.toString() || '');
-        if (isNaN(lat) || isNaN(lng)) {
-          return 'Invalid latitude or longitude - must be valid numbers';
-        }
-        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-          return 'Invalid coordinate ranges - latitude must be -90 to 90, longitude must be -180 to 180';
+        // Validate latitude and longitude if provided (optional)
+        if (row.latitude || row.longitude) {
+          const lat = parseFloat(row.latitude?.toString() || '');
+          const lng = parseFloat(row.longitude?.toString() || '');
+          if (isNaN(lat) || isNaN(lng)) {
+            return 'Invalid latitude or longitude - must be valid numbers';
+          }
+          if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            return 'Invalid coordinate ranges - latitude must be -90 to 90, longitude must be -180 to 180';
+          }
         }
         break;
       
