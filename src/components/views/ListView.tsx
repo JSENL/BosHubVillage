@@ -19,7 +19,7 @@ export const ListView = ({ items, isLoading = false }: ListViewProps) => {
     setCurrentPage,
     hasNextPage,
     hasPrevPage,
-  } = usePagination({ items, itemsPerPage: 12 });
+  } = usePagination({ items, itemsPerPage: 30 });
 
   if (isLoading) {
     return <LoadingGrid count={6} />;
