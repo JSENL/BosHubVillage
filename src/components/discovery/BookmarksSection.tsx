@@ -165,28 +165,30 @@ export const BookmarksSection = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Bookmark className="h-5 w-5" />
+    <Card className="w-full max-w-md">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Bookmark className="h-4 w-4" />
           Your Bookmarks ({bookmarkedItems.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2">
+        <div className="space-y-1.5 max-h-[400px] overflow-y-auto">
           {bookmarkedItems.slice(0, 6).map((item) => (
             <Link 
               key={`${item.type}-${item.id}`}
               to={getItemLink(item)}
               className="block hover:bg-muted/50 p-2 rounded-md transition-colors"
             >
-              <div className="flex items-center gap-3">
-                {getIcon(item.type)}
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm line-clamp-1">{item.title}</p>
-                  <p className="text-xs text-muted-foreground">{getItemSubtext(item)}</p>
+              <div className="flex items-center gap-2">
+                <div className="flex-shrink-0">
+                  {getIcon(item.type)}
                 </div>
-                <Badge variant="outline" className="text-xs capitalize">
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <p className="font-medium text-sm line-clamp-1 truncate">{item.title}</p>
+                  <p className="text-xs text-muted-foreground truncate">{getItemSubtext(item)}</p>
+                </div>
+                <Badge variant="outline" className="text-xs capitalize flex-shrink-0">
                   {item.type.replace('_', ' ')}
                 </Badge>
               </div>
@@ -194,7 +196,7 @@ export const BookmarksSection = () => {
           ))}
           
           {bookmarkedItems.length > 6 && (
-            <div className="text-center pt-2">
+            <div className="text-center pt-2 border-t">
               <p className="text-xs text-muted-foreground">
                 +{bookmarkedItems.length - 6} more bookmarks
               </p>

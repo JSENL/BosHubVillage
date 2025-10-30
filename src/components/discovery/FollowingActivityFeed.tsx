@@ -50,14 +50,14 @@ export const FollowingActivityFeed = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Clock className="h-5 w-5" />
+    <Card className="w-full max-w-md">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Clock className="h-4 w-4" />
           Following Feed
         </CardTitle>
         
-        <Tabs value={filterType} onValueChange={(v) => setFilterType(v as ActivityType)} className="mt-3">
+        <Tabs value={filterType} onValueChange={(v) => setFilterType(v as ActivityType)} className="mt-2">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
             <TabsTrigger value="post" className="text-xs">Posts</TabsTrigger>
@@ -66,7 +66,7 @@ export const FollowingActivityFeed = () => {
         </Tabs>
       </CardHeader>
 
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2">
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -87,13 +87,13 @@ export const FollowingActivityFeed = () => {
             <p className="mt-2 text-xs">Start following users to see their updates here!</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
             {activities?.map((activity) => (
               <div 
                 key={activity.id}
-                className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                className="flex items-start gap-2 p-2 rounded-lg hover:bg-muted/50 transition-colors"
               >
-                <Link to={`/user/${activity.user.id}`}>
+                <Link to={`/user/${activity.user.id}`} className="flex-shrink-0">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={activity.user.avatar_url || undefined} />
                     <AvatarFallback>
@@ -102,8 +102,8 @@ export const FollowingActivityFeed = () => {
                   </Avatar>
                 </Link>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1 flex-wrap">
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <div className="flex items-center gap-1">
                     <Link 
                       to={`/user/${activity.user.id}`}
                       className="font-medium text-sm hover:underline truncate"
@@ -115,7 +115,7 @@ export const FollowingActivityFeed = () => {
                     )}
                   </div>
 
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
                     {activity.action}
                   </p>
 
@@ -124,7 +124,7 @@ export const FollowingActivityFeed = () => {
                     className="text-xs font-medium hover:underline mt-1 line-clamp-1 flex items-center gap-1.5"
                   >
                     {getItemIcon(activity.type)}
-                    {activity.item.title}
+                    <span className="truncate">{activity.item.title}</span>
                   </Link>
 
                   <p className="text-xs text-muted-foreground mt-1">
