@@ -21,7 +21,7 @@ export const useLocalServices = () => {
       console.log('Fetched local resources:', data?.length || 0, 'items');
       return data as LocalResource[];
     },
-    staleTime: 0, // Always refetch to ensure fresh data
-    gcTime: 0, // Don't cache results
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };

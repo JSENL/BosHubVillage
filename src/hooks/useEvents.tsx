@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -30,12 +29,12 @@ export interface Event {
 }
 
 export const useEvents = () => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const fetchEvents = async () => {
-    try {
-      const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+  const { data: events = [], isLoading: loading, refetch: fetchEvents } = useQuery({
+    queryKey: ['events'],
+    queryFn: async () => {
+      const currentDate = new Date().toISOString().split('T')[0];
       
       const { data, error } = await supabase
         .from('events')
@@ -43,12 +42,12 @@ export const useEvents = () => {
           *,
           event_attendees(count)
         `)
-        .gte('date', currentDate) // Only fetch events from today onwards
+        .gte('date', currentDate)
         .order('date', { ascending: true });
 
       if (error) throw error;
 
-      const eventsWithAttendees = data?.map(event => ({
+      return data?.map(event => ({
         ...event,
         attendees_count: event.event_attendees?.[0]?.count || 0,
         price: Number(event.price || 0),
@@ -59,18 +58,13 @@ export const useEvents = () => {
         is_recurring: event.is_recurring || false,
         address: event.address || ''
       })) || [];
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
 
-      setEvents(eventsWithAttendees);
-    } catch (error: any) {
-      console.error('Error fetching events:', error);
-      toast.error('Failed to load events');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const createEvent = async (eventData: Omit<Event, 'id' | 'created_by' | 'attendees_count'>) => {
-    try {
+  const createEventMutation = useMutation({
+    mutationFn: async (eventData: Omit<Event, 'id' | 'created_by' | 'attendees_count'>) => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -104,20 +98,19 @@ export const useEvents = () => {
         .single();
 
       if (error) throw error;
-
-      toast.success('Event created successfully!');
-      fetchEvents();
       return data;
-    } catch (error: any) {
+    },
+    onSuccess: () => {
+      toast.success('Event created successfully!');
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+    },
+    onError: (error: any) => {
       console.error('Error creating event:', error);
       toast.error('Failed to create event');
-      throw error;
     }
-  };
+  });
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  const createEvent = createEventMutation.mutateAsync;
 
   return {
     events,

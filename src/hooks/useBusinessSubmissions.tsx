@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useBusinessSubmissionOperations } from './useBusinessSubmissionOperations';
@@ -24,12 +24,12 @@ export interface BusinessSubmission {
 }
 
 export const useBusinessSubmissions = () => {
-  const [submissions, setSubmissions] = useState<BusinessSubmission[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const submissionOperations = useBusinessSubmissionOperations();
 
-  const fetchSubmissions = async () => {
-    try {
+  const { data: submissions = [], isLoading: loading, refetch: fetchSubmissions } = useQuery({
+    queryKey: ['business-submissions'],
+    queryFn: async () => {
       console.log('Fetching business submissions from Supabase...');
       
       const { data, error } = await supabase
@@ -40,22 +40,15 @@ export const useBusinessSubmissions = () => {
       if (error) throw error;
 
       console.log(`Fetched ${data?.length || 0} business submissions from Supabase`);
-      setSubmissions((data || []) as BusinessSubmission[]);
-    } catch (error: any) {
-      console.error('Error fetching business submissions:', error);
-      toast.error('Failed to load business submissions');
-    } finally {
-      setLoading(false);
-    }
-  };
+      return (data || []) as BusinessSubmission[];
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   const handleOperationComplete = () => {
-    fetchSubmissions();
+    queryClient.invalidateQueries({ queryKey: ['business-submissions'] });
   };
-
-  useEffect(() => {
-    fetchSubmissions();
-  }, []);
 
   return {
     submissions,
