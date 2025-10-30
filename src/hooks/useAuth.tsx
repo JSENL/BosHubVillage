@@ -23,14 +23,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   
 
   useEffect(() => {
-    // Set up auth state listener
+    // Set up auth state listener with automatic token refresh
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        console.log('🔐 Auth event:', event);
+        
+        // Handle token refresh
+        if (event === 'TOKEN_REFRESHED') {
+          console.log('✅ Token refreshed successfully');
+        }
+        
+        // Handle expired token
+        if (event === 'SIGNED_OUT' || !session) {
+          console.log('🚪 User signed out or session expired');
+          setSession(null);
+          setUser(null);
+          setIsAdmin(false);
+          setLoading(false);
+          return;
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check if user is admin
+          // Check admin status asynchronously
           setTimeout(async () => {
             try {
               const { data: roles } = await supabase
@@ -41,6 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               const userRoles = roles?.map(r => r.role) || [];
               setIsAdmin(userRoles.includes('admin'));
             } catch (error) {
+              console.error('Error fetching user roles:', error);
               setIsAdmin(false);
             }
           }, 0);
@@ -52,10 +70,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     );
 
-    // Get initial session and roles
+    // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
       if (session?.user) {
         try {
           const { data: roles } = await supabase
@@ -64,12 +83,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .eq('user_id', session.user.id);
           const userRoles = roles?.map(r => r.role) || [];
           setIsAdmin(userRoles.includes('admin'));
-        } catch {
+        } catch (error) {
+          console.error('Error fetching initial user roles:', error);
           setIsAdmin(false);
         }
       } else {
         setIsAdmin(false);
       }
+      setLoading(false);
+    }).catch((error) => {
+      console.error('Error getting initial session:', error);
       setLoading(false);
     });
 
