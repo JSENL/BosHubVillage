@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Handle expired token
         if (event === 'SIGNED_OUT' || !session) {
           console.log('🚪 User signed out or session expired');
+          cleanupAuthState();
           setSession(null);
           setUser(null);
           setIsAdmin(false);
@@ -50,10 +51,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Check admin status asynchronously
           setTimeout(async () => {
             try {
-              const { data: roles } = await supabase
+              const { data: roles, error } = await supabase
                 .from('user_roles')
                 .select('role')
                 .eq('user_id', session.user.id);
+              
+              // If we get a JWT error, the session is invalid
+              if (error?.code === 'PGRST301' || error?.message?.includes('JWT')) {
+                console.error('❌ Session expired, forcing sign out');
+                cleanupAuthState();
+                await supabase.auth.signOut({ scope: 'global' });
+                setSession(null);
+                setUser(null);
+                setIsAdmin(false);
+                return;
+              }
               
               const userRoles = roles?.map(r => r.role) || [];
               setIsAdmin(userRoles.includes('admin'));
@@ -72,11 +84,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Get initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
+      // Check if session exists but might be expired
       if (session?.user) {
         try {
+          // Test the session with a simple query
+          const { error } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .limit(1);
+          
+          // If we get a JWT error, the session is expired
+          if (error?.code === 'PGRST301' || error?.message?.includes('JWT')) {
+            console.error('❌ Expired session detected on load, cleaning up');
+            cleanupAuthState();
+            await supabase.auth.signOut({ scope: 'global' });
+            setSession(null);
+            setUser(null);
+            setIsAdmin(false);
+            setLoading(false);
+            return;
+          }
+          
+          // Session is valid, proceed normally
+          setSession(session);
+          setUser(session.user);
           const { data: roles } = await supabase
             .from('user_roles')
             .select('role')
@@ -84,15 +116,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const userRoles = roles?.map(r => r.role) || [];
           setIsAdmin(userRoles.includes('admin'));
         } catch (error) {
-          console.error('Error fetching initial user roles:', error);
+          console.error('Error validating initial session:', error);
+          cleanupAuthState();
+          setSession(null);
+          setUser(null);
           setIsAdmin(false);
         }
-      } else {
-        setIsAdmin(false);
       }
       setLoading(false);
     }).catch((error) => {
       console.error('Error getting initial session:', error);
+      cleanupAuthState();
       setLoading(false);
     });
 
