@@ -29,6 +29,7 @@ import UserProfile from "./pages/UserProfile";
 import { EditProfile } from "./pages/EditProfile";
 import { MapboxTest } from "./components/MapboxTest";
 import { FAQ } from "./pages/FAQ";
+import { supabase } from "@/integrations/supabase/client";
 
 // Recovery redirect component to handle email link redirects
 const RecoveryRedirect = () => {
@@ -44,7 +45,34 @@ const RecoveryRedirect = () => {
   return <Index />;
 };
 
-const queryClient = new QueryClient();
+// Configure React Query with auth-aware settings
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error: any) => {
+        // Don't retry on auth errors
+        if (error?.code === 'PGRST301' || error?.message?.includes('JWT')) {
+          console.error('🔒 Auth error detected, clearing cache and stopping retries');
+          queryClient.clear();
+          return false;
+        }
+        return failureCount < 2;
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+    },
+  },
+});
+
+// Listen for auth changes and clear query cache
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+    console.log(`🔄 Auth event: ${event}, clearing query cache`);
+    queryClient.clear();
+  }
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
