@@ -4,13 +4,17 @@ import { X } from 'lucide-react';
 interface ClearDirectionsButtonProps {
   onClear: () => void;
   isVisible: boolean;
+  scale?: number;
 }
 
-export const ClearDirectionsButton = ({ onClear, isVisible }: ClearDirectionsButtonProps) => {
+export const ClearDirectionsButton = ({ onClear, isVisible, scale = 1 }: ClearDirectionsButtonProps) => {
   if (!isVisible) return null;
 
   return (
-    <div className="absolute top-4 left-4 z-50">
+    <div 
+      className="absolute top-4 left-4 z-50 origin-top-left transition-transform duration-200"
+      style={{ transform: `scale(${scale})` }}
+    >
       <Button
         onClick={onClear}
         variant="secondary"

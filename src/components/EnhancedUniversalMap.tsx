@@ -232,12 +232,14 @@ export const EnhancedUniversalMap = ({
             <ClearDirectionsButton 
               onClear={clearDirections}
               isVisible={!!route}
+              scale={containerScale}
             />
             <TurnByTurnDirections
               directions={directions || []}
               route={route}
               isVisible={!!(route && directions)}
               onClose={clearDirections}
+              scale={containerScale}
             />
             <MapOverlays 
               itemCount={filteredMappableItems.length}

@@ -9,9 +9,10 @@ interface TurnByTurnDirectionsProps {
   route: any;
   isVisible: boolean;
   onClose: () => void;
+  scale?: number;
 }
 
-export const TurnByTurnDirections = ({ directions, route, isVisible, onClose }: TurnByTurnDirectionsProps) => {
+export const TurnByTurnDirections = ({ directions, route, isVisible, onClose, scale = 1 }: TurnByTurnDirectionsProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [position, setPosition] = useState({ x: 16, y: 16 });
   const [isDragging, setIsDragging] = useState(false);
@@ -117,11 +118,12 @@ export const TurnByTurnDirections = ({ directions, route, isVisible, onClose }: 
   return (
     <div 
       ref={panelRef}
-      className={`absolute w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-8rem)] overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-default'}`}
+      className={`absolute w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[calc(100vh-8rem)] overflow-hidden origin-top-left transition-transform duration-200 ${isDragging ? 'cursor-grabbing' : 'cursor-default'}`}
       style={{ 
         left: position.x, 
         top: position.y,
-        userSelect: isDragging ? 'none' : 'auto'
+        userSelect: isDragging ? 'none' : 'auto',
+        transform: `scale(${scale})`
       }}
     >
       <Card className="border-0 shadow-none">
