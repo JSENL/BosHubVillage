@@ -167,9 +167,9 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
       throw new Error('CSV file is empty');
     }
 
-    const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, '').trim());
+    const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, '').trim().toLowerCase());
     
-    console.log('📊 CSV Headers for import:', headers);
+    console.log('📊 CSV Headers for import (normalized):', headers);
     
     return lines.slice(1).map((line, index) => {
       const values = parseCSVLine(line).map(v => v.replace(/"/g, '').trim());
