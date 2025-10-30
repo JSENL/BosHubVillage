@@ -1,33 +1,14 @@
 import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
 import { ListViewFilters } from "@/components/ListViewFilters";
-import { useDataContext } from './DataProvider';
-import { useFilterContext } from './FilterProvider';
+import { useAppState } from '@/contexts/AppStateContext';
 import { ItemGrid } from './ItemGrid';
 
 export const ListViewSection = () => {
-  const { allItems, isLoading } = useDataContext();
-  const { 
-    filteredItems,
-    searchTerm,
-    setSearchTerm,
-    selectedType,
-    setSelectedType,
-    selectedCategory,
-    setSelectedCategory,
-    selectedNeighborhood,
-    setSelectedNeighborhood,
-    selectedVillage,
-    setSelectedVillage,
-    eventDateRange,
-    setEventDateRange,
-    selectedEventDates,
-    setSelectedEventDates,
-    setViewMode
-  } = useFilterContext();
+  const { allItems, isLoading, filters, updateFilter, filteredItems } = useAppState();
 
   const handleViewModeChange = (newViewMode: 'map' | 'list') => {
-    setViewMode(newViewMode);
+    updateFilter('viewMode', newViewMode);
   };
 
   return (
@@ -39,20 +20,20 @@ export const ListViewSection = () => {
       <div className="px-4 sm:px-6 lg:px-8 py-4">
         <ListViewFilters
           allItems={allItems}
-          searchTerm={searchTerm}
-          onSearchTermChange={setSearchTerm}
-          selectedType={selectedType}
-          onTypeChange={setSelectedType}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          selectedNeighborhood={selectedNeighborhood}
-          onNeighborhoodChange={setSelectedNeighborhood}
-          selectedVillage={selectedVillage}
-          onVillageChange={setSelectedVillage}
-          eventDateRange={eventDateRange}
-          onEventDateRangeChange={setEventDateRange}
-          selectedEventDates={selectedEventDates}
-          onSelectedEventDatesChange={setSelectedEventDates}
+          searchTerm={filters.searchTerm}
+          onSearchTermChange={(term) => updateFilter('searchTerm', term)}
+          selectedType={filters.selectedType}
+          onTypeChange={(type) => updateFilter('selectedType', type)}
+          selectedCategory={filters.selectedCategory}
+          onCategoryChange={(category) => updateFilter('selectedCategory', category)}
+          selectedNeighborhood={filters.selectedNeighborhood}
+          onNeighborhoodChange={(neighborhood) => updateFilter('selectedNeighborhood', neighborhood)}
+          selectedVillage={filters.selectedVillage}
+          onVillageChange={(village) => updateFilter('selectedVillage', village)}
+          eventDateRange={filters.eventDateRange}
+          onEventDateRangeChange={(range) => updateFilter('eventDateRange', range)}
+          selectedEventDates={filters.selectedEventDates}
+          onSelectedEventDatesChange={(dates) => updateFilter('selectedEventDates', dates)}
           filteredItemsCount={filteredItems.length}
           onViewModeChange={handleViewModeChange}
         />

@@ -2,12 +2,10 @@ import { EventCard } from "@/components/EventCard";
 import BusinessCard from "@/components/BusinessCard";
 import LocalServiceCard from "@/components/LocalServiceCard";
 import { UnifiedItem } from "@/types/unifiedItem";
-import { useDataContext } from './DataProvider';
-import { useFilterContext } from './FilterProvider';
+import { useAppState } from '@/contexts/AppStateContext';
 
 export const ItemGrid = () => {
-  const { isLoading } = useDataContext();
-  const { filteredItems } = useFilterContext();
+  const { isLoading, filteredItems } = useAppState();
 
   const renderItem = (item: UnifiedItem) => {
     switch (item.type) {

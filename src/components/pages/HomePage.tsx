@@ -1,36 +1,18 @@
-import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
+import { HeroSection } from "@/components/HeroSection";
 import { UniversalFilters } from "@/components/UniversalFilters";
-import { DataProvider } from './DataProvider';
-import { FilterProvider } from './FilterProvider';
+import { AppStateProvider } from '@/contexts/AppStateProvider';
+import { useAppState } from '@/contexts/AppStateContext';
 import { MapViewSection } from './MapViewSection';
-import { ListViewSection } from './ListViewSection';
 import { SearchSection } from './SearchSection';
+import { ListViewSection } from './ListViewSection';
 import { ItemGrid } from './ItemGrid';
 import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
-import { useDataContext } from './DataProvider';
-import { useFilterContext } from './FilterProvider';
 
 const MapViewContent = () => {
-  const { allItems } = useDataContext();
-  const { 
-    filteredItems,
-    selectedType,
-    selectedCategory,
-    setSelectedCategory,
-    selectedNeighborhood,
-    setSelectedNeighborhood,
-    selectedVillage,
-    setSelectedVillage,
-    eventDateRange,
-    setEventDateRange,
-    selectedEventDates,
-    setSelectedEventDates,
-    setSelectedType,
-    viewMode
-  } = useFilterContext();
+  const { allItems, filters, updateFilter, filteredItems } = useAppState();
 
-  if (viewMode === 'list') {
+  if (filters.viewMode === 'list') {
     return <ListViewSection />;
   }
 
@@ -55,19 +37,19 @@ const MapViewContent = () => {
             <div className="bg-white rounded-lg border shadow-sm">
               <UniversalFilters
                 allItems={allItems}
-                searchTerm=""
-                selectedType={selectedType}
-                onTypeChange={setSelectedType}
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-                selectedNeighborhood={selectedNeighborhood}
-                onNeighborhoodChange={setSelectedNeighborhood}
-                selectedVillage={selectedVillage}
-                onVillageChange={setSelectedVillage}
-                eventDateRange={eventDateRange}
-                onEventDateRangeChange={setEventDateRange}
-                selectedEventDates={selectedEventDates}
-                onSelectedEventDatesChange={setSelectedEventDates}
+                searchTerm={filters.searchTerm}
+                selectedType={filters.selectedType}
+                onTypeChange={(type) => updateFilter('selectedType', type)}
+                selectedCategory={filters.selectedCategory}
+                onCategoryChange={(category) => updateFilter('selectedCategory', category)}
+                selectedNeighborhood={filters.selectedNeighborhood}
+                onNeighborhoodChange={(neighborhood) => updateFilter('selectedNeighborhood', neighborhood)}
+                selectedVillage={filters.selectedVillage}
+                onVillageChange={(village) => updateFilter('selectedVillage', village)}
+                eventDateRange={filters.eventDateRange}
+                onEventDateRangeChange={(range) => updateFilter('eventDateRange', range)}
+                selectedEventDates={filters.selectedEventDates}
+                onSelectedEventDatesChange={(dates) => updateFilter('selectedEventDates', dates)}
                 filteredItemsCount={filteredItems.length}
                 itemType="events"
               />
@@ -89,18 +71,8 @@ const MapViewContent = () => {
 
 export const HomePage = () => {
   return (
-    <DataProvider>
-      <HomePageContent />
-    </DataProvider>
-  );
-};
-
-const HomePageContent = () => {
-  const { allItems } = useDataContext();
-  
-  return (
-    <FilterProvider allItems={allItems}>
+    <AppStateProvider>
       <MapViewContent />
-    </FilterProvider>
+    </AppStateProvider>
   );
 };

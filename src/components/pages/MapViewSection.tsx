@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Map, List } from 'lucide-react';
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
-import { useFilterContext } from './FilterProvider';
+import { useAppState } from '@/contexts/AppStateContext';
 
 export const MapViewSection = () => {
-  const { filteredItems, selectedType, viewMode, setViewMode } = useFilterContext();
+  const { filteredItems, filters, updateFilter } = useAppState();
   const [mapRefreshKey, setMapRefreshKey] = useState(0);
   const [isRefreshingMap, setIsRefreshingMap] = useState(false);
 
   // Auto-refresh map when switching from list to map view
   useEffect(() => {
-    if (viewMode === 'map') {
+    if (filters.viewMode === 'map') {
       console.log('🔄 Switching to map view, initiating auto-refresh...');
       setIsRefreshingMap(true);
       
@@ -28,18 +28,18 @@ export const MapViewSection = () => {
 
       return () => clearTimeout(refreshTimeout);
     }
-  }, [viewMode]);
+  }, [filters.viewMode]);
 
   // Handler for view mode changes with refresh logic
   const handleViewModeChange = (newViewMode: 'map' | 'list') => {
-    console.log(`🔄 View mode changing from ${viewMode} to ${newViewMode}`);
-    setViewMode(newViewMode);
+    console.log(`🔄 View mode changing from ${filters.viewMode} to ${newViewMode}`);
+    updateFilter('viewMode', newViewMode);
   };
 
   // Determine selected types for the map (excluding news)
-  const selectedTypesForMap = selectedType === 'all' 
+  const selectedTypesForMap = filters.selectedType === 'all' 
     ? ['event', 'business', 'local-service'] 
-    : [selectedType];
+    : [filters.selectedType];
 
   // Create filtered items for map (including all item types)
   const mapItems = filteredItems;
@@ -75,11 +75,11 @@ export const MapViewSection = () => {
           </div>
         )}
         <EnhancedUniversalMap 
-          key={`main-map-${mapRefreshKey}`} // Dynamic key for forced refresh
+          key={`main-map-${mapRefreshKey}`}
           items={mapItems}
           height="100%"
           selectedTypes={selectedTypesForMap}
-          viewMode={viewMode}
+          viewMode={filters.viewMode}
         />
       </div>
     </div>
