@@ -5,11 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useFollowingActivity, ActivityType } from '@/hooks/useFollowingActivity';
+import { useAuth } from '@/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Clock, Bookmark, MessageSquare, Calendar, Newspaper, Briefcase, MapPin } from 'lucide-react';
 
 export const FollowingActivityFeed = () => {
+  const { user } = useAuth();
   const [filterType, setFilterType] = useState<ActivityType>('all');
   const { data: activities, isLoading } = useFollowingActivity(filterType);
 
@@ -136,14 +138,14 @@ export const FollowingActivityFeed = () => {
           </div>
         )}
 
-        {activities && activities.length > 0 && (
+        {activities && activities.length > 0 && user && (
           <Button 
             variant="ghost" 
             size="sm" 
             className="w-full mt-2"
             asChild
           >
-            <Link to="/discover">View All Activity</Link>
+            <Link to={`/user/${user.id}`}>View All Activity</Link>
           </Button>
         )}
       </CardContent>
