@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -14,7 +14,10 @@ import {
   MapPin,
   Trash2,
   Edit,
-  UserCog
+  UserCog,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { Business } from '@/types/business';
 import { toast } from 'sonner';
@@ -29,6 +32,32 @@ interface PublishedBusinessTableProps {
 export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusinessTableProps) => {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [editingBusiness, setEditingBusiness] = useState<any | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+
+  const sortedBusinesses = useMemo(() => {
+    if (!sortOrder) return businesses;
+    
+    return [...businesses].sort((a, b) => {
+      const titleA = a.title.toLowerCase();
+      const titleB = b.title.toLowerCase();
+      
+      if (sortOrder === 'asc') {
+        return titleA.localeCompare(titleB);
+      } else {
+        return titleB.localeCompare(titleA);
+      }
+    });
+  }, [businesses, sortOrder]);
+
+  const handleSortToggle = () => {
+    if (sortOrder === null) {
+      setSortOrder('asc');
+    } else if (sortOrder === 'asc') {
+      setSortOrder('desc');
+    } else {
+      setSortOrder(null);
+    }
+  };
 
   const handleDeleteBusiness = async (businessId: string) => {
     if (!confirm('Are you sure you want to delete this business? This action cannot be undone.')) {
@@ -93,7 +122,17 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Business</TableHead>
+                <TableHead>
+                  <button
+                    onClick={handleSortToggle}
+                    className="flex items-center gap-2 hover:text-foreground transition-colors"
+                  >
+                    Business
+                    {sortOrder === null && <ArrowUpDown className="h-4 w-4" />}
+                    {sortOrder === 'asc' && <ArrowUp className="h-4 w-4" />}
+                    {sortOrder === 'desc' && <ArrowDown className="h-4 w-4" />}
+                  </button>
+                </TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Business Owner</TableHead>
@@ -103,7 +142,7 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
               </TableRow>
             </TableHeader>
             <TableBody>
-              {businesses.map((business) => (
+              {sortedBusinesses.map((business) => (
                 <TableRow key={business.id}>
                   <TableCell>
                     <div>
