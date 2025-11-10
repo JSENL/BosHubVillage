@@ -4,7 +4,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar as CalendarIcon, X, CalendarDays, CalendarRange } from 'lucide-react';
+import { Calendar as CalendarIcon, X, CalendarDays, CalendarRange, Loader2 } from 'lucide-react';
 import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { DateRange } from 'react-day-picker';
@@ -125,10 +125,13 @@ export const EventDateFilter = ({
                 "w-48 sm:w-56 h-8 sm:h-10 text-xs sm:text-sm justify-start text-left font-normal",
                 (selectedEventDates.length === 0 && !eventDateRange?.from) && "text-muted-foreground"
               )}
-              disabled={isLoading}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {isLoading ? 'Loading...' : getButtonText()}
+              {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <CalendarIcon className="mr-2 h-4 w-4" />
+              )}
+              {isLoading ? 'Loading dates...' : getButtonText()}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
