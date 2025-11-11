@@ -14,8 +14,8 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
   const { t } = useTranslation();
   return (
     <Link to={`/business/${business.id}`}>
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full min-h-[200px]">
-        <CardHeader className="pb-2">
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+        <CardHeader className="pb-1 pt-3 px-3">
           <div className="flex justify-between items-start">
             <div className="flex-1 min-w-0">
               <CardTitle className="text-base font-semibold line-clamp-2 break-words">
@@ -32,7 +32,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
             <span className="text-xs truncate min-w-0 break-all">{business.address}, {business.neighborhood}</span>
           </div>
         </CardHeader>
-        <CardContent className="pt-2">
+        <CardContent className="pt-1 px-3 pb-3">
           {business.short_description && (
             <p className="text-gray-700 line-clamp-1 mb-1 text-xs break-words">
               <TranslatedText text={business.short_description} />

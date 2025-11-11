@@ -22,8 +22,8 @@ const NewsCard = ({ news }: NewsCardProps) => {
 
   return (
     <Link to={`/news/${news.id}`}>
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full min-h-[200px]">
-        <CardHeader className="pb-2">
+      <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+        <CardHeader className="pb-1 pt-3 px-3">
           <CardTitle className="text-base font-semibold line-clamp-2 break-words">
             {news.title}
           </CardTitle>
@@ -42,7 +42,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pt-2">
+        <CardContent className="pt-1 px-3 pb-3">
           <p className="text-gray-700 line-clamp-2 text-xs break-words">
             {news.content}
           </p>

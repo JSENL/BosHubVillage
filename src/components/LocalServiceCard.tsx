@@ -27,8 +27,8 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   };
 
   return (
-    <Card className="h-full hover:shadow-lg transition-shadow duration-200 cursor-pointer min-h-[200px]" onClick={handleClick}>
-      <CardHeader className="pb-2">
+    <Card className="h-full hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={handleClick}>
+      <CardHeader className="pb-1 pt-3 px-3">
         <div className="flex items-start justify-between">
           <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2 break-words flex-1 min-w-0 mr-2">
             <TranslatedText text={localService.name} />
@@ -39,7 +39,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2 pt-2">
+      <CardContent className="space-y-1 pt-1 px-3 pb-3">
         <div className="flex items-start text-gray-600 min-w-0">
           <MapPin className="h-3 w-3 mr-2 mt-0.5 flex-shrink-0" />
           <div className="text-xs min-w-0 flex-1">

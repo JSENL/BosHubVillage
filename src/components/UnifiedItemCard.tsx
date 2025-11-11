@@ -38,15 +38,15 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const getTypeIcon = () => {
     switch (item.type) {
       case 'event':
-        return <Calendar className="h-12 w-12 mx-auto mb-2" />;
+        return <Calendar className="h-6 w-6 mx-auto mb-1" />;
       case 'news':
-        return <Newspaper className="h-12 w-12 mx-auto mb-2" />;
+        return <Newspaper className="h-6 w-6 mx-auto mb-1" />;
       case 'business':
-        return <Building className="h-12 w-12 mx-auto mb-2" />;
+        return <Building className="h-6 w-6 mx-auto mb-1" />;
       case 'local-service':
-        return <Wrench className="h-12 w-12 mx-auto mb-2" />;
+        return <Wrench className="h-6 w-6 mx-auto mb-1" />;
       default:
-        return <Calendar className="h-12 w-12 mx-auto mb-2" />;
+        return <Calendar className="h-6 w-6 mx-auto mb-1" />;
     }
   };
 
@@ -105,10 +105,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
         <CardContent className="p-0">
           <div className="flex">
             {/* Item Image Placeholder */}
-            <div className={`w-60 h-48 bg-gradient-to-br ${getTypeColor()} flex items-center justify-center flex-shrink-0`}>
+            <div className={`w-40 h-32 bg-gradient-to-br ${getTypeColor()} flex items-center justify-center flex-shrink-0`}>
               <div className="text-white text-center">
                 {getTypeIcon()}
-                <div className="text-sm font-medium">
+                <div className="text-xs font-medium">
                   {item.type === 'event' && item.date 
                     ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                     : getTypeLabel()
@@ -118,20 +118,20 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             </div>
             
             {/* Item Details */}
-            <div className="flex-1 p-6">
-              <div className="flex justify-between items-start mb-3">
+            <div className="flex-1 p-3">
+              <div className="flex justify-between items-start mb-2">
                 <div className="flex-1 min-w-0 mr-4">
-                  <h3 className="text-xl font-bold text-gray-900 hover:text-caribbean-teal mb-1 line-clamp-2 break-words">
+                  <h3 className="text-base font-bold text-gray-900 hover:text-caribbean-teal mb-1 line-clamp-1 break-words">
                     {getDisplayTitle()}
                   </h3>
-                  <div className="flex items-center space-x-1 mb-2">
+                  <div className="flex items-center space-x-1 mb-1">
                     {[...Array(5)].map((_, i) => (
                       <Star 
                         key={i} 
-                        className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                        className={`h-3 w-3 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
                       />
                     ))}
-                    <span className="text-sm text-gray-600 ml-2 truncate">{reviewCount} reviews</span>
+                    <span className="text-xs text-gray-600 ml-1 truncate">{reviewCount} reviews</span>
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
@@ -142,31 +142,31 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                       size="sm"
                       variant="ghost"
                     />
-                    <Badge variant="secondary" className="bg-gray-100 text-gray-700">
-                      <span className="truncate max-w-24">{getDisplayCategory()}</span>
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs">
+                      <span className="truncate max-w-20">{getDisplayCategory()}</span>
                     </Badge>
                   </div>
                   {item.price !== undefined && (
-                    <div className="text-lg font-bold text-caribbean-teal">
+                    <div className="text-sm font-bold text-caribbean-teal">
                       {item.price === 0 ? t('cards.free') : `$${item.price}`}
                     </div>
                   )}
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2 break-words">{getDisplayDescription()}</p>
+              <p className="text-gray-600 mb-2 line-clamp-1 text-xs break-words">{getDisplayDescription()}</p>
               
-              <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+              <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
                 {item.date && (
                   <div className="flex items-center min-w-0">
-                    <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-                    <span className="truncate">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
+                    <Calendar className="h-3 w-3 mr-1 text-caribbean-teal/70 flex-shrink-0" />
+                    <span className="truncate text-xs">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
                   </div>
                 )}
                 {getDisplayLocation() && (
                   <div className="flex items-center min-w-0">
-                    <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-                    <span className="truncate break-all min-w-0">{getDisplayLocation()}</span>
+                    <MapPin className="h-3 w-3 mr-1 text-caribbean-teal/70 flex-shrink-0" />
+                    <span className="truncate break-all min-w-0 text-xs">{getDisplayLocation()}</span>
                   </div>
                 )}
               </div>
@@ -184,10 +184,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       onClick={handleViewDetails}
     >
       {/* Item Image Placeholder */}
-      <div className={`h-48 bg-gradient-to-br ${getTypeColor()} flex items-center justify-center`}>
+      <div className={`h-24 bg-gradient-to-br ${getTypeColor()} flex items-center justify-center`}>
         <div className="text-white text-center">
           {getTypeIcon()}
-          <div className="text-sm font-medium">
+          <div className="text-xs font-medium">
             {item.type === 'event' && item.date 
               ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
               : getTypeLabel()
@@ -196,9 +196,9 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
         </div>
       </div>
       
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between mb-2">
-          <Badge variant="secondary" className="bg-gray-100 text-gray-700">
+      <CardHeader className="pb-1 pt-2 px-3">
+        <div className="flex items-start justify-between mb-1">
+          <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs">
             {getDisplayCategory()}
           </Badge>
           <div className="flex items-center gap-2">
@@ -209,41 +209,41 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               variant="ghost"
             />
             {item.price !== undefined && (
-              <div className="text-lg font-bold text-caribbean-teal">
+              <div className="text-sm font-bold text-caribbean-teal">
                 {item.price === 0 ? t('cards.free') : `$${item.price}`}
               </div>
             )}
           </div>
         </div>
-        <CardTitle className="text-lg text-gray-900 hover:text-caribbean-teal line-clamp-2 break-words">
+        <CardTitle className="text-sm text-gray-900 hover:text-caribbean-teal line-clamp-2 break-words">
           {getDisplayTitle()}
         </CardTitle>
         <div className="flex items-center space-x-1">
           {[...Array(5)].map((_, i) => (
             <Star 
               key={i} 
-              className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+              className={`h-3 w-3 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
             />
           ))}
-          <span className="text-sm text-gray-600 ml-2">{reviewCount}</span>
+          <span className="text-xs text-gray-600 ml-1">{reviewCount}</span>
         </div>
       </CardHeader>
       
-      <CardContent>
-        <CardDescription className="mb-4 line-clamp-3 text-gray-600 break-words">
+      <CardContent className="pt-1 px-3 pb-3">
+        <CardDescription className="mb-2 line-clamp-2 text-gray-600 break-words text-xs">
           {getDisplayDescription()}
         </CardDescription>
-        <div className="space-y-2 text-sm">
+        <div className="space-y-1 text-xs">
           {item.date && (
             <div className="flex items-center text-gray-600 min-w-0">
-              <Calendar className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-              <span className="truncate">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
+              <Calendar className="h-3 w-3 mr-1 text-caribbean-teal/70 flex-shrink-0" />
+              <span className="truncate text-xs">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
             </div>
           )}
           {getDisplayLocation() && (
             <div className="flex items-center text-gray-600 min-w-0">
-              <MapPin className="h-4 w-4 mr-2 text-caribbean-teal/70 flex-shrink-0" />
-              <span className="truncate break-all min-w-0">{getDisplayLocation()}</span>
+              <MapPin className="h-3 w-3 mr-1 text-caribbean-teal/70 flex-shrink-0" />
+              <span className="truncate break-all min-w-0 text-xs">{getDisplayLocation()}</span>
             </div>
           )}
         </div>
