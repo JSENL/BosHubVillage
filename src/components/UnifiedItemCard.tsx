@@ -147,9 +147,9 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                       <span className="truncate max-w-[120px]">{getDisplayCategory()}</span>
                     </Badge>
                   </div>
-                  {item.price !== undefined && (
+                  {item.price !== undefined && item.price > 0 && (
                     <div className="text-sm font-bold text-caribbean-teal whitespace-nowrap">
-                      {item.price === 0 ? t('cards.free') : `$${item.price}`}
+                      ${item.price}
                     </div>
                   )}
                 </div>
@@ -209,9 +209,9 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               size="sm"
               variant="ghost"
             />
-            {item.price !== undefined && (
+            {item.price !== undefined && item.price > 0 && (
               <div className="text-sm font-bold text-caribbean-teal whitespace-nowrap">
-                {item.price === 0 ? t('cards.free') : `$${item.price}`}
+                ${item.price}
               </div>
             )}
           </div>
