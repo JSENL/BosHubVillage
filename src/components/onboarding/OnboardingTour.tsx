@@ -10,41 +10,106 @@ import {
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-type TourType = 'event' | 'business' | 'resource' | null;
+type TourType = 'event' | 'business' | 'resource' | 'general' | null;
 
 export interface OnboardingTourRef {
   openTour: () => void;
 }
 
-const eventSteps: Step[] = [
+const generalSteps: Step[] = [
   {
     target: 'body',
-    content: "Let me show you how to post and explore events! You can browse events, submit your own, use filters, and view them on an interactive map.",
+    content: "Welcome to HubVillage! This is your community hub for discovering local events, businesses, news, and services. Let me show you all the features available to you.",
     placement: 'center',
   },
   {
-    target: '[data-tour="submit-event"]',
-    content: "Click here to submit a new event. Include details like title, date, time, location, category, and whether it's free or paid. Events are reviewed before being published.",
-    disableBeacon: true,
-  },
-  {
     target: '[data-tour="view-toggle"]',
-    content: "Switch between grid, list, map, and calendar views to explore events in different ways. Each view helps you discover events differently.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="filters"]',
-    content: "Use filters to find specific events by category, date range, type (free/paid), neighborhood, or village. Click 'Clear All' to reset filters.",
+    content: "Switch between Map and List views to explore content. Map view shows everything with location markers, while List view displays items in a scrollable grid. The map view also has a resizable bottom panel for browsing items.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="search"]',
-    content: "Search for events using keywords like event names, descriptions, or locations. Combine search with filters for precise results.",
+    content: "Search across all content types - events, businesses, news, and local services. The search works in real-time as you type and searches through titles, descriptions, and locations.",
+    disableBeacon: true,
+  },
+  {
+    target: '[data-tour="filters"]',
+    content: "Use powerful filters to narrow down results. Filter by content type (events, businesses, news, local services), categories, neighborhoods, villages, and date ranges. The event date filter supports both individual dates and date ranges. Click 'Clear All' to reset.",
     disableBeacon: true,
   },
   {
     target: 'body',
-    content: "Ready to submit your own event? Click 'Submit Event' in the navigation menu to create your listing. Fill out the form with event details, and it will be reviewed by our team before being published to the platform.",
+    content: "The Discovery Sidebar (right side on desktop, top on mobile) shows: Trending items with the most engagement, Your bookmarks for quick access, People to follow and connect with, and Activity feed from users you follow. It's your personalized community feed!",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "SUBMIT CONTENT: Click the orange 'Submit' button in the navigation to add Events (with calendar integration and maps), Businesses (with contact info, hours, and messaging), News articles, or Local Services (plumbers, electricians, tutors, etc.). All submissions are reviewed before publishing.",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "SOCIAL FEATURES: Bookmark items you want to save, Leave comments and star ratings on businesses and events, Send direct messages to business owners, Follow other users to see their activity, View trending content based on community engagement. Build your community network!",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "YOUR ACCOUNT: Access your profile to see your submissions and activity, Visit 'My Messages' to manage conversations with businesses and admins, Track 'My Submissions' to see approval status, If you own a business, access your Business Dashboard to manage listings and messages. Business owners can also view customer messages and respond directly.",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "EXPLORE NEWS: Click 'News' in the navigation to view community news and announcements in a beautiful magazine-style layout. You can also submit your own news articles for the community to see.",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "NEED HELP? Visit the FAQ page (link in navigation) for common questions and answers. Contact admins directly through the 'Contact Admin' option in your account menu. Click the help button (bottom right) anytime to restart this tour. You can also click on any item to view full details, get directions, bookmark, or interact with it!",
+    placement: 'center',
+    disableBeacon: true,
+  },
+];
+
+const eventSteps: Step[] = [
+  {
+    target: 'body',
+    content: "Let me show you how to post and explore events! You can browse events, submit your own, use filters, view on interactive maps, and even get calendar integration.",
+    placement: 'center',
+  },
+  {
+    target: '[data-tour="submit-event"]',
+    content: "Click here to submit a new event. Include details like title, date, time, location, category, whether it's free or paid, and upload images or PDFs. You can create single or recurring events. All events are reviewed before publication.",
+    disableBeacon: true,
+  },
+  {
+    target: '[data-tour="view-toggle"]',
+    content: "Switch between grid, list, map, and calendar views to explore events. Map view shows all events with interactive markers, Calendar view displays events on a monthly calendar, Grid and List views show event cards with details and images.",
+    disableBeacon: true,
+  },
+  {
+    target: '[data-tour="filters"]',
+    content: "Use filters to find specific events by category (music, food, sports, etc.), date range (pick individual dates or ranges), event type (free/paid), neighborhood, or village. Combine multiple filters for precise results. The date picker supports both single dates and date ranges.",
+    disableBeacon: true,
+  },
+  {
+    target: '[data-tour="search"]',
+    content: "Search for events using keywords like event names, descriptions, locations, or organizers. The search works in real-time and highlights matching results instantly.",
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "ENGAGE WITH EVENTS: Click any event to view full details including location, time, pricing, and description. Leave comments and ask questions about events. Get directions to event locations via the map. Bookmark events to save them for later. Register for events (when available). Share events on social media.",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "Ready to submit your own event? Click 'Submit Event' in the navigation menu. Fill out the form with all event details, upload images or PDFs, and submit for review. You'll be able to track the approval status in 'My Submissions'. Once approved, your event will appear on the platform for the whole community to see!",
     placement: 'center',
     disableBeacon: true,
   },
@@ -53,32 +118,44 @@ const eventSteps: Step[] = [
 const businessSteps: Step[] = [
   {
     target: 'body',
-    content: "Let me show you how to post and discover businesses! You can add your business, browse the directory, contact businesses, and leave reviews.",
+    content: "Let me show you how to post and discover businesses! You can add your business, browse the directory, send messages, leave reviews, and connect with local businesses.",
     placement: 'center',
   },
   {
     target: '[data-tour="submit-business"]',
-    content: "Click here to submit your business listing. Include business name, description, category, contact info, hours, and location. Listings are reviewed before publication.",
+    content: "Click here to submit your business listing. Include business name, detailed description, category (restaurant, retail, service, etc.), contact info (phone, email, website, social media), business hours, location with map pin, and upload photos. All listings are reviewed before publication.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="view-toggle"]',
-    content: "Switch between grid, list, and map views to explore businesses. Map view shows all businesses with color-coded markers for easy discovery.",
+    content: "Switch between grid, list, and map views to explore businesses. Map view shows all businesses with color-coded markers by category for easy discovery. Grid and List views display business cards with ratings, hours, and quick actions.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="filters"]',
-    content: "Use filters to find businesses by category, location, or neighborhood. You can also bookmark businesses and send direct messages to business owners.",
+    content: "Use filters to find businesses by category (food, retail, professional services, etc.), location, neighborhood, or open/closed status. Filter by ratings to find highly-rated businesses. You can also bookmark businesses for quick access later.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="search"]',
-    content: "Search for businesses by name, category, or keywords. Click on any business to view details, contact info, hours, and customer reviews.",
+    content: "Search for businesses by name, category, keywords, or services offered. Click on any business card to view full details including photos, hours, contact information, location map, and customer reviews.",
     disableBeacon: true,
   },
   {
     target: 'body',
-    content: "Ready to list your business? Click 'Submit Business' in the navigation menu. Complete the form with your business information, and our team will review it before publishing to the directory.",
+    content: "INTERACT WITH BUSINESSES: Send direct messages to business owners with questions or inquiries. Leave star ratings and written reviews to help others. Bookmark your favorite businesses for easy access. Get turn-by-turn directions to business locations. View business hours and contact details. See all reviews from other community members.",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "BUSINESS OWNERS: If you submit a business, you'll gain access to a Business Dashboard where you can: View and respond to customer messages, Monitor customer reviews and ratings, Edit your business information, Upload new photos, Update hours and contact details. You'll be notified of new messages and reviews!",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "Ready to list your business? Click 'Submit Business' in the navigation menu. Complete the detailed form with your business information, upload quality photos, and submit for review. Track approval status in 'My Submissions'. Once approved, customers can find you, message you, and leave reviews!",
     placement: 'center',
     disableBeacon: true,
   },
@@ -87,32 +164,38 @@ const businessSteps: Step[] = [
 const resourceSteps: Step[] = [
   {
     target: 'body',
-    content: "Let me show you how to post and find local resources! Discover service providers like plumbers, electricians, tutors, and more in your area.",
+    content: "Let me show you how to post and find local resources! Discover trusted service providers like plumbers, electricians, tutors, cleaners, landscapers, and more in your community.",
     placement: 'center',
   },
   {
     target: '[data-tour="submit-resource"]',
-    content: "Click here to submit a local resource or service. Include service description, categories, contact info, coverage area, and certifications. Submissions are reviewed before publication.",
+    content: "Click here to submit a local resource or service. Include service name, detailed description of services offered, multiple service categories, contact information (phone, email, website), coverage area (neighborhoods/villages you serve), certifications or licenses, pricing info, and photos. All submissions are reviewed before publication.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="view-toggle"]',
-    content: "Switch between grid, list, and map views to find local services. The map shows service providers near you with location markers.",
+    content: "Switch between grid, list, and map views to find local services. Map view shows all service providers with location markers, making it easy to find providers near you. Grid and List views display service cards with contact info and categories.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="filters"]',
-    content: "Use filters to find services by category, location, or service type. Filter by neighborhood to find providers in your specific area.",
+    content: "Use filters to find services by category (home services, professional services, personal services, etc.), location, specific neighborhoods, or villages. Filter by service type to find exactly what you need - plumbing, electrical, tutoring, cleaning, lawn care, and more.",
     disableBeacon: true,
   },
   {
     target: '[data-tour="search"]',
-    content: "Search for specific services using keywords. Find plumbers, electricians, tutors, cleaners, or any professional service you need.",
+    content: "Search for specific services using keywords like 'plumber', 'tutor', 'electrician', 'cleaner', 'landscaper', or any professional service you need. Click on any service card to view full details, contact information, and service areas.",
     disableBeacon: true,
   },
   {
     target: 'body',
-    content: "Ready to add your service? Click 'Submit Local Resource' in the navigation menu. Fill out the form with service details, and it will be reviewed before being published to help others find your services.",
+    content: "CONNECT WITH SERVICE PROVIDERS: View complete service details including all offered services, coverage areas, and certifications. Contact providers directly via phone, email, or website. Leave comments and reviews to help others find quality services. Bookmark trusted providers for future reference. Get directions to service provider locations.",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "Ready to add your service? Click 'Submit Local Resource' in the navigation menu. Fill out the comprehensive form with your service details, coverage area, certifications, and contact info. Upload photos of your work to attract customers. Submit for review and track approval status in 'My Submissions'. Help your community find the services they need!",
     placement: 'center',
     disableBeacon: true,
   },
@@ -164,6 +247,8 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
 
   const getStepsForTour = (): Step[] => {
     switch (activeTour) {
+      case 'general':
+        return generalSteps;
       case 'event':
         return eventSteps;
       case 'business':
@@ -180,20 +265,37 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
       <Dialog open={showWelcome} onOpenChange={setShowWelcome}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Welcome! How can we help you?</DialogTitle>
+            <DialogTitle className="text-2xl">Welcome to HubVillage! 🎉</DialogTitle>
             <DialogDescription>
-              Choose what you'd like to do and we'll guide you through the features.
+              Your community hub for events, businesses, news, and local services. Choose a tour to get started or explore all features.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-4">
+            <Button
+              onClick={() => handleTourChoice('general')}
+              className="w-full justify-start text-left h-auto py-4 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <div>
+                <div className="font-semibold">🌟 Show me everything!</div>
+                <div className="text-sm opacity-90">Complete tour of all features (recommended for first-time users)</div>
+              </div>
+            </Button>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or choose a specific topic</span>
+              </div>
+            </div>
             <Button
               onClick={() => handleTourChoice('event')}
               variant="outline"
               className="w-full justify-start text-left h-auto py-4"
             >
               <div>
-                <div className="font-semibold">Are you posting an event?</div>
-                <div className="text-sm text-muted-foreground">Learn how to create and share events</div>
+                <div className="font-semibold">📅 Events Guide</div>
+                <div className="text-sm text-muted-foreground">Learn to post and find community events</div>
               </div>
             </Button>
             <Button
@@ -202,8 +304,8 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
               className="w-full justify-start text-left h-auto py-4"
             >
               <div>
-                <div className="font-semibold">Are you posting a business?</div>
-                <div className="text-sm text-muted-foreground">Discover how to list your business</div>
+                <div className="font-semibold">🏪 Business Directory</div>
+                <div className="text-sm text-muted-foreground">List your business or find local shops</div>
               </div>
             </Button>
             <Button
@@ -212,16 +314,16 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
               className="w-full justify-start text-left h-auto py-4"
             >
               <div>
-                <div className="font-semibold">Are you posting a local resource?</div>
-                <div className="text-sm text-muted-foreground">Learn how to share local resources</div>
+                <div className="font-semibold">🔧 Local Services</div>
+                <div className="text-sm text-muted-foreground">Find or offer professional services</div>
               </div>
             </Button>
             <Button
               onClick={() => handleTourChoice(null)}
-              variant="secondary"
+              variant="ghost"
               className="w-full mt-2"
             >
-              Want to just start with no help?
+              Skip tour - I'll explore on my own
             </Button>
           </div>
         </DialogContent>
