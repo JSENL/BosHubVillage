@@ -263,65 +263,65 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
   return (
     <>
       <Dialog open={showWelcome} onOpenChange={setShowWelcome}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Welcome to HubVillage! 🎉</DialogTitle>
-            <DialogDescription>
+        <DialogContent className="sm:max-w-md max-w-[95vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="space-y-2">
+            <DialogTitle className="text-lg sm:text-2xl break-words">Welcome to HubVillage! 🎉</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm break-words">
               Your community hub for events, businesses, news, and local services. Choose a tour to get started or explore all features.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex flex-col gap-3 mt-4">
+          <div className="flex flex-col gap-2 sm:gap-3 mt-3 sm:mt-4">
             <Button
               onClick={() => handleTourChoice('general')}
-              className="w-full justify-start text-left h-auto py-4 bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4 bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              <div>
-                <div className="font-semibold">🌟 Show me everything!</div>
-                <div className="text-sm opacity-90">Complete tour of all features (recommended for first-time users)</div>
+              <div className="w-full min-w-0">
+                <div className="font-semibold text-sm sm:text-base break-words">🌟 Show me everything!</div>
+                <div className="text-xs sm:text-sm opacity-90 break-words">Complete tour of all features (recommended)</div>
               </div>
             </Button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or choose a specific topic</span>
+              <div className="relative flex justify-center text-[10px] sm:text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground whitespace-nowrap">Or choose a specific topic</span>
               </div>
             </div>
             <Button
               onClick={() => handleTourChoice('event')}
               variant="outline"
-              className="w-full justify-start text-left h-auto py-4"
+              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4"
             >
-              <div>
-                <div className="font-semibold">📅 Events Guide</div>
-                <div className="text-sm text-muted-foreground">Learn to post and find community events</div>
+              <div className="w-full min-w-0">
+                <div className="font-semibold text-sm sm:text-base break-words">📅 Events Guide</div>
+                <div className="text-xs sm:text-sm text-muted-foreground break-words">Learn to post and find community events</div>
               </div>
             </Button>
             <Button
               onClick={() => handleTourChoice('business')}
               variant="outline"
-              className="w-full justify-start text-left h-auto py-4"
+              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4"
             >
-              <div>
-                <div className="font-semibold">🏪 Business Directory</div>
-                <div className="text-sm text-muted-foreground">List your business or find local shops</div>
+              <div className="w-full min-w-0">
+                <div className="font-semibold text-sm sm:text-base break-words">🏪 Business Directory</div>
+                <div className="text-xs sm:text-sm text-muted-foreground break-words">List your business or find local shops</div>
               </div>
             </Button>
             <Button
               onClick={() => handleTourChoice('resource')}
               variant="outline"
-              className="w-full justify-start text-left h-auto py-4"
+              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4"
             >
-              <div>
-                <div className="font-semibold">🔧 Local Services</div>
-                <div className="text-sm text-muted-foreground">Find or offer professional services</div>
+              <div className="w-full min-w-0">
+                <div className="font-semibold text-sm sm:text-base break-words">🔧 Local Services</div>
+                <div className="text-xs sm:text-sm text-muted-foreground break-words">Find or offer professional services</div>
               </div>
             </Button>
             <Button
               onClick={() => handleTourChoice(null)}
               variant="ghost"
-              className="w-full mt-2"
+              className="w-full mt-1 sm:mt-2 text-xs sm:text-sm h-auto py-2 sm:py-3"
             >
               Skip tour - I'll explore on my own
             </Button>
@@ -341,7 +341,41 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
             options: {
               primaryColor: 'hsl(var(--primary))',
               zIndex: 10000,
+              width: '100%',
             },
+            tooltip: {
+              maxWidth: '90vw',
+              padding: '12px 16px',
+            },
+            tooltipContainer: {
+              textAlign: 'left',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              hyphens: 'auto',
+            },
+            tooltipContent: {
+              fontSize: '14px',
+              lineHeight: '1.5',
+              padding: '8px 0',
+            },
+            buttonNext: {
+              fontSize: '14px',
+              padding: '8px 16px',
+            },
+            buttonBack: {
+              fontSize: '14px',
+              padding: '8px 16px',
+            },
+            buttonSkip: {
+              fontSize: '14px',
+              padding: '8px 16px',
+            },
+            spotlight: {
+              borderRadius: '8px',
+            },
+          }}
+          floaterProps={{
+            disableAnimation: true,
           }}
         />
       )}
