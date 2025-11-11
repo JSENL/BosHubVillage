@@ -71,9 +71,9 @@ const MainContent = () => {
             {filters.viewMode === 'map' ? (
               <ResizablePanelGroup 
                 direction="vertical" 
-                className="min-h-[600px] rounded-lg border"
+                className="min-h-[900px] rounded-lg border"
               >
-                <ResizablePanel defaultSize={60} minSize={30}>
+                <ResizablePanel defaultSize={50} minSize={25}>
                   <div className="h-full">
                     <MapView
                       items={filteredItems}
@@ -83,7 +83,7 @@ const MainContent = () => {
                   </div>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={40} minSize={20}>
+                <ResizablePanel defaultSize={50} minSize={25}>
                   <div className="h-full overflow-y-auto p-4 bg-background">
                     <ListView
                       items={filteredItems}
