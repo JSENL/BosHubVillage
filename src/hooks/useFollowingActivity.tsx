@@ -116,8 +116,8 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
 
         // Businesses (no status column - all businesses in this table are approved)
         const businessesResponse: any = await (supabase as any)
-          .from('businesses')
-          .select('id, name, created_at, created_by')
+          .from('business')
+          .select('id, title, created_at, created_by')
           .in('created_by', followingIds)
           .order('created_at', { ascending: false })
           .limit(10);
@@ -141,7 +141,7 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
                   avatar_url: profile.avatar_url,
                   is_verified: profile.is_verified || false,
                 },
-                item: { id: business.id, title: business.name || '', type: 'business' },
+                item: { id: business.id, title: business.title || '', type: 'business' },
                 created_at: business.created_at || new Date().toISOString(),
                 action: 'added a business',
               });
@@ -149,40 +149,8 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
           }
         }
 
-        // Local Services (no status column - all services in this table are approved)
-        const servicesResponse: any = await (supabase as any)
-          .from('local_services')
-          .select('id, name, created_at, created_by')
-          .in('created_by', followingIds)
-          .order('created_at', { ascending: false })
-          .limit(10);
-
-        if (servicesResponse.data) {
-          for (const service of servicesResponse.data) {
-            const profileResponse: any = await supabase
-              .from('profiles')
-              .select('id, full_name, avatar_url, is_verified')
-              .eq('id', service.created_by || '')
-              .maybeSingle();
-
-            if (profileResponse.data) {
-              const profile = profileResponse.data;
-              activities.push({
-                id: `service-${service.id}`,
-                type: 'local-service',
-                user: {
-                  id: profile.id,
-                  full_name: profile.full_name || '',
-                  avatar_url: profile.avatar_url,
-                  is_verified: profile.is_verified || false,
-                },
-                item: { id: service.id, title: service.name || '', type: 'local-service' },
-                created_at: service.created_at || new Date().toISOString(),
-                action: 'added a local service',
-              });
-            }
-          }
-        }
+        // Note: Local resources don't have a created_by field, so we can't track who created them
+        // This section is commented out until the local_resources table is updated with a created_by column
       }
 
       // Fetch activity (bookmarks, comments, registrations) if needed
@@ -225,14 +193,14 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
             if (newsResponse.data) itemTitle = newsResponse.data.title || 'Untitled News';
           } else if (activity.item_type === 'business') {
             const businessResponse: any = await (supabase as any)
-              .from('businesses')
-              .select('name')
+              .from('business')
+              .select('title')
               .eq('id', activity.item_id || '')
               .maybeSingle();
-            if (businessResponse.data?.name) itemTitle = businessResponse.data.name;
+            if (businessResponse.data?.title) itemTitle = businessResponse.data.title;
           } else if (activity.item_type === 'local-service') {
             const serviceResponse: any = await (supabase as any)
-              .from('local_services')
+              .from('local_resources')
               .select('name')
               .eq('id', activity.item_id || '')
               .maybeSingle();
