@@ -37,6 +37,7 @@ import SocialFeaturesOverview from '@/components/admin/SocialFeaturesOverview';
 import UserActivityMonitor from '@/components/admin/UserActivityMonitor';
 import BookmarksManagement from '@/components/admin/BookmarksManagement';
 import SocialNetworkAnalytics from '@/components/admin/SocialNetworkAnalytics';
+import { EventScraperTest } from '@/components/admin/EventScraperTest';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -249,7 +250,7 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="analytics" className="w-full">
-                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                      <TabsList className="grid w-full grid-cols-5 mb-6">
                         <TabsTrigger value="analytics" className="flex items-center gap-2">
                           <BarChart3 className="h-4 w-4" />
                           Analytics
@@ -265,6 +266,10 @@ const AdminDashboard = () => {
                         <TabsTrigger value="categories" className="flex items-center gap-2">
                           <Tag className="h-4 w-4" />
                           Categories
+                        </TabsTrigger>
+                        <TabsTrigger value="scraper" className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          Event Scraper
                         </TabsTrigger>
                       </TabsList>
                       
@@ -282,6 +287,10 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="categories">
                         <CategoriesManagement />
+                      </TabsContent>
+                      
+                      <TabsContent value="scraper">
+                        <EventScraperTest />
                       </TabsContent>
                     </Tabs>
                   </CardContent>
