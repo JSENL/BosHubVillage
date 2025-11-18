@@ -72,7 +72,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
 
   const cardClassName = `
     bg-white border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer
-    w-full min-w-0
+    w-full min-w-0 overflow-hidden
     ${isHighlighted ? 'ring-2 ring-caribbean-teal ring-opacity-75' : ''}
   `;
 
@@ -121,7 +121,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             {/* Item Details */}
             <div className="flex-1 p-3 min-w-0">
               <div className="flex flex-col sm:flex-row justify-between items-start mb-2 gap-2">
-                <div className="flex-1 min-w-0 w-full sm:mr-4">
+                <div className="flex-1 min-w-0">
                   <h3 className="text-sm sm:text-base font-bold text-gray-900 hover:text-caribbean-teal mb-1 break-words">
                     {getDisplayTitle()}
                   </h3>
@@ -135,20 +135,18 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                     <span className="text-xs text-gray-600 ml-1">{reviewCount} reviews</span>
                   </div>
                 </div>
-                <div className="flex sm:flex-col items-center sm:items-end gap-2 w-full sm:w-auto sm:flex-shrink-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <div onClick={(e) => e.stopPropagation()}>
-                      <BookmarkButton 
-                        itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
-                        itemId={item.id}
-                        size="sm"
-                        variant="ghost"
-                      />
-                    </div>
-                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs whitespace-nowrap">
-                      <span className="truncate max-w-[120px]">{getDisplayCategory()}</span>
-                    </Badge>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <BookmarkButton 
+                      itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
+                      itemId={item.id}
+                      size="sm"
+                      variant="ghost"
+                    />
                   </div>
+                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs whitespace-nowrap">
+                    <span className="truncate max-w-[100px] sm:max-w-[120px]">{getDisplayCategory()}</span>
+                  </Badge>
                   {item.price !== undefined && item.price > 0 && (
                     <div className="text-sm font-bold text-caribbean-teal whitespace-nowrap">
                       ${item.price}
@@ -200,11 +198,11 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       </div>
       
       <CardHeader className="pb-1 pt-2 px-3">
-        <div className="flex items-start justify-between mb-1 gap-2">
+        <div className="flex items-start justify-between mb-1 gap-1">
           <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs whitespace-nowrap flex-shrink-0">
-            <span className="truncate max-w-[80px]">{getDisplayCategory()}</span>
+            <span className="truncate max-w-[70px]">{getDisplayCategory()}</span>
           </Badge>
-          <div className="flex items-center gap-1 flex-shrink-0">
+          <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
             <div onClick={(e) => e.stopPropagation()}>
               <BookmarkButton 
                 itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
@@ -214,7 +212,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               />
             </div>
             {item.price !== undefined && item.price > 0 && (
-              <div className="text-sm font-bold text-caribbean-teal whitespace-nowrap">
+              <div className="text-xs sm:text-sm font-bold text-caribbean-teal whitespace-nowrap">
                 ${item.price}
               </div>
             )}
