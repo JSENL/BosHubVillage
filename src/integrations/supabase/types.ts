@@ -1696,10 +1696,7 @@ export type Database = {
         Args: { _event_id: string; _user_id: string }
         Returns: boolean
       }
-      get_business_owner_id: {
-        Args: { _business_id: string }
-        Returns: string
-      }
+      get_business_owner_id: { Args: { _business_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
