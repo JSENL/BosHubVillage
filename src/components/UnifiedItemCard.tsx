@@ -136,13 +136,15 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
                   </div>
                 </div>
                 <div className="flex sm:flex-col items-center sm:items-end gap-2 w-full sm:w-auto sm:flex-shrink-0">
-                  <div className="flex items-center gap-2">
-                    <BookmarkButton 
-                      itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
-                      itemId={item.id}
-                      size="sm"
-                      variant="ghost"
-                    />
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <BookmarkButton 
+                        itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
+                        itemId={item.id}
+                        size="sm"
+                        variant="ghost"
+                      />
+                    </div>
                     <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs whitespace-nowrap">
                       <span className="truncate max-w-[120px]">{getDisplayCategory()}</span>
                     </Badge>
@@ -203,12 +205,14 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             <span className="truncate max-w-[80px]">{getDisplayCategory()}</span>
           </Badge>
           <div className="flex items-center gap-1 flex-shrink-0">
-            <BookmarkButton 
-              itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
-              itemId={item.id}
-              size="sm"
-              variant="ghost"
-            />
+            <div onClick={(e) => e.stopPropagation()}>
+              <BookmarkButton 
+                itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
+                itemId={item.id}
+                size="sm"
+                variant="ghost"
+              />
+            </div>
             {item.price !== undefined && item.price > 0 && (
               <div className="text-sm font-bold text-caribbean-teal whitespace-nowrap">
                 ${item.price}
