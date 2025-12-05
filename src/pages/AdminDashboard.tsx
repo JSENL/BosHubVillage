@@ -29,7 +29,8 @@ import {
   UserCheck,
   Upload,
   BarChart3,
-  UserCircle
+  UserCircle,
+  Table
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
 import { AnalyticsOverview } from '@/components/admin/AnalyticsOverview';
@@ -250,7 +251,7 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="analytics" className="w-full">
-                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                      <TabsList className="grid w-full grid-cols-5 mb-6">
                         <TabsTrigger value="analytics" className="flex items-center gap-2">
                           <BarChart3 className="h-4 w-4" />
                           Analytics
@@ -266,6 +267,10 @@ const AdminDashboard = () => {
                         <TabsTrigger value="categories" className="flex items-center gap-2">
                           <Tag className="h-4 w-4" />
                           Categories
+                        </TabsTrigger>
+                        <TabsTrigger value="csv-board" className="flex items-center gap-2">
+                          <Table className="h-4 w-4" />
+                          CSV Board
                         </TabsTrigger>
                       </TabsList>
                       
@@ -283,6 +288,12 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="categories">
                         <CategoriesManagement />
+                      </TabsContent>
+                      
+                      <TabsContent value="csv-board">
+                        <div className="text-center py-8 text-muted-foreground">
+                          CSV Board - Coming soon
+                        </div>
                       </TabsContent>
                     </Tabs>
                   </CardContent>
