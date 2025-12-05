@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -14,78 +12,112 @@ import {
 import { toast } from 'sonner';
 
 interface CSVItem {
-  id: string;
   name: string;
   type: string;
   neighborhood_focus: string;
-  website: string | null;
+  website: string;
 }
 
 export function CSVBoard() {
-  const { data: items = [], isLoading } = useQuery({
-    queryKey: ['csv-board-data'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('business')
-        .select('id, title, business_type, neighborhood, website_link')
-        .order('title');
+  const [items, setItems] = useState<CSVItem[]>([]);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-      if (error) throw error;
+  const parseCSV = (text: string): CSVItem[] => {
+    const lines = text.split('\n').filter(line => line.trim());
+    if (lines.length < 2) return [];
 
-      return (data || []).map((item) => ({
-        id: item.id,
-        name: item.title,
-        type: item.business_type,
-        neighborhood_focus: item.neighborhood,
-        website: item.website_link,
-      })) as CSVItem[];
-    },
-  });
+    // Skip header row
+    const dataLines = lines.slice(1);
+    
+    return dataLines.map(line => {
+      // Handle quoted values with commas inside
+      const values: string[] = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          values.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      values.push(current.trim());
 
-  const downloadCSV = () => {
-    if (items.length === 0) {
-      toast.error('No data to download');
+      return {
+        name: values[0] || '',
+        type: values[1] || '',
+        neighborhood_focus: values[2] || '',
+        website: values[3] || '',
+      };
+    }).filter(item => item.name || item.type || item.neighborhood_focus || item.website);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.csv')) {
+      toast.error('Please upload a CSV file');
       return;
     }
 
-    const headers = ['Name', 'Type', 'Neighborhood Focus', 'Website'];
-    const csvRows = [
-      headers.join(','),
-      ...items.map((item) =>
-        [
-          `"${(item.name || '').replace(/"/g, '""')}"`,
-          `"${(item.type || '').replace(/"/g, '""')}"`,
-          `"${(item.neighborhood_focus || '').replace(/"/g, '""')}"`,
-          `"${(item.website || '').replace(/"/g, '""')}"`,
-        ].join(',')
-      ),
-    ];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      const parsedItems = parseCSV(text);
+      
+      if (parsedItems.length === 0) {
+        toast.error('No valid data found in CSV');
+        return;
+      }
 
-    const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `business_data_${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    toast.success('CSV downloaded successfully');
+      setItems(parsedItems);
+      setFileName(file.name);
+      toast.success(`Loaded ${parsedItems.length} records from ${file.name}`);
+    };
+    reader.onerror = () => {
+      toast.error('Error reading file');
+    };
+    reader.readAsText(file);
+
+    // Reset input so same file can be uploaded again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
-  if (isLoading) {
-    return <div className="text-center py-8 text-muted-foreground">Loading data...</div>;
-  }
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Business Data Export</h3>
-        <Button onClick={downloadCSV} className="flex items-center gap-2">
-          <Download className="h-4 w-4" />
-          Download CSV
-        </Button>
+        <div>
+          <h3 className="text-lg font-medium">Business Data</h3>
+          {fileName && (
+            <p className="text-sm text-muted-foreground">File: {fileName}</p>
+          )}
+        </div>
+        <div>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileUpload}
+            ref={fileInputRef}
+            className="hidden"
+          />
+          <Button onClick={handleUploadClick} className="flex items-center gap-2">
+            <Upload className="h-4 w-4" />
+            Upload CSV
+          </Button>
+        </div>
       </div>
 
       <div className="border rounded-lg">
@@ -101,20 +133,20 @@ export function CSVBoard() {
           <TableBody>
             {items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground">
-                  No data available
+                <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                  Upload a CSV file to display data
                 </TableCell>
               </TableRow>
             ) : (
-              items.map((item) => (
-                <TableRow key={item.id}>
+              items.map((item, index) => (
+                <TableRow key={index}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.type}</TableCell>
                   <TableCell>{item.neighborhood_focus}</TableCell>
                   <TableCell>
                     {item.website ? (
                       <a
-                        href={item.website}
+                        href={item.website.startsWith('http') ? item.website : `https://${item.website}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary hover:underline truncate block max-w-[200px]"
@@ -132,9 +164,11 @@ export function CSVBoard() {
         </Table>
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        Showing {items.length} record{items.length !== 1 ? 's' : ''}
-      </p>
+      {items.length > 0 && (
+        <p className="text-sm text-muted-foreground">
+          Showing {items.length} record{items.length !== 1 ? 's' : ''}
+        </p>
+      )}
     </div>
   );
 }
