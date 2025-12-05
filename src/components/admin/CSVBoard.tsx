@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Upload } from 'lucide-react';
+import { Upload, Trash2 } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -96,6 +96,11 @@ export function CSVBoard() {
     fileInputRef.current?.click();
   };
 
+  const handleDeleteRow = (index: number) => {
+    setItems(prev => prev.filter((_, i) => i !== index));
+    toast.success('Row deleted');
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -128,12 +133,13 @@ export function CSVBoard() {
               <TableHead>Type</TableHead>
               <TableHead>Neighborhood Focus</TableHead>
               <TableHead>Website</TableHead>
+              <TableHead className="w-[60px]"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {items.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                   Upload a CSV file to display data
                 </TableCell>
               </TableRow>
@@ -156,6 +162,16 @@ export function CSVBoard() {
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteRow(index)}
+                      className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
