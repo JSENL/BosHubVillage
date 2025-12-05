@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Upload, Trash2 } from 'lucide-react';
 import {
@@ -12,6 +14,7 @@ import {
 import { toast } from 'sonner';
 
 interface CSVItem {
+  id?: string;
   name: string;
   type: string;
   neighborhood_focus: string;
@@ -19,11 +22,81 @@ interface CSVItem {
 }
 
 export function CSVBoard() {
-  const [items, setItems] = useState<CSVItem[]>([]);
   const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
 
-  const parseCSV = (text: string): CSVItem[] => {
+  // Fetch data from database
+  const { data: items = [], isLoading } = useQuery({
+    queryKey: ['csv-board-data'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('csv_board_data')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      return (data || []).map((item) => ({
+        id: item.id,
+        name: item.name,
+        type: item.type || '',
+        neighborhood_focus: item.neighborhood_focus || '',
+        website: item.website || '',
+      })) as CSVItem[];
+    },
+  });
+
+  // Save to database mutation
+  const saveMutation = useMutation({
+    mutationFn: async (newItems: Omit<CSVItem, 'id'>[]) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const itemsToInsert = newItems.map(item => ({
+        name: item.name,
+        type: item.type || null,
+        neighborhood_focus: item.neighborhood_focus || null,
+        website: item.website || null,
+        created_by: user?.id || null,
+      }));
+
+      const { error } = await supabase
+        .from('csv_board_data')
+        .insert(itemsToInsert);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['csv-board-data'] });
+      toast.success('CSV data saved to database');
+    },
+    onError: (error) => {
+      console.error('Save error:', error);
+      toast.error('Failed to save CSV data');
+    },
+  });
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('csv_board_data')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['csv-board-data'] });
+      toast.success('Row deleted');
+    },
+    onError: (error) => {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete row');
+    },
+  });
+
+  const parseCSV = (text: string): Omit<CSVItem, 'id'>[] => {
     const lines = text.split('\n').filter(line => line.trim());
     if (lines.length < 2) return [];
 
@@ -77,9 +150,8 @@ export function CSVBoard() {
         return;
       }
 
-      setItems(parsedItems);
       setFileName(file.name);
-      toast.success(`Loaded ${parsedItems.length} records from ${file.name}`);
+      saveMutation.mutate(parsedItems);
     };
     reader.onerror = () => {
       toast.error('Error reading file');
@@ -96,10 +168,13 @@ export function CSVBoard() {
     fileInputRef.current?.click();
   };
 
-  const handleDeleteRow = (index: number) => {
-    setItems(prev => prev.filter((_, i) => i !== index));
-    toast.success('Row deleted');
+  const handleDeleteRow = (id: string) => {
+    deleteMutation.mutate(id);
   };
+
+  if (isLoading) {
+    return <div className="text-center py-8 text-muted-foreground">Loading data...</div>;
+  }
 
   return (
     <div className="space-y-4">
@@ -107,7 +182,7 @@ export function CSVBoard() {
         <div>
           <h3 className="text-lg font-medium">Business Data</h3>
           {fileName && (
-            <p className="text-sm text-muted-foreground">File: {fileName}</p>
+            <p className="text-sm text-muted-foreground">Last uploaded: {fileName}</p>
           )}
         </div>
         <div>
@@ -118,9 +193,13 @@ export function CSVBoard() {
             ref={fileInputRef}
             className="hidden"
           />
-          <Button onClick={handleUploadClick} className="flex items-center gap-2">
+          <Button 
+            onClick={handleUploadClick} 
+            className="flex items-center gap-2"
+            disabled={saveMutation.isPending}
+          >
             <Upload className="h-4 w-4" />
-            Upload CSV
+            {saveMutation.isPending ? 'Saving...' : 'Upload CSV'}
           </Button>
         </div>
       </div>
@@ -144,8 +223,8 @@ export function CSVBoard() {
                 </TableCell>
               </TableRow>
             ) : (
-              items.map((item, index) => (
-                <TableRow key={index}>
+              items.map((item) => (
+                <TableRow key={item.id}>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>{item.type}</TableCell>
                   <TableCell>{item.neighborhood_focus}</TableCell>
@@ -167,7 +246,8 @@ export function CSVBoard() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => handleDeleteRow(index)}
+                      onClick={() => item.id && handleDeleteRow(item.id)}
+                      disabled={deleteMutation.isPending}
                       className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -182,7 +262,7 @@ export function CSVBoard() {
 
       {items.length > 0 && (
         <p className="text-sm text-muted-foreground">
-          Showing {items.length} record{items.length !== 1 ? 's' : ''}
+          Showing {items.length} record{items.length !== 1 ? 's' : ''} (persisted in database)
         </p>
       )}
     </div>

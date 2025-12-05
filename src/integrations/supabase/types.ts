@@ -533,6 +533,44 @@ export type Database = {
           },
         ]
       }
+      csv_board_data: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          neighborhood_focus: string | null
+          type: string | null
+          website: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          neighborhood_focus?: string | null
+          type?: string | null
+          website?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          neighborhood_focus?: string | null
+          type?: string | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "csv_board_data_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_attendees: {
         Row: {
           event_id: string
