@@ -14,6 +14,7 @@ import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import { CSVImportTool } from '@/components/admin/CSVImportTool';
 import GNEAnnouncements from '@/components/admin/GNEAnnouncements';
 import { CategoriesManagement } from '@/components/admin/CategoriesManagement';
+import { CSVBoard } from '@/components/admin/CSVBoard';
 import { 
   Shield, 
   Calendar, 
@@ -291,9 +292,7 @@ const AdminDashboard = () => {
                       </TabsContent>
                       
                       <TabsContent value="csv-board">
-                        <div className="text-center py-8 text-muted-foreground">
-                          CSV Board - Coming soon
-                        </div>
+                        <CSVBoard />
                       </TabsContent>
                     </Tabs>
                   </CardContent>
