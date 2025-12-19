@@ -14,6 +14,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { 
   Plus, 
   Calendar, 
@@ -84,6 +85,7 @@ export const Navigation = () => {
           
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* <LanguageSelector /> */}
+            {user && <NotificationBell />}
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
