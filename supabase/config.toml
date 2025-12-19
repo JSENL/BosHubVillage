@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.scrape-events]
 verify_jwt = true
+
+[functions.weekly-digest]
+verify_jwt = false

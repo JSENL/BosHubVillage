@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Filter } from 'lucide-react';
 import { CategoryFilter } from '@/components/filters/CategoryFilter';
 import { LocationFilter } from '@/components/filters/LocationFilter';
+import { NearMeFilter } from '@/components/filters/NearMeFilter';
 import { useDynamicUnifiedFilterOptions } from '@/hooks/useDynamicUnifiedFilterOptions';
 import { EventDateFilter } from '@/components/filters/EventDateFilter';
 import { DateRange } from 'react-day-picker';
@@ -26,6 +27,13 @@ interface UniversalFiltersProps {
   onSelectedEventDatesChange?: (dates: Date[]) => void;
   filteredItemsCount: number;
   itemType: 'events' | 'business' | 'news';
+  // Near me props
+  maxDistance?: number | null;
+  onMaxDistanceChange?: (distance: number | null) => void;
+  userLocation?: { latitude: number; longitude: number } | null;
+  onLocationRequest?: () => Promise<{ latitude: number; longitude: number } | null>;
+  onClearLocation?: () => void;
+  isLoadingLocation?: boolean;
 }
 
 export const UniversalFilters = ({
@@ -44,7 +52,13 @@ export const UniversalFilters = ({
   selectedEventDates,
   onSelectedEventDatesChange,
   filteredItemsCount,
-  itemType
+  itemType,
+  maxDistance,
+  onMaxDistanceChange,
+  userLocation,
+  onLocationRequest,
+  onClearLocation,
+  isLoadingLocation
 }: UniversalFiltersProps) => {
   const { t } = useTranslation();
   // Use dynamic filter options based on current filters
@@ -108,6 +122,17 @@ export const UniversalFilters = ({
         availableNeighborhoods={availableNeighborhoods}
         availableVillages={availableVillages}
       />
+
+      {onMaxDistanceChange && onLocationRequest && onClearLocation && (
+        <NearMeFilter
+          maxDistance={maxDistance ?? null}
+          onMaxDistanceChange={onMaxDistanceChange}
+          userLocation={userLocation ?? null}
+          onLocationRequest={onLocationRequest}
+          onClearLocation={onClearLocation}
+          isLoading={isLoadingLocation ?? false}
+        />
+      )}
 
       <div className="text-xs sm:text-sm text-gray-600">
         {t('filters.resultsCount', { count: filteredItemsCount })}
