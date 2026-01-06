@@ -34,12 +34,24 @@ const generalSteps: Step[] = [
   },
   {
     target: '[data-tour="filters"]',
-    content: "Use powerful filters to narrow down results. Filter by content type (events, businesses, news, local services), categories, neighborhoods, villages, and date ranges. The event date filter supports both individual dates and date ranges. Click 'Clear All' to reset.",
+    content: "Use powerful filters to narrow down results. Filter by content type (events, businesses, news, local services), categories, neighborhoods, villages, and date ranges. Use the 'Near Me' filter to find content within a specific distance from your location!",
     disableBeacon: true,
   },
   {
     target: 'body',
-    content: "The Discovery Sidebar (right side on desktop, top on mobile) shows: Trending items with the most engagement, Your bookmarks for quick access, People to follow and connect with, and Activity feed from users you follow. It's your personalized community feed!",
+    content: "NEAR ME & LOCATION: Enable the 'Near Me' filter to find events, businesses, and services close to you! Set your preferred distance (1-50 miles) and we'll show only what's nearby. Great for discovering local gems in your area.",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "The Discovery Sidebar (right side on desktop, top on mobile) shows: Trending items with the most engagement, Your bookmarks for quick access, People to follow and connect with, Activity feed from users you follow, and your Saved Searches with notification options!",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "SAVED SEARCHES: Save your favorite filter combinations! When you find filters you use often, save them as a search. Enable notifications to get alerts when new content matches your saved search - either in-app or via email!",
     placement: 'center',
     disableBeacon: true,
   },
@@ -57,7 +69,13 @@ const generalSteps: Step[] = [
   },
   {
     target: 'body',
-    content: "YOUR ACCOUNT: Access your profile to see your submissions and activity, Visit 'My Messages' to manage conversations with businesses and admins, Track 'My Submissions' to see approval status, If you own a business, access your Business Dashboard to manage listings and messages. Business owners can also view customer messages and respond directly.",
+    content: "YOUR ACCOUNT: Access your profile to see your submissions and activity, Visit 'My Messages' to manage conversations with businesses and admins, Track 'My Submissions' to see approval status, Edit your profile to set up Weekly Email Digests with community highlights!",
+    placement: 'center',
+    disableBeacon: true,
+  },
+  {
+    target: 'body',
+    content: "WEEKLY EMAIL DIGEST: Never miss community updates! Go to Edit Profile to enable weekly email digests. Choose your preferred day and we'll send you a summary of new events, trending content, and activity from people you follow.",
     placement: 'center',
     disableBeacon: true,
   },
@@ -69,7 +87,7 @@ const generalSteps: Step[] = [
   },
   {
     target: 'body',
-    content: "NEED HELP? Visit the FAQ page (link in navigation) for common questions and answers. Contact admins directly through the 'Contact Admin' option in your account menu. Click the help button (bottom right) anytime to restart this tour. You can also click on any item to view full details, get directions, bookmark, or interact with it!",
+    content: "NEED HELP? Visit the FAQ page (link in navigation) for comprehensive answers to 75+ questions! Contact admins directly through the 'Contact Admin' option in your account menu. Click the help button (bottom right) anytime to restart this tour.",
     placement: 'center',
     disableBeacon: true,
   },
