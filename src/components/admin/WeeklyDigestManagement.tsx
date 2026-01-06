@@ -1,0 +1,484 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { toast } from 'sonner';
+import { 
+  Mail, 
+  Users, 
+  Send, 
+  Eye, 
+  Calendar, 
+  RefreshCw,
+  CheckCircle,
+  Clock,
+  Edit3,
+  Save
+} from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+
+interface EmailPreference {
+  id: string;
+  user_id: string;
+  weekly_digest: boolean;
+  digest_day: string;
+  last_digest_sent_at: string | null;
+  created_at: string;
+  profiles?: {
+    email: string;
+    full_name: string | null;
+  };
+}
+
+interface EmailTemplate {
+  subject: string;
+  headerText: string;
+  eventsHeading: string;
+  newsHeading: string;
+  footerText: string;
+}
+
+const defaultTemplate: EmailTemplate = {
+  subject: 'Your Weekly Community Digest',
+  headerText: "Here's what's happening in your community this week:",
+  eventsHeading: '📅 Upcoming Events',
+  newsHeading: '📰 Latest News',
+  footerText: "You're receiving this because you subscribed to weekly digests. To unsubscribe, update your email preferences in your account settings.",
+};
+
+const WeeklyDigestManagement = () => {
+  const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState(false);
+  const [template, setTemplate] = useState<EmailTemplate>(defaultTemplate);
+  const [showPreview, setShowPreview] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+
+  // Fetch subscribers
+  const { data: subscribers, isLoading: loadingSubscribers, refetch } = useQuery({
+    queryKey: ['weekly-digest-subscribers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('email_preferences')
+        .select(`
+          id,
+          user_id,
+          weekly_digest,
+          digest_day,
+          last_digest_sent_at,
+          created_at,
+          profiles:user_id (
+            email,
+            full_name
+          )
+        `)
+        .eq('weekly_digest', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data as EmailPreference[];
+    },
+  });
+
+  // Fetch upcoming events for preview
+  const { data: upcomingEvents } = useQuery({
+    queryKey: ['upcoming-events-preview'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('id, title, date, location, category')
+        .gte('date', new Date().toISOString().split('T')[0])
+        .order('date', { ascending: true })
+        .limit(5);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch recent news for preview
+  const { data: recentNews } = useQuery({
+    queryKey: ['recent-news-preview'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('news')
+        .select('id, title, date_posted, location')
+        .order('date_posted', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const handleSaveTemplate = () => {
+    // In a real implementation, you'd save this to the database
+    localStorage.setItem('weekly-digest-template', JSON.stringify(template));
+    setIsEditing(false);
+    toast.success('Email template saved');
+  };
+
+  const handleSendTestEmail = async () => {
+    setIsSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('weekly-digest', {
+        body: { test: true },
+      });
+
+      if (error) throw error;
+      toast.success('Weekly digest triggered successfully');
+    } catch (error: any) {
+      toast.error(`Failed to send: ${error.message}`);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const getDayLabel = (day: string) => {
+    return day.charAt(0).toUpperCase() + day.slice(1);
+  };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Never';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // Group subscribers by day
+  const subscribersByDay = subscribers?.reduce((acc, sub) => {
+    const day = sub.digest_day || 'monday';
+    if (!acc[day]) acc[day] = [];
+    acc[day].push(sub);
+    return acc;
+  }, {} as Record<string, EmailPreference[]>) || {};
+
+  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+  return (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Users className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">{subscribers?.length || 0}</p>
+              <p className="text-sm text-muted-foreground">Total Subscribers</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">
+                {subscribers?.filter(s => s.last_digest_sent_at).length || 0}
+              </p>
+              <p className="text-sm text-muted-foreground">Received Last Week</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Calendar className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">{upcomingEvents?.length || 0}</p>
+              <p className="text-sm text-muted-foreground">Events in Digest</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="p-2 bg-purple-100 rounded-lg">
+              <Mail className="h-5 w-5 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold">{recentNews?.length || 0}</p>
+              <p className="text-sm text-muted-foreground">News in Digest</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Email Template Editor */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Edit3 className="h-5 w-5" />
+            Email Template
+          </CardTitle>
+          <div className="flex gap-2">
+            <Dialog open={showPreview} onOpenChange={setShowPreview}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Eye className="h-4 w-4 mr-2" />
+                  Preview
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Email Preview</DialogTitle>
+                </DialogHeader>
+                <div className="border rounded-lg p-6 bg-white">
+                  <h1 className="text-2xl font-bold mb-4">Your Weekly Community Digest</h1>
+                  <p className="mb-4">Hi [User Name],</p>
+                  <p className="mb-6 text-muted-foreground">{template.headerText}</p>
+                  
+                  <h2 className="text-xl font-semibold mb-3">{template.eventsHeading}</h2>
+                  <ul className="space-y-2 mb-6">
+                    {upcomingEvents?.length ? upcomingEvents.map(event => (
+                      <li key={event.id} className="border-l-2 border-primary pl-3">
+                        <strong>{event.title}</strong>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(event.date).toLocaleDateString()} • {event.location}
+                        </p>
+                      </li>
+                    )) : (
+                      <li className="text-muted-foreground">No upcoming events this week</li>
+                    )}
+                  </ul>
+
+                  <h2 className="text-xl font-semibold mb-3">{template.newsHeading}</h2>
+                  <ul className="space-y-2 mb-6">
+                    {recentNews?.length ? recentNews.map(news => (
+                      <li key={news.id} className="border-l-2 border-secondary pl-3">
+                        <strong>{news.title}</strong>
+                        <p className="text-sm text-muted-foreground">{news.location}</p>
+                      </li>
+                    )) : (
+                      <li className="text-muted-foreground">No recent news</li>
+                    )}
+                  </ul>
+
+                  <Separator className="my-6" />
+                  <p className="text-xs text-muted-foreground">{template.footerText}</p>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {isEditing ? (
+              <Button size="sm" onClick={handleSaveTemplate}>
+                <Save className="h-4 w-4 mr-2" />
+                Save
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                <Edit3 className="h-4 w-4 mr-2" />
+                Edit
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Email Subject</Label>
+              <Input
+                value={template.subject}
+                onChange={(e) => setTemplate({ ...template, subject: e.target.value })}
+                disabled={!isEditing}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Events Section Heading</Label>
+              <Input
+                value={template.eventsHeading}
+                onChange={(e) => setTemplate({ ...template, eventsHeading: e.target.value })}
+                disabled={!isEditing}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>News Section Heading</Label>
+              <Input
+                value={template.newsHeading}
+                onChange={(e) => setTemplate({ ...template, newsHeading: e.target.value })}
+                disabled={!isEditing}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Header Text</Label>
+              <Textarea
+                value={template.headerText}
+                onChange={(e) => setTemplate({ ...template, headerText: e.target.value })}
+                disabled={!isEditing}
+                rows={2}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Footer Text</Label>
+            <Textarea
+              value={template.footerText}
+              onChange={(e) => setTemplate({ ...template, footerText: e.target.value })}
+              disabled={!isEditing}
+              rows={2}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Manual Send */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Send className="h-5 w-5" />
+            Send Digest
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div>
+              <p className="font-medium">Trigger Weekly Digest Now</p>
+              <p className="text-sm text-muted-foreground">
+                This will send the digest to all subscribers whose preferred day is today ({getDayLabel(days[new Date().getDay()])}).
+              </p>
+            </div>
+            <Button onClick={handleSendTestEmail} disabled={isSending}>
+              {isSending ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4 mr-2" />
+                  Send Now
+                </>
+              )}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Subscribers by Day */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Subscribers ({subscribers?.length || 0})
+          </CardTitle>
+          <Button variant="outline" size="sm" onClick={() => refetch()}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {loadingSubscribers ? (
+            <div className="flex items-center justify-center py-8">
+              <RefreshCw className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : subscribers?.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <Mail className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>No subscribers yet</p>
+              <p className="text-sm">Users can subscribe in their email preferences settings</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Day distribution */}
+              <div className="flex flex-wrap gap-2">
+                {days.map(day => (
+                  <Badge 
+                    key={day} 
+                    variant={subscribersByDay[day]?.length ? "default" : "outline"}
+                    className="capitalize"
+                  >
+                    {day}: {subscribersByDay[day]?.length || 0}
+                  </Badge>
+                ))}
+              </div>
+
+              <Separator />
+
+              {/* Subscribers Table */}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Preferred Day</TableHead>
+                    <TableHead>Last Sent</TableHead>
+                    <TableHead>Subscribed</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {subscribers?.map((sub) => (
+                    <TableRow key={sub.id}>
+                      <TableCell className="font-medium">
+                        {sub.profiles?.full_name || 'Unknown User'}
+                      </TableCell>
+                      <TableCell>{sub.profiles?.email || 'No email'}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="capitalize">
+                          {sub.digest_day}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          {sub.last_digest_sent_at ? (
+                            <>
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                              {formatDate(sub.last_digest_sent_at)}
+                            </>
+                          ) : (
+                            <>
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              Never
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        {formatDate(sub.created_at)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default WeeklyDigestManagement;

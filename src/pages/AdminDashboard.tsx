@@ -39,6 +39,7 @@ import SocialFeaturesOverview from '@/components/admin/SocialFeaturesOverview';
 import UserActivityMonitor from '@/components/admin/UserActivityMonitor';
 import BookmarksManagement from '@/components/admin/BookmarksManagement';
 import SocialNetworkAnalytics from '@/components/admin/SocialNetworkAnalytics';
+import WeeklyDigestManagement from '@/components/admin/WeeklyDigestManagement';
 
 
 const AdminDashboard = () => {
@@ -311,7 +312,7 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="overview" className="w-full">
-                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                      <TabsList className="grid w-full grid-cols-5 mb-6">
                         <TabsTrigger value="overview" className="flex items-center gap-2">
                           <BarChart3 className="h-4 w-4" />
                           Overview
@@ -327,6 +328,10 @@ const AdminDashboard = () => {
                         <TabsTrigger value="activity" className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
                           User Activity
+                        </TabsTrigger>
+                        <TabsTrigger value="weekly-digest" className="flex items-center gap-2">
+                          <Newspaper className="h-4 w-4" />
+                          Weekly Digest
                         </TabsTrigger>
                       </TabsList>
                       
@@ -344,6 +349,10 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="activity">
                         <UserActivityMonitor />
+                      </TabsContent>
+                      
+                      <TabsContent value="weekly-digest">
+                        <WeeklyDigestManagement />
                       </TabsContent>
                     </Tabs>
                   </CardContent>
