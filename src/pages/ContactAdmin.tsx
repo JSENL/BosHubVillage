@@ -11,6 +11,7 @@ import { ArrowLeft, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { contactAdminSchema, validateFormData } from '@/utils/validation/formSchemas';
 
 const ContactAdmin = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const ContactAdmin = () => {
   const [formData, setFormData] = useState({
     subject: '',
     message: '',
-    priority: 'medium',
+    priority: 'medium' as 'low' | 'medium' | 'high',
     user_name: '',
     user_email: user?.email || ''
   });
@@ -30,14 +31,30 @@ const ContactAdmin = () => {
     setLoading(true);
 
     try {
+      // Validate form data with Zod schema
+      const validation = validateFormData(contactAdminSchema, formData);
+      
+      if (!validation.success) {
+        const errorValidation = validation as { success: false; errors: string[] };
+        toast({
+          title: "Validation Error",
+          description: errorValidation.errors[0],
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const validatedData = validation.data;
+
       const { error } = await supabase
         .from('contact_admin')
         .insert({
-          subject: formData.subject,
-          message: formData.message,
-          priority: formData.priority,
-          user_name: formData.user_name,
-          user_email: formData.user_email,
+          subject: validatedData.subject,
+          message: validatedData.message,
+          priority: validatedData.priority,
+          user_name: validatedData.user_name || null,
+          user_email: validatedData.user_email,
           user_id: user?.id || null,
           status: 'pending'
         });

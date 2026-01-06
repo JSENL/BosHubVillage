@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MessageSquare, Send, X, Upload, FileImage, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { uploadBusinessMessageMedia, saveMediaRecord } from '@/services/businessMessageMediaService';
+import { businessMessageSchema, validateFormData } from '@/utils/validation/formSchemas';
 
 interface BusinessMessageProps {
   businessId: string;
@@ -68,6 +69,24 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
   const handleSendMessage = async () => {
     if (!user || !message.trim()) return;
 
+    // Validate message with Zod schema
+    const validation = validateFormData(businessMessageSchema, {
+      message: message.trim(),
+      business_id: businessId
+    });
+
+    if (!validation.success) {
+      const errorValidation = validation as { success: false; errors: string[] };
+      toast({
+        title: "Validation Error",
+        description: errorValidation.errors[0],
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const validatedData = validation.data;
+
     setSending(true);
     setUploading(true);
     try {
@@ -105,14 +124,14 @@ const BusinessMessage = ({ businessId }: BusinessMessageProps) => {
         recipientId = businessOwner.owner_id;
       }
 
-      // Send message
+      // Send message with validated data
       const { data: messageData, error } = await supabase
         .from('business_messages')
         .insert({
-          business_id: businessId,
+          business_id: validatedData.business_id,
           sender_id: user.id,
           recipient_id: recipientId,
-          message: message.trim(),
+          message: validatedData.message,
           is_from_owner: false,
           status: 'unread'
         })

@@ -18,6 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 import { useGeocoding } from '@/hooks/useGeocoding';
 import LocationFields from '@/components/forms/LocationFields';
+import { businessSubmissionSchema, validateFormData } from '@/utils/validation/formSchemas';
 
 const SubmitBusiness = () => {
   const { user } = useAuth();
@@ -56,16 +57,29 @@ const SubmitBusiness = () => {
       return;
     }
 
+    // Validate form data with Zod schema
+    const validation = validateFormData(businessSubmissionSchema, formData);
+    
+    if (!validation.success) {
+      const errorValidation = validation as { success: false; errors: string[] };
+      toast.error('Validation Error', {
+        description: errorValidation.errors[0]
+      });
+      return;
+    }
+
+    const validatedData = validation.data;
+
     setLoading(true);
     try {
       let latitude = null;
       let longitude = null;
 
       // Geocode the address if provided
-      if (formData.address) {
-        console.log('Geocoding business address:', formData.address);
+      if (validatedData.address) {
+        console.log('Geocoding business address:', validatedData.address);
         try {
-          const geocodeResult = await geocode(formData.address);
+          const geocodeResult = await geocode(validatedData.address);
           if (geocodeResult) {
             latitude = geocodeResult.latitude;
             longitude = geocodeResult.longitude;
@@ -77,21 +91,21 @@ const SubmitBusiness = () => {
         }
       }
 
-      // Submit to Supabase business_submissions table
+      // Submit to Supabase business_submissions table with validated data
       const businessData = {
-        title: formData.title,
-        business_type: formData.business_type,
-        address: formData.address,
-        neighborhood: formData.neighborhood,
-        villages: formData.villages || null,
-        website_link: formData.website_link || null,
-        description: formData.description,
-        short_description: formData.short_description || null,
+        title: validatedData.title,
+        business_type: validatedData.business_type,
+        address: validatedData.address,
+        neighborhood: validatedData.neighborhood,
+        villages: validatedData.villages || null,
+        website_link: validatedData.website_link || null,
+        description: validatedData.description,
+        short_description: validatedData.short_description || null,
         latitude,
         longitude,
         submitted_by: user.id,
         status: 'pending',
-        is_owner: formData.is_owner
+        is_owner: validatedData.is_owner || false
       };
 
       console.log('🏪 Submitting business to database:', businessData);
