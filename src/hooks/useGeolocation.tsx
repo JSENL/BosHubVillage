@@ -8,14 +8,17 @@ interface GeolocationState {
   loading: boolean;
 }
 
-interface UseGeolocationReturn extends GeolocationState {
+export interface UseGeolocationReturn {
+  location: { latitude: number; longitude: number } | null;
+  isLoading: boolean;
+  error: string | null;
   requestLocation: () => Promise<{ latitude: number; longitude: number } | null>;
   clearLocation: () => void;
-  calculateDistance: (lat: number, lng: number) => number | null;
 }
 
 // Haversine formula to calculate distance between two points in km
-const haversineDistance = (
+// Exported as a standalone function for use in filtering
+export const calculateDistance = (
   lat1: number,
   lon1: number,
   lat2: number,
@@ -112,20 +115,16 @@ export const useGeolocation = (): UseGeolocationReturn => {
     });
   }, []);
 
-  const calculateDistance = useCallback(
-    (lat: number, lng: number): number | null => {
-      if (state.latitude === null || state.longitude === null) {
-        return null;
-      }
-      return haversineDistance(state.latitude, state.longitude, lat, lng);
-    },
-    [state.latitude, state.longitude]
-  );
+  // Create location object only if both lat/lng are available
+  const location = state.latitude !== null && state.longitude !== null 
+    ? { latitude: state.latitude, longitude: state.longitude }
+    : null;
 
   return {
-    ...state,
+    location,
+    isLoading: state.loading,
+    error: state.error,
     requestLocation,
     clearLocation,
-    calculateDistance,
   };
 };

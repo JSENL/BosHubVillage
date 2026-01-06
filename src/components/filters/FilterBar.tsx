@@ -12,7 +12,15 @@ export const FilterBar = ({
   allItems,
   filteredItemsCount,
 }: FilterBarProps) => {
-  const { filters, updateFilter } = useAppState();
+  const { 
+    filters, 
+    updateFilter, 
+    userLocation, 
+    isLoadingLocation, 
+    requestLocation, 
+    clearLocation 
+  } = useAppState();
+  
   return (
     <div className="space-y-4">
       {/* Search Section */}
@@ -39,6 +47,13 @@ export const FilterBar = ({
           onSelectedEventDatesChange={(dates) => updateFilter('selectedEventDates', dates)}
           filteredItemsCount={filteredItemsCount}
           itemType="events"
+          // Near Me props
+          maxDistance={filters.maxDistance}
+          onMaxDistanceChange={(distance) => updateFilter('maxDistance', distance)}
+          userLocation={userLocation}
+          onLocationRequest={requestLocation}
+          onClearLocation={clearLocation}
+          isLoadingLocation={isLoadingLocation}
         />
       </div>
     </div>

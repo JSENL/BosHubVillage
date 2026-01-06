@@ -2,6 +2,7 @@ import { TrendingSection } from './TrendingSection';
 import { BookmarksSection } from './BookmarksSection';
 import { DiscoverPeople } from './DiscoverPeople';
 import { FollowingActivityFeed } from './FollowingActivityFeed';
+import { SavedSearchesList } from '@/components/search/SavedSearchesList';
 import { useAuth } from '@/hooks/useAuth';
 
 export const DiscoverySidebar = () => {
@@ -12,6 +13,8 @@ export const DiscoverySidebar = () => {
       {user && <FollowingActivityFeed />}
       
       <TrendingSection />
+      
+      {user && <SavedSearchesList />}
       
       {user && <BookmarksSection />}
       

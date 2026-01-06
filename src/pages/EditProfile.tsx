@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ProfilePictureUpload } from '@/components/profile/ProfilePictureUpload';
+import { EmailDigestSettings } from '@/components/settings/EmailDigestSettings';
 import { X, Plus, Save, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -287,6 +288,9 @@ export const EditProfile = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Email Digest Settings */}
+          <EmailDigestSettings />
 
           {/* Action Buttons */}
           <div className="flex gap-3 mt-6">

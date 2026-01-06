@@ -18,7 +18,14 @@ interface AppStateContextType {
     eventDateRange?: DateRange;
     selectedEventDates: Date[];
     viewMode: 'map' | 'list';
+    maxDistance: number | null;
   };
+  
+  // Geolocation state
+  userLocation: { latitude: number; longitude: number } | null;
+  isLoadingLocation: boolean;
+  requestLocation: () => Promise<{ latitude: number; longitude: number } | null>;
+  clearLocation: () => void;
   
   // Filter actions
   updateFilter: <K extends keyof AppStateContextType['filters']>(
