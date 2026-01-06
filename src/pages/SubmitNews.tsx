@@ -18,6 +18,7 @@ import { useGeocoding } from '@/hooks/useGeocoding';
 import { useSubmissionErrorHandler } from '@/hooks/useSubmissionErrorHandler';
 import NewsMediaUpload from '@/components/forms/NewsMediaUpload';
 import { uploadMediaFiles } from '@/services/mediaUploadService';
+import { newsSubmissionSchema, validateFormData } from '@/utils/validation/formSchemas';
 
 const SubmitNews = () => {
   const { user } = useAuth();
@@ -55,16 +56,17 @@ const SubmitNews = () => {
   };
 
   const validateForm = () => {
-    const errors: string[] = [];
+    // Use Zod schema validation
+    const validation = validateFormData(newsSubmissionSchema, formData);
     
-    if (!formData.title.trim()) errors.push('Article Title');
-    if (!formData.content.trim()) errors.push('Article Content');
-    if (!formData.location.trim()) errors.push('Location');
-    if (!formData.source.trim()) errors.push('Source');
-    if (!formData.date_posted) errors.push('Date Posted');
-
-    setValidationErrors(errors);
-    return errors;
+    if (!validation.success) {
+      const errorValidation = validation as { success: false; errors: string[] };
+      setValidationErrors(errorValidation.errors);
+      return errorValidation.errors;
+    }
+    
+    setValidationErrors([]);
+    return [];
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,12 +84,17 @@ const SubmitNews = () => {
       return;
     }
 
-    const validationErrors = validateForm();
-    if (validationErrors.length > 0) {
-      handleValidationError(validationErrors, 'News');
+    // Validate with Zod schema
+    const validation = validateFormData(newsSubmissionSchema, formData);
+    if (!validation.success) {
+      const errorValidation = validation as { success: false; errors: string[] };
+      setValidationErrors(errorValidation.errors);
+      handleValidationError(errorValidation.errors, 'News');
       return;
     }
 
+    const validatedData = validation.data;
+    setValidationErrors([]);
     setIsSubmitting(true);
 
     try {
@@ -95,10 +102,10 @@ const SubmitNews = () => {
       let longitude = null;
 
       // Geocode the address if provided
-      if (formData.address) {
-        console.log('Geocoding address:', formData.address);
+      if (validatedData.address) {
+        console.log('Geocoding address:', validatedData.address);
         try {
-          const geocodeResult = await geocode(formData.address);
+          const geocodeResult = await geocode(validatedData.address);
           if (geocodeResult) {
             latitude = geocodeResult.latitude;
             longitude = geocodeResult.longitude;
@@ -111,19 +118,19 @@ const SubmitNews = () => {
       }
 
       // Convert villages string to array if provided
-      const villagesArray = formData.villages 
-        ? formData.villages.split(',').map(v => v.trim()).filter(v => v)
+      const villagesArray = validatedData.villages 
+        ? validatedData.villages.split(',').map(v => v.trim()).filter(v => v)
         : null;
 
       const { data: submission, error } = await supabase
         .from('news_submissions')
         .insert({
-          title: formData.title,
-          content: formData.content,
-          location: formData.location,
-          source: formData.source,
-          date_posted: formData.date_posted,
-          Address: formData.address || null,
+          title: validatedData.title,
+          content: validatedData.content,
+          location: validatedData.location,
+          source: validatedData.source,
+          date_posted: validatedData.date_posted,
+          Address: validatedData.address || null,
           villages: villagesArray,
           latitude: latitude,
           longitude: longitude,
