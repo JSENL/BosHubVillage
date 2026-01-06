@@ -1,5 +1,6 @@
 import { UnifiedItem } from '@/types/unifiedItem';
 import { getMarkerColor } from '@/utils/mapMarkerUtils';
+import { escapeHtml } from '@/utils/mapPopupUtils';
 
 /**
  * Creates popup content for multiple items at the same location
@@ -11,7 +12,7 @@ export const createMultiItemPopupContent = (items: UnifiedItem[]): string => {
   }
 
   const primaryItem = items[0];
-  const location = primaryItem.address || primaryItem.location || 'Location not specified';
+  const location = escapeHtml(primaryItem.address || primaryItem.location || 'Location not specified');
   
   // Group items by type
   const itemsByType = items.reduce((acc, item) => {
@@ -46,13 +47,13 @@ export const createMultiItemPopupContent = (items: UnifiedItem[]): string => {
           border-radius: 0 6px 6px 0;
           cursor: pointer;
           transition: background 0.2s ease;
-        " onclick="window.location.href='/${item.type === 'local-service' ? 'local-resource' : item.type}/${item.id}'"
+        " onclick="window.location.href='/${item.type === 'local-service' ? 'local-resource' : item.type}/${escapeHtml(item.id)}'"
         onmouseover="this.style.background='#f3f4f6'" 
         onmouseout="this.style.background='#f9fafb'">
-          <div style="font-weight: 600; color: #374151; font-size: 13px;">${item.title}</div>
-          ${item.category ? `<div style="font-size: 11px; color: #6b7280;">🏷️ ${item.category}</div>` : ''}
+          <div style="font-weight: 600; color: #374151; font-size: 13px;">${escapeHtml(item.title)}</div>
+          ${item.category ? `<div style="font-size: 11px; color: #6b7280;">🏷️ ${escapeHtml(item.category)}</div>` : ''}
           ${timeInfo}
-          ${item.price && item.price > 0 ? `<div style="font-size: 11px; color: #059669; font-weight: 600;">💰 $${item.price}</div>` : ''}
+          ${item.price && item.price > 0 ? `<div style="font-size: 11px; color: #059669; font-weight: 600;">💰 $${escapeHtml(String(item.price))}</div>` : ''}
         </div>
       `;
     }).join('');
@@ -122,32 +123,32 @@ const createSingleItemPopupContent = (item: UnifiedItem): string => {
   if (item.type === 'event') {
     specificContent = `
       ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${new Date(item.date).toLocaleDateString()}</p>` : ''}
-      ${item.start_time ? `<p style="margin: 4px 0;"><strong>⏰ Time:</strong> ${item.start_time}${item.end_time ? ` - ${item.end_time}` : ''}</p>` : ''}
-      ${item.price && item.price > 0 ? `<p style="margin: 4px 0;"><strong>💰 Price:</strong> $${item.price}</p>` : ''}
+      ${item.start_time ? `<p style="margin: 4px 0;"><strong>⏰ Time:</strong> ${escapeHtml(item.start_time)}${item.end_time ? ` - ${escapeHtml(item.end_time)}` : ''}</p>` : ''}
+      ${item.price && item.price > 0 ? `<p style="margin: 4px 0;"><strong>💰 Price:</strong> $${escapeHtml(String(item.price))}</p>` : ''}
     `;
   } else if (item.type === 'business') {
     specificContent = `
-      ${item.business_type ? `<p style="margin: 4px 0;"><strong>🏢 Business Type:</strong> ${item.business_type}</p>` : ''}
-      ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${item.neighborhoods}</p>` : ''}
+      ${item.business_type ? `<p style="margin: 4px 0;"><strong>🏢 Business Type:</strong> ${escapeHtml(item.business_type)}</p>` : ''}
+      ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${escapeHtml(item.neighborhoods)}</p>` : ''}
     `;
   } else if (item.type === 'local-service') {
     specificContent = `
-      ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${item.neighborhoods}</p>` : ''}
+      ${item.neighborhoods ? `<p style="margin: 4px 0;"><strong>🏘️ Neighborhood:</strong> ${escapeHtml(item.neighborhoods)}</p>` : ''}
     `;
   }
   
   return `
     <div style="padding: 16px; max-width: 320px; font-family: system-ui; line-height: 1.4;">
-      <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1f2937;">${item.title}</h3>
-      <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">${item.description || 'No description available'}</p>
+      <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1f2937;">${escapeHtml(item.title)}</h3>
+      <p style="margin: 0 0 12px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">${escapeHtml(item.description) || 'No description available'}</p>
       <div style="font-size: 12px; color: #374151;">
-        ${item.address ? `<p style="margin: 4px 0;"><strong>📍 Address:</strong> ${item.address}</p>` : ''}
-        ${item.category ? `<p style="margin: 4px 0;"><strong>🏷️ Category:</strong> ${item.category}</p>` : ''}
+        ${item.address ? `<p style="margin: 4px 0;"><strong>📍 Address:</strong> ${escapeHtml(item.address)}</p>` : ''}
+        ${item.category ? `<p style="margin: 4px 0;"><strong>🏷️ Category:</strong> ${escapeHtml(item.category)}</p>` : ''}
         <p style="margin: 4px 0;"><strong>🏷️ Type:</strong> <span style="color: ${markerColor}; font-weight: bold;">${item.type.replace('-', ' ')}</span></p>
         ${specificContent}
       </div>
       <div style="margin-top: 16px;">
-        <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-resource' : item.type}/${item.id}'" style="
+        <button onclick="window.location.href='/${item.type === 'local-service' ? 'local-resource' : item.type}/${escapeHtml(item.id)}'" style="
           background: linear-gradient(135deg, ${markerColor}cc 0%, ${markerColor} 100%);
           color: white;
           border: none;
