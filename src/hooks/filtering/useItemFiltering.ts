@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { DateRange } from 'react-day-picker';
+import { calculateDistance } from '@/hooks/useGeolocation';
 
 interface FilterOptions {
   selectedType: string;
@@ -11,9 +12,19 @@ interface FilterOptions {
   eventDateRange?: DateRange;
   selectedEventDates: Date[];
   viewMode: 'map' | 'list';
+  maxDistance: number | null;
 }
 
-export const useItemFiltering = (items: UnifiedItem[], filters: FilterOptions): UnifiedItem[] => {
+interface UserLocation {
+  latitude: number;
+  longitude: number;
+}
+
+export const useItemFiltering = (
+  items: UnifiedItem[], 
+  filters: FilterOptions, 
+  userLocation?: UserLocation | null
+): UnifiedItem[] => {
   return useMemo(() => {
     if (!items.length) return [];
 
@@ -95,7 +106,21 @@ export const useItemFiltering = (items: UnifiedItem[], filters: FilterOptions): 
         return true;
       })();
 
-      return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesEventDate;
+      // Distance filter (Near Me)
+      const matchesDistance = !filters.maxDistance || !userLocation || (() => {
+        if (!item.latitude || !item.longitude) return false;
+        
+        const distance = calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          item.latitude,
+          item.longitude
+        );
+        
+        return distance <= filters.maxDistance;
+      })();
+
+      return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesEventDate && matchesDistance;
     });
-  }, [items, filters]);
+  }, [items, filters, userLocation]);
 };
