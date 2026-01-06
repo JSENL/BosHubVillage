@@ -11,7 +11,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { toast } from 'sonner';
-import { Upload, FileText, CheckCircle, AlertCircle, Download, MapPin } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertCircle, Download, MapPin, Trash2, AlertTriangle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 type DataType = 'events' | 'business' | 'local_resources';
 
@@ -26,6 +27,15 @@ interface CSVRow {
   [key: string]: string;
 }
 
+interface DuplicateItem {
+  csvRowIndex: number;
+  csvData: CSVRow;
+  existingId: string;
+  existingData: any;
+  matchField: string;
+  matchValue: string;
+}
+
 export const CSVImportTool = () => {
   const { user } = useAuth();
   const { geocode } = useGeocoding();
@@ -38,6 +48,10 @@ export const CSVImportTool = () => {
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [validCategories, setValidCategories] = useState<string[]>([]);
+  const [duplicates, setDuplicates] = useState<DuplicateItem[]>([]);
+  const [isCheckingDuplicates, setIsCheckingDuplicates] = useState(false);
+  const [rowsToImport, setRowsToImport] = useState<CSVRow[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Fetch valid categories on mount
   React.useEffect(() => {
@@ -378,6 +392,135 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
     }
   };
 
+  // Check for duplicates in database
+  const checkForDuplicates = async (rows: CSVRow[]): Promise<DuplicateItem[]> => {
+    const foundDuplicates: DuplicateItem[] = [];
+    
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      let matchField = '';
+      let matchValue = '';
+      let existingRecord = null;
+      
+      switch (dataType) {
+        case 'events':
+          matchField = 'title';
+          matchValue = row.title;
+          if (matchValue) {
+            const { data } = await supabase
+              .from('events')
+              .select('id, title, date, location')
+              .ilike('title', matchValue)
+              .limit(1);
+            if (data && data.length > 0) {
+              existingRecord = data[0];
+            }
+          }
+          break;
+          
+        case 'business':
+          matchField = 'title';
+          matchValue = row.title;
+          if (matchValue) {
+            const { data } = await supabase
+              .from('business')
+              .select('id, title, address, neighborhood')
+              .ilike('title', matchValue)
+              .limit(1);
+            if (data && data.length > 0) {
+              existingRecord = data[0];
+            }
+          }
+          break;
+          
+        case 'local_resources':
+          matchField = 'name';
+          matchValue = row.name;
+          if (matchValue) {
+            const { data } = await supabase
+              .from('local_resources')
+              .select('id, name, address, category')
+              .ilike('name', matchValue)
+              .limit(1);
+            if (data && data.length > 0) {
+              existingRecord = data[0];
+            }
+          }
+          break;
+      }
+      
+      if (existingRecord) {
+        foundDuplicates.push({
+          csvRowIndex: i,
+          csvData: row,
+          existingId: existingRecord.id,
+          existingData: existingRecord,
+          matchField,
+          matchValue
+        });
+      }
+    }
+    
+    return foundDuplicates;
+  };
+
+  // Delete a single duplicate from database
+  const deleteDuplicateFromDatabase = async (duplicate: DuplicateItem) => {
+    setDeletingId(duplicate.existingId);
+    try {
+      const { error } = await supabase
+        .from(dataType)
+        .delete()
+        .eq('id', duplicate.existingId);
+      
+      if (error) {
+        toast.error(`Failed to delete: ${error.message}`);
+        return;
+      }
+      
+      // Remove from duplicates list
+      setDuplicates(prev => prev.filter(d => d.existingId !== duplicate.existingId));
+      toast.success(`Deleted existing ${dataType === 'local_resources' ? 'resource' : dataType === 'business' ? 'business' : 'event'}: "${duplicate.matchValue}"`);
+    } catch (err: any) {
+      toast.error(`Error deleting: ${err.message}`);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // Remove row from import list (skip this duplicate)
+  const skipDuplicateRow = (csvRowIndex: number) => {
+    setRowsToImport(prev => prev.filter((_, i) => i !== csvRowIndex));
+    setDuplicates(prev => prev.filter(d => d.csvRowIndex !== csvRowIndex));
+    toast.info('Row removed from import list');
+  };
+
+  const handleCheckDuplicates = async () => {
+    if (!selectedFile) {
+      toast.error('Please select a CSV file first');
+      return;
+    }
+    
+    setIsCheckingDuplicates(true);
+    try {
+      const rows = await parseCSV(selectedFile);
+      const filteredRows = rows.map(filterCSVData);
+      setRowsToImport(filteredRows);
+      
+      const foundDuplicates = await checkForDuplicates(filteredRows);
+      setDuplicates(foundDuplicates);
+      
+      if (foundDuplicates.length > 0) {
+        toast.warning(`Found ${foundDuplicates.length} potential duplicate(s) in database`);
+      } else {
+        toast.success('No duplicates found! Ready to import.');
+      }
+    } catch (error: any) {
+      toast.error(`Error checking duplicates: ${error.message}`);
+    } finally {
+      setIsCheckingDuplicates(false);
+    }
+  };
   
   // Filter out unwanted fields from CSV data
   const filterCSVData = (row: CSVRow): CSVRow => {
@@ -404,8 +547,8 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
     setUploadProgress(0);
     
     try {
-      // Parse CSV
-      const rows = await parseCSV(selectedFile);
+      // Use rowsToImport if duplicates were checked, otherwise parse fresh
+      const rows = rowsToImport.length > 0 ? rowsToImport : (await parseCSV(selectedFile)).map(filterCSVData);
       const result: ImportResult = {
         success: 0,
         errors: [],
@@ -509,6 +652,8 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
     setPreviewData([]);
     setImportResult(null);
     setShowPreview(false);
+    setDuplicates([]);
+    setRowsToImport([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -701,15 +846,94 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
           </div>
         )}
 
+        {/* Duplicates Warning Section */}
+        {duplicates.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-amber-700">
+              <AlertTriangle className="h-5 w-5" />
+              <Label className="text-amber-700 font-semibold">
+                {duplicates.length} Potential Duplicate(s) Found
+              </Label>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              The following items in your CSV match existing records in the database. You can delete the existing record to allow import, or skip the row.
+            </p>
+            <div className="space-y-3 max-h-64 overflow-y-auto border rounded-lg p-3 bg-amber-50">
+              {duplicates.map((dup) => (
+                <div key={dup.existingId} className="flex items-center justify-between gap-4 p-3 bg-white rounded-lg border border-amber-200">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate">"{dup.matchValue}"</p>
+                    <p className="text-xs text-muted-foreground">
+                      CSV Row {dup.csvRowIndex + 2} matches existing {dataType === 'local_resources' ? 'resource' : dataType === 'business' ? 'business' : 'event'}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Existing: {dup.existingData.address || dup.existingData.location || 'No address'}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 flex-shrink-0">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => skipDuplicateRow(dup.csvRowIndex)}
+                    >
+                      Skip Row
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          disabled={deletingId === dup.existingId}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          {deletingId === dup.existingId ? 'Deleting...' : 'Delete Existing'}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Existing Record?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will permanently delete "{dup.matchValue}" from the database. 
+                            The CSV row will then be imported as a new record.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteDuplicateFromDatabase(dup)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            onClick={handleCheckDuplicates}
+            disabled={!selectedFile || isUploading || isCheckingDuplicates}
+            className="flex items-center gap-2"
+          >
+            <AlertTriangle className="h-4 w-4" />
+            {isCheckingDuplicates ? 'Checking...' : 'Check for Duplicates'}
+          </Button>
+          
           <Button
             onClick={handleImport}
             disabled={!selectedFile || isUploading}
             className="flex items-center gap-2"
           >
             <Upload className="h-4 w-4" />
-            Import CSV
+            Import CSV {rowsToImport.length > 0 && `(${rowsToImport.length} rows)`}
           </Button>
           
           <Button
