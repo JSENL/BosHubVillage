@@ -19,32 +19,45 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Check if this is a test email request
+    const body = await req.json().catch(() => ({}));
+    const testEmail = body.testEmail as string | undefined;
+
     console.log("Starting weekly digest processing...");
+    if (testEmail) {
+      console.log(`Test mode: sending to ${testEmail}`);
+    }
 
     // Get current day of week
     const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const today = days[new Date().getDay()];
     console.log(`Today is ${today}`);
 
-    // Get users who want digest on this day
-    const { data: preferences, error: prefError } = await supabase
-      .from('email_preferences')
-      .select('user_id, digest_day')
-      .eq('weekly_digest', true)
-      .eq('digest_day', today);
+    // If test email mode, skip subscriber lookup
+    let preferences: { user_id: string; digest_day: string }[] = [];
+    
+    if (!testEmail) {
+      // Get users who want digest on this day
+      const { data: prefs, error: prefError } = await supabase
+        .from('email_preferences')
+        .select('user_id, digest_day')
+        .eq('weekly_digest', true)
+        .eq('digest_day', today);
 
-    if (prefError) {
-      console.error("Error fetching preferences:", prefError);
-      throw prefError;
-    }
+      if (prefError) {
+        console.error("Error fetching preferences:", prefError);
+        throw prefError;
+      }
 
-    console.log(`Found ${preferences?.length || 0} users for digest today`);
+      preferences = prefs || [];
+      console.log(`Found ${preferences.length} users for digest today`);
 
-    if (!preferences || preferences.length === 0) {
-      return new Response(
-        JSON.stringify({ message: "No users to send digest to" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (preferences.length === 0) {
+        return new Response(
+          JSON.stringify({ message: "No users to send digest to" }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     // Get trending content from the last week
@@ -84,7 +97,92 @@ serve(async (req) => {
       console.error("Error fetching news:", newsError);
     }
 
-    // Process each user
+    // Build email content
+    const eventsHtml = upcomingEvents?.length 
+      ? upcomingEvents.map(e => `
+        <li style="margin-bottom: 10px;">
+          <strong>${e.title}</strong><br>
+          <span style="color: #666;">${new Date(e.date).toLocaleDateString()} • ${e.location}</span>
+        </li>
+      `).join('')
+      : '<li>No upcoming events this week</li>';
+
+    const newsHtml = recentNews?.length
+      ? recentNews.map(n => `
+        <li style="margin-bottom: 10px;">
+          <strong>${n.title}</strong><br>
+          <span style="color: #666;">${n.location}</span>
+        </li>
+      `).join('')
+      : '<li>No recent news</li>';
+
+    const buildEmailHtml = (name: string, isTest: boolean = false) => `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          h1 { color: #1a1a1a; }
+          h2 { color: #333; margin-top: 30px; }
+          ul { padding-left: 20px; }
+          .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666; }
+          .test-banner { background: #fef3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          ${isTest ? '<div class="test-banner"><strong>🧪 TEST EMAIL</strong> - This is a preview of the weekly digest</div>' : ''}
+          <h1>Your Weekly Community Digest</h1>
+          <p>Hi ${name},</p>
+          <p>Here's what's happening in your community this week:</p>
+          
+          <h2>📅 Upcoming Events</h2>
+          <ul>${eventsHtml}</ul>
+          
+          <h2>📰 Latest News</h2>
+          <ul>${newsHtml}</ul>
+          
+          <div class="footer">
+            <p>You're receiving this because you subscribed to weekly digests.</p>
+            <p>To unsubscribe, update your email preferences in your account settings.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // If test email mode, send only to the specified email
+    if (testEmail) {
+      try {
+        const emailResponse = await resend.emails.send({
+          from: "Community Digest <onboarding@resend.dev>",
+          to: [testEmail],
+          subject: "[TEST] Your Weekly Community Digest",
+          html: buildEmailHtml("Admin", true),
+        });
+
+        console.log(`Test email sent to ${testEmail}:`, emailResponse);
+
+        return new Response(
+          JSON.stringify({ 
+            message: "Test email sent successfully",
+            email: testEmail,
+            result: emailResponse
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      } catch (emailError: any) {
+        console.error(`Failed to send test email to ${testEmail}:`, emailError);
+        return new Response(
+          JSON.stringify({ error: emailError.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    // Process each subscriber
     const results = [];
     for (const pref of preferences) {
       // Get user email
@@ -99,66 +197,12 @@ serve(async (req) => {
         continue;
       }
 
-      // Build email content
-      const eventsHtml = upcomingEvents?.length 
-        ? upcomingEvents.map(e => `
-          <li style="margin-bottom: 10px;">
-            <strong>${e.title}</strong><br>
-            <span style="color: #666;">${new Date(e.date).toLocaleDateString()} • ${e.location}</span>
-          </li>
-        `).join('')
-        : '<li>No upcoming events this week</li>';
-
-      const newsHtml = recentNews?.length
-        ? recentNews.map(n => `
-          <li style="margin-bottom: 10px;">
-            <strong>${n.title}</strong><br>
-            <span style="color: #666;">${n.location}</span>
-          </li>
-        `).join('')
-        : '<li>No recent news</li>';
-
-      const emailHtml = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            h1 { color: #1a1a1a; }
-            h2 { color: #333; margin-top: 30px; }
-            ul { padding-left: 20px; }
-            .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h1>Your Weekly Community Digest</h1>
-            <p>Hi ${profile.full_name || 'there'},</p>
-            <p>Here's what's happening in your community this week:</p>
-            
-            <h2>📅 Upcoming Events</h2>
-            <ul>${eventsHtml}</ul>
-            
-            <h2>📰 Latest News</h2>
-            <ul>${newsHtml}</ul>
-            
-            <div class="footer">
-              <p>You're receiving this because you subscribed to weekly digests.</p>
-              <p>To unsubscribe, update your email preferences in your account settings.</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-
       try {
         const emailResponse = await resend.emails.send({
           from: "Community Digest <onboarding@resend.dev>",
           to: [profile.email],
           subject: "Your Weekly Community Digest",
-          html: emailHtml,
+          html: buildEmailHtml(profile.full_name || 'there'),
         });
 
         console.log(`Email sent to ${profile.email}:`, emailResponse);
@@ -170,7 +214,7 @@ serve(async (req) => {
           .eq('user_id', pref.user_id);
 
         results.push({ email: profile.email, status: 'sent' });
-      } catch (emailError) {
+      } catch (emailError: any) {
         console.error(`Failed to send to ${profile.email}:`, emailError);
         results.push({ email: profile.email, status: 'failed', error: emailError.message });
       }
