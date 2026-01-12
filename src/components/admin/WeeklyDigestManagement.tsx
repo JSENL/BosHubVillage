@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { 
   Mail, 
@@ -20,7 +20,8 @@ import {
   CheckCircle,
   Clock,
   Edit3,
-  Save
+  Save,
+  TestTube
 } from 'lucide-react';
 import {
   Table,
@@ -68,11 +69,12 @@ const defaultTemplate: EmailTemplate = {
 };
 
 const WeeklyDigestManagement = () => {
-  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [template, setTemplate] = useState<EmailTemplate>(defaultTemplate);
   const [showPreview, setShowPreview] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [isSendingTest, setIsSendingTest] = useState(false);
 
   // Fetch subscribers
   const { data: subscribers, isLoading: loadingSubscribers, refetch } = useQuery({
@@ -138,11 +140,11 @@ const WeeklyDigestManagement = () => {
     toast.success('Email template saved');
   };
 
-  const handleSendTestEmail = async () => {
+  const handleTriggerDigest = async () => {
     setIsSending(true);
     try {
       const { data, error } = await supabase.functions.invoke('weekly-digest', {
-        body: { test: true },
+        body: {},
       });
 
       if (error) throw error;
@@ -151,6 +153,27 @@ const WeeklyDigestManagement = () => {
       toast.error(`Failed to send: ${error.message}`);
     } finally {
       setIsSending(false);
+    }
+  };
+
+  const handleSendTestToMe = async () => {
+    if (!user?.email) {
+      toast.error('Unable to determine your email address');
+      return;
+    }
+
+    setIsSendingTest(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('weekly-digest', {
+        body: { testEmail: user.email },
+      });
+
+      if (error) throw error;
+      toast.success(`Test email sent to ${user.email}`);
+    } catch (error: any) {
+      toast.error(`Failed to send test email: ${error.message}`);
+    } finally {
+      setIsSendingTest(false);
     }
   };
 
@@ -363,7 +386,38 @@ const WeeklyDigestManagement = () => {
             Send Digest
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {/* Send Test to Me */}
+          <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div>
+              <p className="font-medium flex items-center gap-2">
+                <TestTube className="h-4 w-4 text-blue-600" />
+                Send Test Email to Me
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Send a preview digest to your email: <strong>{user?.email || 'Not available'}</strong>
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={handleSendTestToMe} 
+              disabled={isSendingTest || !user?.email}
+            >
+              {isSendingTest ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <TestTube className="h-4 w-4 mr-2" />
+                  Send Test
+                </>
+              )}
+            </Button>
+          </div>
+
+          {/* Trigger for all subscribers */}
           <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
             <div>
               <p className="font-medium">Trigger Weekly Digest Now</p>
@@ -371,7 +425,7 @@ const WeeklyDigestManagement = () => {
                 This will send the digest to all subscribers whose preferred day is today ({getDayLabel(days[new Date().getDay()])}).
               </p>
             </div>
-            <Button onClick={handleSendTestEmail} disabled={isSending}>
+            <Button onClick={handleTriggerDigest} disabled={isSending}>
               {isSending ? (
                 <>
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
