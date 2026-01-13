@@ -21,6 +21,58 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Verify authorization header exists
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ ok: false, error: 'Missing authorization header' }),
+        { status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseAdmin = createClient(supabaseUrl, serviceKey);
+
+    // Create client with user's token to verify authentication
+    const supabaseAuth = createClient(
+      supabaseUrl,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    // Verify the user's token
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+
+    if (claimsError || !claimsData?.claims) {
+      console.error('Failed to verify token:', claimsError);
+      return new Response(
+        JSON.stringify({ ok: false, error: 'Invalid or expired token' }),
+        { status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
+
+    const requesterId = claimsData.claims.sub;
+
+    // Verify user is an admin
+    const { data: adminRole, error: roleError } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', requesterId)
+      .eq('role', 'admin')
+      .single();
+
+    if (roleError || !adminRole) {
+      console.error('User is not an admin:', requesterId);
+      return new Response(
+        JSON.stringify({ ok: false, error: 'Admin access required' }),
+        { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
+
+    console.log('Admin verified:', requesterId);
+
     const { email }: AllowReregisterRequest = await req.json();
 
     if (!email) {
@@ -30,17 +82,13 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, serviceKey);
-
     // Find auth user by email by scanning pages (small user base assumed)
     let targetUser: any = null;
     let page = 1;
     const perPage = 200;
 
     while (true) {
-      const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
+      const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
       if (error) {
         console.error('Error listing users:', error);
         break;
@@ -67,13 +115,13 @@ const handler = async (req: Request): Promise<Response> => {
     const userId = targetUser.id as string;
 
     // Check for presence in profiles and user_roles
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('id')
       .eq('id', userId)
       .maybeSingle();
 
-    const { data: roles } = await supabase
+    const { data: roles } = await supabaseAdmin
       .from('user_roles')
       .select('id')
       .eq('user_id', userId);
@@ -83,7 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (!hasProfile && !hasRoles) {
       // Considered orphaned in app tables; delete auth user to free email
-      const { error: delError } = await supabase.auth.admin.deleteUser(userId);
+      const { error: delError } = await supabaseAdmin.auth.admin.deleteUser(userId);
       if (delError) {
         console.error('Failed to delete orphaned auth user:', delError);
         return new Response(

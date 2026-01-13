@@ -18,13 +18,64 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authorization header exists
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create admin client for internal operations
+    const supabaseAdmin = createClient(supabaseUrl!, supabaseServiceKey!);
+
+    // Create client with user's token to verify authentication
+    const supabaseAuth = createClient(
+      supabaseUrl!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    // Verify the user's token
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+
+    if (claimsError || !claimsData?.claims) {
+      console.error('Failed to verify token:', claimsError);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+
+    // Verify user is an admin
+    const { data: adminRole, error: roleError } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .single();
+
+    if (roleError || !adminRole) {
+      console.error('User is not an admin:', userId);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('Admin verified:', userId);
+
     const { dataType, count = 10, neighborhoods } = await req.json();
     
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
 
-    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
+    // Use admin client for database operations
 
     const bostonNeighborhoods = neighborhoods || [
       'Allston–Brighton', 'Back Bay', 'Bay Village', 'Beacon Hill', 'Charlestown',
