@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, MapPin, DollarSign, Users, Star } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { TranslatedText } from '@/components/common/TranslatedText';
+import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 
 interface Event {
   id: string;
@@ -46,7 +46,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
     const formatTime = (time: string) => {
       if (!time) return '';
       
-      // 12-hour format for English
       const [hours, minutes] = time.split(':');
       const hour = parseInt(hours);
       const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -62,15 +61,14 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   };
 
   const cardClassName = `
-    bg-white border-gray-200 yelp-shadow hover:yelp-shadow-lg transition-all duration-300 cursor-pointer
-    ${isHighlighted ? 'ring-2 ring-yelp-red ring-opacity-75' : ''}
+    bg-card border-border shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden
+    ${isHighlighted ? 'ring-2 ring-destructive ring-opacity-75' : ''}
   `;
 
   // Generate random rating for Yelp-like appearance
-  const rating = Math.floor(Math.random() * 2) + 4; // 4-5 stars
+  const rating = Math.floor(Math.random() * 2) + 4;
   const reviewCount = Math.floor(Math.random() * 500) + 50;
 
-  // Helper function to format attendees text
   const formatAttendeesText = (maxAttendees: number) => {
     return t('cards.upToAttendees', { count: maxAttendees });
   };
@@ -84,53 +82,60 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       >
         <CardContent className="p-0">
           <div className="flex">
+            {/* Category Hero for list view */}
+            <CategoryHero 
+              category={event.category} 
+              type="event" 
+              height="h-auto"
+              className="w-32 flex-shrink-0"
+            />
             
-            {/* Event Details */}
             <div className="flex-1 p-6">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1 min-w-0 mr-4">
-                  <h3 className="text-xl font-bold text-gray-900 hover:text-yelp-red mb-1 line-clamp-2 break-words">
+                  <h3 className="text-xl font-bold text-foreground hover:text-primary mb-1 line-clamp-2 break-words">
                     <TranslatedText text={event.title} />
                   </h3>
                   <div className="flex items-center space-x-1 mb-2">
                     {[...Array(5)].map((_, i) => (
                       <Star 
                         key={i} 
-                        className={`h-4 w-4 ${i < rating ? 'text-yelp-orange fill-current' : 'text-gray-300'}`} 
+                        className={`h-4 w-4 ${i < rating ? 'text-secondary fill-current' : 'text-muted'}`} 
                       />
                     ))}
-                    <span className="text-sm text-gray-600 ml-2 truncate">{t('cards.reviews', { count: reviewCount })}</span>
+                    <span className="text-sm text-muted-foreground ml-2 truncate">{t('cards.reviews', { count: reviewCount })}</span>
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray mb-2">
+                  <Badge variant="secondary" className="mb-2">
+                    <CategoryIcon category={event.category} type="event" size="sm" className="mr-1" />
                     <span className="truncate max-w-20">{event.category}</span>
                   </Badge>
-                  <div className="text-lg font-bold text-yelp-red">
+                  <div className="text-lg font-bold text-destructive">
                     {event.price === 0 ? t('cards.free') : `$${event.price}`}
                   </div>
                 </div>
               </div>
               
-              <p className="text-gray-600 mb-4 line-clamp-2 break-words">
+              <p className="text-muted-foreground mb-4 line-clamp-2 break-words">
                 <TranslatedText text={event.description} />
               </p>
               
-              <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+              <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center min-w-0">
-                  <Calendar className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
+                  <Calendar className="h-4 w-4 mr-2 text-primary flex-shrink-0" />
                   <span className="truncate">{formatDate(event.date)}</span>
                 </div>
                 <div className="flex items-center min-w-0">
                   <span className="text-xs truncate">{formatTimeRange(event.start_time, event.end_time)}</span>
                 </div>
                 <div className="flex items-center min-w-0">
-                  <MapPin className="h-4 w-4 mr-2 text-yelp-red flex-shrink-0" />
+                  <MapPin className="h-4 w-4 mr-2 text-primary flex-shrink-0" />
                   <span className="truncate break-all min-w-0">{event.location}</span>
                 </div>
                 {event.max_attendees && (
                   <div className="flex items-center">
-                    <Users className="h-4 w-4 mr-2 text-yelp-red" />
+                    <Users className="h-4 w-4 mr-2 text-primary" />
                     <span>{formatAttendeesText(event.max_attendees)}</span>
                   </div>
                 )}
@@ -148,48 +153,52 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       className={`${cardClassName} h-full`}
       onClick={handleViewDetails}
     >
-      <CardHeader className="pb-2">
+      {/* Category Hero */}
+      <CategoryHero category={event.category} type="event" />
+      
+      <CardHeader className="pb-2 pt-3">
         <div className="flex items-start justify-between mb-1">
-          <Badge variant="secondary" className="bg-yelp-light-gray text-yelp-gray text-xs">
+          <Badge variant="secondary" className="text-xs">
+            <CategoryIcon category={event.category} type="event" size="sm" className="mr-1" />
             {event.category}
           </Badge>
-          <div className="text-sm font-bold text-yelp-red">
+          <div className="text-sm font-bold text-destructive">
             {event.price === 0 ? t('cards.free') : `$${event.price}`}
           </div>
         </div>
-        <CardTitle className="text-sm text-gray-900 hover:text-yelp-red line-clamp-2 break-words">
+        <CardTitle className="text-sm text-foreground hover:text-primary line-clamp-2 break-words">
           <TranslatedText text={event.title} />
         </CardTitle>
         <div className="flex items-center space-x-1">
           {[...Array(5)].map((_, i) => (
             <Star 
               key={i} 
-              className={`h-3 w-3 ${i < rating ? 'text-yelp-orange fill-current' : 'text-gray-300'}`} 
+              className={`h-3 w-3 ${i < rating ? 'text-secondary fill-current' : 'text-muted'}`} 
             />
           ))}
-          <span className="text-xs text-gray-600 ml-1">{reviewCount}</span>
+          <span className="text-xs text-muted-foreground ml-1">{reviewCount}</span>
         </div>
       </CardHeader>
       
       <CardContent className="pt-2">
-        <CardDescription className="mb-2 line-clamp-2 text-gray-600 text-xs break-words">
+        <CardDescription className="mb-2 line-clamp-2 text-muted-foreground text-xs break-words">
           <TranslatedText text={event.description} />
         </CardDescription>
         <div className="space-y-1 text-xs">
-          <div className="flex items-center text-gray-600 min-w-0">
-            <Calendar className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
+          <div className="flex items-center text-muted-foreground min-w-0">
+            <Calendar className="h-3 w-3 mr-2 text-primary flex-shrink-0" />
             <span className="truncate">{formatDate(event.date)}</span>
           </div>
-          <div className="flex items-center text-gray-600 min-w-0 ml-5">
+          <div className="flex items-center text-muted-foreground min-w-0 ml-5">
             <span className="text-xs truncate">{formatTimeRange(event.start_time, event.end_time)}</span>
           </div>
-          <div className="flex items-center text-gray-600 min-w-0">
-            <MapPin className="h-3 w-3 mr-2 text-yelp-red flex-shrink-0" />
+          <div className="flex items-center text-muted-foreground min-w-0">
+            <MapPin className="h-3 w-3 mr-2 text-primary flex-shrink-0" />
             <span className="truncate break-all min-w-0">{event.location}</span>
           </div>
           {event.max_attendees && (
-            <div className="flex items-center text-gray-600">
-              <Users className="h-3 w-3 mr-2 text-yelp-red" />
+            <div className="flex items-center text-muted-foreground">
+              <Users className="h-3 w-3 mr-2 text-primary" />
               <span>{formatAttendeesText(event.max_attendees)}</span>
             </div>
           )}
