@@ -21,18 +21,80 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Initialize Supabase client
-    const supabase = createClient(
+    // Verify authorization header exists
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.error("Missing or invalid authorization header");
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    // Initialize Supabase admin client
+    const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
+
+    // Create client with user's token to verify authentication
+    const supabaseAuth = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    );
+
+    // Verify the user's token and get claims
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+
+    if (claimsError || !claimsData?.claims) {
+      console.error("Failed to verify token:", claimsError);
+      return new Response(
+        JSON.stringify({ error: "Invalid or expired token" }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+
+    // Verify user is an admin
+    const { data: adminRole, error: roleError } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .single();
+
+    if (roleError || !adminRole) {
+      console.error("User is not an admin:", userId);
+      return new Response(
+        JSON.stringify({ error: "Admin access required" }),
+        {
+          status: 403,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    console.log("Admin verified:", userId);
 
     const { announcementId }: SendAnnouncementRequest = await req.json();
 
     console.log("Processing announcement:", announcementId);
 
     // Get the announcement details
-    const { data: announcement, error: announcementError } = await supabase
+    const { data: announcement, error: announcementError } = await supabaseAdmin
       .from("announcements")
       .select("*")
       .eq("id", announcementId)
@@ -43,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Get all user profiles with emails
-    const { data: profiles, error: profilesError } = await supabase
+    const { data: profiles, error: profilesError } = await supabaseAdmin
       .from("profiles")
       .select("email, full_name");
 
@@ -107,7 +169,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Email sending completed: ${successCount} success, ${failureCount} failures`);
 
     // Update announcement status
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from("announcements")
       .update({
         status: "sent",
