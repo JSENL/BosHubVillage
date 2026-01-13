@@ -7,11 +7,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-);
-
 interface DeepSeekRequest {
   query: string;
   type: 'event_search' | 'categorize' | 'enhance_description' | 'location_suggest';
@@ -30,6 +25,37 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authorization header exists
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Create client with user's token to verify authentication
+    const supabaseAuth = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    // Verify the user's token
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+
+    if (claimsError || !claimsData?.claims) {
+      console.error('Failed to verify token:', claimsError);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid or expired token' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+    console.log('Authenticated user:', userId);
+
     const { query, type, context }: DeepSeekRequest = await req.json();
     console.log('DeepSeek AI request:', { query, type, context });
 
