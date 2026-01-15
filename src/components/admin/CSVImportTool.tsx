@@ -164,12 +164,21 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
   const previewCSV = async (file: File) => {
     try {
       const text = await file.text();
-      const lines = text.split('\n').filter(line => line.trim());
+      
+      // Debug: log raw file info
+      console.log('📄 Raw file size:', text.length, 'characters');
+      console.log('📄 First 500 chars:', text.substring(0, 500));
+      
+      // Handle both Windows (\r\n) and Unix (\n) line endings
+      const lines = text.split(/\r?\n/).filter(line => line.trim());
       
       if (lines.length === 0) {
         toast.error('CSV file is empty');
         return;
       }
+
+      console.log('📄 First line (header):', lines[0]);
+      console.log('📄 Number of lines:', lines.length);
 
       // Detect delimiter from the header line
       const delimiter = detectDelimiter(lines[0]);
@@ -178,6 +187,7 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
       const headers = parseCSVLine(lines[0], delimiter).map(h => h.replace(/"/g, '').trim());
       
       console.log('📋 CSV Headers detected:', headers);
+      console.log('📋 Number of headers:', headers.length);
       
       // Preview first 5 rows
       const preview = lines.slice(1, 6).map((line, index) => {
@@ -201,7 +211,8 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
 
   const parseCSV = async (file: File): Promise<CSVRow[]> => {
     const text = await file.text();
-    const lines = text.split('\n').filter(line => line.trim());
+    // Handle both Windows (\r\n) and Unix (\n) line endings
+    const lines = text.split(/\r?\n/).filter(line => line.trim());
     
     if (lines.length === 0) {
       throw new Error('CSV file is empty');
@@ -214,6 +225,7 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
     const headers = parseCSVLine(lines[0], delimiter).map(h => h.replace(/"/g, '').trim().toLowerCase());
     
     console.log('📊 CSV Headers for import (normalized):', headers);
+    console.log('📊 Number of headers:', headers.length);
     
     return lines.slice(1).map((line, index) => {
       const values = parseCSVLine(line, delimiter).map(v => v.replace(/"/g, '').trim());
