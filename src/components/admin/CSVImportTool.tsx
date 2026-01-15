@@ -103,8 +103,30 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
     }
   };
 
-  // Improved CSV parsing function that handles quoted fields and commas within fields
-  const parseCSVLine = (line: string): string[] => {
+  // Detect the delimiter used in the CSV (comma, semicolon, or tab)
+  const detectDelimiter = (line: string): string => {
+    // Count occurrences of each potential delimiter
+    const commas = (line.match(/,/g) || []).length;
+    const semicolons = (line.match(/;/g) || []).length;
+    const tabs = (line.match(/\t/g) || []).length;
+    
+    console.log('🔍 Delimiter detection:', { commas, semicolons, tabs });
+    
+    // Return the most common delimiter
+    if (tabs >= commas && tabs >= semicolons && tabs > 0) {
+      console.log('📋 Using TAB delimiter');
+      return '\t';
+    }
+    if (semicolons > commas && semicolons > 0) {
+      console.log('📋 Using SEMICOLON delimiter');
+      return ';';
+    }
+    console.log('📋 Using COMMA delimiter');
+    return ',';
+  };
+
+  // Improved CSV parsing function that handles quoted fields and various delimiters
+  const parseCSVLine = (line: string, delimiter: string = ','): string[] => {
     const result: string[] = [];
     let current = '';
     let inQuotes = false;
@@ -124,7 +146,7 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
           // Toggle quote state
           inQuotes = !inQuotes;
         }
-      } else if (char === ',' && !inQuotes) {
+      } else if (char === delimiter && !inQuotes) {
         // Field separator outside of quotes
         result.push(current.trim());
         current = '';
@@ -149,13 +171,17 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
         return;
       }
 
-      const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, '').trim());
+      // Detect delimiter from the header line
+      const delimiter = detectDelimiter(lines[0]);
+      console.log('📋 Detected delimiter:', delimiter === '\t' ? 'TAB' : delimiter);
+
+      const headers = parseCSVLine(lines[0], delimiter).map(h => h.replace(/"/g, '').trim());
       
       console.log('📋 CSV Headers detected:', headers);
       
       // Preview first 5 rows
       const preview = lines.slice(1, 6).map((line, index) => {
-        const values = parseCSVLine(line).map(v => v.replace(/"/g, '').trim());
+        const values = parseCSVLine(line, delimiter).map(v => v.replace(/"/g, '').trim());
         const row: CSVRow = {};
         headers.forEach((header, headerIndex) => {
           row[header] = values[headerIndex] || '';
@@ -181,12 +207,16 @@ Another Resource,Urban Agriculture / Community Space,456 Oak St Boston MA,South 
       throw new Error('CSV file is empty');
     }
 
-    const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g, '').trim().toLowerCase());
+    // Detect delimiter from the header line
+    const delimiter = detectDelimiter(lines[0]);
+    console.log('📊 Detected delimiter for import:', delimiter === '\t' ? 'TAB' : delimiter);
+
+    const headers = parseCSVLine(lines[0], delimiter).map(h => h.replace(/"/g, '').trim().toLowerCase());
     
     console.log('📊 CSV Headers for import (normalized):', headers);
     
     return lines.slice(1).map((line, index) => {
-      const values = parseCSVLine(line).map(v => v.replace(/"/g, '').trim());
+      const values = parseCSVLine(line, delimiter).map(v => v.replace(/"/g, '').trim());
       const row: CSVRow = {};
       headers.forEach((header, headerIndex) => {
         row[header] = values[headerIndex] || '';
