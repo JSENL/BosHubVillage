@@ -46,8 +46,8 @@ export const useMapboxMap = ({ mapboxToken, isLoadingApiKey }: UseMapboxMapProps
         const map = new mapboxgl.Map({
           container: mapRef.current,
           style: 'mapbox://styles/mapbox/streets-v12',
-          center: [-71.0589, 42.3601], // Boston center
-          zoom: 12
+          center: [-71.07, 42.29], // Southern Boston (Dorchester/Roxbury area)
+          zoom: 13
         });
 
         map.addControl(new mapboxgl.NavigationControl(), 'top-right');

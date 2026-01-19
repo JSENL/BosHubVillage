@@ -565,28 +565,50 @@ export const useMapClusters = ({
           }
         };
 
-        // Fit bounds only on initial load
+        // Fit bounds only on initial load - constrain to Southern Boston area
         const allFeatures = [...regularGeojsonData.features, ...sponsoredGeojsonData.features];
         if (allFeatures.length > 0 && !hasFitBoundsRef.current) {
           try {
-            const coordinates = allFeatures.map(feature => 
-              (feature.geometry as GeoJSON.Point).coordinates as [number, number]
-            );
+            // Filter coordinates to only include those within reasonable Boston area bounds
+            // Southern Boston roughly: lat 42.20-42.40, lng -71.20 to -70.90
+            const validCoordinates = allFeatures
+              .map(feature => (feature.geometry as GeoJSON.Point).coordinates as [number, number])
+              .filter(coord => {
+                const lng = coord[0];
+                const lat = coord[1];
+                // Only include points within Greater Boston area
+                return lat >= 42.20 && lat <= 42.45 && lng >= -71.25 && lng <= -70.85;
+              });
             
-            if (coordinates.length > 0) {
+            if (validCoordinates.length > 0) {
               const bounds = new mapboxgl.LngLatBounds();
-              coordinates.forEach(coord => bounds.extend(coord));
+              validCoordinates.forEach(coord => bounds.extend(coord));
               
               map.fitBounds(bounds, {
                 padding: { top: 60, bottom: 60, left: 60, right: 60 },
-                maxZoom: 14
+                maxZoom: 15,
+                minZoom: 11 // Don't zoom out too far
               });
               
               hasFitBoundsRef.current = true;
-              console.log(`🗺️ Map bounds fitted to ${coordinates.length} valid coordinates (clustered)`);
+              console.log(`🗺️ Map bounds fitted to ${validCoordinates.length} valid Boston-area coordinates (clustered)`);
+            } else {
+              // Fallback: center on Southern Boston if no valid coordinates found
+              console.log('🗺️ No valid Boston-area coordinates, using default Southern Boston center');
+              map.flyTo({
+                center: [-71.07, 42.29],
+                zoom: 13
+              });
+              hasFitBoundsRef.current = true;
             }
           } catch (error) {
             console.warn('Error fitting map bounds:', error);
+            // Fallback on error
+            map.flyTo({
+              center: [-71.07, 42.29],
+              zoom: 13
+            });
+            hasFitBoundsRef.current = true;
           }
         }
 
