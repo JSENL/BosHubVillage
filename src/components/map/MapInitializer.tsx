@@ -39,8 +39,8 @@ export const useMapInitializer = ({ mapboxToken, isLoadingApiKey }: UseMapInitia
     const map = new mapboxgl.Map({
       container: mapRef.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [-71.0589, 42.3601], // Boston center
-      zoom: 12,
+      center: [-71.07, 42.29], // Southern Boston (Dorchester/Roxbury area)
+      zoom: 13,
       scrollZoom: true, // Enable scroll zoom
       doubleClickZoom: false, // Disable double-click zoom to prevent interference
       touchZoomRotate: true, // Enable touch zoom on mobile
