@@ -7,6 +7,13 @@ import {
   faqTranslationsPt, 
   faqTranslationsVi 
 } from './faqTranslations';
+import {
+  onboardingTranslationsEn,
+  onboardingTranslationsEs,
+  onboardingTranslationsFr,
+  onboardingTranslationsPt,
+  onboardingTranslationsVi
+} from './onboardingTranslations';
 
 // Translation files for focused components
 const resources = {
@@ -51,6 +58,8 @@ const resources = {
       },
       // FAQ Section
       faq: faqTranslationsEn,
+      // Onboarding
+      onboarding: onboardingTranslationsEn,
       // Types
       types: {
         all: "All Types",
@@ -479,6 +488,7 @@ const resources = {
         localServices: "Servicios Locales"
       },
       faq: faqTranslationsEs,
+      onboarding: onboardingTranslationsEs,
       // Types
       types: {
         all: "Todos los Tipos",
@@ -896,6 +906,7 @@ const resources = {
         localServices: "Services Locaux"
       },
       faq: faqTranslationsFr,
+      onboarding: onboardingTranslationsFr,
       // Types
       types: {
         all: "Tous les Types",
@@ -1313,6 +1324,7 @@ const resources = {
         localServices: "Dịch Vụ Địa Phương"
       },
       faq: faqTranslationsVi,
+      onboarding: onboardingTranslationsVi,
       // Types
       types: {
         all: "Tất Cả Loại",
@@ -1730,6 +1742,7 @@ const resources = {
         localServices: "Serviços Locais"
       },
       faq: faqTranslationsPt,
+      onboarding: onboardingTranslationsPt,
       // Types
       types: {
         all: "Todos os Tipos",
