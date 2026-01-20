@@ -10,10 +10,14 @@ import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
 import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
 import { Navigation } from '@/components/Navigation';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
+import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
+  
+  // For local services, only admins can edit links (no owner concept)
+  const canEditLinks = isAdmin;
 
   const { data: resource, isLoading } = useQuery({
     queryKey: ['local-resource-details', serviceId],
@@ -117,6 +121,14 @@ const LocalServiceDetails = () => {
             )}
           </CardContent>
         </Card>
+
+        <div className="mt-8">
+          <LinkedNewsSection 
+            contentType="local_service"
+            contentId={serviceId!}
+            canEdit={canEditLinks}
+          />
+        </div>
 
         {user && (
           <div className="mt-8">
