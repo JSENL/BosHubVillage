@@ -46,8 +46,8 @@ export const useMapboxMap = ({ mapboxToken, isLoadingApiKey }: UseMapboxMapProps
         const map = new mapboxgl.Map({
           container: mapRef.current,
           style: 'mapbox://styles/mapbox/streets-v12',
-          center: [-71.07, 42.29], // Southern Boston (Dorchester/Roxbury area)
-          zoom: 13
+          center: [-71.09, 42.29], // Southern Boston (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain)
+          zoom: 12
         });
 
         map.addControl(new mapboxgl.NavigationControl(), 'top-right');

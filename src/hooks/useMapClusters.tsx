@@ -593,11 +593,11 @@ export const useMapClusters = ({
               hasFitBoundsRef.current = true;
               console.log(`🗺️ Map bounds fitted to ${validCoordinates.length} valid Boston-area coordinates (clustered)`);
             } else {
-              // Fallback: center on Southern Boston if no valid coordinates found
+              // Fallback: center on Southern Boston neighborhoods if no valid coordinates found
               console.log('🗺️ No valid Boston-area coordinates, using default Southern Boston center');
               map.flyTo({
-                center: [-71.07, 42.29],
-                zoom: 13
+                center: [-71.09, 42.29],
+                zoom: 12
               });
               hasFitBoundsRef.current = true;
             }
@@ -605,8 +605,8 @@ export const useMapClusters = ({
             console.warn('Error fitting map bounds:', error);
             // Fallback on error
             map.flyTo({
-              center: [-71.07, 42.29],
-              zoom: 13
+              center: [-71.09, 42.29],
+              zoom: 12
             });
             hasFitBoundsRef.current = true;
           }
