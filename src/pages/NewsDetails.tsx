@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import NewsComments from '@/components/NewsComments';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { useTranslation } from 'react-i18next';
+import { LinkedContentSection } from '@/components/content/LinkedContentSection';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -110,6 +111,10 @@ const NewsDetails = () => {
             </div>
           </CardContent>
         </Card>
+
+        <div className="mt-8">
+          <LinkedContentSection newsId={news.id} />
+        </div>
 
         <div className="mt-8">
           <NewsComments newsId={news.id} />
