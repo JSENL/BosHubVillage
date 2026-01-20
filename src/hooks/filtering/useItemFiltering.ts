@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { DateRange } from 'react-day-picker';
 import { calculateDistance } from '@/hooks/useGeolocation';
+import { sortBySponsored } from '@/utils/sponsoredUtils';
 
 interface FilterOptions {
   selectedType: string;
@@ -28,7 +29,7 @@ export const useItemFiltering = (
   return useMemo(() => {
     if (!items.length) return [];
 
-    return items.filter(item => {
+    const filtered = items.filter(item => {
       // Exclude past events
       if (item.type === 'event' && item.date) {
         const eventDate = new Date(item.date);
@@ -122,5 +123,8 @@ export const useItemFiltering = (
 
       return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage && matchesEventDate && matchesDistance;
     });
+
+    // Sort filtered items so sponsored items appear first
+    return sortBySponsored(filtered);
   }, [items, filters, userLocation]);
 };

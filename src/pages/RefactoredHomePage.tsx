@@ -11,6 +11,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/componen
 import { OnboardingTour, OnboardingTourRef } from '@/components/onboarding/OnboardingTour';
 import { Button } from '@/components/ui/button';
 import { HelpCircle } from 'lucide-react';
+import { FeaturedSection } from '@/components/home/FeaturedSection';
 
 const MainContent = () => {
   const { 
@@ -60,6 +61,9 @@ const MainContent = () => {
                 </button>
               </div>
             </div>
+
+            {/* Featured Section - shows sponsored items */}
+            <FeaturedSection items={allItems} />
 
             {/* Filter Bar */}
             <FilterBar
