@@ -10,10 +10,18 @@ import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
 import BusinessMessage from '@/components/BusinessMessage';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
+import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
+import { useAuth } from '@/hooks/useAuth';
+import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
   const navigate = useNavigate();
+  const { user, isAdmin } = useAuth();
+  const { ownedBusinesses } = useBusinessOwnership();
+  
+  // Check if user owns this business
+  const isOwner = ownedBusinesses?.some(b => b.id === businessId) || false;
 
   const { data: business, isLoading, error } = useQuery({
     queryKey: ['business', businessId],
@@ -154,6 +162,15 @@ const BusinessDetails = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Related News Section */}
+          <div className="mt-6">
+            <LinkedNewsSection 
+              contentType="business" 
+              contentId={businessId!}
+              canEdit={isOwner || isAdmin}
+            />
+          </div>
 
           <Card className="mt-6">
             <CardContent className="p-6">
