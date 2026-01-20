@@ -15,10 +15,10 @@ import { toast } from 'sonner';
 import { Building, ArrowLeft, Loader2, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
-
 import { useGeocoding } from '@/hooks/useGeocoding';
 import LocationFields from '@/components/forms/LocationFields';
 import { businessSubmissionSchema, validateFormData } from '@/utils/validation/formSchemas';
+import { useTranslation } from 'react-i18next';
 
 const SubmitBusiness = () => {
   const { user } = useAuth();
@@ -26,6 +26,7 @@ const SubmitBusiness = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { geocode, isGeocoding } = useGeocoding();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     title: '',
     business_type: '',
@@ -62,7 +63,7 @@ const SubmitBusiness = () => {
     
     if (!validation.success) {
       const errorValidation = validation as { success: false; errors: string[] };
-      toast.error('Validation Error', {
+      toast.error(t('pages.validationError'), {
         description: errorValidation.errors[0]
       });
       return;
@@ -162,9 +163,9 @@ const SubmitBusiness = () => {
             <Card>
               <CardContent className="p-8 text-center">
                 <Building className="h-16 w-16 mx-auto mb-4 text-purple-600" />
-                <h3 className="text-xl font-semibold mb-2">Sign In Required</h3>
-                <p className="text-gray-600 mb-4">You need to be signed in to submit a business.</p>
-                <Button onClick={() => navigate('/auth')}>Sign In</Button>
+                <h3 className="text-xl font-semibold mb-2">{t('pages.signInRequired')}</h3>
+                <p className="text-gray-600 mb-4">{t('pages.authRequiredBusiness')}</p>
+                <Button onClick={() => navigate('/auth')}>{t('navigation.signIn')}</Button>
               </CardContent>
             </Card>
           </div>
@@ -183,34 +184,34 @@ const SubmitBusiness = () => {
             <CardHeader>
               <CardTitle className="flex items-center text-2xl">
                 <Building className="h-6 w-6 mr-2 text-purple-600" />
-                Submit a Business
+                {t('pages.submitBusiness')}
               </CardTitle>
               <p className="text-gray-600">
-                Share a local business with the community. All submissions are reviewed before being published.
+                {t('pages.submitBusinessDesc')}
               </p>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <Label htmlFor="title">Business Name *</Label>
+                  <Label htmlFor="title">{t('pages.businessName')} *</Label>
                   <Input
                     id="title"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    placeholder="Enter business name"
+                    placeholder={t('pages.enterBusinessName')}
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="business_type">Business Type *</Label>
+                  <Label htmlFor="business_type">{t('pages.businessType')} *</Label>
                   <Select
                     value={formData.business_type}
                     onValueChange={(value) => setFormData({ ...formData, business_type: value })}
                     required
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select business type" />
+                      <SelectValue placeholder={t('pages.selectBusinessType')} />
                     </SelectTrigger>
                     <SelectContent>
                       {businessCategories.map((category) => (
@@ -228,14 +229,14 @@ const SubmitBusiness = () => {
 
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <Label htmlFor="neighborhood">Neighborhood *</Label>
+                    <Label htmlFor="neighborhood">{t('pages.neighborhood')} *</Label>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                           <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>Neighborhoods in the Boston area are the big areas such as Roxbury, Dorchester, South End, Hyde Park or Mattapan</p>
+                          <p>{t('pages.neighborhoodTooltip')}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -244,21 +245,21 @@ const SubmitBusiness = () => {
                     id="neighborhood"
                     value={formData.neighborhood}
                     onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
-                    placeholder="Enter neighborhood (e.g., Back Bay, Cambridge, etc.)"
+                    placeholder={t('pages.neighborhoodPlaceholder')}
                     required
                   />
                 </div>
 
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <Label htmlFor="villages">Villages</Label>
+                    <Label htmlFor="villages">{t('pages.villages')}</Label>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                           <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>These are the subneighborhoods of Boston: Fields Corner, Ashmont, Fort Hill, or Grove Hall</p>
+                          <p>{t('pages.villagesTooltip')}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -267,12 +268,12 @@ const SubmitBusiness = () => {
                     id="villages"
                     value={formData.villages}
                     onChange={(e) => setFormData({ ...formData, villages: e.target.value })}
-                    placeholder="Enter villages (e.g., Beacon Hill Village, Cambridge Village, etc.)"
+                    placeholder={t('pages.villagesFieldPlaceholder')}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="website_link">Website Link (Optional)</Label>
+                  <Label htmlFor="website_link">{t('pages.websiteLink')}</Label>
                   <Input
                     id="website_link"
                     type="url"
@@ -283,23 +284,23 @@ const SubmitBusiness = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="short_description">Short Description</Label>
+                  <Label htmlFor="short_description">{t('pages.shortDescription')}</Label>
                   <Input
                     id="short_description"
                     value={formData.short_description}
                     onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
-                    placeholder="Brief description (optional)"
+                    placeholder={t('pages.briefDescription')}
                     maxLength={100}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Description *</Label>
+                  <Label htmlFor="description">{t('common.description')} *</Label>
                   <Textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Describe the business, services offered, hours, etc."
+                    placeholder={t('pages.businessDescription')}
                     rows={4}
                     required
                   />
@@ -315,7 +316,7 @@ const SubmitBusiness = () => {
                     htmlFor="is_owner" 
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    Are you the business owner/creator/proprietor?
+                    {t('pages.areYouOwner')}
                   </Label>
                 </div>
 
@@ -329,15 +330,15 @@ const SubmitBusiness = () => {
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Submitting...
+                      {t('buttons.submitting')}
                     </>
                   ) : isGeocoding ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Processing Address...
+                      {t('buttons.processingAddress')}
                     </>
                   ) : (
-                    'Submit Business'
+                    t('buttons.submitBusiness')
                   )}
                 </Button>
               </form>
@@ -347,15 +348,14 @@ const SubmitBusiness = () => {
           <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Business Submitted Successfully!</AlertDialogTitle>
+                <AlertDialogTitle>{t('pages.businessSubmittedSuccess')}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Your business has been submitted and will be reviewed by our admin team. 
-                  Would you like to submit another business?
+                  {t('pages.businessSubmittedDesc')}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel onClick={handleFinish}>Done</AlertDialogCancel>
-                <AlertDialogAction onClick={handleAddAnother}>Submit Another</AlertDialogAction>
+                <AlertDialogCancel onClick={handleFinish}>{t('pages.done')}</AlertDialogCancel>
+                <AlertDialogAction onClick={handleAddAnother}>{t('pages.submitAnother')}</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

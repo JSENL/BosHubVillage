@@ -13,6 +13,7 @@ import { ProfilePictureUpload } from '@/components/profile/ProfilePictureUpload'
 import { EmailDigestSettings } from '@/components/settings/EmailDigestSettings';
 import { X, Plus, Save, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 const SUGGESTED_INTERESTS = [
   'Arts & Culture', 'Sports', 'Music', 'Food & Dining', 'Technology', 
@@ -27,6 +28,7 @@ export const EditProfile = () => {
   const { user } = useAuth();
   const { profile, updateProfile, isUpdating } = useProfile();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -91,8 +93,8 @@ export const EditProfile = () => {
     // Basic validation
     if (!formData.full_name.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please enter your full name.",
+        title: t('pages.validationError'),
+        description: t('pages.enterYourName'),
         variant: "destructive",
       });
       return;
@@ -104,8 +106,8 @@ export const EditProfile = () => {
     setTimeout(() => {
       if (!isUpdating) {
         toast({
-          title: "Profile Updated!",
-          description: "Your interests have been saved. You can now discover people with similar interests!",
+          title: t('pages.profileUpdated'),
+          description: t('pages.interestsSaved'),
         });
         navigate(`/user/${user?.id}`);
       }
@@ -133,19 +135,19 @@ export const EditProfile = () => {
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Profile
+            {t('pages.backToProfile')}
           </Button>
           
-          <h1 className="text-2xl font-bold">Edit Profile</h1>
+          <h1 className="text-2xl font-bold">{t('pages.editProfile')}</h1>
           <p className="text-muted-foreground">
-            Update your information and interests to connect with like-minded people.
+            {t('pages.editProfileDesc')}
           </p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <Card>
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
+              <CardTitle>{t('pages.profileInfo')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Profile Picture Upload */}
@@ -160,48 +162,48 @@ export const EditProfile = () => {
               {/* Basic Info */}
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="full_name">Full Name *</Label>
+                  <Label htmlFor="full_name">{t('pages.fullName')} *</Label>
                   <Input
                     id="full_name"
                     value={formData.full_name}
                     onChange={(e) => handleInputChange('full_name', e.target.value)}
-                    placeholder="Enter your full name"
+                    placeholder={t('pages.enterFullName')}
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="bio">Bio</Label>
+                  <Label htmlFor="bio">{t('pages.bio')}</Label>
                   <Textarea
                     id="bio"
                     value={formData.bio}
                     onChange={(e) => handleInputChange('bio', e.target.value)}
-                    placeholder="Tell others about yourself..."
+                    placeholder={t('pages.bioPlaceholder')}
                     rows={3}
                     maxLength={200}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    {formData.bio.length}/200 characters
+                    {formData.bio.length}/200 {t('pages.characters')}
                   </p>
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="location">{t('pages.locationField')}</Label>
                   <Input
                     id="location"
                     value={formData.location}
                     onChange={(e) => handleInputChange('location', e.target.value)}
-                    placeholder="City, Country"
+                    placeholder={t('pages.locationPlaceholder')}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="website">Website</Label>
+                  <Label htmlFor="website">{t('pages.website')}</Label>
                   <Input
                     id="website"
                     value={formData.website}
                     onChange={(e) => handleInputChange('website', e.target.value)}
-                    placeholder="https://yourwebsite.com"
+                    placeholder={t('pages.websitePlaceholder')}
                     type="url"
                   />
                 </div>
@@ -212,16 +214,16 @@ export const EditProfile = () => {
           {/* Interests Section */}
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>Interests</CardTitle>
+              <CardTitle>{t('pages.interests')}</CardTitle>
               <p className="text-sm text-muted-foreground">
-                Add your interests to discover people with similar hobbies and passions.
+                {t('pages.interestsDesc')}
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Current Interests */}
               {formData.interests.length > 0 && (
                 <div>
-                  <Label className="text-sm font-medium">Your Interests</Label>
+                  <Label className="text-sm font-medium">{t('pages.yourInterests')}</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {formData.interests.map((interest, index) => (
                       <Badge 
@@ -242,13 +244,13 @@ export const EditProfile = () => {
 
               {/* Add Custom Interest */}
               <div>
-                <Label htmlFor="new-interest">Add Interest</Label>
+                <Label htmlFor="new-interest">{t('pages.addInterest')}</Label>
                 <div className="flex gap-2 mt-1">
                   <Input
                     id="new-interest"
                     value={newInterest}
                     onChange={(e) => setNewInterest(e.target.value)}
-                    placeholder="Type an interest..."
+                    placeholder={t('pages.typeInterest')}
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -270,7 +272,7 @@ export const EditProfile = () => {
 
               {/* Suggested Interests */}
               <div>
-                <Label className="text-sm font-medium">Suggested Interests</Label>
+                <Label className="text-sm font-medium">{t('pages.suggestedInterests')}</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {SUGGESTED_INTERESTS
                     .filter(interest => !formData.interests.includes(interest))
@@ -300,14 +302,14 @@ export const EditProfile = () => {
               className="flex-1"
             >
               <Save className="h-4 w-4 mr-2" />
-              {isUpdating ? 'Saving...' : 'Save Profile'}
+              {isUpdating ? t('buttons.saving') : t('buttons.saveProfile')}
             </Button>
             <Button 
               type="button" 
               variant="outline"
               onClick={() => navigate(`/user/${user.id}`)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
           </div>
         </form>

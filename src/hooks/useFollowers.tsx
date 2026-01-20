@@ -2,11 +2,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 export const useFollowers = (userId: string) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   // Check if current user follows the target user
   const { data: isFollowing, isLoading: isCheckingFollow } = useQuery({
@@ -105,14 +107,14 @@ export const useFollowers = (userId: string) => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
       
       toast({
-        title: "Following",
-        description: "You are now following this user.",
+        title: t('toasts.following'),
+        description: t('toasts.nowFollowing'),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to follow user. Please try again.",
+        title: t('toasts.error'),
+        description: t('toasts.followError'),
         variant: "destructive",
       });
     },
@@ -137,14 +139,14 @@ export const useFollowers = (userId: string) => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
       
       toast({
-        title: "Unfollowed",
-        description: "You are no longer following this user.",
+        title: t('toasts.unfollowed'),
+        description: t('toasts.noLongerFollowing'),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to unfollow user. Please try again.",
+        title: t('toasts.error'),
+        description: t('toasts.unfollowError'),
         variant: "destructive",
       });
     },

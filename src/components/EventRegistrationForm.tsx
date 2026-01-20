@@ -9,6 +9,7 @@ import { User, Mail, Phone, MessageSquare, Send, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 interface EventRegistrationFormProps {
   eventId: string;
@@ -25,6 +26,7 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
 }) => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     user_name: '',
     user_email: user?.email || '',
@@ -43,12 +45,12 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
     e.preventDefault();
     
     if (!user) {
-      toast.error('You must be logged in to register for events');
+      toast.error(t('pages.mustBeLoggedIn'));
       return;
     }
 
     if (!formData.user_name || !formData.user_email) {
-      toast.error('Please fill in all required fields');
+      toast.error(t('pages.fillRequiredFields'));
       return;
     }
 
@@ -73,7 +75,7 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
         return;
       }
 
-      toast.success('Registration submitted successfully! You will be notified once it\'s reviewed.');
+      toast.success(t('pages.registrationSuccess'));
       
       // Reset form
       setFormData({
@@ -97,10 +99,10 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-purple-700">
-            Register for Event
+            {t('pages.registerForEvent')}
           </DialogTitle>
           <p className="text-sm text-gray-600">
-            Register for "{eventTitle}". Your registration will be reviewed by our admin team.
+            {t('pages.registerForEventDesc', { eventTitle })}
           </p>
         </DialogHeader>
         
@@ -110,11 +112,11 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
               <div>
                 <Label htmlFor="user_name" className="text-sm font-medium text-gray-700 flex items-center">
                   <User className="h-4 w-4 mr-1" />
-                  Full Name *
+                  {t('pages.fullName')} *
                 </Label>
                 <Input
                   id="user_name"
-                  placeholder="Enter your full name"
+                  placeholder={t('pages.enterFullName')}
                   value={formData.user_name}
                   onChange={(e) => handleInputChange('user_name', e.target.value)}
                   className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
@@ -125,12 +127,12 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
               <div>
                 <Label htmlFor="user_email" className="text-sm font-medium text-gray-700 flex items-center">
                   <Mail className="h-4 w-4 mr-1" />
-                  Email Address *
+                  {t('pages.emailAddress')} *
                 </Label>
                 <Input
                   id="user_email"
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder={t('pages.enterEmail')}
                   value={formData.user_email}
                   onChange={(e) => handleInputChange('user_email', e.target.value)}
                   className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
@@ -141,12 +143,12 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
               <div>
                 <Label htmlFor="user_phone" className="text-sm font-medium text-gray-700 flex items-center">
                   <Phone className="h-4 w-4 mr-1" />
-                  Phone Number
+                  {t('pages.phoneNumber')}
                 </Label>
                 <Input
                   id="user_phone"
                   type="tel"
-                  placeholder="Enter your phone number"
+                  placeholder={t('pages.enterPhone')}
                   value={formData.user_phone}
                   onChange={(e) => handleInputChange('user_phone', e.target.value)}
                   className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
@@ -156,18 +158,18 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
               <div>
                 <Label htmlFor="additional_info" className="text-sm font-medium text-gray-700 flex items-center">
                   <MessageSquare className="h-4 w-4 mr-1" />
-                  Additional Information
+                  {t('pages.additionalInfo')}
                 </Label>
                 <Textarea
                   id="additional_info"
-                  placeholder="Any additional information or special requests..."
+                  placeholder={t('pages.additionalInfoPlaceholder')}
                   value={formData.additional_info}
                   onChange={(e) => handleInputChange('additional_info', e.target.value)}
                   className="mt-1 border-purple-200 focus:border-purple-400 focus:ring-purple-400"
                   rows={3}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Optional: Include any dietary restrictions, accessibility needs, or other information
+                  {t('pages.additionalInfoHelp')}
                 </p>
               </div>
 
@@ -179,7 +181,7 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                   className="flex-1"
                   disabled={isSubmitting}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
                 <Button
                   type="submit"
@@ -189,12 +191,12 @@ export const EventRegistrationForm: React.FC<EventRegistrationFormProps> = ({
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Submitting...
+                      {t('buttons.registering')}
                     </>
                   ) : (
                     <>
                       <Send className="h-4 w-4 mr-2" />
-                      Submit Registration
+                      {t('pages.submitRegistration')}
                     </>
                   )}
                 </Button>

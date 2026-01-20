@@ -11,17 +11,19 @@ import { CalendarShare } from '@/components/CalendarShare';
 import { EventRegistrationForm } from '@/components/EventRegistrationForm';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { events, loading } = useEvents();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const { t } = useTranslation();
 
   const event = events.find(e => e.id === eventId);
 
   if (loading) {
-    return "Loading...";
+    return t('common.loading');
   }
 
   if (!event) {
@@ -31,9 +33,9 @@ const EventDetails = () => {
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center">
-              <h3 className="text-xl font-semibold mb-2">Event Not Found</h3>
-              <p className="text-gray-600 mb-4">The event you're looking for doesn't exist or has been removed.</p>
-              <Button onClick={() => navigate('/')}>Back to Home</Button>
+              <h3 className="text-xl font-semibold mb-2">{t('pages.eventNotFound')}</h3>
+              <p className="text-gray-600 mb-4">{t('pages.eventNotFoundDesc')}</p>
+              <Button onClick={() => navigate('/')}>{t('pages.backToHome')}</Button>
             </div>
           </div>
         </div>
@@ -52,7 +54,7 @@ const EventDetails = () => {
             className="mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Events
+            {t('pages.backToEvents')}
           </Button>
 
           <div className="flex items-center justify-between mb-4">
@@ -72,7 +74,7 @@ const EventDetails = () => {
                   <div className="flex flex-wrap gap-2 mb-4">
                     <Badge variant="secondary">{event.category}</Badge>
                     <Badge variant="outline">
-                      {event.price === 0 ? "Free" : `$${event.price}`}
+                      {event.price === 0 ? t('cards.free') : `$${event.price}`}
                     </Badge>
                   </div>
 
@@ -90,13 +92,13 @@ const EventDetails = () => {
                     {event.max_attendees && (
                       <div className="flex items-center text-gray-600">
                         <Users className="h-4 w-4 mr-2" />
-                        <span>Up to {event.max_attendees} attendees</span>
+                        <span>{t('pages.upToAttendees', { count: event.max_attendees })}</span>
                       </div>
                     )}
                   </div>
 
                   <div className="prose max-w-none">
-                    <h3 className="text-lg font-semibold mb-2">Description</h3>
+                    <h3 className="text-lg font-semibold mb-2">{t('pages.description')}</h3>
                     <p className="text-gray-700 whitespace-pre-wrap">{event.description}</p>
                   </div>
                 </CardContent>

@@ -11,10 +11,12 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import NewsComments from '@/components/NewsComments';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
+import { useTranslation } from 'react-i18next';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const { data: news, isLoading, error } = useQuery({
     queryKey: ['news', newsId],
@@ -37,7 +39,7 @@ const NewsDetails = () => {
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4" />
-            <p>Loading...</p>
+            <p>{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -49,10 +51,10 @@ const NewsDetails = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center">
-            <h3 className="text-xl font-semibold mb-2">Article Not Found</h3>
-            <p className="text-gray-600 mb-4">The article you're looking for doesn't exist.</p>
+            <h3 className="text-xl font-semibold mb-2">{t('pages.articleNotFound')}</h3>
+            <p className="text-gray-600 mb-4">{t('pages.articleNotFoundDesc')}</p>
             <Link to="/">
-              <Button>Back to Home</Button>
+              <Button>{t('pages.backToHome')}</Button>
             </Link>
           </div>
         </div>
@@ -66,7 +68,7 @@ const NewsDetails = () => {
         <Link to="/" className="inline-block mb-6">
           <Button variant="outline">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to News
+            {t('pages.backToNews')}
           </Button>
         </Link>
 

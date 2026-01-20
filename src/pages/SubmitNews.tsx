@@ -19,6 +19,7 @@ import { useSubmissionErrorHandler } from '@/hooks/useSubmissionErrorHandler';
 import NewsMediaUpload from '@/components/forms/NewsMediaUpload';
 import { uploadMediaFiles } from '@/services/mediaUploadService';
 import { newsSubmissionSchema, validateFormData } from '@/utils/validation/formSchemas';
+import { useTranslation } from 'react-i18next';
 
 const SubmitNews = () => {
   const { user } = useAuth();
@@ -29,6 +30,7 @@ const SubmitNews = () => {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { data: newsCategories = [] } = useNewsCategories();
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -73,8 +75,8 @@ const SubmitNews = () => {
     e.preventDefault();
     
     if (!user) {
-      toast.error('Authentication required', {
-        description: 'You must be signed in to submit news',
+      toast.error(t('pages.authenticationRequired'), {
+        description: t('pages.authRequiredNews'),
         style: {
           backgroundColor: '#fee2e2',
           borderColor: '#fca5a5',
@@ -213,10 +215,10 @@ const SubmitNews = () => {
             <Card>
               <CardContent className="p-8 text-center">
                 <Newspaper className="h-16 w-16 mx-auto mb-4 text-purple-600" />
-                <h3 className="text-xl font-semibold mb-2">Authentication Required</h3>
-                <p className="text-gray-600 mb-4">You need to sign in to submit news for approval.</p>
+                <h3 className="text-xl font-semibold mb-2">{t('pages.authenticationRequired')}</h3>
+                <p className="text-gray-600 mb-4">{t('pages.authRequiredNews')}</p>
                 <Button onClick={() => window.location.href = '/auth'}>
-                  Sign In
+                  {t('navigation.signIn')}
                 </Button>
               </CardContent>
             </Card>
@@ -232,8 +234,8 @@ const SubmitNews = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-2xl mx-auto px-4">
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit News</h1>
-            <p className="text-gray-600">Share local news with the community</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('pages.submitNews')}</h1>
+            <p className="text-gray-600">{t('pages.submitNewsDesc')}</p>
           </div>
 
           {validationErrors.length > 0 && (
@@ -242,9 +244,9 @@ const SubmitNews = () => {
                 <div className="flex items-start space-x-3">
                   <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h4 className="text-orange-800 font-medium">Please complete all required fields</h4>
+                    <h4 className="text-orange-800 font-medium">{t('pages.pleaseCompleteFields')}</h4>
                     <p className="text-orange-700 text-sm mt-1">
-                      Missing: {validationErrors.join(', ')}
+                      {t('pages.missing')}: {validationErrors.join(', ')}
                     </p>
                   </div>
                 </div>
@@ -256,59 +258,59 @@ const SubmitNews = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Newspaper className="h-5 w-5 mr-2" />
-                News Article Information
+                {t('pages.newsArticleInfo')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <Label htmlFor="title">Article Title *</Label>
+                  <Label htmlFor="title">{t('pages.articleTitle')} *</Label>
                   <Input
                     id="title"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
-                    placeholder="Enter the news article title"
+                    placeholder={t('pages.enterArticleTitle')}
                     required
                     className={validationErrors.includes('Article Title') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Location *</Label>
+                  <Label htmlFor="location">{t('filters.location')} *</Label>
                   <Input
                     id="location"
                     value={formData.location}
                     onChange={(e) => handleInputChange('location', e.target.value)}
-                    placeholder="General location (e.g., Downtown, Main Street)"
+                    placeholder={t('pages.generalLocation')}
                     required
                     className={validationErrors.includes('Location') ? 'border-red-300 bg-red-50' : ''}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="address">Full Address</Label>
+                  <Label htmlFor="address">{t('pages.fullAddress')}</Label>
                   <Input
                     id="address"
                     value={formData.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
-                    placeholder="Complete address for map location (e.g., 123 Main St, Boston, MA 02101)"
+                    placeholder={t('pages.fullAddressPlaceholder')}
                     disabled={isGeocoding}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    {isGeocoding ? 'Geocoding address...' : 'Full address will be used to place the news on the map'}
+                    {isGeocoding ? t('pages.geocodingAddress') : t('pages.fullAddressHelp')}
                   </p>
                 </div>
 
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <Label htmlFor="villages">Villages</Label>
+                    <Label htmlFor="villages">{t('pages.villages')}</Label>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                           <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>These are the subneighborhoods of Boston: Fields Corner, Ashmont, Fort Hill, or Grove Hall</p>
+                          <p>{t('pages.villagesTooltip')}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -317,22 +319,22 @@ const SubmitNews = () => {
                     id="villages"
                     value={formData.villages}
                     onChange={(e) => handleInputChange('villages', e.target.value)}
-                    placeholder="Enter villages (comma-separated, e.g., Village A, Village B)"
+                    placeholder={t('pages.villagesPlaceholder')}
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    Separate multiple villages with commas
+                    {t('pages.villagesSeparator')}
                   </p>
                 </div>
 
                 <div>
-                  <Label htmlFor="source">Source *</Label>
+                  <Label htmlFor="source">{t('pages.source')} *</Label>
                   <Select
                     value={formData.source}
                     onValueChange={(value) => handleInputChange('source', value)}
                     required
                   >
                     <SelectTrigger className={validationErrors.includes('Source') ? 'border-red-300 bg-red-50' : ''}>
-                      <SelectValue placeholder="Select news source" />
+                      <SelectValue placeholder={t('pages.selectNewsSource')} />
                     </SelectTrigger>
                     <SelectContent>
                       {newsCategories.map((category) => (
@@ -345,7 +347,7 @@ const SubmitNews = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="date_posted">Date Posted *</Label>
+                  <Label htmlFor="date_posted">{t('pages.datePosted')} *</Label>
                   <Input
                     id="date_posted"
                     type="date"
@@ -357,12 +359,12 @@ const SubmitNews = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="content">Article Content *</Label>
+                  <Label htmlFor="content">{t('pages.articleContent')} *</Label>
                   <Textarea
                     id="content"
                     value={formData.content}
                     onChange={(e) => handleInputChange('content', e.target.value)}
-                    placeholder="Write the full news article content here..."
+                    placeholder={t('pages.articleContentPlaceholder')}
                     rows={8}
                     required
                     className={validationErrors.includes('Article Content') ? 'border-red-300 bg-red-50' : ''}
@@ -381,7 +383,7 @@ const SubmitNews = () => {
                   variant="orange"
                   className="w-full"
                 >
-                  {isSubmitting ? 'Submitting...' : isGeocoding ? 'Processing Address...' : 'Submit News Article'}
+                  {isSubmitting ? t('buttons.submitting') : isGeocoding ? t('buttons.processingAddress') : t('buttons.submitNewsArticle')}
                 </Button>
               </form>
             </CardContent>
@@ -390,15 +392,14 @@ const SubmitNews = () => {
           <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>News Article Submitted Successfully!</AlertDialogTitle>
+                <AlertDialogTitle>{t('pages.newsSubmittedSuccess')}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Your news article has been submitted and will be reviewed by our admin team. 
-                  Would you like to submit another news article?
+                  {t('pages.newsSubmittedDesc')}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel onClick={handleFinish}>Done</AlertDialogCancel>
-                <AlertDialogAction onClick={handleAddAnother}>Submit Another</AlertDialogAction>
+                <AlertDialogCancel onClick={handleFinish}>{t('pages.done')}</AlertDialogCancel>
+                <AlertDialogAction onClick={handleAddAnother}>{t('pages.submitAnother')}</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
