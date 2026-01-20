@@ -2,43 +2,43 @@
 
 export const faqTranslationsEn = {
   title: "Frequently Asked Questions",
-  subtitle: "Everything you need to know about using our community platform",
+  subtitle: "Everything you need to know about using HubVillage - your community platform for Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain",
   stillHaveQuestions: "Still Have Questions?",
-  contactMessage: "If you can't find the answer you're looking for, feel free to reach out to our support team or use the contact form.",
+  contactMessage: "If you can't find the answer you're looking for, feel free to reach out using the Contact Admin option in your account menu.",
   
   // Section titles
   gettingStarted: "Getting Started",
-  gettingStartedDesc: "Learn about getting started features and how to use them",
+  gettingStartedDesc: "Learn the basics of HubVillage and how to get started",
   events: "Events",
-  eventsDesc: "Learn about events features and how to use them",
+  eventsDesc: "Discover and share community events in your neighborhood",
   businesses: "Businesses",
-  businessesDesc: "Learn about businesses features and how to use them",
+  businessesDesc: "Find and connect with local businesses",
   localServices: "Local Services",
-  localServicesDesc: "Learn about local services features and how to use them",
+  localServicesDesc: "Discover service providers and professionals in your area",
   newsUpdates: "News & Updates",
-  newsUpdatesDesc: "Learn about news & updates features and how to use them",
+  newsUpdatesDesc: "Stay informed with local community news",
   mapFeatures: "Map Features",
-  mapFeaturesDesc: "Learn about map features and how to use them",
+  mapFeaturesDesc: "Navigate your community with our interactive Mapbox map",
   nearMe: "Near Me & Location Features",
-  nearMeDesc: "Find content near your current location",
+  nearMeDesc: "Find events, businesses, and services near your current location",
   searchFilters: "Search & Filters",
-  searchFiltersDesc: "Learn about search & filters features and how to use them",
+  searchFiltersDesc: "Find exactly what you're looking for with powerful search tools",
   userFeatures: "User Features",
-  userFeaturesDesc: "Learn about user features and how to use them",
+  userFeaturesDesc: "Manage your account, submissions, and preferences",
   socialFollowing: "Social & Following",
-  socialFollowingDesc: "Connect with other community members",
+  socialFollowingDesc: "Connect with other community members and stay updated",
   notifications: "Notifications & Alerts",
   notificationsDesc: "Stay informed about activity and updates",
   weeklyDigest: "Weekly Email Digest",
   weeklyDigestDesc: "Get a summary of community activity delivered to your inbox",
   commentsRatings: "Comments & Ratings",
-  commentsRatingsDesc: "Learn about comments & ratings features and how to use them",
+  commentsRatingsDesc: "Share your experiences and help others",
   messaging: "Messaging",
-  messagingDesc: "Learn about messaging features and how to use them",
+  messagingDesc: "Communicate directly with business owners",
   languagesAccessibility: "Languages & Accessibility",
-  languagesAccessibilityDesc: "Learn about languages & accessibility features and how to use them",
+  languagesAccessibilityDesc: "HubVillage in your preferred language",
   submissionProcess: "Submission Process",
-  submissionProcessDesc: "Learn about submission process features and how to use them",
+  submissionProcessDesc: "How to add events, businesses, services, and news",
   trendingDiscovery: "Trending & Discovery",
   trendingDiscoveryDesc: "Discover popular and recommended content",
   accountPrivacy: "Account & Privacy",
@@ -48,7 +48,7 @@ export const faqTranslationsEn = {
   badges: {
     communitySupport: "Community Support",
     helpDocs: "Help Documentation",
-    contactForm: "Contact Form"
+    contactForm: "Contact Admin"
   },
   
   // Questions
@@ -179,125 +179,125 @@ export const faqTranslationsEn = {
   // Answers
   answers: {
     gettingStarted: {
-      a1: "This is a comprehensive community platform that connects locals with events, businesses, services, and news in their area. You can discover what's happening around you, find local services, read community news, and connect with local businesses.",
-      a2: "You can browse events, businesses, services, and news without an account. However, creating an account allows you to submit content, save bookmarks, leave comments and ratings, message businesses, follow other users, save searches, and personalize your experience.",
-      a3: "Use the main navigation to switch between Events, Businesses, Local Services, and News. You can view content in grid, list, map, or calendar formats. Use the search bar and filters to find exactly what you're looking for. The interface features resizable panels to customize your viewing experience.",
-      a4: "Yes! First-time users are greeted with an interactive onboarding tour. Choose whether you're posting an event, business, or local resource, and we'll guide you through the relevant features step-by-step. You can restart the tour anytime by clearing your browser's local storage."
+      a1: "HubVillage is a community platform connecting residents of Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain with local events, businesses, services, and news. Discover what's happening in your neighborhood, find trusted local services, and stay connected with your community.",
+      a2: "You can browse events, businesses, services, and news without an account. However, creating a free account lets you submit content, save bookmarks, leave comments and ratings, message businesses, follow other users, save searches, and receive personalized recommendations.",
+      a3: "The homepage shows all content types in a unified view with grid, list, and map layouts. Use the type filter to focus on Events, Businesses, Local Services, or News. Filter by neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), category, or date. The map view uses Mapbox to show everything on an interactive map.",
+      a4: "First-time users see an interactive onboarding tour explaining key features. You can restart the tour anytime by clearing your browser's local storage. This FAQ covers all features in detail."
     },
     events: {
-      a1: "Browse events using grid, list, map, or calendar views. Filter by date, category, type (free/paid), neighborhood, or village. Use the calendar view to see events by specific dates, or the map to find events near you. The search bar lets you find events by keywords.",
-      a2: "Yes! Click 'Submit Event' to add your event. Provide details like title, description, date/time, location, category, and pricing. Events go through an approval process before being published.",
-      a3: "Any community-relevant events including workshops, concerts, meetups, festivals, classes, sports events, cultural activities, and more. Both free and paid events are welcome.",
-      a4: "Click on any event to view details. If registration is available, you'll see registration options with the event organizer's contact information or registration links.",
-      a5: "Yes! When submitting an event, you can mark it as recurring and specify the pattern (daily, weekly, monthly). This is perfect for regular classes, meetups, or ongoing community activities.",
-      a6: "Each event has social sharing options. You can share events via social media, copy the direct link, or add events to your personal calendar using the calendar share feature."
+      a1: "Browse events using grid, list, map, or calendar views. Filter by date, category, event type (free/paid), neighborhood, or village. Use the calendar view to see events by specific dates, or the Mapbox map to find events near you. Red 'E' markers indicate events on the map.",
+      a2: "Yes! Click 'Submit Event' from the Submit menu in the navigation. Provide title, description, date/time, location, category, and pricing. Your submission goes through admin review before being published.",
+      a3: "Any community-relevant events including workshops, concerts, meetups, festivals, classes, sports events, cultural activities, community meetings, and more. Both free and paid events are welcome.",
+      a4: "Click on any event to view full details. If registration is required, you'll see the event organizer's contact information or website link for registration.",
+      a5: "Yes! When submitting an event, mark it as recurring and specify the pattern (daily, weekly, monthly). Perfect for regular classes, meetups, or ongoing community activities.",
+      a6: "Each event has social sharing options. Share via social media, copy the direct link, or add events to your personal calendar using the calendar share feature."
     },
     businesses: {
-      a1: "Browse the Businesses section using list or map view. Filter by category, search by name or keywords, or explore businesses near specific locations. Each business listing includes contact info, hours, and location details.",
-      a2: "Absolutely! Use 'Submit Business' to add your business listing. Include your business name, description, category, contact information, hours, and location. Business listings are reviewed before publication.",
-      a3: "Each business listing includes contact information. Registered users can also send direct messages to businesses through the platform's messaging system.",
-      a4: "Yes! Registered users can leave comments and star ratings on business listings to help others make informed decisions.",
-      a5: "If your business is already listed, you can claim ownership by contacting the admin. Once verified as the owner, you'll have access to respond to messages, update listings, and manage your business profile.",
-      a6: "Sponsored businesses receive enhanced visibility in search results and on the map. Contact the platform administrators to learn about sponsorship opportunities."
+      a1: "Browse the Businesses section using list or map view. Blue 'B' markers show businesses on the Mapbox map. Filter by category, neighborhood, or search by name/keywords. Each listing includes description, contact info, and location.",
+      a2: "Yes! Use 'Submit Business' from the Submit menu. Include business name, description, category, address, contact information, and website. All submissions are reviewed by admins before publication.",
+      a3: "Each business listing shows contact information. Registered users can also send direct messages to business owners through our built-in messaging system.",
+      a4: "Yes! Registered users can leave comments and star ratings (1-5 stars) on business listings to help others make informed decisions.",
+      a5: "If your business is already listed, contact the admin to claim ownership. Once verified, you'll have access to respond to messages and manage your business through the Business Dashboard.",
+      a6: "Sponsored businesses receive enhanced visibility with a 'Sponsored' badge. Contact the platform administrators through the Contact Admin option to learn about sponsorship."
     },
     localServices: {
-      a1: "Local services include professionals and service providers like plumbers, electricians, tutors, cleaners, repair services, consultants, and other skilled services available in your area.",
-      a2: "Browse the Local Services section, filter by service category, search by keywords, or use the map to find services near you. Each listing includes provider details and contact information.",
-      a3: "Yes! Service providers can submit their services using 'Submit Local Service'. Include your service description, categories, contact info, coverage area, and any relevant certifications or specializations.",
-      a4: "Local services typically refer to individual professionals or smaller service providers (like freelancers, contractors, or consultants), while businesses are established commercial entities with a physical location."
+      a1: "Local services include professionals and service providers like plumbers, electricians, tutors, cleaners, repair services, consultants, healthcare providers, and other skilled services available in our neighborhoods.",
+      a2: "Browse the Local Services section, filter by service category, or use the Mapbox map to find services nearby (orange 'L' markers). Each listing includes provider details, description, and contact information.",
+      a3: "Yes! Service providers can submit their services using 'Submit Local Service'. Include your service description, category, contact info, address, and any relevant details.",
+      a4: "Local services typically refer to individual professionals or smaller service providers (freelancers, contractors, consultants), while businesses are established commercial entities with a storefront or office."
     },
     news: {
-      a1: "We feature local community news, announcements, updates about local businesses and events, community initiatives, and other relevant local information that affects residents.",
-      a2: "Yes! Community members can submit news articles using 'Submit News'. Include a compelling headline, detailed content, relevant images, and proper categorization. All submissions are reviewed before publication.",
-      a3: "Visit the News page regularly, bookmark interesting articles, enable weekly digest emails, or follow specific categories. You can also engage with articles by leaving comments and sharing them with others.",
-      a4: "Yes! When submitting news, you can upload images and other media files to accompany your article. This helps make your content more engaging and informative."
+      a1: "HubVillage features local community news, announcements, updates about local initiatives, community events coverage, and information relevant to Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain residents.",
+      a2: "Yes! Community members can submit news articles using 'Submit News'. Include a headline, content, source, and location. You can also attach images and media files. All submissions are reviewed before publication.",
+      a3: "Visit the News page regularly, bookmark interesting articles, enable weekly digest emails, or use saved searches with notifications. Purple 'N' markers show news locations on the map.",
+      a4: "Yes! When submitting news, you can upload images and media files to accompany your article through the media upload feature."
     },
     map: {
-      a1: "The interactive map shows all events, businesses, and services with color-coded markers (E for Events in red, B for Businesses in blue, L for Local Services in orange, N for News in purple). Click markers to see details, use clustering to explore dense areas, and resize the map panel for better viewing.",
-      a2: "Yes! Click on any map marker and select 'Get Directions' to see turn-by-turn directions with distance and time estimates. You can also open directions in external map apps like Google Maps or Apple Maps for navigation.",
-      a3: "Red markers with 'E' are Events, Blue markers with 'B' are Businesses, Orange markers with 'L' are Local Services, and Purple markers with 'N' are News locations. Clustered areas show numbers indicating how many items are in that area. Click clusters to zoom in.",
-      a4: "Yes! The map includes a search box that lets you find specific addresses or locations. You can also drag the search box to reposition it on the map for better visibility. The map legend helps you identify different marker types."
+      a1: "The interactive Mapbox map shows all content with color-coded markers: Red 'E' for Events, Blue 'B' for Businesses, Orange 'L' for Local Services, and Purple 'N' for News. Click markers for details, use clustering for dense areas, and resize the map panel. The map is centered on Southern Boston covering all five neighborhoods.",
+      a2: "Yes! Click any map marker and select 'Get Directions' for turn-by-turn directions with distance and time estimates. You can also open directions in Google Maps, Apple Maps, or other navigation apps.",
+      a3: "Red 'E' = Events, Blue 'B' = Businesses, Orange 'L' = Local Services, Purple 'N' = News. Numbered circles indicate clusters - click to zoom in. The map legend helps identify all marker types.",
+      a4: "Yes! Use the map search box to find specific addresses or locations. You can drag and reposition the map for better visibility and use the map legend for reference."
     },
     nearMe: {
-      a1: "The 'Near Me' feature uses your device's location to show events, businesses, and services within a specified distance from you. This helps you discover what's happening close by.",
-      a2: "Click the 'Near Me' button in the filter bar. Your browser will ask for permission to access your location. Once granted, you can select a distance radius (1km, 5km, 10km, 25km, or 50km) to filter results.",
-      a3: "No, your location is only used temporarily to filter nearby content. It's not stored on our servers. You can clear your location anytime by clicking the X button next to the distance selector.",
-      a4: "The Near Me feature requires a modern browser with geolocation support. If you don't see it, make sure your browser supports geolocation and that you haven't blocked location access for the site.",
-      a5: "Location accuracy depends on your device and connection. GPS provides the most accurate results, while Wi-Fi-based location may be less precise. Try enabling high-accuracy mode in your device settings."
+      a1: "The 'Near Me' feature uses your device's location to show events, businesses, and services within a specified distance from you, helping you discover what's happening close by in your neighborhood.",
+      a2: "Click the 'Near Me' button in the filter bar. Your browser will request location permission. Once granted, select a distance radius (1km, 5km, 10km, 25km, or 50km) to filter results.",
+      a3: "No, your location is only used temporarily to filter nearby content and is not stored on our servers. Clear your location anytime by clicking the X button next to the distance selector.",
+      a4: "Near Me requires a modern browser with geolocation support. Ensure you haven't blocked location access for HubVillage in your browser settings.",
+      a5: "Location accuracy depends on your device. GPS provides the most accurate results, while Wi-Fi-based location may be less precise. Try enabling high-accuracy mode in your device settings."
     },
     search: {
-      a1: "Use the search bar at the top of each section to search by keywords, names, or descriptions. You can search across all content types or filter by specific categories and criteria.",
-      a2: "Filters include type (events, businesses, services), categories, dates (for events), location/neighborhood/village, distance (Near Me), and more. Use the 'Clear All' button to reset filters. Filters work seamlessly across all view modes.",
-      a3: "Yes! Registered users can save their current search criteria using the 'Save Search' button. Give your search a name and optionally enable email or in-app notifications for new matches. Access saved searches from the Discovery sidebar.",
-      a4: "Switch to calendar view using the view toggle to see events organized by date. Click on any date to see all events scheduled for that day. This is perfect for planning your week or finding events on specific dates.",
-      a5: "When saving a search, you can enable notifications to be alerted when new content matches your criteria. Choose email notifications, in-app notifications, or both. Manage your saved searches and notification preferences from the Discovery sidebar."
+      a1: "Use the search bar to search by keywords, names, or descriptions. Search across all content types or filter by specific categories. Results update in real-time as you type.",
+      a2: "Filters include: Type (Events, Businesses, Services, News), Category, Date/Time (for events), Neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), Village, and Distance (Near Me). Use 'Clear All' to reset.",
+      a3: "Yes! Registered users can save searches using the 'Save Search' button. Name your search and optionally enable email or in-app notifications for new matches. Access saved searches from the Discovery sidebar.",
+      a4: "Switch to calendar view using the view toggle to see events organized by date. Click any date to see all events scheduled. Perfect for planning your week.",
+      a5: "When saving a search, enable notifications to be alerted when new content matches your criteria. Choose email notifications, in-app notifications, or both. Manage preferences from the Discovery sidebar."
     },
     user: {
-      a1: "Click 'Sign In' in the navigation and select 'Sign Up' to create an account using your email. You can also sign in if you already have an account. Account creation is quick and gives you access to all interactive features.",
-      a2: "With an account, you can submit content, leave comments and ratings, bookmark items, send messages to businesses, follow other users, save searches, receive notifications, customize your profile, and set email digest preferences.",
-      a3: "Visit 'My Submissions' in your account menu to see all content you've submitted, track approval status, and make updates to approved content.",
-      a4: "Yes! Registered users can bookmark events, businesses, services, and news articles. Click the bookmark icon on any item to save it. Access your bookmarks through the Discovery sidebar to easily return to interesting content.",
-      a5: "The Discovery sidebar shows trending content, your saved searches, bookmarked items, and suggested connections. You can resize or collapse this panel. It helps you discover new content and manage your personalized experience.",
-      a6: "Go to 'Edit Profile' from your account menu. You can update your display name, bio, profile picture, location, website, and interests. Your profile is visible to other users when they view your comments or follow you."
+      a1: "Click 'Sign In' in the navigation and select 'Sign Up' to create a free account using your email. Account creation is quick and unlocks all interactive features.",
+      a2: "With an account you can: submit content, leave comments and ratings, bookmark items, send messages to businesses, follow other users, save searches, receive notifications, customize your profile, and subscribe to the weekly digest.",
+      a3: "Visit 'My Submissions' from your account menu to see all content you've submitted, track approval status (pending, approved, rejected), and view admin notes.",
+      a4: "Yes! Click the bookmark icon on any event, business, service, or news article to save it. Access your bookmarks through the Discovery sidebar or the Bookmarks section.",
+      a5: "The Discovery sidebar shows trending content, your saved searches, bookmarked items, recently viewed items, and suggested people to follow. It helps you discover new content and manage your personalized experience.",
+      a6: "Go to 'Edit Profile' from your account menu. Update your display name, bio, profile picture, location, website, and interests. Your interests help personalize recommendations."
     },
     social: {
-      a1: "Yes! You can follow other community members to see their activity in your feed. Visit a user's profile and click 'Follow' to start following them.",
-      a2: "Your following count is displayed on your profile. You can view the activity of people you follow in the Discovery sidebar's activity feed.",
-      a3: "When you follow someone, you'll see their public activity (comments, bookmarks, submissions) in your Following Activity feed. They'll be notified that you followed them.",
+      a1: "Yes! Follow other community members to see their activity in your feed. Visit any user's profile and click 'Follow' to start following them.",
+      a2: "Your following count is displayed on your profile. View activity from people you follow in the Discovery sidebar's 'Following Activity' feed.",
+      a3: "When you follow someone, their public activity (comments, bookmarks, submissions) appears in your Following Activity feed. They receive a notification that you followed them.",
       a4: "The 'Discover People' section in the Discovery sidebar suggests users based on shared interests, active contributors, and trending profiles in your community.",
-      a5: "Your follower count is displayed on your profile. You can see notifications when new people follow you through the notification bell in the navigation."
+      a5: "Your follower count is displayed on your profile. You receive notifications through the notification bell when new people follow you."
     },
     notifications: {
-      a1: "You'll receive notifications for new followers, replies to your comments, updates on your submissions, messages from businesses, saved search matches, and important announcements.",
-      a2: "Click the bell icon in the navigation bar to see your in-app notifications. Unread notifications are indicated by a badge. You can mark notifications as read or clear them.",
-      a3: "Yes! You can enable email notifications for saved searches and opt-in to weekly digest emails. Manage your email preferences from the Email Digest Settings in your profile.",
-      a4: "You can manage notification preferences in your profile settings. For saved searches, edit each search to toggle email and in-app notifications. For weekly digests, go to Email Digest Settings."
+      a1: "You'll receive notifications for: new followers, replies to your comments, updates on your submissions (approved/rejected), messages from businesses, saved search matches, and important announcements from HubVillage.",
+      a2: "Click the bell icon in the navigation to see your in-app notifications. A badge shows unread notification count. Mark notifications as read or clear them from the panel.",
+      a3: "Yes! Enable email notifications for saved searches and subscribe to the weekly digest email. Manage email preferences from the Email Digest Settings in your profile.",
+      a4: "Manage notification preferences in your profile settings. For saved searches, edit each search to toggle email and in-app notifications. For the weekly digest, go to Email Digest Settings."
     },
     digest: {
-      a1: "The weekly digest is an email summary of trending content, new events, popular businesses, and community highlights. It's a great way to stay informed without visiting the site daily.",
-      a2: "Go to 'Edit Profile' and find the 'Email Digest Settings' section. Toggle on 'Enable Weekly Digest' and select your preferred day of the week to receive it.",
+      a1: "The weekly digest is an email summary of trending content, upcoming events, new businesses, and community highlights from HubVillage. Stay informed without visiting the site daily.",
+      a2: "Go to 'Edit Profile' and find the 'Email Digest Settings' section. Toggle on 'Enable Weekly Digest' and select your preferred day of the week.",
       a3: "You can choose any day of the week (Monday through Sunday) to receive your digest. Select your preferred day from the dropdown in Email Digest Settings.",
-      a4: "Go to Email Digest Settings in your profile and toggle off 'Enable Weekly Digest'. You can also click the unsubscribe link in any digest email.",
-      a5: "The digest includes trending content from the week, upcoming events, new businesses, popular news articles, and personalized recommendations based on your interests and activity."
+      a4: "Go to Email Digest Settings in your profile and toggle off 'Enable Weekly Digest'. You can also unsubscribe using the link in any digest email.",
+      a5: "The digest includes: trending content from the week, upcoming events in your neighborhoods, new businesses and services, popular news articles, and personalized recommendations based on your interests."
     },
     comments: {
-      a1: "On any event, business, service, or news article detail page, scroll down to the comments section. Registered users can leave comments and respond to others' comments.",
-      a2: "Yes! Leave star ratings (1-5 stars) along with your comments on business and service listings. Ratings help other community members make informed decisions.",
-      a3: "Comments are monitored for inappropriate content. Keep comments respectful, relevant, and helpful to the community. Inappropriate comments may be removed.",
-      a4: "Yes! You can reply to any comment to create threaded discussions. This is great for asking follow-up questions or providing additional information.",
-      a5: "Yes! When leaving a comment, you can attach images to share photos of your experience. This is especially useful for reviews of businesses and events."
+      a1: "On any event, business, service, or news detail page, scroll to the comments section. Registered users can leave comments by typing in the comment box and submitting.",
+      a2: "Yes! Leave star ratings (1-5 stars) with your comments on business and service listings. Average ratings are displayed on listings to help others.",
+      a3: "Comments are monitored for inappropriate content. Keep comments respectful, relevant, and helpful. Inappropriate comments may be removed by administrators.",
+      a4: "Yes! You can reply to any comment to create threaded discussions. Great for follow-up questions or providing additional information to the community.",
+      a5: "Yes! When leaving a comment, you can attach images to share photos of your experience. Especially useful for reviews of businesses and events."
     },
     messaging: {
-      a1: "On business detail pages, registered users can send direct messages to business owners. Use this feature for inquiries, questions, or to discuss services.",
-      a2: "Access 'My Messages' from your account menu to view all your conversations with businesses and manage your message history.",
-      a3: "Yes! The messaging system works both ways. Businesses can respond to your messages, and you'll be notified of new messages in your account.",
-      a4: "Yes! You can attach images and documents to your messages when communicating with businesses. This is useful for sharing photos, quotes, or relevant documents."
+      a1: "On business detail pages, registered users can send direct messages to business owners using the 'Contact' or 'Message' button. Use this for inquiries, questions, or service requests.",
+      a2: "Access 'My Messages' from your account menu to view all conversations with businesses, check message status, and continue ongoing conversations.",
+      a3: "Yes! Business owners can respond to your messages. You'll see their replies in My Messages and may receive notifications depending on your settings.",
+      a4: "Yes! Attach images and documents when messaging businesses. Useful for sharing photos of repair needs, requesting quotes, or providing relevant documentation."
     },
     languages: {
-      a1: "Yes! The platform supports multiple languages including English, Spanish, French, Portuguese, and Vietnamese. Use the language selector in the navigation to switch languages.",
-      a2: "Content submitted by users may be automatically translated to help make information accessible to more community members, depending on the language settings.",
-      a3: "We strive to make the platform accessible to all users. The site includes keyboard navigation support, screen reader compatibility, and follows accessibility best practices.",
-      a4: "Click the language selector in the navigation bar (shown as a flag or language code) and choose your preferred language. Your selection is saved for future visits."
+      a1: "Yes! HubVillage supports English, Spanish (Español), French (Français), Portuguese (Português), and Vietnamese (Tiếng Việt). Use the language selector in the navigation to switch.",
+      a2: "User-submitted content may be automatically translated to help make information accessible to more community members across all supported languages.",
+      a3: "HubVillage follows accessibility best practices including keyboard navigation support, screen reader compatibility, and responsive design for all devices.",
+      a4: "Click the language selector in the navigation bar and choose your preferred language. Your selection is saved and will persist across sessions."
     },
     submission: {
-      a1: "All submissions go through a review process to ensure content quality, accuracy, and community appropriateness. This helps maintain a high-quality, trustworthy platform for all users.",
-      a2: "Most submissions are reviewed within 24-48 hours. You can check the status of your submissions in 'My Submissions' and will be notified when they're approved or if changes are needed.",
-      a3: "If a submission needs changes, you'll receive feedback on what needs to be updated. You can then edit and resubmit your content for another review.",
-      a4: "Yes! Once your content is approved and published, you can request edits through your 'My Submissions' page. Significant changes may require re-approval.",
-      a5: "Ensure your content is accurate, relevant to the community, and includes complete information. Avoid duplicate submissions, use appropriate categories, and include clear contact details where applicable."
+      a1: "All submissions are reviewed by HubVillage administrators to ensure content quality, accuracy, and community appropriateness. This helps maintain a trustworthy platform for all community members.",
+      a2: "Most submissions are reviewed within 24-48 hours. Check the status in 'My Submissions' - you'll see Pending, Approved, or Rejected status with any admin notes.",
+      a3: "If rejected, you'll see admin notes explaining what needs to be changed. You can edit and resubmit your content for another review.",
+      a4: "Once approved and published, you can request edits through 'My Submissions'. Significant changes may require re-approval by administrators.",
+      a5: "Ensure content is accurate and relevant to our neighborhoods (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain). Use appropriate categories, include complete information, and provide clear contact details where applicable."
     },
     trending: {
-      a1: "Trending content is calculated based on views, bookmarks, comments, and recent activity. Content that receives high engagement in a short period appears in the trending section.",
-      a2: "The Discovery sidebar shows trending events, businesses, news, and other popular content. You can also see trending indicators on individual items throughout the site.",
+      a1: "Trending content is calculated based on views, bookmarks, comments, and recent engagement. Content with high activity in a short period appears in the trending section of the Discovery sidebar.",
+      a2: "The Discovery sidebar shows trending events, businesses, news, and services. Trending indicators also appear on individual items throughout the site.",
       a3: "The Recently Viewed section in the Discovery sidebar shows items you've recently looked at, making it easy to return to content you were interested in.",
-      a4: "Recommendations are based on your interests (set in your profile), your viewing history, bookmarks, and activity patterns. The more you use the platform, the better the recommendations become."
+      a4: "Recommendations are based on your interests (set in your profile), viewing history, bookmarks, and activity patterns. The more you use HubVillage, the better your recommendations become."
     },
     account: {
-      a1: "Click 'Sign In', then 'Forgot Password'. Enter your email address and you'll receive a password reset link. Follow the instructions in the email to create a new password.",
-      a2: "Yes, you can request account deletion by contacting the platform administrators. Note that this will remove all your submissions, comments, and activity history.",
+      a1: "Click 'Sign In', then 'Forgot Password'. Enter your email address to receive a password reset link. Follow the email instructions to create a new password.",
+      a2: "Yes, you can request account deletion by contacting administrators through the 'Contact Admin' option. Note that this removes all your submissions, comments, and activity history.",
       a3: "Your profile is visible to other registered users. They can see your display name, bio, interests, and public activity like comments. Your email address is kept private.",
-      a4: "We use industry-standard security practices to protect your data. Your personal information is encrypted and stored securely. We never share your information with third parties without your consent.",
-      a5: "Yes! Use the 'Contact Admin' option in your account menu to send messages to the platform administrators. This is useful for reporting issues, requesting features, or getting help with your account."
+      a4: "HubVillage uses industry-standard security practices. Your personal information is encrypted and stored securely. We never share your information with third parties without consent.",
+      a5: "Yes! Use 'Contact Admin' from your account menu to message HubVillage administrators. Report issues, request features, ask questions, or get help with your account."
     }
   }
 };
