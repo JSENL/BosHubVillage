@@ -5,6 +5,7 @@ import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
+import SponsoredBadge from '@/components/common/SponsoredBadge';
 
 interface NewsCardProps {
   news: News;
@@ -22,7 +23,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
 
   return (
     <Link to={`/news/${news.id}`}>
-      <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer h-full overflow-hidden group">
+      <Card className={`hover:shadow-lg transition-all duration-300 cursor-pointer h-full overflow-hidden group ${news.is_sponsored ? 'ring-2 ring-amber-400/50' : ''}`}>
         {/* News Hero with gradient */}
         <CategoryHero 
           category="news" 
@@ -32,6 +33,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
         
         <CardHeader className="pb-1 pt-3 px-3">
           <div className="flex items-start gap-2">
+            {news.is_sponsored && <SponsoredBadge />}
             <Badge variant="secondary" className="text-xs flex-shrink-0">
               <CategoryIcon category="news" type="news" size="sm" className="mr-1" />
               News

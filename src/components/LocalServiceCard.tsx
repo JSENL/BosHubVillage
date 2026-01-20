@@ -6,6 +6,7 @@ import { LocalResource } from '@/types/localServices';
 import { useNavigate } from 'react-router-dom';
 import { TranslatedText } from '@/components/common/TranslatedText';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
+import SponsoredBadge from '@/components/common/SponsoredBadge';
 
 interface LocalServiceCardProps {
   localService: LocalResource;
@@ -33,7 +34,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
 
   return (
     <Card 
-      className="h-full hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden group" 
+      className={`h-full hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden group ${localService.is_sponsored ? 'ring-2 ring-amber-400/50' : ''}`}
       onClick={handleClick}
     >
       {/* Category Hero */}
@@ -44,6 +45,11 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
       />
       
       <CardHeader className="pb-1 pt-3 px-3">
+        {localService.is_sponsored && (
+          <div className="mb-2">
+            <SponsoredBadge />
+          </div>
+        )}
         <div className="flex items-start justify-between">
           <CardTitle className="text-base font-semibold text-foreground line-clamp-2 break-words flex-1 min-w-0 mr-2 group-hover:text-primary transition-colors">
             <TranslatedText text={localService.name} />
