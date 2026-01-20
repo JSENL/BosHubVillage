@@ -13,6 +13,7 @@ export interface LocalResource {
   permanently_closed?: boolean;
   created_at: string;
   updated_at: string;
+  is_sponsored?: boolean;
 }
 
 export interface LocalResourceSubmission {

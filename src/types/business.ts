@@ -13,6 +13,7 @@ export interface Business {
   created_at: string;
   updated_at: string;
   created_by?: string;
+  is_sponsored?: boolean;
 }
 
 export interface BusinessComment {

@@ -6,6 +6,7 @@ import { Business } from '@/types/business';
 import { Link } from 'react-router-dom';
 import { TranslatedText } from '@/components/common/TranslatedText';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
+import SponsoredBadge from '@/components/common/SponsoredBadge';
 
 interface BusinessCardProps {
   business: Business;
@@ -20,7 +21,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
 
   return (
     <Link to={`/business/${business.id}`}>
-      <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer h-full overflow-hidden group">
+      <Card className={`hover:shadow-lg transition-all duration-300 cursor-pointer h-full overflow-hidden group ${business.is_sponsored ? 'ring-2 ring-amber-400/50' : ''}`}>
         {/* Category Hero */}
         <CategoryHero 
           category={business.business_type} 
@@ -29,6 +30,11 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
         />
         
         <CardHeader className="pb-1 pt-3 px-3">
+          {business.is_sponsored && (
+            <div className="mb-2">
+              <SponsoredBadge />
+            </div>
+          )}
           <div className="flex justify-between items-start">
             <div className="flex-1 min-w-0">
               <CardTitle className="text-base font-semibold line-clamp-2 break-words group-hover:text-primary transition-colors">

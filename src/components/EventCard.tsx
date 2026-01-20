@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
 import { TranslatedText } from '@/components/common/TranslatedText';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
+import SponsoredBadge from '@/components/common/SponsoredBadge';
 
 interface Event {
   id: string;
@@ -18,6 +19,7 @@ interface Event {
   location: string;
   price: number;
   max_attendees?: number;
+  is_sponsored?: boolean;
 }
 
 interface EventCardProps {
@@ -63,6 +65,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const cardClassName = `
     bg-card border-border shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden
     ${isHighlighted ? 'ring-2 ring-destructive ring-opacity-75' : ''}
+    ${event.is_sponsored ? 'ring-2 ring-amber-400/50' : ''}
   `;
 
   // Generate random rating for Yelp-like appearance
@@ -91,6 +94,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
             />
             
             <div className="flex-1 p-6">
+              {event.is_sponsored && (
+                <div className="mb-3">
+                  <SponsoredBadge size="md" />
+                </div>
+              )}
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1 min-w-0 mr-4">
                   <h3 className="text-xl font-bold text-foreground hover:text-primary mb-1 line-clamp-2 break-words">
@@ -157,6 +165,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
       <CategoryHero category={event.category} type="event" />
       
       <CardHeader className="pb-2 pt-3">
+        {event.is_sponsored && (
+          <div className="mb-2">
+            <SponsoredBadge />
+          </div>
+        )}
         <div className="flex items-start justify-between mb-1">
           <Badge variant="secondary" className="text-xs">
             <CategoryIcon category={event.category} type="event" size="sm" className="mr-1" />
