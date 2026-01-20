@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/HeroSection";
 import { Navigation } from "@/components/Navigation";
 import { FilterSection } from "@/components/home/FilterSection";
 import { ContentSection } from "@/components/home/ContentSection";
+import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { useHomePageFilters } from "@/hooks/useHomePageFilters";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { geocodeEvents } from "@/utils/geocodeEvents";
@@ -15,6 +16,7 @@ import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
 import { useLocalServices } from "@/hooks/useLocalServices";
 import { useLocalServiceSubmissions } from "@/hooks/useLocalServiceSubmissions";
+import { sortBySponsored } from "@/utils/sponsoredUtils";
 
 const RefactoredIndex = () => {
   const { filters, actions } = useHomePageFilters();
@@ -105,6 +107,7 @@ const RefactoredIndex = () => {
       price: event.price,
       neighborhoods: event.neighborhoods,
       villages: event.villages,
+      is_sponsored: event.is_sponsored,
       originalData: event
     })),
     // News
@@ -119,12 +122,13 @@ const RefactoredIndex = () => {
       category: newsItem.category,
       neighborhoods: newsItem.neighborhoods,
       villages: newsItem.villages,
+      is_sponsored: newsItem.is_sponsored,
       originalData: newsItem
     })),
     // Businesses
     ...(data.businesses || []).map((business: any) => ({
       id: business.id,
-      title: business.name,
+      title: business.title || business.name,
       description: business.description,
       latitude: business.latitude,
       longitude: business.longitude,
@@ -134,6 +138,7 @@ const RefactoredIndex = () => {
       business_type: business.business_type,
       neighborhoods: business.neighborhoods,
       villages: business.villages,
+      is_sponsored: business.is_sponsored,
       originalData: business
     })),
     // Local Services
@@ -148,6 +153,7 @@ const RefactoredIndex = () => {
       category: service.category,
       neighborhoods: service.neighborhoods,
       villages: service.villages,
+      is_sponsored: service.is_sponsored,
       originalData: service
     }))
   ];
@@ -196,6 +202,9 @@ const RefactoredIndex = () => {
     return matchesType && matchesSearch && matchesCategory && matchesNeighborhood && matchesVillage;
   });
 
+  // Sort filtered items so sponsored items appear first
+  const sortedFilteredItems = sortBySponsored(filteredItems);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
@@ -205,10 +214,13 @@ const RefactoredIndex = () => {
         <div className="space-y-4 md:space-y-6">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h2>
           
+          {/* Featured Section - shows sponsored items */}
+          <FeaturedSection items={allItems} />
+          
           <FilterSection
             filters={filters}
             allItems={allItems}
-            filteredItemsCount={filteredItems.length}
+            filteredItemsCount={sortedFilteredItems.length}
             onSearchChange={actions.setSearchTerm}
             onTypeChange={actions.setSelectedType}
             onCategoryChange={actions.setSelectedCategory}
@@ -222,7 +234,7 @@ const RefactoredIndex = () => {
           <ContentSection
             filters={filters}
             allItems={allItems}
-            filteredItems={filteredItems}
+            filteredItems={sortedFilteredItems}
             isLoading={loading.isLoading}
           />
         </div>
