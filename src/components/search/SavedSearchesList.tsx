@@ -5,6 +5,7 @@ import { Trash2, Bell, BellOff, Search } from 'lucide-react';
 import { useSavedSearches } from '@/hooks/useSavedSearches';
 import { useAuth } from '@/hooks/useAuth';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslation } from 'react-i18next';
 
 interface SavedSearchesListProps {
   onApplySearch?: (criteria: {
@@ -17,6 +18,7 @@ interface SavedSearchesListProps {
 }
 
 export const SavedSearchesList = ({ onApplySearch }: SavedSearchesListProps) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { savedSearches, isLoading, deleteSearch, updateSearch, isDeleting } = useSavedSearches();
 
@@ -24,11 +26,11 @@ export const SavedSearchesList = ({ onApplySearch }: SavedSearchesListProps) => 
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Saved Searches</CardTitle>
+          <CardTitle className="text-lg">{t('savedSearches.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Sign in to save searches and get notified of new matches.
+            {t('savedSearches.signInPrompt')}
           </p>
         </CardContent>
       </Card>
@@ -39,7 +41,7 @@ export const SavedSearchesList = ({ onApplySearch }: SavedSearchesListProps) => 
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Saved Searches</CardTitle>
+          <CardTitle className="text-lg">{t('savedSearches.title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <Skeleton className="h-16 w-full" />
@@ -53,11 +55,11 @@ export const SavedSearchesList = ({ onApplySearch }: SavedSearchesListProps) => 
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Saved Searches</CardTitle>
+          <CardTitle className="text-lg">{t('savedSearches.title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            No saved searches yet. Use the filters and click "Save Search" to get notified of new matches.
+            {t('savedSearches.noSavedSearches')}
           </p>
         </CardContent>
       </Card>
@@ -67,7 +69,7 @@ export const SavedSearchesList = ({ onApplySearch }: SavedSearchesListProps) => 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Saved Searches</CardTitle>
+        <CardTitle className="text-lg">{t('savedSearches.title')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {savedSearches.map((search) => (

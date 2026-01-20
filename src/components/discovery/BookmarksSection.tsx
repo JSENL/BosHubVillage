@@ -5,8 +5,10 @@ import { Bookmark, Calendar, Building2, Newspaper, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from 'react-i18next';
 
 export const BookmarksSection = () => {
+  const { t } = useTranslation();
   const { bookmarks, isLoading } = useBookmarks();
 
   // Fetch details for bookmarked items
@@ -84,7 +86,7 @@ export const BookmarksSection = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bookmark className="h-5 w-5" />
-            Your Bookmarks
+            {t('bookmarks.yourBookmarks')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -107,12 +109,12 @@ export const BookmarksSection = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bookmark className="h-5 w-5" />
-            Your Bookmarks
+            {t('bookmarks.yourBookmarks')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground text-center py-8">
-            No bookmarks yet. Start exploring and save items you're interested in!
+            {t('bookmarks.noBookmarks')}
           </p>
         </CardContent>
       </Card>
@@ -169,7 +171,7 @@ export const BookmarksSection = () => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
           <Bookmark className="h-4 w-4" />
-          Your Bookmarks ({bookmarkedItems.length})
+          {t('bookmarks.yourBookmarks')} ({bookmarkedItems.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -198,7 +200,7 @@ export const BookmarksSection = () => {
           {bookmarkedItems.length > 6 && (
             <div className="text-center pt-2 border-t">
               <p className="text-xs text-muted-foreground">
-                +{bookmarkedItems.length - 6} more bookmarks
+                {t('bookmarks.moreBookmarks', { count: bookmarkedItems.length - 6 })}
               </p>
             </div>
           )}

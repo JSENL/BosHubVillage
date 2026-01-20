@@ -1,5 +1,6 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useTranslation } from 'react-i18next';
 
 interface LocationFilterProps {
   selectedNeighborhood: string;
@@ -18,12 +19,14 @@ export const LocationFilter = ({
   availableNeighborhoods,
   availableVillages
 }: LocationFilterProps) => {
+  const { t } = useTranslation();
+  
   // Deduplicate and create unique options
   const uniqueNeighborhoods = [...new Set(availableNeighborhoods)].filter(Boolean);
   const uniqueVillages = [...new Set(availableVillages)].filter(Boolean);
 
   const neighborhoodOptions = [
-    { value: 'all', label: 'All Neighborhoods', uniqueKey: 'neighborhood-all' },
+    { value: 'all', label: t('location.allNeighborhoods'), uniqueKey: 'neighborhood-all' },
     ...uniqueNeighborhoods.map((neighborhood, index) => ({
       value: neighborhood.toLowerCase().replace(/\s+/g, '-'),
       label: neighborhood,
@@ -32,7 +35,7 @@ export const LocationFilter = ({
   ];
 
   const villageOptions = [
-    { value: 'all', label: 'All Villages', uniqueKey: 'village-all' },
+    { value: 'all', label: t('location.allVillages'), uniqueKey: 'village-all' },
     ...uniqueVillages.map((village, index) => ({
       value: village.toLowerCase().replace(/\s+/g, '-'),
       label: village,
@@ -44,7 +47,7 @@ export const LocationFilter = ({
     <>
       <Select value={selectedNeighborhood} onValueChange={onNeighborhoodChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Neighborhood" />
+          <SelectValue placeholder={t('location.neighborhood')} />
         </SelectTrigger>
         <SelectContent>
           {neighborhoodOptions.map((neighborhood) => (
@@ -60,7 +63,7 @@ export const LocationFilter = ({
 
       <Select value={selectedVillage} onValueChange={onVillageChange}>
         <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
-          <SelectValue placeholder="Village" />
+          <SelectValue placeholder={t('location.village')} />
         </SelectTrigger>
         <SelectContent>
           {villageOptions.map((village) => (
