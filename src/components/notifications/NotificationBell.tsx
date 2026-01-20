@@ -12,11 +12,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 
 export const NotificationBell = () => {
   const { user } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead, isLoading } = useNotifications();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   if (!user) return null;
 
@@ -37,7 +39,7 @@ export const NotificationBell = () => {
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between p-3 border-b">
-          <h4 className="font-semibold">Notifications</h4>
+          <h4 className="font-semibold">{t('notifications.title')}</h4>
           {unreadCount > 0 && (
             <Button
               variant="ghost"
@@ -46,18 +48,18 @@ export const NotificationBell = () => {
               className="text-xs"
             >
               <CheckCheck className="h-4 w-4 mr-1" />
-              Mark all read
+              {t('notifications.markAllRead')}
             </Button>
           )}
         </div>
         <ScrollArea className="h-[300px]">
           {isLoading ? (
             <div className="p-4 text-center text-sm text-muted-foreground">
-              Loading...
+              {t('common.loading')}
             </div>
           ) : notifications.length === 0 ? (
             <div className="p-4 text-center text-sm text-muted-foreground">
-              No notifications yet
+              {t('notifications.noNotifications')}
             </div>
           ) : (
             <div className="divide-y">
@@ -97,7 +99,7 @@ export const NotificationBell = () => {
                       onClick={() => setOpen(false)}
                       className="text-xs text-primary hover:underline mt-1 inline-block"
                     >
-                      View details →
+                      {t('notifications.viewDetails')}
                     </Link>
                   )}
                 </div>

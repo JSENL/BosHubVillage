@@ -16,6 +16,7 @@ import { useGeocoding } from '@/hooks/useGeocoding';
 import { useLocalServiceCategories } from '@/hooks/useCategories';
 import { Building2, Check, Plus, AlertCircle, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useTranslation } from 'react-i18next';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -43,6 +44,7 @@ const SubmitLocalService = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { geocode, isReady } = useGeocoding();
   const { data: localServiceCategories = [] } = useLocalServiceCategories();
+  const { t } = useTranslation();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -123,9 +125,9 @@ const SubmitLocalService = () => {
       <Navigation />
       <div className="container mx-auto py-10">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-4">Submit a Local Resource</h1>
+        <h1 className="text-2xl font-bold mb-4">{t('pages.submitLocalResource')}</h1>
         <p className="text-gray-600 mb-6">
-          Share local resources and services with the community. Your submission will be reviewed by our team.
+          {t('pages.submitLocalResourceDesc')}
         </p>
       </div>
 
@@ -136,9 +138,9 @@ const SubmitLocalService = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t('pages.resourceName')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Resource Name" {...field} />
+                  <Input placeholder={t('pages.resourceNamePlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -149,11 +151,11 @@ const SubmitLocalService = () => {
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
+                <FormLabel>{t('common.category')}</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={t('pages.selectCategory')} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -173,9 +175,9 @@ const SubmitLocalService = () => {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address</FormLabel>
+                <FormLabel>{t('common.address')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="123 Main St" {...field} />
+                  <Input placeholder={t('pages.addressPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,20 +189,20 @@ const SubmitLocalService = () => {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center gap-2">
-                  <FormLabel>Neighborhood</FormLabel>
+                  <FormLabel>{t('pages.neighborhood')}</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                         <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Neighborhoods in the Boston area are the big areas such as Roxbury, Dorchester, South End, Hyde Park or Mattapan</p>
+                        <p>{t('pages.neighborhoodTooltip')}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
                 <FormControl>
-                  <Input placeholder="Neighborhood" {...field} />
+                  <Input placeholder={t('filters.neighborhood')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -212,20 +214,20 @@ const SubmitLocalService = () => {
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center gap-2">
-                  <FormLabel>Village (Optional)</FormLabel>
+                  <FormLabel>{t('pages.villageOptional')}</FormLabel>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger type="button" onClick={(e) => e.preventDefault()}>
                         <Info className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>These are the subneighborhoods of Boston: Fields Corner, Ashmont, Fort Hill, or Grove Hall</p>
+                        <p>{t('pages.villagesTooltip')}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
                 <FormControl>
-                  <Input placeholder="Village" {...field} />
+                  <Input placeholder={t('pages.villagePlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -236,12 +238,12 @@ const SubmitLocalService = () => {
             name="website_link"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Website Link (Optional)</FormLabel>
+                <FormLabel>{t('pages.websiteLinkOptional')}</FormLabel>
                 <FormControl>
                   <Input placeholder="https://example.com" type="url" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Add a website link for more information about this resource.
+                  {t('pages.websiteLinkHelp')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -252,23 +254,23 @@ const SubmitLocalService = () => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description (Optional)</FormLabel>
+                <FormLabel>{t('pages.descriptionOptional')}</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Tell us more about this resource."
+                    placeholder={t('pages.descriptionPlaceholder')}
                     className="resize-none"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  Briefly describe the local resource or service.
+                  {t('pages.descriptionHelp')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <Button type="submit" disabled={isSubmitting} variant="orange">
-            {isSubmitting ? 'Submitting...' : 'Submit'}
+            {isSubmitting ? t('buttons.submitting') : t('buttons.submit')}
           </Button>
         </form>
       </Form>
@@ -276,15 +278,14 @@ const SubmitLocalService = () => {
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Local Resource Submitted Successfully!</AlertDialogTitle>
+            <AlertDialogTitle>{t('pages.localResourceSubmittedSuccess')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Your local resource has been submitted and will be reviewed by our team. 
-              Would you like to submit another local resource?
+              {t('pages.localResourceSubmittedDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleFinish}>Done</AlertDialogCancel>
-            <AlertDialogAction onClick={handleAddAnother}>Submit Another</AlertDialogAction>
+            <AlertDialogCancel onClick={handleFinish}>{t('pages.done')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleAddAnother}>{t('pages.submitAnother')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

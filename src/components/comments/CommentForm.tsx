@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { StarRating } from './StarRating';
 import { User } from '@supabase/supabase-js';
 import { Image, Video, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface CommentFormProps {
   user: User | null;
@@ -19,6 +20,7 @@ export const CommentForm = ({ user, onSubmitComment }: CommentFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +63,7 @@ export const CommentForm = ({ user, onSubmitComment }: CommentFormProps) => {
     return (
       <Card className="border-purple-100">
         <CardContent className="p-4 text-center">
-          <p className="text-gray-600">Please sign in to leave a comment</p>
+          <p className="text-gray-600">{t('comments.signInToComment')}</p>
         </CardContent>
       </Card>
     );
@@ -70,12 +72,12 @@ export const CommentForm = ({ user, onSubmitComment }: CommentFormProps) => {
   return (
     <form onSubmit={handleSubmitComment} className="space-y-3">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Your Rating</label>
+        <label className="text-sm font-medium">{t('comments.yourRating')}</label>
         <StarRating rating={selectedRating} interactive onRatingChange={setSelectedRating} />
       </div>
       
       <Textarea
-        placeholder="Share your thoughts about this event..."
+        placeholder={t('comments.sharePlaceholder')}
         value={newComment}
         onChange={(e) => setNewComment(e.target.value)}
         className="min-h-[80px]"
@@ -95,10 +97,10 @@ export const CommentForm = ({ user, onSubmitComment }: CommentFormProps) => {
           >
             <Image className="h-4 w-4" />
             <Video className="h-4 w-4" />
-            <span>Add Media</span>
+            <span>{t('comments.addMedia')}</span>
           </Button>
           <span className="text-xs text-gray-500">
-            Images & videos up to 10MB each (max 3 files)
+            {t('comments.mediaLimit')}
           </span>
         </div>
 
@@ -144,7 +146,7 @@ export const CommentForm = ({ user, onSubmitComment }: CommentFormProps) => {
         disabled={!newComment.trim() || isSubmitting}
         className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
       >
-        {isSubmitting ? 'Posting...' : 'Post Comment'}
+        {isSubmitting ? t('buttons.posting') : t('buttons.postComment')}
       </Button>
     </form>
   );

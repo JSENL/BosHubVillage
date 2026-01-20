@@ -13,11 +13,13 @@ import {
   Clock, 
   Shield
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const SubmitEvent = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const { submissions, loading } = useEventSubmissions();
   const [activeTab, setActiveTab] = useState('submit');
+  const { t } = useTranslation();
   
   // Filter user's own submissions
   const userSubmissions = submissions.filter(s => s.submitted_by === user?.id);
@@ -27,7 +29,7 @@ const SubmitEvent = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <Clock className="h-8 w-8 animate-spin mx-auto mb-4 text-yelp-red" />
-          <p>Loading...</p>
+          <p>{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -44,13 +46,13 @@ const SubmitEvent = () => {
                 <div className="text-yelp-red mb-4">
                   <Send className="h-16 w-16 mx-auto" />
                 </div>
-                <h3 className="text-xl font-semibold text-yelp-gray mb-2">Authentication Required</h3>
-                <p className="text-gray-600 mb-4">You need to sign in to submit events for approval.</p>
+                <h3 className="text-xl font-semibold text-yelp-gray mb-2">{t('pages.authenticationRequired')}</h3>
+                <p className="text-gray-600 mb-4">{t('pages.authRequiredEvent')}</p>
                 <Button 
                   onClick={() => window.location.href = '/auth'}
                   className="yelp-gradient hover:opacity-90 text-white"
                 >
-                  Sign In
+                  {t('navigation.signIn')}
                 </Button>
               </CardContent>
             </Card>
@@ -61,9 +63,9 @@ const SubmitEvent = () => {
   }
 
   const tabs = [
-    { id: 'submit', label: 'Submit Event', icon: Send },
-    { id: 'submissions', label: `My Submissions (${userSubmissions.length})`, icon: Clock },
-    ...(isAdmin ? [{ id: 'admin', label: 'Admin Panel', icon: Shield }] : [])
+    { id: 'submit', label: t('pages.submitEvent'), icon: Send },
+    { id: 'submissions', label: `${t('pages.mySubmissions')} (${userSubmissions.length})`, icon: Clock },
+    ...(isAdmin ? [{ id: 'admin', label: t('pages.adminPanel'), icon: Shield }] : [])
   ];
 
   return (
@@ -73,9 +75,9 @@ const SubmitEvent = () => {
       <div className="max-w-6xl mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-yelp-gray mb-2">
-            Event Management
+            {t('pages.eventManagement')}
           </h1>
-          <p className="text-gray-600">Submit events for approval and manage submissions</p>
+          <p className="text-gray-600">{t('pages.eventManagementDesc')}</p>
         </div>
 
         {/* Custom Tab Navigation */}
@@ -110,20 +112,20 @@ const SubmitEvent = () => {
               <CardHeader>
                 <CardTitle className="flex items-center text-yelp-gray">
                   <Clock className="h-5 w-5 mr-2" />
-                  My Event Submissions
+                  {t('pages.myEventSubmissions')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
                   <div className="flex items-center justify-center p-8">
                     <Clock className="h-6 w-6 animate-spin mr-2" />
-                    Loading submissions...
+                    {t('pages.loadingSubmissions')}
                   </div>
                 ) : userSubmissions.length === 0 ? (
                   <div className="text-center p-8">
                     <Send className="h-16 w-16 mx-auto mb-4 text-yelp-light-gray" />
-                    <h3 className="text-lg font-semibold text-yelp-gray mb-2">No Submissions Yet</h3>
-                    <p className="text-gray-600">Submit your first event using the form above.</p>
+                    <h3 className="text-lg font-semibold text-yelp-gray mb-2">{t('pages.noSubmissionsYet')}</h3>
+                    <p className="text-gray-600">{t('pages.noSubmissionsDesc')}</p>
                   </div>
                 ) : (
                   <SubmissionsTable submissions={userSubmissions} />

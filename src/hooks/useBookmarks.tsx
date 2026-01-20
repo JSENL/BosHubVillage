@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { useToast } from '@/components/ui/use-toast';
+import { useTranslation } from 'react-i18next';
 
 export type BookmarkItemType = 'event' | 'business' | 'news' | 'local_service';
 
@@ -9,6 +10,7 @@ export const useBookmarks = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   // Get user's bookmarks
   const { data: bookmarks, isLoading } = useQuery({
@@ -79,14 +81,14 @@ export const useBookmarks = () => {
       queryClient.invalidateQueries({ queryKey: ['is-bookmarked', itemType, itemId] });
       
       toast({
-        title: "Bookmarked",
-        description: "Item added to your bookmarks.",
+        title: t('toasts.bookmarked'),
+        description: t('toasts.bookmarkAdded'),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to bookmark item. Please try again.",
+        title: t('toasts.error'),
+        description: t('toasts.bookmarkError'),
         variant: "destructive",
       });
     },
@@ -110,14 +112,14 @@ export const useBookmarks = () => {
       queryClient.invalidateQueries({ queryKey: ['is-bookmarked', itemType, itemId] });
       
       toast({
-        title: "Removed",
-        description: "Item removed from your bookmarks.",
+        title: t('toasts.bookmarkRemoved'),
+        description: t('toasts.bookmarkRemovedDesc'),
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to remove bookmark. Please try again.",
+        title: t('toasts.error'),
+        description: t('toasts.removeBookmarkError'),
         variant: "destructive",
       });
     },
