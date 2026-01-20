@@ -10,8 +10,10 @@ import { SocialShare } from '@/components/SocialShare';
 import { CalendarShare } from '@/components/CalendarShare';
 import { EventRegistrationForm } from '@/components/EventRegistrationForm';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
+import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/hooks/useAuth';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -19,8 +21,13 @@ const EventDetails = () => {
   const { events, loading } = useEvents();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const { t } = useTranslation();
+  const { user, isAdmin } = useAuth();
 
   const event = events.find(e => e.id === eventId);
+  
+  // Check if user is the event creator
+  const isEventCreator = user && event && event.created_by === user.id;
+  const canEditLinks = isEventCreator || isAdmin;
 
   if (loading) {
     return t('common.loading');
@@ -104,6 +111,15 @@ const EventDetails = () => {
                 </CardContent>
               </Card>
             </div>
+          </div>
+
+          {/* Related News Section */}
+          <div className="mt-8">
+            <LinkedNewsSection 
+              contentType="event" 
+              contentId={event.id}
+              canEdit={canEditLinks}
+            />
           </div>
 
           <div className="mt-8">

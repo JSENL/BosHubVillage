@@ -533,6 +533,41 @@ export type Database = {
           },
         ]
       }
+      content_news_links: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          created_by: string | null
+          id: string
+          news_id: string
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          news_id: string
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          news_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_news_links_news_id_fkey"
+            columns: ["news_id"]
+            isOneToOne: false
+            referencedRelation: "news"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       csv_board_data: {
         Row: {
           created_at: string
