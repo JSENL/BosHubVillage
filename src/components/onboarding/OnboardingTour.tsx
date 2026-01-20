@@ -1,4 +1,5 @@
 import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
 import {
   Dialog,
@@ -8,7 +9,9 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { Badge } from '@/components/ui/badge';
+
+import { MapPin, Calendar, Building, Wrench, Star } from 'lucide-react';
 
 type TourType = 'event' | 'business' | 'resource' | 'general' | null;
 
@@ -16,214 +19,222 @@ export interface OnboardingTourRef {
   openTour: () => void;
 }
 
-const generalSteps: Step[] = [
-  {
-    target: 'body',
-    content: "Welcome to HubVillage! This is your community hub for discovering local events, businesses, news, and services. Let me show you all the features available to you.",
-    placement: 'center',
-  },
-  {
-    target: '[data-tour="view-toggle"]',
-    content: "Switch between Map and List views to explore content. Map view shows everything with location markers, while List view displays items in a scrollable grid. The map view also has a resizable bottom panel for browsing items.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="search"]',
-    content: "Search across all content types - events, businesses, news, and local services. The search works in real-time as you type and searches through titles, descriptions, and locations.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="filters"]',
-    content: "Use powerful filters to narrow down results. Filter by content type (events, businesses, news, local services), categories, neighborhoods, villages, and date ranges. Use the 'Near Me' filter to find content within a specific distance from your location!",
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "NEAR ME & LOCATION: Enable the 'Near Me' filter to find events, businesses, and services close to you! Set your preferred distance (1-50 miles) and we'll show only what's nearby. Great for discovering local gems in your area.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "The Discovery Sidebar (right side on desktop, top on mobile) shows: Trending items with the most engagement, Your bookmarks for quick access, People to follow and connect with, Activity feed from users you follow, and your Saved Searches with notification options!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "SAVED SEARCHES: Save your favorite filter combinations! When you find filters you use often, save them as a search. Enable notifications to get alerts when new content matches your saved search - either in-app or via email!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "SUBMIT CONTENT: Click the orange 'Submit' button in the navigation to add Events (with calendar integration and maps), Businesses (with contact info, hours, and messaging), News articles, or Local Services (plumbers, electricians, tutors, etc.). All submissions are reviewed before publishing.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "SOCIAL FEATURES: Bookmark items you want to save, Leave comments and star ratings on businesses and events, Send direct messages to business owners, Follow other users to see their activity, View trending content based on community engagement. Build your community network!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "YOUR ACCOUNT: Access your profile to see your submissions and activity, Visit 'My Messages' to manage conversations with businesses and admins, Track 'My Submissions' to see approval status, Edit your profile to set up Weekly Email Digests with community highlights!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "WEEKLY EMAIL DIGEST: Never miss community updates! Go to Edit Profile to enable weekly email digests. Choose your preferred day and we'll send you a summary of new events, trending content, and activity from people you follow.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "EXPLORE NEWS: Click 'News' in the navigation to view community news and announcements in a beautiful magazine-style layout. You can also submit your own news articles for the community to see.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "NEED HELP? Visit the FAQ page (link in navigation) for comprehensive answers to 75+ questions! Contact admins directly through the 'Contact Admin' option in your account menu. Click the help button (bottom right) anytime to restart this tour.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-];
+// Hook to get translated steps
+const useTranslatedSteps = () => {
+  const { t } = useTranslation();
 
-const eventSteps: Step[] = [
-  {
-    target: 'body',
-    content: "Let me show you how to post and explore events! You can browse events, submit your own, use filters, view on interactive maps, and even get calendar integration.",
-    placement: 'center',
-  },
-  {
-    target: '[data-tour="submit-event"]',
-    content: "Click here to submit a new event. Include details like title, date, time, location, category, whether it's free or paid, and upload images or PDFs. You can create single or recurring events. All events are reviewed before publication.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="view-toggle"]',
-    content: "Switch between grid, list, map, and calendar views to explore events. Map view shows all events with interactive markers, Calendar view displays events on a monthly calendar, Grid and List views show event cards with details and images.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="filters"]',
-    content: "Use filters to find specific events by category (music, food, sports, etc.), date range (pick individual dates or ranges), event type (free/paid), neighborhood, or village. Combine multiple filters for precise results. The date picker supports both single dates and date ranges.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="search"]',
-    content: "Search for events using keywords like event names, descriptions, locations, or organizers. The search works in real-time and highlights matching results instantly.",
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "ENGAGE WITH EVENTS: Click any event to view full details including location, time, pricing, and description. Leave comments and ask questions about events. Get directions to event locations via the map. Bookmark events to save them for later. Register for events (when available). Share events on social media.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "Ready to submit your own event? Click 'Submit Event' in the navigation menu. Fill out the form with all event details, upload images or PDFs, and submit for review. You'll be able to track the approval status in 'My Submissions'. Once approved, your event will appear on the platform for the whole community to see!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-];
+  const generalSteps: Step[] = [
+    {
+      target: 'body',
+      content: t('onboarding.general.welcome'),
+      placement: 'center',
+    },
+    {
+      target: '[data-tour="view-toggle"]',
+      content: t('onboarding.general.viewToggle'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="search"]',
+      content: t('onboarding.general.search'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="filters"]',
+      content: t('onboarding.general.filters'),
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.nearMe'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.discovery'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.savedSearches'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.submitContent'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.socialFeatures'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.account'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.weeklyDigest'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.news'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.general.help'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+  ];
 
-const businessSteps: Step[] = [
-  {
-    target: 'body',
-    content: "Let me show you how to post and discover businesses! You can add your business, browse the directory, send messages, leave reviews, and connect with local businesses.",
-    placement: 'center',
-  },
-  {
-    target: '[data-tour="submit-business"]',
-    content: "Click here to submit your business listing. Include business name, detailed description, category (restaurant, retail, service, etc.), contact info (phone, email, website, social media), business hours, location with map pin, and upload photos. All listings are reviewed before publication.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="view-toggle"]',
-    content: "Switch between grid, list, and map views to explore businesses. Map view shows all businesses with color-coded markers by category for easy discovery. Grid and List views display business cards with ratings, hours, and quick actions.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="filters"]',
-    content: "Use filters to find businesses by category (food, retail, professional services, etc.), location, neighborhood, or open/closed status. Filter by ratings to find highly-rated businesses. You can also bookmark businesses for quick access later.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="search"]',
-    content: "Search for businesses by name, category, keywords, or services offered. Click on any business card to view full details including photos, hours, contact information, location map, and customer reviews.",
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "INTERACT WITH BUSINESSES: Send direct messages to business owners with questions or inquiries. Leave star ratings and written reviews to help others. Bookmark your favorite businesses for easy access. Get turn-by-turn directions to business locations. View business hours and contact details. See all reviews from other community members.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "BUSINESS OWNERS: If you submit a business, you'll gain access to a Business Dashboard where you can: View and respond to customer messages, Monitor customer reviews and ratings, Edit your business information, Upload new photos, Update hours and contact details. You'll be notified of new messages and reviews!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "Ready to list your business? Click 'Submit Business' in the navigation menu. Complete the detailed form with your business information, upload quality photos, and submit for review. Track approval status in 'My Submissions'. Once approved, customers can find you, message you, and leave reviews!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-];
+  const eventSteps: Step[] = [
+    {
+      target: 'body',
+      content: t('onboarding.events.intro'),
+      placement: 'center',
+    },
+    {
+      target: '[data-tour="submit-event"]',
+      content: t('onboarding.events.submit'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="view-toggle"]',
+      content: t('onboarding.events.views'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="filters"]',
+      content: t('onboarding.events.filters'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="search"]',
+      content: t('onboarding.events.search'),
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.events.engage'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.events.ready'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+  ];
 
-const resourceSteps: Step[] = [
-  {
-    target: 'body',
-    content: "Let me show you how to post and find local resources! Discover trusted service providers like plumbers, electricians, tutors, cleaners, landscapers, and more in your community.",
-    placement: 'center',
-  },
-  {
-    target: '[data-tour="submit-resource"]',
-    content: "Click here to submit a local resource or service. Include service name, detailed description of services offered, multiple service categories, contact information (phone, email, website), coverage area (neighborhoods/villages you serve), certifications or licenses, pricing info, and photos. All submissions are reviewed before publication.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="view-toggle"]',
-    content: "Switch between grid, list, and map views to find local services. Map view shows all service providers with location markers, making it easy to find providers near you. Grid and List views display service cards with contact info and categories.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="filters"]',
-    content: "Use filters to find services by category (home services, professional services, personal services, etc.), location, specific neighborhoods, or villages. Filter by service type to find exactly what you need - plumbing, electrical, tutoring, cleaning, lawn care, and more.",
-    disableBeacon: true,
-  },
-  {
-    target: '[data-tour="search"]',
-    content: "Search for specific services using keywords like 'plumber', 'tutor', 'electrician', 'cleaner', 'landscaper', or any professional service you need. Click on any service card to view full details, contact information, and service areas.",
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "CONNECT WITH SERVICE PROVIDERS: View complete service details including all offered services, coverage areas, and certifications. Contact providers directly via phone, email, or website. Leave comments and reviews to help others find quality services. Bookmark trusted providers for future reference. Get directions to service provider locations.",
-    placement: 'center',
-    disableBeacon: true,
-  },
-  {
-    target: 'body',
-    content: "Ready to add your service? Click 'Submit Local Resource' in the navigation menu. Fill out the comprehensive form with your service details, coverage area, certifications, and contact info. Upload photos of your work to attract customers. Submit for review and track approval status in 'My Submissions'. Help your community find the services they need!",
-    placement: 'center',
-    disableBeacon: true,
-  },
-];
+  const businessSteps: Step[] = [
+    {
+      target: 'body',
+      content: t('onboarding.businesses.intro'),
+      placement: 'center',
+    },
+    {
+      target: '[data-tour="submit-business"]',
+      content: t('onboarding.businesses.submit'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="view-toggle"]',
+      content: t('onboarding.businesses.views'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="filters"]',
+      content: t('onboarding.businesses.filters'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="search"]',
+      content: t('onboarding.businesses.search'),
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.businesses.interact'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.businesses.owners'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.businesses.ready'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+  ];
+
+  const resourceSteps: Step[] = [
+    {
+      target: 'body',
+      content: t('onboarding.services.intro'),
+      placement: 'center',
+    },
+    {
+      target: '[data-tour="submit-resource"]',
+      content: t('onboarding.services.submit'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="view-toggle"]',
+      content: t('onboarding.services.views'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="filters"]',
+      content: t('onboarding.services.filters'),
+      disableBeacon: true,
+    },
+    {
+      target: '[data-tour="search"]',
+      content: t('onboarding.services.search'),
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.services.connect'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+    {
+      target: 'body',
+      content: t('onboarding.services.ready'),
+      placement: 'center',
+      disableBeacon: true,
+    },
+  ];
+
+  return { generalSteps, eventSteps, businessSteps, resourceSteps };
+};
 
 export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
+  const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(false);
   const [activeTour, setActiveTour] = useState<TourType>(null);
   const [runTour, setRunTour] = useState(false);
-  const navigate = useNavigate();
+  const { generalSteps, eventSteps, businessSteps, resourceSteps } = useTranslatedSteps();
 
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
@@ -258,8 +269,7 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
     if (finishedStatuses.includes(status)) {
       setRunTour(false);
       setActiveTour(null);
-      // Show welcome dialog again to ask if they want another tour
-      setTimeout(() => setShowWelcome(true), 500);
+      localStorage.setItem('hasSeenOnboarding', 'true');
     }
   };
 
@@ -278,70 +288,120 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
     }
   };
 
+  const neighborhoods = ['Mattapan', 'Roxbury', 'Hyde Park', 'Dorchester', 'Jamaica Plain'];
+
   return (
     <>
       <Dialog open={showWelcome} onOpenChange={setShowWelcome}>
-        <DialogContent className="sm:max-w-md max-w-[95vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-          <DialogHeader className="space-y-2">
-            <DialogTitle className="text-lg sm:text-2xl break-words">Welcome to HubVillage! 🎉</DialogTitle>
-            <DialogDescription className="text-xs sm:text-sm break-words">
-              Your community hub for events, businesses, news, and local services. Choose a tour to get started or explore all features.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-2 sm:gap-3 mt-3 sm:mt-4">
+        <DialogContent className="sm:max-w-lg max-w-[95vw] max-h-[90vh] overflow-y-auto p-0 gap-0 border-0 shadow-2xl">
+          {/* Header with gradient background */}
+          <div className="bg-gradient-to-br from-primary via-primary to-primary/80 p-6 sm:p-8 text-primary-foreground rounded-t-lg">
+            <DialogHeader className="space-y-3">
+              <div className="flex items-center gap-2">
+                <MapPin className="h-6 w-6" />
+                <DialogTitle className="text-xl sm:text-2xl font-bold">
+                  {t('onboarding.modal.title')}
+                </DialogTitle>
+              </div>
+              <DialogDescription className="text-sm sm:text-base text-primary-foreground/90">
+                {t('onboarding.modal.subtitle')}
+              </DialogDescription>
+            </DialogHeader>
+            
+            {/* Neighborhood badges */}
+            <div className="flex flex-wrap gap-1.5 mt-4">
+              {neighborhoods.map((neighborhood) => (
+                <Badge 
+                  key={neighborhood} 
+                  variant="secondary" 
+                  className="bg-white/20 text-primary-foreground border-0 text-xs font-medium"
+                >
+                  {neighborhood}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          
+          {/* Tour options */}
+          <div className="p-4 sm:p-6 space-y-3">
+            {/* Main tour option */}
             <Button
               onClick={() => handleTourChoice('general')}
-              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4 bg-primary text-primary-foreground hover:bg-primary/90"
+              className="w-full justify-start text-left h-auto py-4 px-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 shadow-md"
             >
-              <div className="w-full min-w-0">
-                <div className="font-semibold text-sm sm:text-base break-words">🌟 Show me everything!</div>
-                <div className="text-xs sm:text-sm opacity-90 break-words">Complete tour of all features (recommended)</div>
+              <div className="flex items-start gap-3 w-full">
+                <div className="p-2 bg-white/20 rounded-lg shrink-0">
+                  <Star className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-sm sm:text-base">{t('onboarding.modal.generalTitle')}</div>
+                  <div className="text-xs sm:text-sm opacity-90 mt-0.5">{t('onboarding.modal.generalDesc')}</div>
+                </div>
               </div>
             </Button>
-            <div className="relative">
+            
+            {/* Divider */}
+            <div className="relative py-2">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-border" />
               </div>
-              <div className="relative flex justify-center text-[10px] sm:text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground whitespace-nowrap">Or choose a specific topic</span>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-3 text-muted-foreground">{t('onboarding.modal.orChoose')}</span>
               </div>
             </div>
-            <Button
-              onClick={() => handleTourChoice('event')}
-              variant="outline"
-              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4"
-            >
-              <div className="w-full min-w-0">
-                <div className="font-semibold text-sm sm:text-base break-words">📅 Events Guide</div>
-                <div className="text-xs sm:text-sm text-muted-foreground break-words">Learn to post and find community events</div>
-              </div>
-            </Button>
-            <Button
-              onClick={() => handleTourChoice('business')}
-              variant="outline"
-              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4"
-            >
-              <div className="w-full min-w-0">
-                <div className="font-semibold text-sm sm:text-base break-words">🏪 Business Directory</div>
-                <div className="text-xs sm:text-sm text-muted-foreground break-words">List your business or find local shops</div>
-              </div>
-            </Button>
-            <Button
-              onClick={() => handleTourChoice('resource')}
-              variant="outline"
-              className="w-full justify-start text-left h-auto py-3 sm:py-4 px-3 sm:px-4"
-            >
-              <div className="w-full min-w-0">
-                <div className="font-semibold text-sm sm:text-base break-words">🔧 Local Services</div>
-                <div className="text-xs sm:text-sm text-muted-foreground break-words">Find or offer professional services</div>
-              </div>
-            </Button>
+            
+            {/* Topic-specific tours */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <Button
+                onClick={() => handleTourChoice('event')}
+                variant="outline"
+                className="h-auto py-3 px-3 flex flex-col items-center text-center gap-2 hover:bg-accent hover:border-primary/50 transition-all"
+              >
+                <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                  <Calendar className="h-5 w-5 text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <div className="font-semibold text-sm">{t('onboarding.modal.eventsTitle')}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{t('onboarding.modal.eventsDesc')}</div>
+                </div>
+              </Button>
+              
+              <Button
+                onClick={() => handleTourChoice('business')}
+                variant="outline"
+                className="h-auto py-3 px-3 flex flex-col items-center text-center gap-2 hover:bg-accent hover:border-primary/50 transition-all"
+              >
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                  <Building className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <div className="font-semibold text-sm">{t('onboarding.modal.businessTitle')}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{t('onboarding.modal.businessDesc')}</div>
+                </div>
+              </Button>
+              
+              <Button
+                onClick={() => handleTourChoice('resource')}
+                variant="outline"
+                className="h-auto py-3 px-3 flex flex-col items-center text-center gap-2 hover:bg-accent hover:border-primary/50 transition-all"
+              >
+                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                  <Wrench className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div>
+                  <div className="font-semibold text-sm">{t('onboarding.modal.servicesTitle')}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{t('onboarding.modal.servicesDesc')}</div>
+                </div>
+              </Button>
+            </div>
+            
+            {/* Skip button */}
             <Button
               onClick={() => handleTourChoice(null)}
               variant="ghost"
-              className="w-full mt-1 sm:mt-2 text-xs sm:text-sm h-auto py-2 sm:py-3"
+              className="w-full mt-2 text-sm text-muted-foreground hover:text-foreground"
             >
-              Skip tour - I'll explore on my own
+              {t('onboarding.modal.skip')}
             </Button>
           </div>
         </DialogContent>
@@ -355,6 +415,13 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
           showProgress
           showSkipButton
           callback={handleJoyrideCallback}
+          locale={{
+            back: t('onboarding.navigation.back'),
+            close: t('onboarding.navigation.close'),
+            last: t('onboarding.navigation.finish'),
+            next: t('onboarding.navigation.next'),
+            skip: t('onboarding.navigation.skip'),
+          }}
           styles={{
             options: {
               primaryColor: 'hsl(var(--primary))',
@@ -363,7 +430,8 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
             },
             tooltip: {
               maxWidth: '90vw',
-              padding: '12px 16px',
+              padding: '16px 20px',
+              borderRadius: '12px',
             },
             tooltipContainer: {
               textAlign: 'left',
@@ -373,23 +441,26 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
             },
             tooltipContent: {
               fontSize: '14px',
-              lineHeight: '1.5',
+              lineHeight: '1.6',
               padding: '8px 0',
             },
             buttonNext: {
               fontSize: '14px',
-              padding: '8px 16px',
+              padding: '10px 20px',
+              borderRadius: '8px',
+              fontWeight: 600,
             },
             buttonBack: {
               fontSize: '14px',
-              padding: '8px 16px',
+              padding: '10px 20px',
+              borderRadius: '8px',
             },
             buttonSkip: {
               fontSize: '14px',
-              padding: '8px 16px',
+              padding: '10px 16px',
             },
             spotlight: {
-              borderRadius: '8px',
+              borderRadius: '12px',
             },
           }}
           floaterProps={{
