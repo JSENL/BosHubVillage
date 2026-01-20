@@ -84,7 +84,7 @@ export const Navigation = () => {
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* <LanguageSelector /> */}
+            <LanguageSelector />
             {user && <NotificationBell />}
             {user && (
               <DropdownMenu>
