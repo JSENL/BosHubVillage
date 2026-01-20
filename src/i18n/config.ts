@@ -255,6 +255,49 @@ const resources = {
           extractedText: 'Extracted Text',
           note: 'Note: This feature uses PDF text extraction and OCR to automatically populate form fields. Please review and verify all extracted information.'
         }
+      },
+      // Location filters
+      location: {
+        allNeighborhoods: "All Neighborhoods",
+        allVillages: "All Villages",
+        neighborhood: "Neighborhood",
+        village: "Village"
+      },
+      // Discovery components
+      discovery: {
+        followingFeed: "Following Feed",
+        all: "All",
+        posts: "Posts",
+        activity: "Activity",
+        noRecentActivity: "No recent activity from people you follow.",
+        startFollowing: "Start following users to see their updates here!",
+        viewAllActivity: "View All Activity",
+        discoverPeople: "Discover People",
+        forYou: "For You",
+        more: "More",
+        discoverNewPeople: "Discover new people",
+        completeProfile: "Complete your profile to get better recommendations",
+        refresh: "Refresh",
+        similarInterests: "Similar Interests",
+        trending: "Trending",
+        nearYou: "Near You",
+        noMatchesFound: "No matches found",
+        addInterests: "Add interests and location to your profile for better matches",
+        tryAgain: "Try again",
+        newUser: "New user",
+        sameLocation: "Same location"
+      },
+      // Saved searches
+      savedSearches: {
+        title: "Saved Searches",
+        signInPrompt: "Sign in to save searches and get notified of new matches.",
+        noSavedSearches: "No saved searches yet. Use the filters and click \"Save Search\" to get notified of new matches."
+      },
+      // Bookmarks
+      bookmarks: {
+        yourBookmarks: "Your Bookmarks",
+        noBookmarks: "No bookmarks yet. Start exploring and save items you're interested in!",
+        moreBookmarks: "+{{count}} more bookmarks"
       }
     }
   },
@@ -495,6 +538,49 @@ const resources = {
         confirmDelete: "¿Está seguro de que desea eliminar este elemento?",
         confirmAction: "¿Está seguro de que desea continuar?",
         unsavedChanges: "Tiene cambios no guardados. ¿Está seguro de que desea salir?"
+      },
+      // Location filters
+      location: {
+        allNeighborhoods: "Todos los Barrios",
+        allVillages: "Todas las Aldeas",
+        neighborhood: "Barrio",
+        village: "Aldea"
+      },
+      // Discovery components
+      discovery: {
+        followingFeed: "Feed de Seguidos",
+        all: "Todos",
+        posts: "Publicaciones",
+        activity: "Actividad",
+        noRecentActivity: "No hay actividad reciente de las personas que sigues.",
+        startFollowing: "¡Comienza a seguir usuarios para ver sus actualizaciones aquí!",
+        viewAllActivity: "Ver Toda la Actividad",
+        discoverPeople: "Descubrir Personas",
+        forYou: "Para Ti",
+        more: "Más",
+        discoverNewPeople: "Descubre nuevas personas",
+        completeProfile: "Completa tu perfil para obtener mejores recomendaciones",
+        refresh: "Actualizar",
+        similarInterests: "Intereses Similares",
+        trending: "Tendencias",
+        nearYou: "Cerca de Ti",
+        noMatchesFound: "No se encontraron coincidencias",
+        addInterests: "Agrega intereses y ubicación a tu perfil para mejores coincidencias",
+        tryAgain: "Intentar de nuevo",
+        newUser: "Nuevo usuario",
+        sameLocation: "Misma ubicación"
+      },
+      // Saved searches
+      savedSearches: {
+        title: "Búsquedas Guardadas",
+        signInPrompt: "Inicia sesión para guardar búsquedas y recibir notificaciones de nuevas coincidencias.",
+        noSavedSearches: "Aún no hay búsquedas guardadas. Usa los filtros y haz clic en \"Guardar Búsqueda\" para recibir notificaciones de nuevas coincidencias."
+      },
+      // Bookmarks
+      bookmarks: {
+        yourBookmarks: "Tus Marcadores",
+        noBookmarks: "Aún no hay marcadores. ¡Comienza a explorar y guarda los elementos que te interesen!",
+        moreBookmarks: "+{{count}} marcadores más"
       }
     }
   },

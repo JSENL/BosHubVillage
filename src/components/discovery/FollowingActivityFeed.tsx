@@ -9,8 +9,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Clock, Bookmark, MessageSquare, Calendar, Newspaper, Briefcase, MapPin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export const FollowingActivityFeed = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [filterType, setFilterType] = useState<ActivityType>('all');
   const { data: activities, isLoading } = useFollowingActivity(filterType);
@@ -56,14 +58,14 @@ export const FollowingActivityFeed = () => {
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Clock className="h-4 w-4" />
-          Following Feed
+          {t('discovery.followingFeed')}
         </CardTitle>
         
         <Tabs value={filterType} onValueChange={(v) => setFilterType(v as ActivityType)} className="mt-2">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-            <TabsTrigger value="post" className="text-xs">Posts</TabsTrigger>
-            <TabsTrigger value="activity" className="text-xs">Activity</TabsTrigger>
+            <TabsTrigger value="all" className="text-xs">{t('discovery.all')}</TabsTrigger>
+            <TabsTrigger value="post" className="text-xs">{t('discovery.posts')}</TabsTrigger>
+            <TabsTrigger value="activity" className="text-xs">{t('discovery.activity')}</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
@@ -85,8 +87,8 @@ export const FollowingActivityFeed = () => {
           </div>
         ) : activities?.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground text-sm">
-            <p>No recent activity from people you follow.</p>
-            <p className="mt-2 text-xs">Start following users to see their updates here!</p>
+            <p>{t('discovery.noRecentActivity')}</p>
+            <p className="mt-2 text-xs">{t('discovery.startFollowing')}</p>
           </div>
         ) : (
           <div className="space-y-2 max-h-[400px] overflow-y-auto">
@@ -145,7 +147,7 @@ export const FollowingActivityFeed = () => {
             className="w-full mt-2"
             asChild
           >
-            <Link to={`/user/${user.id}`}>View All Activity</Link>
+            <Link to={`/user/${user.id}`}>{t('discovery.viewAllActivity')}</Link>
           </Button>
         )}
       </CardContent>

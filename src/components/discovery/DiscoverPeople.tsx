@@ -6,8 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RefreshCw, TrendingUp, Heart, MapPin, Sparkles } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export const DiscoverPeople = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('recommended');
@@ -31,7 +33,7 @@ export const DiscoverPeople = () => {
     return (
       <div className="bg-white rounded-lg border p-3 sm:p-4">
         <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <h3 className="font-semibold text-sm sm:text-base">Discover People</h3>
+          <h3 className="font-semibold text-sm sm:text-base">{t('discovery.discoverPeople')}</h3>
           <RefreshCw className="h-4 w-4 animate-spin" />
         </div>
         <div className="space-y-2 sm:space-y-3">
@@ -55,7 +57,7 @@ export const DiscoverPeople = () => {
   return (
     <div className="bg-white rounded-lg border w-full min-w-0">
       <div className="flex items-center justify-between p-3 sm:p-4 border-b">
-        <h3 className="font-semibold text-sm sm:text-base truncate">Discover People</h3>
+        <h3 className="font-semibold text-sm sm:text-base truncate">{t('discovery.discoverPeople')}</h3>
         <Button 
           onClick={refreshDiscovery}
           variant="ghost" 
@@ -70,12 +72,12 @@ export const DiscoverPeople = () => {
         <TabsList className="grid w-full grid-cols-2 p-1 mx-2 sm:mx-4 mt-2 sm:mt-4 mb-0">
           <TabsTrigger value="recommended" className="text-[10px] sm:text-xs px-1 sm:px-3">
             <Sparkles className="h-3 w-3 mr-0.5 sm:mr-1" />
-            <span className="hidden xs:inline">For You</span>
-            <span className="xs:hidden">You</span>
+            <span className="hidden xs:inline">{t('discovery.forYou')}</span>
+            <span className="xs:hidden">{t('discovery.forYou')}</span>
           </TabsTrigger>
           <TabsTrigger value="categories" className="text-[10px] sm:text-xs px-1 sm:px-3">
             <Heart className="h-3 w-3 mr-0.5 sm:mr-1" />
-            More
+            {t('discovery.more')}
           </TabsTrigger>
         </TabsList>
         
@@ -86,7 +88,7 @@ export const DiscoverPeople = () => {
                 <UserDiscoveryCard 
                   key={user.id} 
                   user={user}
-                  reason="New user"
+                  reason={t('discovery.newUser')}
                 />
               ))}
             </div>
@@ -95,10 +97,10 @@ export const DiscoverPeople = () => {
               <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-3 sm:p-4 border border-purple-100">
                 <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 mx-auto text-purple-500 mb-2" />
                 <p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                  Discover new people
+                  {t('discovery.discoverNewPeople')}
                 </p>
                 <p className="text-[10px] sm:text-xs text-gray-500 mb-3">
-                  Complete your profile to get better recommendations
+                  {t('discovery.completeProfile')}
                 </p>
                 <Button 
                   size="sm" 
@@ -106,7 +108,7 @@ export const DiscoverPeople = () => {
                   onClick={refreshDiscovery}
                   className="text-xs h-7 sm:h-8"
                 >
-                  Refresh
+                  {t('discovery.refresh')}
                 </Button>
               </div>
             </div>
@@ -120,14 +122,14 @@ export const DiscoverPeople = () => {
               <div>
                 <div className="flex items-center gap-1.5 sm:gap-2 mb-2">
                   <Heart className="h-3 w-3 flex-shrink-0" />
-                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">Similar Interests</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">{t('discovery.similarInterests')}</span>
                 </div>
                 <div className="space-y-2">
                   {similarInterestUsers.slice(0, 2).map((user) => (
                     <UserDiscoveryCard 
                       key={user.id} 
                       user={user}
-                      reason="Similar interests"
+                      reason={t('discovery.similarInterests')}
                     />
                   ))}
                 </div>
@@ -139,14 +141,14 @@ export const DiscoverPeople = () => {
               <div>
                 <div className="flex items-center gap-1.5 sm:gap-2 mb-2">
                   <TrendingUp className="h-3 w-3 flex-shrink-0" />
-                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">Trending</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">{t('discovery.trending')}</span>
                 </div>
                 <div className="space-y-2">
                   {trendingUsers.slice(0, 1).map((user) => (
                     <UserDiscoveryCard 
                       key={user.id} 
                       user={user}
-                      reason="Trending"
+                      reason={t('discovery.trending')}
                     />
                   ))}
                 </div>
@@ -158,14 +160,14 @@ export const DiscoverPeople = () => {
               <div>
                 <div className="flex items-center gap-1.5 sm:gap-2 mb-2">
                   <MapPin className="h-3 w-3 flex-shrink-0" />
-                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">Near You</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">{t('discovery.nearYou')}</span>
                 </div>
                 <div className="space-y-2">
                   {localUsers.slice(0, 1).map((user) => (
                     <UserDiscoveryCard 
                       key={user.id} 
                       user={user}
-                      reason="Same location"
+                      reason={t('discovery.sameLocation')}
                     />
                   ))}
                 </div>
@@ -177,10 +179,10 @@ export const DiscoverPeople = () => {
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 sm:p-4 border border-blue-100">
                   <Heart className="h-6 w-6 sm:h-8 sm:w-8 mx-auto text-blue-500 mb-2" />
                   <p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                    No matches found
+                    {t('discovery.noMatchesFound')}
                   </p>
                   <p className="text-[10px] sm:text-xs text-gray-500 mb-3">
-                    Add interests and location to your profile for better matches
+                    {t('discovery.addInterests')}
                   </p>
                   <Button 
                     size="sm" 
@@ -188,7 +190,7 @@ export const DiscoverPeople = () => {
                     onClick={refreshDiscovery}
                     className="text-xs h-7 sm:h-8"
                   >
-                    Try again
+                    {t('discovery.tryAgain')}
                   </Button>
                 </div>
               </div>
