@@ -78,29 +78,49 @@ const MainContent = () => {
             
             {/* Map or List View */}
             {filters.viewMode === 'map' ? (
-              <ResizablePanelGroup 
-                direction="vertical" 
-                className="min-h-[900px] rounded-lg border"
-              >
-                <ResizablePanel defaultSize={50} minSize={25}>
-                  <div className="h-full">
+              <>
+                {/* Mobile: Simple stacked layout */}
+                <div className="lg:hidden space-y-4">
+                  <div className="h-[400px] rounded-lg border overflow-hidden">
                     <MapView
                       items={filteredItems}
                       selectedTypes={selectedTypesForMap}
                       height="100%"
                     />
                   </div>
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={50} minSize={25}>
-                  <div className="h-full overflow-y-auto p-4 bg-background">
+                  <div className="bg-background">
                     <ListView
                       items={filteredItems}
                       isLoading={isLoading}
                     />
                   </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
+                </div>
+                
+                {/* Desktop: Resizable panels */}
+                <ResizablePanelGroup 
+                  direction="vertical" 
+                  className="hidden lg:flex min-h-[900px] rounded-lg border"
+                >
+                  <ResizablePanel defaultSize={50} minSize={25}>
+                    <div className="h-full">
+                      <MapView
+                        items={filteredItems}
+                        selectedTypes={selectedTypesForMap}
+                        height="100%"
+                      />
+                    </div>
+                  </ResizablePanel>
+                  <ResizableHandle withHandle />
+                  <ResizablePanel defaultSize={50} minSize={25}>
+                    <div className="h-full overflow-y-auto p-4 bg-background">
+                      <ListView
+                        items={filteredItems}
+                        isLoading={isLoading}
+                      />
+                    </div>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
+              </>
             ) : (
               <ListView
                 items={filteredItems}
