@@ -44,6 +44,11 @@ const MainContent = () => {
         <HelpCircle className="h-6 w-6" />
       </Button>
 
+      {/* Mobile discovery sidebar - shows ABOVE map on mobile */}
+      <aside className="lg:hidden w-full mb-4" aria-label="Discovery and recommendations">
+        <DiscoverySidebar />
+      </aside>
+
       <ResizablePanelGroup direction="horizontal" className="gap-6">
         {/* Main content */}
         <ResizablePanel defaultSize={70} minSize={40}>
@@ -107,17 +112,12 @@ const MainContent = () => {
 
         <ResizableHandle withHandle className="hidden lg:flex" />
 
-        {/* Discovery sidebar - shows at top on mobile, resizable on desktop */}
+        {/* Discovery sidebar - resizable on desktop only */}
         <ResizablePanel defaultSize={30} minSize={20} maxSize={40} className="hidden lg:block">
           <aside aria-label="Discovery and recommendations">
             <DiscoverySidebar />
           </aside>
         </ResizablePanel>
-
-        {/* Mobile discovery sidebar (non-resizable) */}
-        <aside className="lg:hidden w-full" aria-label="Discovery and recommendations">
-          <DiscoverySidebar />
-        </aside>
       </ResizablePanelGroup>
 
       <OnboardingTour ref={tourRef} />
