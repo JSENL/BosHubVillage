@@ -17,6 +17,11 @@ export const FollowingActivityFeed = () => {
   const [filterType, setFilterType] = useState<ActivityType>('all');
   const { data: activities, isLoading } = useFollowingActivity(filterType);
 
+  // Hide component completely when no activities and not loading
+  if (!isLoading && (!activities || activities.length === 0)) {
+    return null;
+  }
+
   const getItemLink = (type: string, id: string) => {
     switch (type) {
       case 'event':
@@ -84,11 +89,6 @@ export const FollowingActivityFeed = () => {
                 </div>
               </div>
             ))}
-          </div>
-        ) : activities?.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground text-sm">
-            <p>{t('discovery.noRecentActivity')}</p>
-            <p className="mt-2 text-xs">{t('discovery.startFollowing')}</p>
           </div>
         ) : (
           <div className="space-y-2 max-h-[400px] overflow-y-auto">

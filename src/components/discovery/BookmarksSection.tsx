@@ -103,22 +103,9 @@ export const BookmarksSection = () => {
     );
   }
 
+  // Hide component completely when no bookmarks
   if (!bookmarkedItems?.length) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bookmark className="h-5 w-5" />
-            {t('bookmarks.yourBookmarks')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-8">
-            {t('bookmarks.noBookmarks')}
-          </p>
-        </CardContent>
-      </Card>
-    );
+    return null;
   }
 
   const getIcon = (type: string) => {
