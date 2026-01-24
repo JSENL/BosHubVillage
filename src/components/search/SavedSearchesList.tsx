@@ -51,19 +51,9 @@ export const SavedSearchesList = ({ onApplySearch }: SavedSearchesListProps) => 
     );
   }
 
+  // Hide component completely when no saved searches
   if (savedSearches.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('savedSearches.title')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {t('savedSearches.noSavedSearches')}
-          </p>
-        </CardContent>
-      </Card>
-    );
+    return null;
   }
 
   return (
