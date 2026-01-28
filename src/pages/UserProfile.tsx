@@ -5,9 +5,11 @@ import { useProfile, usePublicProfile } from '@/hooks/useProfile';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Settings, MessageCircle } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { UserActivityFeed } from '@/components/profile/UserActivityFeed';
+import { FollowersList } from '@/components/profile/FollowersList';
+import { FollowingList } from '@/components/profile/FollowingList';
 
 const UserProfile = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -84,29 +86,10 @@ const UserProfile = () => {
             {/* Activity Feed */}
             <UserActivityFeed userId={userId || ''} />
 
-            {/* Followers/Following - Placeholder */}
+            {/* Followers/Following */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Followers</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-center text-muted-foreground">
-                    {profile.followers_count} followers
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Following</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-center text-muted-foreground">
-                    {profile.following_count} following
-                  </p>
-                </CardContent>
-              </Card>
+              <FollowersList userId={userId || ''} />
+              <FollowingList userId={userId || ''} />
             </div>
 
             {/* Submissions/Contributions - Placeholder */}
