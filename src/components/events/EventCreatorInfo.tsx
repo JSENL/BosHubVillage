@@ -58,7 +58,7 @@ export const EventCreatorInfo = ({ creatorId }: EventCreatorInfoProps) => {
   };
 
   const handleProfileClick = () => {
-    navigate(`/profile/${creatorId}`);
+    navigate(`/user/${creatorId}`);
   };
 
   if (isLoading) {
