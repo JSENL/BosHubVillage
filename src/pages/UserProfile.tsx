@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Settings, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { UserActivityFeed } from '@/components/profile/UserActivityFeed';
 
 const UserProfile = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -80,17 +81,8 @@ const UserProfile = () => {
 
           {/* Content Area */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Activity Feed - Placeholder */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-center py-8">
-                  Activity feed coming soon! This will show recent submissions, comments, and interactions.
-                </p>
-              </CardContent>
-            </Card>
+            {/* Activity Feed */}
+            <UserActivityFeed userId={userId || ''} />
 
             {/* Followers/Following - Placeholder */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
