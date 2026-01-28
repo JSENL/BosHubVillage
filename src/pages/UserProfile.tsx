@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { UserActivityFeed } from '@/components/profile/UserActivityFeed';
 import { FollowersList } from '@/components/profile/FollowersList';
 import { FollowingList } from '@/components/profile/FollowingList';
+import { UserContributions } from '@/components/profile/UserContributions';
 
 const UserProfile = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -92,17 +93,8 @@ const UserProfile = () => {
               <FollowingList userId={userId || ''} />
             </div>
 
-            {/* Submissions/Contributions - Placeholder */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Contributions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground text-center py-8">
-                  User's submissions and contributions will be displayed here.
-                </p>
-              </CardContent>
-            </Card>
+            {/* Contributions */}
+            <UserContributions userId={userId || ''} />
           </div>
         </div>
       </div>
