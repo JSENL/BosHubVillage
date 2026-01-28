@@ -112,10 +112,78 @@ const EventDetails = () => {
                     <h3 className="text-lg font-semibold mb-2">{t('pages.description')}</h3>
                     <p className="text-gray-700 whitespace-pre-wrap">{event.description}</p>
                   </div>
+
+                  {/* Add to Calendar & Share Section */}
+                  <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t">
+                    <CalendarShare
+                      title={event.title}
+                      description={event.description || ''}
+                      startDate={event.date}
+                      startTime={event.start_time || undefined}
+                      endTime={event.end_time || undefined}
+                      location={event.location}
+                    />
+                    <SocialShare
+                      title={event.title}
+                      description={event.description || ''}
+                      url={window.location.href}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sidebar with Registration */}
+            <div className="md:col-span-1">
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <h3 className="font-semibold text-lg">{t('pages.eventActions', 'Event Actions')}</h3>
+                  
+                  {event.registration_required && (
+                    <Button 
+                      className="w-full" 
+                      onClick={() => setShowRegistrationForm(true)}
+                    >
+                      <Users className="h-4 w-4 mr-2" />
+                      {t('pages.registerForEvent', 'Register for Event')}
+                    </Button>
+                  )}
+
+                  {event.website_link && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => window.open(event.website_link!, '_blank')}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      {t('pages.visitWebsite', 'Visit Website')}
+                    </Button>
+                  )}
+
+                  <div className="text-sm text-muted-foreground space-y-2 pt-4 border-t">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="h-4 w-4" />
+                      <span>{event.price === 0 ? t('cards.free') : `$${event.price}`}</span>
+                    </div>
+                    {event.is_recurring && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        <span>{t('pages.recurringEvent', 'Recurring Event')}: {event.recurring_pattern}</span>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </div>
+
+          {/* Registration Form Modal */}
+          <EventRegistrationForm
+            eventId={event.id}
+            eventTitle={event.title}
+            isOpen={showRegistrationForm}
+            onClose={() => setShowRegistrationForm(false)}
+          />
 
           {/* Related News Section */}
           <div className="mt-8">
