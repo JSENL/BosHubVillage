@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Bookmark, UserPlus, MessageCircle, Calendar, Heart } from 'lucide-react';
+import { Bookmark, UserPlus, MessageCircle, Calendar, Heart, Building2, Newspaper, MapPin } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -17,16 +17,21 @@ interface Activity {
   item_type: string;
   item_id: string;
   created_at: string;
-  metadata?: Record<string, any>;
+  metadata?: any;
+}
+
+interface EnrichedActivity extends Activity {
+  itemName?: string;
 }
 
 export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
   const { t } = useTranslation();
   
   const { data: activities, isLoading } = useQuery({
-    queryKey: ['user-activities', userId],
+    queryKey: ['user-activities-enriched', userId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Fetch activities
+      const { data: activitiesData, error } = await supabase
         .from('user_activities')
         .select('*')
         .eq('user_id', userId)
@@ -34,44 +39,131 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
         .limit(10);
       
       if (error) throw error;
-      return data as Activity[];
+      if (!activitiesData?.length) return [];
+
+      // Group activities by item type to batch fetch
+      const userIds = activitiesData.filter(a => a.item_type === 'user').map(a => a.item_id);
+      const eventIds = activitiesData.filter(a => a.item_type === 'event').map(a => a.item_id);
+      const businessIds = activitiesData.filter(a => a.item_type === 'business').map(a => a.item_id);
+      const newsIds = activitiesData.filter(a => a.item_type === 'news').map(a => a.item_id);
+      const localServiceIds = activitiesData.filter(a => a.item_type === 'local-service').map(a => a.item_id);
+
+      // Fetch related data in parallel
+      const [usersData, eventsData, businessData, newsData, localServicesData] = await Promise.all([
+        userIds.length > 0 
+          ? supabase.from('profiles').select('id, full_name').in('id', userIds)
+          : { data: [] },
+        eventIds.length > 0 
+          ? supabase.from('events').select('id, title').in('id', eventIds)
+          : { data: [] },
+        businessIds.length > 0 
+          ? supabase.from('business').select('id, title').in('id', businessIds)
+          : { data: [] },
+        newsIds.length > 0 
+          ? supabase.from('news').select('id, title').in('id', newsIds)
+          : { data: [] },
+        localServiceIds.length > 0 
+          ? supabase.from('local_resources').select('id, name').in('id', localServiceIds)
+          : { data: [] },
+      ]);
+
+      // Create lookup maps
+      const userMap = new Map((usersData.data || []).map(u => [u.id, u.full_name || 'Unknown User']));
+      const eventMap = new Map((eventsData.data || []).map(e => [e.id, e.title]));
+      const businessMap = new Map((businessData.data || []).map(b => [b.id, b.title]));
+      const newsMap = new Map((newsData.data || []).map(n => [n.id, n.title]));
+      const localServiceMap = new Map((localServicesData.data || []).map(l => [l.id, l.name]));
+
+      // Enrich activities with item names
+      return activitiesData.map((activity): EnrichedActivity => {
+        let itemName: string | undefined;
+        
+        switch (activity.item_type) {
+          case 'user':
+            itemName = userMap.get(activity.item_id);
+            break;
+          case 'event':
+            itemName = eventMap.get(activity.item_id);
+            break;
+          case 'business':
+            itemName = businessMap.get(activity.item_id);
+            break;
+          case 'news':
+            itemName = newsMap.get(activity.item_id);
+            break;
+          case 'local-service':
+            itemName = localServiceMap.get(activity.item_id);
+            break;
+        }
+        
+        return { ...activity, itemName };
+      });
     },
     enabled: !!userId,
   });
 
-  const getActivityIcon = (activityType: string) => {
-    switch (activityType) {
-      case 'bookmark':
-        return <Bookmark className="h-4 w-4 text-amber-500" />;
-      case 'follow':
-        return <UserPlus className="h-4 w-4 text-blue-500" />;
-      case 'comment':
-        return <MessageCircle className="h-4 w-4 text-green-500" />;
-      case 'attend':
+  const getActivityIcon = (activityType: string, itemType: string) => {
+    if (activityType === 'follow') {
+      return <UserPlus className="h-4 w-4 text-blue-500" />;
+    }
+    
+    switch (itemType) {
+      case 'event':
         return <Calendar className="h-4 w-4 text-purple-500" />;
-      case 'like':
-        return <Heart className="h-4 w-4 text-red-500" />;
+      case 'business':
+        return <Building2 className="h-4 w-4 text-amber-500" />;
+      case 'news':
+        return <Newspaper className="h-4 w-4 text-green-500" />;
+      case 'local-service':
+        return <MapPin className="h-4 w-4 text-red-500" />;
+      case 'user':
+        return <UserPlus className="h-4 w-4 text-blue-500" />;
       default:
-        return <Calendar className="h-4 w-4 text-muted-foreground" />;
+        return <Bookmark className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
-  const getActivityText = (activity: Activity) => {
-    const { activity_type, item_type } = activity;
+  const getActivityText = (activity: EnrichedActivity) => {
+    const { activity_type, item_type, itemName } = activity;
+    const displayName = itemName ? `"${itemName}"` : `a ${item_type}`;
     
     switch (activity_type) {
       case 'bookmark':
-        return `Bookmarked a${item_type === 'event' ? 'n' : ''} ${item_type}`;
+        return (
+          <>
+            Bookmarked {item_type === 'event' ? 'event' : item_type === 'business' ? 'business' : item_type} <span className="font-medium text-foreground">{displayName}</span>
+          </>
+        );
       case 'follow':
-        return 'Started following a user';
+        return (
+          <>
+            Started following <span className="font-medium text-foreground">{itemName || 'a user'}</span>
+          </>
+        );
       case 'comment':
-        return `Commented on a${item_type === 'event' ? 'n' : ''} ${item_type}`;
+        return (
+          <>
+            Commented on <span className="font-medium text-foreground">{displayName}</span>
+          </>
+        );
       case 'attend':
-        return 'Registered for an event';
+        return (
+          <>
+            Registered for <span className="font-medium text-foreground">{displayName}</span>
+          </>
+        );
       case 'like':
-        return `Liked a${item_type === 'event' ? 'n' : ''} ${item_type}`;
+        return (
+          <>
+            Liked <span className="font-medium text-foreground">{displayName}</span>
+          </>
+        );
       default:
-        return `Interacted with a${item_type === 'event' ? 'n' : ''} ${item_type}`;
+        return (
+          <>
+            Interacted with <span className="font-medium text-foreground">{displayName}</span>
+          </>
+        );
     }
   };
 
@@ -134,21 +226,21 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
         <CardTitle>{t('profile.recentActivity', 'Recent Activity')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {activities.map((activity) => (
             <Link
               key={activity.id}
               to={getItemLink(activity.item_type, activity.item_id)}
-              className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+              className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border"
             >
-              <div className="p-2 rounded-full bg-muted">
-                {getActivityIcon(activity.activity_type)}
+              <div className="p-2 rounded-full bg-muted shrink-0">
+                {getActivityIcon(activity.activity_type, activity.item_type)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {getActivityText(activity)}
                 </p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground/70 mt-1">
                   {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
                 </p>
               </div>
