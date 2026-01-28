@@ -11,6 +11,7 @@ import { CalendarShare } from '@/components/CalendarShare';
 import { EventRegistrationForm } from '@/components/EventRegistrationForm';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
+import { EventCreatorInfo } from '@/components/events/EventCreatorInfo';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
@@ -64,14 +65,17 @@ const EventDetails = () => {
             {t('pages.backToEvents')}
           </Button>
 
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold">{event.title}</h1>
-            <BookmarkButton 
-              itemType="event" 
-              itemId={event.id} 
-              size="lg"
-              showText={true}
-            />
+          <div className="flex flex-col gap-3 mb-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-3xl font-bold">{event.title}</h1>
+              <BookmarkButton 
+                itemType="event" 
+                itemId={event.id} 
+                size="lg"
+                showText={true}
+              />
+            </div>
+            <EventCreatorInfo creatorId={event.created_by} />
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
