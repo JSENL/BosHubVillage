@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +14,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
+import { DonateButton } from '@/components/common/DonateButton';
 import { 
   Plus, 
   Calendar, 
@@ -84,6 +84,7 @@ export const Navigation = () => {
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
+            <DonateButton size="sm" className="hidden sm:flex" />
             <LanguageSelector />
             {user && <NotificationBell />}
             {user && (

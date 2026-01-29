@@ -12,6 +12,8 @@ import { OnboardingTour, OnboardingTourRef } from '@/components/onboarding/Onboa
 import { Button } from '@/components/ui/button';
 import { HelpCircle } from 'lucide-react';
 import { FeaturedSection } from '@/components/home/FeaturedSection';
+import { DonateSection } from '@/components/home/DonateSection';
+import { Footer } from '@/components/common/Footer';
 
 const MainContent = () => {
   const { 
@@ -140,6 +142,11 @@ const MainContent = () => {
         </ResizablePanel>
       </ResizablePanelGroup>
 
+      {/* Donate Section */}
+      <div className="mt-8">
+        <DonateSection />
+      </div>
+
       <OnboardingTour ref={tourRef} />
       
       <TranslationTestModal />
@@ -153,6 +160,7 @@ export const RefactoredHomePage = () => {
       <AppLayout>
         <MainContent />
       </AppLayout>
+      <Footer />
     </AppStateProvider>
   );
 };
