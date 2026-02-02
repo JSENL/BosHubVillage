@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { DonateButton } from '@/components/common/DonateButton';
-import { Heart, Users, Calendar } from 'lucide-react';
+import { WeeklyEmailModal } from '@/components/common/WeeklyEmailModal';
+import { Button } from '@/components/ui/button';
+import { Heart, Users, Calendar, Mail } from 'lucide-react';
 
 export const DonateSection = () => {
   const { t } = useTranslation();
@@ -29,7 +31,19 @@ export const DonateSection = () => {
             </div>
           </div>
         </div>
-        <div className="shrink-0">
+        <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+          <WeeklyEmailModal 
+            trigger={
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="bg-white/10 text-white border-white/30 hover:bg-white/20 shadow-lg gap-2"
+              >
+                <Mail className="h-4 w-4" />
+                {t('weeklyEmail.button', 'Weekly Email')}
+              </Button>
+            }
+          />
           <DonateButton 
             size="lg" 
             className="bg-white text-logo-vibrant-blue hover:bg-white/90 shadow-lg"
