@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { DonateButton } from '@/components/common/DonateButton';
+import { MobileNavDrawer } from '@/components/mobile/MobileNavDrawer';
 import { 
   Plus, 
   Calendar, 
@@ -23,7 +23,6 @@ import {
   User, 
   LogOut, 
   Settings,
-  CheckSquare,
   Heart,
   MessageCircle,
   ArrowLeft,
@@ -44,6 +43,9 @@ export const Navigation = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-12 sm:h-14 md:h-16">
           <div className="flex items-center space-x-1 sm:space-x-3 md:space-x-6 flex-shrink-0">
+            {/* Mobile hamburger menu */}
+            <MobileNavDrawer />
+            
             <Link to="/" className="flex items-center flex-shrink-0">
               <img 
                 src="/lovable-uploads/76a583e0-eef3-4167-a87b-ed0504940bdc.png" 
@@ -64,24 +66,24 @@ export const Navigation = () => {
               </Link>
             )}
             
-            {/* News Page Link - Icon only on mobile */}
+            {/* News Page Link - Hidden on mobile (available in drawer) */}
             <Link 
               to="/news-page" 
-              className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+              className="hidden md:flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
               title={t('navigation.news')}
             >
-              <Newspaper className="h-4 w-4 sm:mr-1 md:mr-2" />
-              <span className="hidden sm:inline text-xs sm:text-sm md:text-base">{t('navigation.news')}</span>
+              <Newspaper className="h-4 w-4 md:mr-2" />
+              <span className="text-sm md:text-base">{t('navigation.news')}</span>
             </Link>
             
-            {/* FAQ Link - Icon only on mobile */}
+            {/* FAQ Link - Hidden on mobile (available in drawer) */}
             <Link 
               to="/faq" 
-              className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+              className="hidden md:flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
               title="FAQ"
             >
-              <HelpCircle className="h-4 w-4 sm:mr-1 md:mr-2" />
-              <span className="hidden sm:inline text-xs sm:text-sm md:text-base">FAQ</span>
+              <HelpCircle className="h-4 w-4 md:mr-2" />
+              <span className="text-sm md:text-base">FAQ</span>
             </Link>
           </div>
           
