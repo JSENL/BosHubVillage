@@ -14,6 +14,7 @@ import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { DonateButton } from '@/components/common/DonateButton';
+import { WeeklyEmailModal } from '@/components/common/WeeklyEmailModal';
 import { MobileNavDrawer } from '@/components/mobile/MobileNavDrawer';
 import { 
   Plus, 
@@ -27,7 +28,8 @@ import {
   MessageCircle,
   ArrowLeft,
   FileText,
-  HelpCircle
+  HelpCircle,
+  Mail
 } from 'lucide-react';
 
 export const Navigation = () => {
@@ -88,6 +90,14 @@ export const Navigation = () => {
           </div>
           
           <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-4 flex-shrink-0">
+            <WeeklyEmailModal 
+              trigger={
+                <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1.5">
+                  <Mail className="h-4 w-4" />
+                  <span className="hidden lg:inline">Weekly Email</span>
+                </Button>
+              }
+            />
             <DonateButton size="sm" className="hidden md:flex" />
             <div className="hidden sm:block">
               <LanguageSelector />
