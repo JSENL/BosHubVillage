@@ -1,8 +1,8 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Table, 
   TableBody, 
@@ -31,6 +31,26 @@ interface PublishedNewsTableProps {
 export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) => {
   const [editingNews, setEditingNews] = useState<News | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(news.map(n => n.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (id: string, checked: boolean) => {
+    const newSelected = new Set(selectedIds);
+    if (checked) {
+      newSelected.add(id);
+    } else {
+      newSelected.delete(id);
+    }
+    setSelectedIds(newSelected);
+  };
 
   const handleDeleteNews = async (newsId: string) => {
     if (!confirm('Are you sure you want to delete this news article? This action cannot be undone.')) {
@@ -56,13 +76,56 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    
+    if (!confirm(`Are you sure you want to delete ${selectedIds.size} news article(s)? This action cannot be undone.`)) {
+      return;
+    }
+
+    setBulkDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('news')
+        .delete()
+        .in('id', Array.from(selectedIds));
+
+      if (error) throw error;
+
+      toast.success(`${selectedIds.size} news article(s) deleted successfully`);
+      setSelectedIds(new Set());
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error bulk deleting news:', error);
+      toast.error('Failed to delete news articles');
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
+  const allSelected = news.length > 0 && news.every(n => selectedIds.has(n.id));
+  const someSelected = selectedIds.size > 0;
+
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center text-gray-900">
-            <Newspaper className="h-5 w-5 mr-2 text-purple-600" />
-            Published News ({news?.length || 0})
+          <CardTitle className="flex items-center justify-between text-gray-900">
+            <div className="flex items-center">
+              <Newspaper className="h-5 w-5 mr-2 text-purple-600" />
+              Published News ({news?.length || 0})
+            </div>
+            {someSelected && (
+              <Button
+                onClick={handleBulkDelete}
+                disabled={bulkDeleting}
+                variant="destructive"
+                size="sm"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                {bulkDeleting ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
+              </Button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -76,6 +139,13 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={allSelected}
+                      onCheckedChange={handleSelectAll}
+                      aria-label="Select all"
+                    />
+                  </TableHead>
                   <TableHead>Article</TableHead>
                   <TableHead>Source</TableHead>
                   <TableHead>Location</TableHead>
@@ -86,6 +156,13 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
               <TableBody>
                 {news.map((article) => (
                   <TableRow key={article.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.has(article.id)}
+                        onCheckedChange={(checked) => handleSelectOne(article.id, !!checked)}
+                        aria-label={`Select ${article.title}`}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div>
                         <div className="font-medium">{article.title}</div>

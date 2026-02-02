@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Table, 
   TableBody, 
@@ -36,6 +37,8 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   // Get unique categories for filter
   const categories = useMemo(() => {
@@ -66,9 +69,8 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
           bValue = new Date(b.date).getTime();
           break;
         case 'updated_at':
-          // Use created_by as fallback since updated_at might not exist on Event type
-          aValue = new Date(a.date).getTime(); // Fallback to date
-          bValue = new Date(b.date).getTime(); // Fallback to date
+          aValue = new Date(a.date).getTime();
+          bValue = new Date(b.date).getTime();
           break;
         default:
           return 0;
@@ -81,6 +83,24 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
       }
     });
   }, [events, searchTerm, categoryFilter, sortBy, sortOrder]);
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(filteredAndSortedEvents.map(e => e.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (id: string, checked: boolean) => {
+    const newSelected = new Set(selectedIds);
+    if (checked) {
+      newSelected.add(id);
+    } else {
+      newSelected.delete(id);
+    }
+    setSelectedIds(newSelected);
+  };
 
   const handleDeleteEvent = async (eventId: string) => {
     if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
@@ -106,6 +126,33 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    
+    if (!confirm(`Are you sure you want to delete ${selectedIds.size} event(s)? This action cannot be undone.`)) {
+      return;
+    }
+
+    setBulkDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('events')
+        .delete()
+        .in('id', Array.from(selectedIds));
+
+      if (error) throw error;
+
+      toast.success(`${selectedIds.size} event(s) deleted successfully`);
+      setSelectedIds(new Set());
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error bulk deleting events:', error);
+      toast.error('Failed to delete events');
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
   const handleToggleSponsored = async (eventId: string, isSponsored: boolean) => {
     setActionLoading(eventId);
     try {
@@ -126,13 +173,30 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
     }
   };
 
+  const allSelected = filteredAndSortedEvents.length > 0 && 
+    filteredAndSortedEvents.every(e => selectedIds.has(e.id));
+  const someSelected = selectedIds.size > 0;
+
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center text-gray-900">
-            <Calendar className="h-5 w-5 mr-2 text-purple-600" />
-            Published Events ({filteredAndSortedEvents.length} of {events.length})
+          <CardTitle className="flex items-center justify-between text-gray-900">
+            <div className="flex items-center">
+              <Calendar className="h-5 w-5 mr-2 text-purple-600" />
+              Published Events ({filteredAndSortedEvents.length} of {events.length})
+            </div>
+            {someSelected && (
+              <Button
+                onClick={handleBulkDelete}
+                disabled={bulkDeleting}
+                variant="destructive"
+                size="sm"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                {bulkDeleting ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
+              </Button>
+            )}
           </CardTitle>
           
           {/* Filters and Search */}
@@ -201,6 +265,13 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={allSelected}
+                      onCheckedChange={handleSelectAll}
+                      aria-label="Select all"
+                    />
+                  </TableHead>
                   <TableHead>Event</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Location</TableHead>
@@ -212,6 +283,13 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
               <TableBody>
                 {filteredAndSortedEvents.map((event) => (
                   <TableRow key={event.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.has(event.id)}
+                        onCheckedChange={(checked) => handleSelectOne(event.id, !!checked)}
+                        aria-label={`Select ${event.title}`}
+                      />
+                    </TableCell>
                     <TableCell>
                       <div>
                         <div className="font-medium">{event.title}</div>

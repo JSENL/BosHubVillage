@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Table, 
   TableBody, 
@@ -33,6 +34,8 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [editingBusiness, setEditingBusiness] = useState<any | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   const sortedBusinesses = useMemo(() => {
     if (!sortOrder) return businesses;
@@ -59,6 +62,24 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
     }
   };
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(sortedBusinesses.map(b => b.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const handleSelectOne = (id: string, checked: boolean) => {
+    const newSelected = new Set(selectedIds);
+    if (checked) {
+      newSelected.add(id);
+    } else {
+      newSelected.delete(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
   const handleDeleteBusiness = async (businessId: string) => {
     if (!confirm('Are you sure you want to delete this business? This action cannot be undone.')) {
       return;
@@ -83,6 +104,33 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    
+    if (!confirm(`Are you sure you want to delete ${selectedIds.size} business(es)? This action cannot be undone.`)) {
+      return;
+    }
+
+    setBulkDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('business')
+        .delete()
+        .in('id', Array.from(selectedIds));
+
+      if (error) throw error;
+
+      toast.success(`${selectedIds.size} business(es) deleted successfully`);
+      setSelectedIds(new Set());
+      onUpdate();
+    } catch (error: any) {
+      console.error('Error bulk deleting businesses:', error);
+      toast.error('Failed to delete businesses');
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
   const handleToggleSponsored = async (businessId: string, isSponsored: boolean) => {
     setActionLoading(businessId);
     try {
@@ -103,12 +151,29 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
     }
   };
 
+  const allSelected = sortedBusinesses.length > 0 && 
+    sortedBusinesses.every(b => selectedIds.has(b.id));
+  const someSelected = selectedIds.size > 0;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center text-gray-900">
-          <Building className="h-5 w-5 mr-2 text-purple-600" />
-          Published Businesses ({businesses.length})
+        <CardTitle className="flex items-center justify-between text-gray-900">
+          <div className="flex items-center">
+            <Building className="h-5 w-5 mr-2 text-purple-600" />
+            Published Businesses ({businesses.length})
+          </div>
+          {someSelected && (
+            <Button
+              onClick={handleBulkDelete}
+              disabled={bulkDeleting}
+              variant="destructive"
+              size="sm"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {bulkDeleting ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
+            </Button>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -122,6 +187,13 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">
+                  <Checkbox
+                    checked={allSelected}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="Select all"
+                  />
+                </TableHead>
                 <TableHead>
                   <button
                     onClick={handleSortToggle}
@@ -144,6 +216,13 @@ export const PublishedBusinessTable = ({ businesses, onUpdate }: PublishedBusine
             <TableBody>
               {sortedBusinesses.map((business) => (
                 <TableRow key={business.id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedIds.has(business.id)}
+                      onCheckedChange={(checked) => handleSelectOne(business.id, !!checked)}
+                      aria-label={`Select ${business.title}`}
+                    />
+                  </TableCell>
                   <TableCell>
                     <div>
                       <div className="font-medium">{business.title}</div>
