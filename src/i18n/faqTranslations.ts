@@ -130,10 +130,12 @@ export const faqTranslationsEn = {
     },
     digest: {
       q1: "What is the weekly digest?",
-      q2: "How do I enable the weekly digest?",
+      q2: "How do I sign up for the weekly digest?",
       q3: "What day can I receive the digest?",
       q4: "How do I unsubscribe from the digest?",
-      q5: "What's included in the weekly digest?"
+      q5: "What's included in the weekly digest?",
+      q6: "Can I sign up without an account?",
+      q7: "Where do I find the Weekly Email signup?"
     },
     comments: {
       q1: "How do I leave comments?",
@@ -255,10 +257,12 @@ export const faqTranslationsEn = {
     },
     digest: {
       a1: "The weekly digest is an email summary of trending content, upcoming events, new businesses, and community highlights from HubVillage. Stay informed without visiting the site daily.",
-      a2: "Go to 'Edit Profile' and find the 'Email Digest Settings' section. Toggle on 'Enable Weekly Digest' and select your preferred day of the week.",
-      a3: "You can choose any day of the week (Monday through Sunday) to receive your digest. Select your preferred day from the dropdown in Email Digest Settings.",
+      a2: "Click the 'Weekly Email' button in the navigation bar to open the signup modal. Select your preferred delivery day and confirm. You can also find this option in the 'Donate' section on the home page.",
+      a3: "You can choose any day of the week (Monday through Sunday) to receive your digest. Select your preferred day from the dropdown in the signup modal.",
       a4: "Go to Email Digest Settings in your profile and toggle off 'Enable Weekly Digest'. You can also unsubscribe using the link in any digest email.",
-      a5: "The digest includes: trending content from the week, upcoming events in your neighborhoods, new businesses and services, popular news articles, and personalized recommendations based on your interests."
+      a5: "The digest includes: trending content from the week, upcoming events in your neighborhoods, new businesses and services, popular news articles, and personalized recommendations based on your interests.",
+      a6: "Yes! You can enter your email in the Weekly Email modal. If you already have an account, your preferences will be updated automatically. Otherwise, you'll be prompted to create an account to receive the digest.",
+      a7: "Look for the 'Weekly Email' button in the navigation bar next to the Donate button. You can also find it in the home page's Donate section."
     },
     comments: {
       a1: "On any event, business, service, or news detail page, scroll to the comments section. Registered users can leave comments by typing in the comment box and submitting.",
