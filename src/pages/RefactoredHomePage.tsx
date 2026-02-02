@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { MapView } from '@/components/views/MapView';
 import { ListView } from '@/components/views/ListView';
@@ -10,7 +10,7 @@ import { useAppState } from '@/contexts/AppStateContext';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { OnboardingTour, OnboardingTourRef } from '@/components/onboarding/OnboardingTour';
 import { Button } from '@/components/ui/button';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Map as MapIcon } from 'lucide-react';
 import { FeaturedSection } from '@/components/home/FeaturedSection';
 import { DonateSection } from '@/components/home/DonateSection';
 import { Footer } from '@/components/common/Footer';
@@ -25,6 +25,7 @@ const MainContent = () => {
   } = useAppState();
   
   const tourRef = useRef<OnboardingTourRef>(null);
+  const [showMobileMap, setShowMobileMap] = useState(false);
 
   const handleHelpClick = () => {
     tourRef.current?.openTour();
@@ -46,11 +47,6 @@ const MainContent = () => {
         <HelpCircle className="h-6 w-6" />
       </Button>
 
-      {/* Mobile discovery sidebar - shows ABOVE map on mobile */}
-      <aside className="lg:hidden w-full mb-4" aria-label="Discovery and recommendations">
-        <DiscoverySidebar />
-      </aside>
-
       <ResizablePanelGroup direction="horizontal" className="gap-6">
         {/* Main content */}
         <ResizablePanel defaultSize={70} minSize={40}>
@@ -59,7 +55,8 @@ const MainContent = () => {
               <h1 id="community-heading" className="text-xl md:text-2xl font-bold text-gray-900">
                 Local Community
               </h1>
-              <div className="flex items-center gap-2">
+              {/* Desktop view toggle */}
+              <div className="hidden lg:flex items-center gap-2">
                 <button
                   onClick={() => updateFilter('viewMode', filters.viewMode === 'map' ? 'list' : 'map')}
                   className="px-3 py-1 bg-white border rounded-lg text-sm hover:bg-gray-50"
@@ -77,31 +74,42 @@ const MainContent = () => {
               allItems={allItems}
               filteredItemsCount={filteredItems.length}
             />
-            
-            {/* Map or List View */}
-            {filters.viewMode === 'map' ? (
-              <>
-                {/* Mobile: Simple stacked layout */}
-                <div className="lg:hidden space-y-4">
-                  <div className="h-[400px] rounded-lg border overflow-hidden">
-                    <MapView
-                      items={filteredItems}
-                      selectedTypes={selectedTypesForMap}
-                      height="100%"
-                    />
-                  </div>
-                  <div className="bg-background">
-                    <ListView
-                      items={filteredItems}
-                      isLoading={isLoading}
-                    />
-                  </div>
+
+            {/* Mobile/Tablet: Show map toggle button and list first */}
+            <div className="lg:hidden space-y-4">
+              <Button
+                onClick={() => setShowMobileMap(!showMobileMap)}
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2"
+              >
+                <MapIcon className="h-4 w-4" />
+                {showMobileMap ? 'Hide Map' : 'Show Map'}
+              </Button>
+              
+              {showMobileMap && (
+                <div className="h-[400px] rounded-lg border overflow-hidden">
+                  <MapView
+                    items={filteredItems}
+                    selectedTypes={selectedTypesForMap}
+                    height="100%"
+                  />
                 </div>
-                
-                {/* Desktop: Resizable panels */}
+              )}
+              
+              <div className="bg-background">
+                <ListView
+                  items={filteredItems}
+                  isLoading={isLoading}
+                />
+              </div>
+            </div>
+            
+            {/* Desktop: Resizable panels or list view based on viewMode */}
+            <div className="hidden lg:block">
+              {filters.viewMode === 'map' ? (
                 <ResizablePanelGroup 
                   direction="vertical" 
-                  className="hidden lg:flex min-h-[900px] rounded-lg border"
+                  className="min-h-[900px] rounded-lg border"
                 >
                   <ResizablePanel defaultSize={50} minSize={25}>
                     <div className="h-full">
@@ -122,13 +130,13 @@ const MainContent = () => {
                     </div>
                   </ResizablePanel>
                 </ResizablePanelGroup>
-              </>
-            ) : (
-              <ListView
-                items={filteredItems}
-                isLoading={isLoading}
-              />
-            )}
+              ) : (
+                <ListView
+                  items={filteredItems}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
           </section>
         </ResizablePanel>
 
@@ -141,6 +149,11 @@ const MainContent = () => {
           </aside>
         </ResizablePanel>
       </ResizablePanelGroup>
+
+      {/* Mobile/Tablet: Discovery section below main content */}
+      <aside className="lg:hidden w-full mt-6" aria-label="Discovery and recommendations">
+        <DiscoverySidebar />
+      </aside>
 
       {/* Donate Section */}
       <div className="mt-8">
