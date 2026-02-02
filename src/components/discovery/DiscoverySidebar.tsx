@@ -9,7 +9,7 @@ export const DiscoverySidebar = () => {
   const { user } = useAuth();
 
   return (
-    <div className="space-y-4 w-full max-w-md mx-auto">
+    <div className="space-y-4 w-full max-w-full sm:max-w-md mx-auto overflow-hidden">
       {user && <FollowingActivityFeed />}
       
       <TrendingSection />
