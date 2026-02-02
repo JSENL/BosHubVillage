@@ -16,6 +16,13 @@ export const useBusinessOwnership = () => {
   const { data: ownedBusinesses, isLoading } = useQuery({
     queryKey: ['owned-businesses'],
     queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Don't query if user is not logged in
+      if (!user?.id) {
+        return [];
+      }
+
       const { data, error } = await supabase
         .from('business_owner')
         .select(`
@@ -31,7 +38,7 @@ export const useBusinessOwnership = () => {
             )
           )
         `)
-        .eq('owner_id', (await supabase.auth.getUser()).data.user?.id);
+        .eq('owner_id', user.id);
 
       if (error) throw error;
 
@@ -58,11 +65,17 @@ export const useBusinessOwnership = () => {
 
   const claimBusinessMutation = useMutation({
     mutationFn: async (businessId: string) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user?.id) {
+        throw new Error('You must be logged in to claim a business');
+      }
+
       const { error } = await supabase
         .from('business_owner')
         .insert({
           business_id: businessId,
-          owner_id: (await supabase.auth.getUser()).data.user?.id
+          owner_id: user.id
         });
 
       if (error) throw error;
