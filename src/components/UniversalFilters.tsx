@@ -80,14 +80,14 @@ export const UniversalFilters = ({
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-3 sm:gap-4 p-4 bg-white rounded-lg shadow-sm border">
-      <div className="flex items-center space-x-2">
-        <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-        <span className="text-xs sm:text-sm font-medium text-gray-600">{t('filters.filters')}:</span>
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-lg shadow-sm border w-full overflow-hidden">
+      <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+        <Filter className="h-4 w-4 text-gray-600" />
+        <span className="text-xs font-medium text-gray-600">{t('filters.filters')}:</span>
       </div>
 
       <Select value={selectedType} onValueChange={onTypeChange}>
-        <SelectTrigger className="w-36 sm:w-48 h-8 sm:h-10 text-xs sm:text-sm">
+        <SelectTrigger className="w-28 sm:w-36 md:w-44 h-8 text-xs flex-shrink-0">
           <SelectValue placeholder={t('filters.type')} />
         </SelectTrigger>
         <SelectContent>
@@ -134,7 +134,7 @@ export const UniversalFilters = ({
         />
       )}
 
-      <div className="text-xs sm:text-sm text-gray-600">
+      <div className="text-xs text-gray-600 flex-shrink-0 ml-auto">
         {t('filters.resultsCount', { count: filteredItemsCount })}
       </div>
     </div>

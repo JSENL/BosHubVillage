@@ -47,7 +47,8 @@ const MainContent = () => {
         <HelpCircle className="h-6 w-6" />
       </Button>
 
-      <ResizablePanelGroup direction="horizontal" className="gap-6">
+      <div className="w-full overflow-x-hidden">
+      <ResizablePanelGroup direction="horizontal" className="gap-4 md:gap-6">
         {/* Main content */}
         <ResizablePanel defaultSize={70} minSize={40}>
           <section className="space-y-4 md:space-y-6" aria-labelledby="community-heading">
@@ -149,6 +150,7 @@ const MainContent = () => {
           </aside>
         </ResizablePanel>
       </ResizablePanelGroup>
+      </div>
 
       {/* Mobile/Tablet: Discovery section below main content */}
       <aside className="lg:hidden w-full mt-6" aria-label="Discovery and recommendations">

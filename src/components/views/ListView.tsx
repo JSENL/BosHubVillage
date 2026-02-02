@@ -35,8 +35,8 @@ export const ListView = ({ items, isLoading = false }: ListViewProps) => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
+    <div className="space-y-4 sm:space-y-6 w-full overflow-hidden">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-3 sm:gap-4">
         {currentItems.map((item) => (
           <UnifiedItemCard 
             key={`${item.type}-${item.id}`} 
