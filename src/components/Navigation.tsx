@@ -42,9 +42,9 @@ export const Navigation = () => {
 
   return (
     <nav className="bg-card shadow-sm border-b border-border overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-        <div className="flex justify-between items-center h-12 sm:h-14 md:h-16">
-          <div className="flex items-center space-x-1 sm:space-x-3 md:space-x-6 flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16 md:h-18">
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-8 flex-shrink-0">
             {/* Mobile hamburger menu */}
             <MobileNavDrawer />
             
@@ -52,7 +52,7 @@ export const Navigation = () => {
               <img 
                 src="/lovable-uploads/76a583e0-eef3-4167-a87b-ed0504940bdc.png" 
                 alt="HubVillage Logo" 
-                className="h-6 sm:h-8 md:h-10 w-auto"
+                className="h-7 sm:h-9 md:h-11 w-auto"
               />
             </Link>
             
@@ -60,7 +60,7 @@ export const Navigation = () => {
             {!isHomePage && (
               <Link 
                 to="/" 
-                className="hidden md:flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+                className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 <span className="hidden lg:inline">{t('navigation.backToHome')}</span>
@@ -68,28 +68,31 @@ export const Navigation = () => {
               </Link>
             )}
             
+            {/* Divider */}
+            {!isHomePage && <div className="hidden md:block h-6 w-px bg-border" />}
+            
             {/* News Page Link - Hidden on mobile (available in drawer) */}
             <Link 
               to="/news-page" 
-              className="hidden md:flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+              className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
               title={t('navigation.news')}
             >
-              <Newspaper className="h-4 w-4 md:mr-2" />
+              <Newspaper className="h-4 w-4 mr-2" />
               <span className="text-sm md:text-base">{t('navigation.news')}</span>
             </Link>
             
             {/* FAQ Link - Hidden on mobile (available in drawer) */}
             <Link 
               to="/faq" 
-              className="hidden md:flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+              className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
               title="FAQ"
             >
-              <HelpCircle className="h-4 w-4 md:mr-2" />
+              <HelpCircle className="h-4 w-4 mr-2" />
               <span className="text-sm md:text-base">FAQ</span>
             </Link>
           </div>
           
-          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-4 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
             <DonateButton size="sm" className="hidden md:flex" />
             <WeeklyEmailModal 
               trigger={
