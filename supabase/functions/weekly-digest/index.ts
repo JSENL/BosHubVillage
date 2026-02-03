@@ -9,6 +9,28 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+interface FeaturedBusiness {
+  id: string;
+  title: string;
+  businessType: string;
+  description: string;
+  neighborhood: string;
+  interviewQ1: string;
+  interviewA1: string;
+  interviewQ2: string;
+  interviewA2: string;
+}
+
+interface FeaturedLocalResource {
+  id: string;
+  name: string;
+  category: string;
+  description: string | null;
+  address: string;
+  neighborhood: string;
+  highlight: string;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -19,13 +41,21 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Check if this is a test email request
+    // Check if this is a test email request and get featured content
     const body = await req.json().catch(() => ({}));
     const testEmail = body.testEmail as string | undefined;
+    const featuredBusiness = body.featuredBusiness as FeaturedBusiness | null;
+    const featuredLocalResource = body.featuredLocalResource as FeaturedLocalResource | null;
 
     console.log("Starting weekly digest processing...");
     if (testEmail) {
       console.log(`Test mode: sending to ${testEmail}`);
+    }
+    if (featuredBusiness) {
+      console.log(`Featured business: ${featuredBusiness.title}`);
+    }
+    if (featuredLocalResource) {
+      console.log(`Featured local resource: ${featuredLocalResource.name}`);
     }
 
     // Get current day of week
@@ -97,6 +127,57 @@ serve(async (req) => {
       console.error("Error fetching news:", newsError);
     }
 
+    // Build featured business HTML
+    const buildFeaturedBusinessHtml = (business: FeaturedBusiness | null) => {
+      if (!business) return '';
+      
+      let interviewHtml = '';
+      if (business.interviewA1) {
+        interviewHtml += `
+          <div style="margin-bottom: 15px;">
+            <p style="font-weight: 600; margin-bottom: 5px; color: #333;">Q: ${business.interviewQ1}</p>
+            <p style="font-style: italic; color: #555; margin: 0;">"${business.interviewA1}"</p>
+          </div>
+        `;
+      }
+      if (business.interviewA2) {
+        interviewHtml += `
+          <div>
+            <p style="font-weight: 600; margin-bottom: 5px; color: #333;">Q: ${business.interviewQ2}</p>
+            <p style="font-style: italic; color: #555; margin: 0;">"${business.interviewA2}"</p>
+          </div>
+        `;
+      }
+
+      return `
+        <div style="margin-bottom: 30px;">
+          <h2 style="color: #333; margin-bottom: 15px;">🎤 Business Spotlight: ${business.title}</h2>
+          <div style="background: linear-gradient(135deg, #f8f4ff 0%, #f0e6ff 100%); border: 1px solid #e0d4f5; border-radius: 8px; padding: 20px;">
+            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">${business.businessType} • ${business.neighborhood}</p>
+            <p style="color: #444; margin-bottom: 20px;">${business.description}</p>
+            ${interviewHtml}
+          </div>
+        </div>
+      `;
+    };
+
+    // Build featured local resource HTML
+    const buildFeaturedLocalResourceHtml = (resource: FeaturedLocalResource | null) => {
+      if (!resource) return '';
+
+      return `
+        <div style="margin-bottom: 30px;">
+          <h2 style="color: #333; margin-bottom: 15px;">📍 Local Resource Spotlight</h2>
+          <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #bae6fd; border-radius: 8px; padding: 20px;">
+            <h3 style="margin: 0 0 10px 0; color: #0369a1;">${resource.name}</h3>
+            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">${resource.category} • ${resource.neighborhood}</p>
+            <p style="color: #666; font-size: 14px; margin-bottom: 10px;">📍 ${resource.address}</p>
+            ${resource.highlight ? `<p style="color: #444; margin: 0;">${resource.highlight}</p>` : ''}
+          </div>
+        </div>
+      `;
+    };
+
     // Build email content
     const eventsHtml = upcomingEvents?.length 
       ? upcomingEvents.map(e => `
@@ -137,6 +218,10 @@ serve(async (req) => {
           <h1>Your Weekly Community Digest</h1>
           <p>Hi ${name},</p>
           <p>Here's what's happening in your community this week:</p>
+          
+          ${buildFeaturedBusinessHtml(featuredBusiness)}
+          
+          ${buildFeaturedLocalResourceHtml(featuredLocalResource)}
           
           <h2>📅 Upcoming Events</h2>
           <ul>${eventsHtml}</ul>
