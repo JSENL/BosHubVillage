@@ -8,9 +8,11 @@ import { SearchSection } from './SearchSection';
 import { ListViewSection } from './ListViewSection';
 import { ItemGrid } from './ItemGrid';
 import { DiscoverySidebar } from '@/components/discovery/DiscoverySidebar';
+import { useAuth } from '@/hooks/useAuth';
 
 const MapViewContent = () => {
   const { allItems, filters, updateFilter, filteredItems } = useAppState();
+  const { user } = useAuth();
 
   if (filters.viewMode === 'list') {
     return <ListViewSection />;
@@ -23,7 +25,7 @@ const MapViewContent = () => {
       
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
         <div className="flex gap-6">
-          {/* Main content */}
+          {/* Main content - full width when not logged in */}
           <section className="flex-1 space-y-4 md:space-y-6" aria-labelledby="community-heading">
             <h1 id="community-heading" className="text-xl md:text-2xl font-bold text-gray-900">Local Community</h1>
             
@@ -59,10 +61,12 @@ const MapViewContent = () => {
             <ItemGrid />
           </section>
 
-          {/* Discovery sidebar */}
-          <aside className="w-80 space-y-6 hidden lg:block" aria-label="Discovery and recommendations">
-            <DiscoverySidebar />
-          </aside>
+          {/* Discovery sidebar - only show when user is logged in */}
+          {user && (
+            <aside className="w-80 space-y-6 hidden lg:block flex-shrink-0" aria-label="Discovery and recommendations">
+              <DiscoverySidebar />
+            </aside>
+          )}
         </div>
       </main>
     </div>
