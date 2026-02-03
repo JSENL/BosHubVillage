@@ -183,7 +183,7 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="all-submissions" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2 mb-6">
+                      <TabsList className="grid w-full grid-cols-3 mb-6">
                         <TabsTrigger value="all-submissions" className="flex items-center gap-2">
                           <FileText className="h-4 w-4" />
                           All Submissions
@@ -191,6 +191,10 @@ const AdminDashboard = () => {
                         <TabsTrigger value="event-registrations" className="flex items-center gap-2">
                           <UserCheck className="h-4 w-4" />
                           Event Registrations
+                        </TabsTrigger>
+                        <TabsTrigger value="csv-import" className="flex items-center gap-2">
+                          <Upload className="h-4 w-4" />
+                          CSV Import
                         </TabsTrigger>
                       </TabsList>
                       
@@ -200,6 +204,10 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="event-registrations">
                         <AdminEventRegistrations />
+                      </TabsContent>
+                      
+                      <TabsContent value="csv-import">
+                        <CSVImportTool />
                       </TabsContent>
                     </Tabs>
                   </CardContent>
@@ -253,7 +261,7 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="analytics" className="w-full">
-                      <TabsList className="grid w-full grid-cols-5 mb-6">
+                      <TabsList className="grid w-full grid-cols-4 mb-6">
                         <TabsTrigger value="analytics" className="flex items-center gap-2">
                           <BarChart3 className="h-4 w-4" />
                           Analytics
@@ -261,10 +269,6 @@ const AdminDashboard = () => {
                         <TabsTrigger value="announcements" className="flex items-center gap-2">
                           <Megaphone className="h-4 w-4" />
                           GNE Announcements
-                        </TabsTrigger>
-                        <TabsTrigger value="csv-import" className="flex items-center gap-2">
-                          <Upload className="h-4 w-4" />
-                          CSV Import
                         </TabsTrigger>
                         <TabsTrigger value="categories" className="flex items-center gap-2">
                           <Tag className="h-4 w-4" />
@@ -282,10 +286,6 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="announcements">
                         <GNEAnnouncements />
-                      </TabsContent>
-                      
-                      <TabsContent value="csv-import">
-                        <CSVImportTool />
                       </TabsContent>
                       
                       <TabsContent value="categories">
