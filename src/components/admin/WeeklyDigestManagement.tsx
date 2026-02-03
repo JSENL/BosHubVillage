@@ -379,12 +379,12 @@ const WeeklyDigestManagement = () => {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Select a Business to Feature</Label>
-            <Select value={selectedBusinessId} onValueChange={setSelectedBusinessId}>
+            <Select value={selectedBusinessId || 'none'} onValueChange={(value) => setSelectedBusinessId(value === 'none' ? '' : value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose a business..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {businesses?.map(business => (
                   <SelectItem key={business.id} value={business.id}>
                     {business.title} ({business.business_type})
@@ -446,12 +446,12 @@ const WeeklyDigestManagement = () => {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Select a Local Resource to Highlight</Label>
-            <Select value={selectedLocalResourceId} onValueChange={setSelectedLocalResourceId}>
+            <Select value={selectedLocalResourceId || 'none'} onValueChange={(value) => setSelectedLocalResourceId(value === 'none' ? '' : value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose a local resource..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {localResources?.map(resource => (
                   <SelectItem key={resource.id} value={resource.id}>
                     {resource.name} ({resource.category})
