@@ -90,6 +90,7 @@ export const Navigation = () => {
           </div>
           
           <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-4 flex-shrink-0">
+            <DonateButton size="sm" className="hidden md:flex" />
             <WeeklyEmailModal 
               trigger={
                 <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1.5">
@@ -98,7 +99,6 @@ export const Navigation = () => {
                 </Button>
               }
             />
-            <DonateButton size="sm" className="hidden md:flex" />
             <div className="hidden sm:block">
               <LanguageSelector />
             </div>
