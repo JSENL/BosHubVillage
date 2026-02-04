@@ -1,6 +1,11 @@
 // Onboarding translations for all supported languages
 
 export const onboardingTranslationsEn = {
+  languageSelection: {
+    title: "Choose Your Language",
+    subtitle: "Select your preferred language to continue",
+    continue: "Continue"
+  },
   modal: {
     title: "Welcome to HubVillage! 🎉",
     subtitle: "Your community hub for events, businesses, news, and local services in Southern Boston.",
@@ -68,6 +73,11 @@ export const onboardingTranslationsEn = {
 };
 
 export const onboardingTranslationsEs = {
+  languageSelection: {
+    title: "Elige Tu Idioma",
+    subtitle: "Selecciona tu idioma preferido para continuar",
+    continue: "Continuar"
+  },
   modal: {
     title: "¡Bienvenido a HubVillage! 🎉",
     subtitle: "Tu centro comunitario para eventos, negocios, noticias y servicios locales en el sur de Boston.",
@@ -135,6 +145,11 @@ export const onboardingTranslationsEs = {
 };
 
 export const onboardingTranslationsFr = {
+  languageSelection: {
+    title: "Choisissez Votre Langue",
+    subtitle: "Sélectionnez votre langue préférée pour continuer",
+    continue: "Continuer"
+  },
   modal: {
     title: "Bienvenue sur HubVillage ! 🎉",
     subtitle: "Votre centre communautaire pour les événements, entreprises, actualités et services locaux dans le sud de Boston.",
@@ -202,6 +217,11 @@ export const onboardingTranslationsFr = {
 };
 
 export const onboardingTranslationsPt = {
+  languageSelection: {
+    title: "Escolha Seu Idioma",
+    subtitle: "Selecione seu idioma preferido para continuar",
+    continue: "Continuar"
+  },
   modal: {
     title: "Bem-vindo ao HubVillage! 🎉",
     subtitle: "Seu centro comunitário para eventos, negócios, notícias e serviços locais no sul de Boston.",
@@ -269,6 +289,11 @@ export const onboardingTranslationsPt = {
 };
 
 export const onboardingTranslationsVi = {
+  languageSelection: {
+    title: "Chọn Ngôn Ngữ Của Bạn",
+    subtitle: "Chọn ngôn ngữ ưa thích để tiếp tục",
+    continue: "Tiếp tục"
+  },
   modal: {
     title: "Chào mừng đến HubVillage! 🎉",
     subtitle: "Trung tâm cộng đồng của bạn cho sự kiện, doanh nghiệp, tin tức và dịch vụ địa phương tại Nam Boston.",
