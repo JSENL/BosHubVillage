@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useAutoTranslate } from './useAutoTranslate';
 
 export const useBusinessSubmissionOperations = () => {
   const [actionLoading, setActionLoading] = useState(false);
+  const { translateContent } = useAutoTranslate();
 
   const updateSubmissionStatus = async (
     submissionId: string,
@@ -11,6 +13,8 @@ export const useBusinessSubmissionOperations = () => {
     adminNotes?: string
   ) => {
     setActionLoading(true);
+    let newBusinessId: string | null = null;
+    
     try {
       if (status === 'approved') {
         console.log('🔍 Admin approving business submission:', submissionId);
@@ -53,7 +57,8 @@ export const useBusinessSubmissionOperations = () => {
           throw insertError;
         }
         
-        console.log('✅ Business successfully added to main table with id:', insertedBusiness?.id);
+        newBusinessId = insertedBusiness?.id || null;
+        console.log('✅ Business successfully added to main table with id:', newBusinessId);
 
         // If the submitter indicated ownership, create ownership record
         if (submission.is_owner && insertedBusiness?.id) {
@@ -104,6 +109,11 @@ export const useBusinessSubmissionOperations = () => {
       if (updateError) throw updateError;
       
       toast.success(`Business submission ${status} successfully`);
+
+      // Trigger auto-translation for the new business
+      if (status === 'approved' && newBusinessId) {
+        translateContent('business', newBusinessId, false);
+      }
     } catch (error) {
       console.error('Error updating submission status:', error);
       toast.error('Failed to update submission status');
