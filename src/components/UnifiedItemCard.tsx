@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { UnifiedItem } from '@/types/unifiedItem';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { useNavigate } from 'react-router-dom';
+import { useTranslatedField } from '@/hooks/useTranslatedField';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
@@ -20,6 +21,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { getTranslatedText } = useTranslatedField();
   
   const handleViewDetails = () => {
     const routePath = item.type === 'local-service' ? 'local-resource' : 
@@ -81,19 +83,26 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const reviewCount = Math.floor(Math.random() * 200) + 25;
 
   const getDisplayTitle = () => {
-    return item.title || item.name || '';
+    const originalTitle = item.title || item.name || '';
+    const translations = item.title_translations || item.name_translations;
+    return getTranslatedText(originalTitle, translations);
   };
 
   const getDisplayDescription = () => {
-    return item.description || item.content || '';
+    const originalDesc = item.description || item.content || '';
+    const translations = item.description_translations || item.content_translations;
+    return getTranslatedText(originalDesc, translations);
   };
 
   const getDisplayLocation = () => {
-    return item.location || item.address || '';
+    const originalLoc = item.location || item.address || '';
+    const translations = item.location_translations || item.address_translations;
+    return getTranslatedText(originalLoc, translations);
   };
 
   const getDisplayCategory = () => {
-    return item.category || item.business_type || '';
+    const originalCat = item.category || item.business_type || '';
+    return getTranslatedText(originalCat, item.category_translations);
   };
 
   if (viewMode === 'list') {

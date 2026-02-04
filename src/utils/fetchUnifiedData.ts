@@ -1,7 +1,16 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { UnifiedItem } from '@/types/unifiedItem';
+import { UnifiedItem, TranslationsObject } from '@/types/unifiedItem';
 import { geocodeNewsItems } from './geocodeNewsItems';
+import { Json } from '@/integrations/supabase/types';
+
+// Helper to safely cast JSON to TranslationsObject
+const toTranslationsObject = (json: Json | undefined | null): TranslationsObject | undefined => {
+  if (!json || typeof json !== 'object' || Array.isArray(json)) {
+    return undefined;
+  }
+  return json as TranslationsObject;
+};
 
 export const fetchAllUnifiedData = async (
   geocode: (address: string) => Promise<any>,
@@ -81,7 +90,12 @@ export const fetchAllUnifiedData = async (
         end_time: event.end_time,
         price: Number(event.price || 0),
         neighborhoods: event.neighborhoods,
-        villages: event.villages
+        villages: event.villages,
+        // Translation fields
+        title_translations: toTranslationsObject(event.title_translations),
+        description_translations: toTranslationsObject(event.description_translations),
+        location_translations: toTranslationsObject(event.location_translations),
+        category_translations: toTranslationsObject(event.category_translations),
       });
     });
   }
@@ -110,7 +124,12 @@ export const fetchAllUnifiedData = async (
         content: news.content,
         source: news.source,
         villages: news.villages,
-        date: news.date_posted
+        date: news.date_posted,
+        // Translation fields
+        title_translations: toTranslationsObject(news.title_translations),
+        content_translations: toTranslationsObject(news.content_translations),
+        description_translations: toTranslationsObject(news.content_translations),
+        location_translations: toTranslationsObject(news.location_translations),
       });
     });
   }
@@ -136,7 +155,12 @@ export const fetchAllUnifiedData = async (
         business_type: business.business_type,
         villages: business.villages,
         neighborhoods: business.neighborhood,
-        originalData: business
+        originalData: business,
+        // Translation fields
+        title_translations: toTranslationsObject(business.title_translations),
+        description_translations: toTranslationsObject(business.description_translations),
+        address_translations: toTranslationsObject(business.address_translations),
+        short_description_translations: toTranslationsObject(business.short_description_translations),
       };
       
       console.log(`🏢 Transformed business item:`, item);
@@ -164,7 +188,12 @@ export const fetchAllUnifiedData = async (
         category: resource.category,
         name: resource.name,
         neighborhoods: resource.neighborhood,
-        villages: resource.village
+        villages: resource.village,
+        // Translation fields
+        name_translations: toTranslationsObject(resource.name_translations),
+        title_translations: toTranslationsObject(resource.name_translations),
+        description_translations: toTranslationsObject(resource.description_translations),
+        address_translations: toTranslationsObject(resource.address_translations),
       });
     });
   }
