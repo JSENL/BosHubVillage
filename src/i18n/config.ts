@@ -448,6 +448,19 @@ const resources = {
         sharePlaceholder: "Share your thoughts about this event...",
         addMedia: "Add Media",
         mediaLimit: "Images & videos up to 10MB each (max 3 files)"
+      },
+      // Footer
+      footer: {
+        tagline: "Connecting communities, one neighborhood at a time.",
+        quickLinks: "Quick Links",
+        supportUs: "Support Us",
+        supportMessage: "Help us keep this community resource running.",
+        contact: "Contact",
+        contactMessage: "Have questions or suggestions? We'd love to hear from you.",
+        getInTouch: "Get in touch →",
+        allRightsReserved: "All rights reserved.",
+        madeWith: "Made with",
+        forCommunity: "for the community"
       }
     }
   },
@@ -866,6 +879,19 @@ const resources = {
         sharePlaceholder: "Comparte tus pensamientos sobre este evento...",
         addMedia: "Agregar Medios",
         mediaLimit: "Imágenes y videos hasta 10MB cada uno (máximo 3 archivos)"
+      },
+      // Footer
+      footer: {
+        tagline: "Conectando comunidades, un vecindario a la vez.",
+        quickLinks: "Enlaces Rápidos",
+        supportUs: "Apóyanos",
+        supportMessage: "Ayúdanos a mantener este recurso comunitario funcionando.",
+        contact: "Contacto",
+        contactMessage: "¿Tienes preguntas o sugerencias? Nos encantaría saber de ti.",
+        getInTouch: "Ponte en contacto →",
+        allRightsReserved: "Todos los derechos reservados.",
+        madeWith: "Hecho con",
+        forCommunity: "para la comunidad"
       }
     }
   },
@@ -1284,6 +1310,19 @@ const resources = {
         sharePlaceholder: "Partagez vos pensées sur cet événement...",
         addMedia: "Ajouter des Médias",
         mediaLimit: "Images et vidéos jusqu'à 10 Mo chacun (max 3 fichiers)"
+      },
+      // Footer
+      footer: {
+        tagline: "Connecter les communautés, un quartier à la fois.",
+        quickLinks: "Liens Rapides",
+        supportUs: "Soutenez-nous",
+        supportMessage: "Aidez-nous à maintenir cette ressource communautaire.",
+        contact: "Contact",
+        contactMessage: "Vous avez des questions ou des suggestions ? Nous aimerions avoir de vos nouvelles.",
+        getInTouch: "Contactez-nous →",
+        allRightsReserved: "Tous droits réservés.",
+        madeWith: "Fait avec",
+        forCommunity: "pour la communauté"
       }
     }
   },
@@ -1702,6 +1741,19 @@ const resources = {
         sharePlaceholder: "Chia sẻ suy nghĩ của bạn về sự kiện này...",
         addMedia: "Thêm Phương Tiện",
         mediaLimit: "Hình ảnh và video tối đa 10MB mỗi file (tối đa 3 file)"
+      },
+      // Footer
+      footer: {
+        tagline: "Kết nối cộng đồng, từng khu phố một.",
+        quickLinks: "Liên Kết Nhanh",
+        supportUs: "Hỗ Trợ Chúng Tôi",
+        supportMessage: "Giúp chúng tôi duy trì nguồn tài nguyên cộng đồng này.",
+        contact: "Liên Hệ",
+        contactMessage: "Bạn có câu hỏi hoặc đề xuất? Chúng tôi rất muốn nghe từ bạn.",
+        getInTouch: "Liên hệ ngay →",
+        allRightsReserved: "Đã đăng ký bản quyền.",
+        madeWith: "Được tạo với",
+        forCommunity: "cho cộng đồng"
       }
     }
   },
@@ -2120,6 +2172,19 @@ const resources = {
         sharePlaceholder: "Compartilhe seus pensamentos sobre este evento...",
         addMedia: "Adicionar Mídia",
         mediaLimit: "Imagens e vídeos até 10MB cada (máx. 3 arquivos)"
+      },
+      // Footer
+      footer: {
+        tagline: "Conectando comunidades, um bairro de cada vez.",
+        quickLinks: "Links Rápidos",
+        supportUs: "Apoie-nos",
+        supportMessage: "Ajude-nos a manter este recurso comunitário funcionando.",
+        contact: "Contato",
+        contactMessage: "Tem perguntas ou sugestões? Adoraríamos ouvir de você.",
+        getInTouch: "Entre em contato →",
+        allRightsReserved: "Todos os direitos reservados.",
+        madeWith: "Feito com",
+        forCommunity: "para a comunidade"
       }
     }
   }
