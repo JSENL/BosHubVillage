@@ -4,14 +4,18 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useGeocoding } from './useGeocoding';
+import { useAutoTranslate } from './useAutoTranslate';
 
 export const useLocalServiceSubmissionOperations = () => {
   const { user } = useAuth();
   const [actionLoading, setActionLoading] = useState(false);
   const { geocode, isReady } = useGeocoding();
+  const { translateContent } = useAutoTranslate();
 
   const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', adminNotes: string) => {
     setActionLoading(true);
+    let newResourceId: string | null = null;
+    
     try {
       if (!user) {
         throw new Error('User not authenticated');
@@ -42,7 +46,7 @@ export const useLocalServiceSubmissionOperations = () => {
         }
 
         // Create the local resource in the local_resources table
-        const { error: createError } = await supabase
+        const { data: insertedResource, error: createError } = await supabase
           .from('local_resources')
           .insert({
             name: submission.name,
@@ -53,9 +57,13 @@ export const useLocalServiceSubmissionOperations = () => {
             description: submission.description,
             latitude,
             longitude
-          });
+          })
+          .select('id')
+          .single();
 
         if (createError) throw createError;
+        
+        newResourceId = insertedResource?.id || null;
       }
 
       // Update the submission status
@@ -72,6 +80,11 @@ export const useLocalServiceSubmissionOperations = () => {
       if (error) throw error;
 
       toast.success(`Local resource ${status} successfully!`);
+
+      // Trigger auto-translation for the new local resource
+      if (status === 'approved' && newResourceId) {
+        translateContent('local_resources', newResourceId, false);
+      }
     } catch (error: any) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} local resource:`, error);
       toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} local resource: ${error.message}`);

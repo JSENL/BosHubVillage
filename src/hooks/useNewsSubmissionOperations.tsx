@@ -3,13 +3,17 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAutoTranslate } from './useAutoTranslate';
 
 export const useNewsSubmissionOperations = () => {
   const { user } = useAuth();
   const [actionLoading, setActionLoading] = useState(false);
+  const { translateContent } = useAutoTranslate();
 
   const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', adminNotes: string) => {
     setActionLoading(true);
+    let newNewsId: string | null = null;
+    
     try {
       if (!user) {
         throw new Error('User not authenticated');
@@ -28,7 +32,7 @@ export const useNewsSubmissionOperations = () => {
         console.log('Approving news submission:', submission);
 
         // Create the news in the news table with all the new fields
-        const { error: createError } = await supabase
+        const { data: insertedNews, error: createError } = await supabase
           .from('news')
           .insert({
             title: submission.title,
@@ -41,14 +45,17 @@ export const useNewsSubmissionOperations = () => {
             date_posted: submission.date_posted,
             source: submission.source,
             created_by: submission.submitted_by
-          });
+          })
+          .select('id')
+          .single();
 
         if (createError) {
           console.error('Error creating news:', createError);
           throw createError;
         }
 
-        console.log('News created successfully');
+        newNewsId = insertedNews?.id || null;
+        console.log('News created successfully with id:', newNewsId);
       }
 
       // Update the submission status and delete if approved
@@ -79,6 +86,11 @@ export const useNewsSubmissionOperations = () => {
 
       console.log(`News ${status} successfully!`);
       toast.success(`News ${status} successfully!`);
+
+      // Trigger auto-translation for the new news
+      if (status === 'approved' && newNewsId) {
+        translateContent('news', newNewsId, false);
+      }
     } catch (error: any) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} news:`, error);
       toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} news: ${error.message}`);

@@ -2,9 +2,11 @@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from './useAuth';
+import { useAutoTranslate } from './useAutoTranslate';
 
 export const useEventSubmissionOperations = () => {
   const { user } = useAuth();
+  const { translateContent } = useAutoTranslate();
 
   const approveSubmission = async (submissionId: string, adminNotes?: string) => {
     try {
@@ -22,7 +24,7 @@ export const useEventSubmissionOperations = () => {
       if (fetchError) throw fetchError;
 
       // Create the event in the events table
-      const { error: createError } = await supabase
+      const { data: insertedEvent, error: createError } = await supabase
         .from('events')
         .insert({
           title: submission.title,
@@ -39,7 +41,9 @@ export const useEventSubmissionOperations = () => {
           latitude: submission.latitude,
           longitude: submission.longitude,
           created_by: submission.submitted_by
-        });
+        })
+        .select('id')
+        .single();
 
       if (createError) throw createError;
 
@@ -57,6 +61,11 @@ export const useEventSubmissionOperations = () => {
       if (updateError) throw updateError;
 
       toast.success('Event approved and published!');
+
+      // Trigger auto-translation for the new event
+      if (insertedEvent?.id) {
+        translateContent('events', insertedEvent.id, false);
+      }
     } catch (error: any) {
       console.error('Error approving submission:', error);
       toast.error('Failed to approve event');
