@@ -38,7 +38,7 @@ export const Footer = () => {
               <li>
                 <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center">
                   <HelpCircle className="h-4 w-4 mr-2" />
-                  FAQ
+                  {t('navigation.faq', 'FAQ')}
                 </Link>
               </li>
               <li>
