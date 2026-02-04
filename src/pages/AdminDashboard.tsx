@@ -31,9 +31,11 @@ import {
   Upload,
   BarChart3,
   UserCircle,
-  Table
+  Table,
+  Languages
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
+import { BatchTranslationTool } from '@/components/admin/BatchTranslationTool';
 import { AnalyticsOverview } from '@/components/admin/AnalyticsOverview';
 import SocialFeaturesOverview from '@/components/admin/SocialFeaturesOverview';
 import UserActivityMonitor from '@/components/admin/UserActivityMonitor';
@@ -261,14 +263,18 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="analytics" className="w-full">
-                      <TabsList className="grid w-full grid-cols-4 mb-6">
+                      <TabsList className="grid w-full grid-cols-5 mb-6">
                         <TabsTrigger value="analytics" className="flex items-center gap-2">
                           <BarChart3 className="h-4 w-4" />
                           Analytics
                         </TabsTrigger>
+                        <TabsTrigger value="translations" className="flex items-center gap-2">
+                          <Languages className="h-4 w-4" />
+                          Translations
+                        </TabsTrigger>
                         <TabsTrigger value="announcements" className="flex items-center gap-2">
                           <Megaphone className="h-4 w-4" />
-                          GNE Announcements
+                          Announcements
                         </TabsTrigger>
                         <TabsTrigger value="categories" className="flex items-center gap-2">
                           <Tag className="h-4 w-4" />
@@ -282,6 +288,10 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="analytics">
                         <AnalyticsOverview />
+                      </TabsContent>
+                      
+                      <TabsContent value="translations">
+                        <BatchTranslationTool />
                       </TabsContent>
                       
                       <TabsContent value="announcements">
