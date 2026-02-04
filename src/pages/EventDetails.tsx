@@ -15,6 +15,7 @@ import { EventCreatorInfo } from '@/components/events/EventCreatorInfo';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslatedField } from '@/hooks/useTranslatedField';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -23,6 +24,7 @@ const EventDetails = () => {
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const { t } = useTranslation();
   const { user, isAdmin } = useAuth();
+  const { getTranslatedText } = useTranslatedField();
 
   const event = events.find(e => e.id === eventId);
   
@@ -67,7 +69,9 @@ const EventDetails = () => {
 
           <div className="flex flex-col gap-3 mb-4">
             <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold">{event.title}</h1>
+              <h1 className="text-3xl font-bold">
+                {getTranslatedText(event.title, (event as any).title_translations)}
+              </h1>
               <BookmarkButton 
                 itemType="event" 
                 itemId={event.id} 
@@ -83,7 +87,9 @@ const EventDetails = () => {
               <Card>
                 <CardContent className="p-6">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge variant="secondary">{event.category}</Badge>
+                    <Badge variant="secondary">
+                      {getTranslatedText(event.category, (event as any).category_translations)}
+                    </Badge>
                     <Badge variant="outline">
                       {event.price === 0 ? t('cards.free') : `$${event.price}`}
                     </Badge>
@@ -97,7 +103,7 @@ const EventDetails = () => {
                     
                     <div className="flex items-center text-gray-600">
                       <MapPin className="h-4 w-4 mr-2" />
-                      <span>{event.location}</span>
+                      <span>{getTranslatedText(event.location, (event as any).location_translations)}</span>
                     </div>
 
                     {event.max_attendees && (
@@ -110,7 +116,9 @@ const EventDetails = () => {
 
                   <div className="prose max-w-none">
                     <h3 className="text-lg font-semibold mb-2">{t('pages.description')}</h3>
-                    <p className="text-gray-700 whitespace-pre-wrap">{event.description}</p>
+                    <p className="text-gray-700 whitespace-pre-wrap">
+                      {getTranslatedText(event.description, (event as any).description_translations)}
+                    </p>
                   </div>
 
                   {/* Add to Calendar & Share Section */}
