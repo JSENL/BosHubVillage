@@ -1,3 +1,4 @@
+export type TranslationsObject = Record<string, string>;
 
 export interface UnifiedItem {
   id: string;
@@ -21,4 +22,13 @@ export interface UnifiedItem {
   source?: string;
   originalData?: any; // Store the original data for rendering components
   is_sponsored?: boolean;
+  // Translation fields
+  title_translations?: TranslationsObject;
+  description_translations?: TranslationsObject;
+  location_translations?: TranslationsObject;
+  address_translations?: TranslationsObject;
+  category_translations?: TranslationsObject;
+  content_translations?: TranslationsObject;
+  name_translations?: TranslationsObject;
+  short_description_translations?: TranslationsObject;
 }
