@@ -34,7 +34,9 @@ const resources = {
         businessDashboard: "Business Dashboard",
         adminDashboard: "Admin Dashboard",
         signOut: "Sign Out",
-        signIn: "Sign In"
+        signIn: "Sign In",
+        donate: "Donate",
+        faq: "FAQ"
       },
       // Cards
       cards: {
@@ -461,6 +463,24 @@ const resources = {
         allRightsReserved: "All rights reserved.",
         madeWith: "Made with",
         forCommunity: "for the community"
+      },
+      // Donate section
+      donate: {
+        title: "Support Your Community Hub",
+        description: "Your donation helps us maintain this free platform, organize community events, and support local initiatives. Every contribution makes a difference!",
+        stat1: "1000+ Community Members",
+        stat2: "500+ Events Hosted",
+        button: "Donate"
+      },
+      // Weekly email
+      weeklyEmail: {
+        button: "Weekly Email",
+        title: "Stay Connected with Your Community",
+        description: "Get a weekly digest of upcoming events, local news, and community updates delivered straight to your inbox.",
+        subscribe: "Subscribe",
+        unsubscribe: "Unsubscribe",
+        success: "Successfully subscribed to weekly emails!",
+        error: "Failed to subscribe. Please try again."
       }
     }
   },
@@ -480,7 +500,9 @@ const resources = {
         businessDashboard: "Panel de Negocio",
         adminDashboard: "Panel de Administrador",
         signOut: "Cerrar Sesión",
-        signIn: "Iniciar Sesión"
+        signIn: "Iniciar Sesión",
+        donate: "Donar",
+        faq: "Preguntas Frecuentes"
       },
       cards: {
         viewDetails: "Ver Detalles",
@@ -892,6 +914,24 @@ const resources = {
         allRightsReserved: "Todos los derechos reservados.",
         madeWith: "Hecho con",
         forCommunity: "para la comunidad"
+      },
+      // Donate section
+      donate: {
+        title: "Apoya Tu Centro Comunitario",
+        description: "Tu donación nos ayuda a mantener esta plataforma gratuita, organizar eventos comunitarios y apoyar iniciativas locales. ¡Cada contribución hace la diferencia!",
+        stat1: "1000+ Miembros de la Comunidad",
+        stat2: "500+ Eventos Organizados",
+        button: "Donar"
+      },
+      // Weekly email
+      weeklyEmail: {
+        button: "Correo Semanal",
+        title: "Mantente Conectado con Tu Comunidad",
+        description: "Recibe un resumen semanal de próximos eventos, noticias locales y actualizaciones de la comunidad directamente en tu bandeja de entrada.",
+        subscribe: "Suscribirse",
+        unsubscribe: "Cancelar suscripción",
+        success: "¡Suscrito exitosamente a los correos semanales!",
+        error: "Error al suscribirse. Por favor intenta de nuevo."
       }
     }
   },
@@ -911,7 +951,9 @@ const resources = {
         businessDashboard: "Tableau de Bord Entreprise",
         adminDashboard: "Tableau de Bord Admin",
         signOut: "Se Déconnecter",
-        signIn: "Se Connecter"
+        signIn: "Se Connecter",
+        donate: "Faire un don",
+        faq: "FAQ"
       },
       cards: {
         viewDetails: "Voir les Détails",
@@ -1323,6 +1365,24 @@ const resources = {
         allRightsReserved: "Tous droits réservés.",
         madeWith: "Fait avec",
         forCommunity: "pour la communauté"
+      },
+      // Donate section
+      donate: {
+        title: "Soutenez Votre Centre Communautaire",
+        description: "Votre don nous aide à maintenir cette plateforme gratuite, organiser des événements communautaires et soutenir les initiatives locales. Chaque contribution fait la différence !",
+        stat1: "1000+ Membres de la Communauté",
+        stat2: "500+ Événements Organisés",
+        button: "Faire un don"
+      },
+      // Weekly email
+      weeklyEmail: {
+        button: "Email Hebdomadaire",
+        title: "Restez Connecté avec Votre Communauté",
+        description: "Recevez un résumé hebdomadaire des événements à venir, des nouvelles locales et des mises à jour de la communauté directement dans votre boîte de réception.",
+        subscribe: "S'abonner",
+        unsubscribe: "Se désabonner",
+        success: "Abonnement aux emails hebdomadaires réussi !",
+        error: "Échec de l'abonnement. Veuillez réessayer."
       }
     }
   },
@@ -1342,7 +1402,9 @@ const resources = {
         businessDashboard: "Bảng Điều Khiển Doanh Nghiệp",
         adminDashboard: "Bảng Điều Khiển Quản Trị",
         signOut: "Đăng Xuất",
-        signIn: "Đăng Nhập"
+        signIn: "Đăng Nhập",
+        donate: "Quyên góp",
+        faq: "Câu Hỏi Thường Gặp"
       },
       cards: {
         viewDetails: "Xem Chi Tiết",
@@ -1754,6 +1816,24 @@ const resources = {
         allRightsReserved: "Đã đăng ký bản quyền.",
         madeWith: "Được tạo với",
         forCommunity: "cho cộng đồng"
+      },
+      // Donate section
+      donate: {
+        title: "Hỗ Trợ Trung Tâm Cộng Đồng Của Bạn",
+        description: "Sự đóng góp của bạn giúp chúng tôi duy trì nền tảng miễn phí này, tổ chức các sự kiện cộng đồng và hỗ trợ các sáng kiến địa phương. Mỗi đóng góp đều tạo nên sự khác biệt!",
+        stat1: "1000+ Thành Viên Cộng Đồng",
+        stat2: "500+ Sự Kiện Đã Tổ Chức",
+        button: "Quyên góp"
+      },
+      // Weekly email
+      weeklyEmail: {
+        button: "Email Hàng Tuần",
+        title: "Luôn Kết Nối Với Cộng Đồng Của Bạn",
+        description: "Nhận bản tin hàng tuần về các sự kiện sắp tới, tin tức địa phương và cập nhật cộng đồng trực tiếp vào hộp thư của bạn.",
+        subscribe: "Đăng ký",
+        unsubscribe: "Hủy đăng ký",
+        success: "Đăng ký email hàng tuần thành công!",
+        error: "Đăng ký thất bại. Vui lòng thử lại."
       }
     }
   },
@@ -1773,7 +1853,9 @@ const resources = {
         businessDashboard: "Painel de Negócios",
         adminDashboard: "Painel do Administrador",
         signOut: "Sair",
-        signIn: "Entrar"
+        signIn: "Entrar",
+        donate: "Doar",
+        faq: "Perguntas Frequentes"
       },
       cards: {
         viewDetails: "Ver Detalhes",
@@ -2185,6 +2267,24 @@ const resources = {
         allRightsReserved: "Todos os direitos reservados.",
         madeWith: "Feito com",
         forCommunity: "para a comunidade"
+      },
+      // Donate section
+      donate: {
+        title: "Apoie Seu Centro Comunitário",
+        description: "Sua doação nos ajuda a manter esta plataforma gratuita, organizar eventos comunitários e apoiar iniciativas locais. Cada contribuição faz a diferença!",
+        stat1: "1000+ Membros da Comunidade",
+        stat2: "500+ Eventos Realizados",
+        button: "Doar"
+      },
+      // Weekly email
+      weeklyEmail: {
+        button: "Email Semanal",
+        title: "Fique Conectado com Sua Comunidade",
+        description: "Receba um resumo semanal dos próximos eventos, notícias locais e atualizações da comunidade diretamente na sua caixa de entrada.",
+        subscribe: "Inscrever-se",
+        unsubscribe: "Cancelar inscrição",
+        success: "Inscrito com sucesso nos emails semanais!",
+        error: "Falha ao se inscrever. Por favor, tente novamente."
       }
     }
   }
