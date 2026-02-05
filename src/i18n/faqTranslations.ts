@@ -15,8 +15,8 @@ export const faqTranslationsEn = {
   businessesDesc: "Find and connect with local businesses",
   localServices: "Local Services",
   localServicesDesc: "Discover service providers and professionals in your area",
-  newsUpdates: "News & Updates",
-  newsUpdatesDesc: "Stay informed with local community news",
+  cultureUpdates: "Culture & Updates",
+  cultureUpdatesDesc: "Stay informed with local community culture and arts",
   mapFeatures: "Map Features",
   mapFeaturesDesc: "Navigate your community with our interactive Mapbox map",
   nearMe: "Near Me & Location Features",
@@ -38,7 +38,7 @@ export const faqTranslationsEn = {
   languagesAccessibility: "Languages & Accessibility",
   languagesAccessibilityDesc: "HubVillage in your preferred language",
   submissionProcess: "Submission Process",
-  submissionProcessDesc: "How to add events, businesses, services, and news",
+  submissionProcessDesc: "How to add events, businesses, services, and culture",
   trendingDiscovery: "Trending & Discovery",
   trendingDiscoveryDesc: "Discover popular and recommended content",
   accountPrivacy: "Account & Privacy",
@@ -81,11 +81,11 @@ export const faqTranslationsEn = {
       q3: "Can I list my services?",
       q4: "How are local services different from businesses?"
     },
-    news: {
-      q1: "What kind of news is featured?",
-      q2: "Can I submit news articles?",
-      q3: "How do I stay updated with news?",
-      q4: "Can I attach media to news submissions?"
+    culture: {
+      q1: "What kind of culture content is featured?",
+      q2: "Can I submit culture articles?",
+      q3: "How do I stay updated with culture?",
+      q4: "Can I attach media to culture submissions?"
     },
     map: {
       q1: "How does the map work?",
@@ -208,16 +208,16 @@ export const faqTranslationsEn = {
       a3: "Yes! Service providers can submit their services using 'Submit Local Service'. Include your service description, category, contact info, address, and any relevant details.",
       a4: "Local services typically refer to individual professionals or smaller service providers (freelancers, contractors, consultants), while businesses are established commercial entities with a storefront or office."
     },
-    news: {
-      a1: "HubVillage features local community news, announcements, updates about local initiatives, community events coverage, and information relevant to Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain residents.",
-      a2: "Yes! Community members can submit news articles using 'Submit News'. Include a headline, content, source, and location. You can also attach images and media files. All submissions are reviewed before publication.",
-      a3: "Visit the News page regularly, bookmark interesting articles, enable weekly digest emails, or use saved searches with notifications. Purple 'N' markers show news locations on the map.",
-      a4: "Yes! When submitting news, you can upload images and media files to accompany your article through the media upload feature."
+    culture: {
+      a1: "HubVillage features local community culture content, announcements, updates about local initiatives, community events coverage, arts and cultural activities relevant to Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain residents.",
+      a2: "Yes! Community members can submit culture articles using 'Submit Culture'. Include a headline, content, source, and location. You can also attach images and media files. All submissions are reviewed before publication.",
+      a3: "Visit the Culture page regularly, bookmark interesting articles, enable weekly digest emails, or use saved searches with notifications. Purple 'C' markers show culture locations on the map.",
+      a4: "Yes! When submitting culture content, you can upload images and media files to accompany your article through the media upload feature."
     },
     map: {
-      a1: "The interactive Mapbox map shows all content with color-coded markers: Red 'E' for Events, Blue 'B' for Businesses, Orange 'L' for Local Services, and Purple 'N' for News. Click markers for details, use clustering for dense areas, and resize the map panel. The map is centered on Southern Boston covering all five neighborhoods.",
+      a1: "The interactive Mapbox map shows all content with color-coded markers: Red 'E' for Events, Blue 'B' for Businesses, Orange 'L' for Local Services, and Purple 'C' for Culture. Click markers for details, use clustering for dense areas, and resize the map panel. The map is centered on Southern Boston covering all five neighborhoods.",
       a2: "Yes! Click any map marker and select 'Get Directions' for turn-by-turn directions with distance and time estimates. You can also open directions in Google Maps, Apple Maps, or other navigation apps.",
-      a3: "Red 'E' = Events, Blue 'B' = Businesses, Orange 'L' = Local Services, Purple 'N' = News. Numbered circles indicate clusters - click to zoom in. The map legend helps identify all marker types.",
+      a3: "Red 'E' = Events, Blue 'B' = Businesses, Orange 'L' = Local Services, Purple 'C' = Culture. Numbered circles indicate clusters - click to zoom in. The map legend helps identify all marker types.",
       a4: "Yes! Use the map search box to find specific addresses or locations. You can drag and reposition the map for better visibility and use the map legend for reference."
     },
     nearMe: {
@@ -229,7 +229,7 @@ export const faqTranslationsEn = {
     },
     search: {
       a1: "Use the search bar to search by keywords, names, or descriptions. Search across all content types or filter by specific categories. Results update in real-time as you type.",
-      a2: "Filters include: Type (Events, Businesses, Services, News), Category, Date/Time (for events), Neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), Village, and Distance (Near Me). Use 'Clear All' to reset.",
+      a2: "Filters include: Type (Events, Businesses, Services, Culture), Category, Date/Time (for events), Neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), Village, and Distance (Near Me). Use 'Clear All' to reset.",
       a3: "Yes! Registered users can save searches using the 'Save Search' button. Name your search and optionally enable email or in-app notifications for new matches. Access saved searches from the Discovery sidebar.",
       a4: "Switch to calendar view using the view toggle to see events organized by date. Click any date to see all events scheduled. Perfect for planning your week.",
       a5: "When saving a search, enable notifications to be alerted when new content matches your criteria. Choose email notifications, in-app notifications, or both. Manage preferences from the Discovery sidebar."
@@ -260,12 +260,12 @@ export const faqTranslationsEn = {
       a2: "Click the 'Weekly Email' button in the navigation bar to open the signup modal. Select your preferred delivery day and confirm. You can also find this option in the 'Donate' section on the home page.",
       a3: "You can choose any day of the week (Monday through Sunday) to receive your digest. Select your preferred day from the dropdown in the signup modal.",
       a4: "Go to Email Digest Settings in your profile and toggle off 'Enable Weekly Digest'. You can also unsubscribe using the link in any digest email.",
-      a5: "The digest includes: trending content from the week, upcoming events in your neighborhoods, new businesses and services, popular news articles, and personalized recommendations based on your interests.",
+      a5: "The digest includes: trending content from the week, upcoming events in your neighborhoods, new businesses and services, popular culture articles, and personalized recommendations based on your interests.",
       a6: "Yes! You can enter your email in the Weekly Email modal. If you already have an account, your preferences will be updated automatically. Otherwise, you'll be prompted to create an account to receive the digest.",
       a7: "Look for the 'Weekly Email' button in the navigation bar next to the Donate button. You can also find it in the home page's Donate section."
     },
     comments: {
-      a1: "On any event, business, service, or news detail page, scroll to the comments section. Registered users can leave comments by typing in the comment box and submitting.",
+      a1: "On any event, business, service, or culture detail page, scroll to the comments section. Registered users can leave comments by typing in the comment box and submitting.",
       a2: "Yes! Leave star ratings (1-5 stars) with your comments on business and service listings. Average ratings are displayed on listings to help others.",
       a3: "Comments are monitored for inappropriate content. Keep comments respectful, relevant, and helpful. Inappropriate comments may be removed by administrators.",
       a4: "Yes! You can reply to any comment to create threaded discussions. Great for follow-up questions or providing additional information to the community.",
@@ -292,7 +292,7 @@ export const faqTranslationsEn = {
     },
     trending: {
       a1: "Trending content is calculated based on views, bookmarks, comments, and recent engagement. Content with high activity in a short period appears in the trending section of the Discovery sidebar.",
-      a2: "The Discovery sidebar shows trending events, businesses, news, and services. Trending indicators also appear on individual items throughout the site.",
+      a2: "The Discovery sidebar shows trending events, businesses, culture, and services. Trending indicators also appear on individual items throughout the site.",
       a3: "The Recently Viewed section in the Discovery sidebar shows items you've recently looked at, making it easy to return to content you were interested in.",
       a4: "Recommendations are based on your interests (set in your profile), viewing history, bookmarks, and activity patterns. The more you use HubVillage, the better your recommendations become."
     },
@@ -321,8 +321,8 @@ export const faqTranslationsEs = {
   businessesDesc: "Aprende sobre las funciones de negocios y cómo usarlas",
   localServices: "Servicios Locales",
   localServicesDesc: "Aprende sobre las funciones de servicios locales y cómo usarlas",
-  newsUpdates: "Noticias y Actualizaciones",
-  newsUpdatesDesc: "Aprende sobre las funciones de noticias y actualizaciones y cómo usarlas",
+  cultureUpdates: "Cultura y Actualizaciones",
+  cultureUpdatesDesc: "Mantente informado con la cultura y las artes de la comunidad local",
   mapFeatures: "Funciones del Mapa",
   mapFeaturesDesc: "Aprende sobre las funciones del mapa y cómo usarlas",
   nearMe: "Cerca de Mí y Ubicación",
@@ -385,11 +385,11 @@ export const faqTranslationsEs = {
       q3: "¿Puedo listar mis servicios?",
       q4: "¿Cómo se diferencian los servicios locales de los negocios?"
     },
-    news: {
-      q1: "¿Qué tipo de noticias se presentan?",
-      q2: "¿Puedo enviar artículos de noticias?",
-      q3: "¿Cómo me mantengo actualizado con las noticias?",
-      q4: "¿Puedo adjuntar medios a los envíos de noticias?"
+    culture: {
+      q1: "¿Qué tipo de contenido cultural se presenta?",
+      q2: "¿Puedo enviar artículos culturales?",
+      q3: "¿Cómo me mantengo actualizado con la cultura?",
+      q4: "¿Puedo adjuntar medios a los envíos culturales?"
     },
     map: {
       q1: "¿Cómo funciona el mapa?",
@@ -509,16 +509,16 @@ export const faqTranslationsEs = {
       a3: "¡Sí! Los proveedores de servicios pueden enviar sus servicios usando 'Enviar Servicio Local'. Incluye la descripción de tu servicio, categorías, información de contacto, área de cobertura y cualquier certificación o especialización relevante.",
       a4: "Los servicios locales típicamente se refieren a profesionales individuales o proveedores de servicios más pequeños (como freelancers, contratistas o consultores), mientras que los negocios son entidades comerciales establecidas con una ubicación física."
     },
-    news: {
-      a1: "Presentamos noticias locales de la comunidad, anuncios, actualizaciones sobre negocios y eventos locales, iniciativas comunitarias y otra información local relevante que afecta a los residentes.",
-      a2: "¡Sí! Los miembros de la comunidad pueden enviar artículos de noticias usando 'Enviar Noticia'. Incluye un título atractivo, contenido detallado, imágenes relevantes y categorización apropiada. Todos los envíos son revisados antes de su publicación.",
-      a3: "Visita la página de Noticias regularmente, guarda artículos interesantes en favoritos, activa los emails de resumen semanal o sigue categorías específicas. También puedes interactuar con artículos dejando comentarios y compartiéndolos con otros.",
-      a4: "¡Sí! Al enviar noticias, puedes subir imágenes y otros archivos multimedia para acompañar tu artículo. Esto ayuda a hacer tu contenido más atractivo e informativo."
+    culture: {
+      a1: "Presentamos contenido cultural de la comunidad local, anuncios, actualizaciones sobre iniciativas locales, cobertura de eventos comunitarios, artes y actividades culturales relevantes para los residentes.",
+      a2: "¡Sí! Los miembros de la comunidad pueden enviar artículos culturales usando 'Enviar Cultura'. Incluye un título atractivo, contenido detallado, imágenes relevantes y categorización apropiada. Todos los envíos son revisados antes de su publicación.",
+      a3: "Visita la página de Cultura regularmente, guarda artículos interesantes en favoritos, activa los emails de resumen semanal o sigue categorías específicas. Los marcadores púrpura 'C' muestran ubicaciones culturales en el mapa.",
+      a4: "¡Sí! Al enviar contenido cultural, puedes subir imágenes y otros archivos multimedia para acompañar tu artículo. Esto ayuda a hacer tu contenido más atractivo e informativo."
     },
     map: {
-      a1: "El mapa interactivo muestra todos los eventos, negocios y servicios con marcadores codificados por color (E para Eventos en rojo, B para Negocios en azul, L para Servicios Locales en naranja, N para Noticias en púrpura). Haz clic en los marcadores para ver detalles, usa el agrupamiento para explorar áreas densas y redimensiona el panel del mapa para mejor visualización.",
+      a1: "El mapa interactivo muestra todos los eventos, negocios y servicios con marcadores codificados por color (E para Eventos en rojo, B para Negocios en azul, L para Servicios Locales en naranja, C para Cultura en púrpura). Haz clic en los marcadores para ver detalles, usa el agrupamiento para explorar áreas densas y redimensiona el panel del mapa para mejor visualización.",
       a2: "¡Sí! Haz clic en cualquier marcador del mapa y selecciona 'Obtener Direcciones' para ver direcciones paso a paso con estimaciones de distancia y tiempo. También puedes abrir direcciones en aplicaciones de mapas externas como Google Maps o Apple Maps para navegación.",
-      a3: "Los marcadores rojos con 'E' son Eventos, los marcadores azules con 'B' son Negocios, los marcadores naranjas con 'L' son Servicios Locales, y los marcadores púrpuras con 'N' son ubicaciones de Noticias. Las áreas agrupadas muestran números indicando cuántos elementos hay en esa área. Haz clic en los grupos para acercar.",
+      a3: "Los marcadores rojos con 'E' son Eventos, los marcadores azules con 'B' son Negocios, los marcadores naranjas con 'L' son Servicios Locales, y los marcadores púrpuras con 'C' son ubicaciones de Cultura. Las áreas agrupadas muestran números indicando cuántos elementos hay en esa área. Haz clic en los grupos para acercar.",
       a4: "¡Sí! El mapa incluye un cuadro de búsqueda que te permite encontrar direcciones o ubicaciones específicas. También puedes arrastrar el cuadro de búsqueda para reposicionarlo en el mapa para mejor visibilidad. La leyenda del mapa te ayuda a identificar diferentes tipos de marcadores."
     },
     nearMe: {
@@ -619,8 +619,8 @@ export const faqTranslationsFr = {
   businessesDesc: "Apprenez les fonctionnalités d'entreprises et comment les utiliser",
   localServices: "Services Locaux",
   localServicesDesc: "Apprenez les fonctionnalités de services locaux et comment les utiliser",
-  newsUpdates: "Actualités et Mises à Jour",
-  newsUpdatesDesc: "Apprenez les fonctionnalités d'actualités et comment les utiliser",
+  cultureUpdates: "Culture et Mises à Jour",
+  cultureUpdatesDesc: "Restez informé avec la culture et les arts de la communauté locale",
   mapFeatures: "Fonctionnalités de Carte",
   mapFeaturesDesc: "Apprenez les fonctionnalités de carte et comment les utiliser",
   nearMe: "Près de Moi et Localisation",
@@ -683,11 +683,11 @@ export const faqTranslationsFr = {
       q3: "Puis-je lister mes services ?",
       q4: "Quelle est la différence entre services locaux et entreprises ?"
     },
-    news: {
-      q1: "Quel type d'actualités est présenté ?",
-      q2: "Puis-je soumettre des articles d'actualités ?",
-      q3: "Comment rester informé des actualités ?",
-      q4: "Puis-je joindre des médias aux soumissions d'actualités ?"
+    culture: {
+      q1: "Quel type de contenu culturel est présenté ?",
+      q2: "Puis-je soumettre des articles culturels ?",
+      q3: "Comment rester informé de la culture ?",
+      q4: "Puis-je joindre des médias aux soumissions culturelles ?"
     },
     map: {
       q1: "Comment fonctionne la carte ?",
@@ -807,16 +807,16 @@ export const faqTranslationsFr = {
       a3: "Oui ! Les prestataires de services peuvent soumettre leurs services en utilisant 'Soumettre un Service Local'. Incluez la description de votre service, les catégories, les coordonnées, la zone de couverture et toute certification ou spécialisation pertinente.",
       a4: "Les services locaux font généralement référence aux professionnels individuels ou aux plus petits prestataires de services (comme les freelances, entrepreneurs ou consultants), tandis que les entreprises sont des entités commerciales établies avec un emplacement physique."
     },
-    news: {
-      a1: "Nous présentons les actualités locales de la communauté, les annonces, les mises à jour sur les entreprises et événements locaux, les initiatives communautaires et autres informations locales pertinentes qui affectent les résidents.",
-      a2: "Oui ! Les membres de la communauté peuvent soumettre des articles d'actualités en utilisant 'Soumettre une Actualité'. Incluez un titre accrocheur, un contenu détaillé, des images pertinentes et une catégorisation appropriée. Toutes les soumissions sont examinées avant publication.",
-      a3: "Visitez la page Actualités régulièrement, mettez en favoris les articles intéressants, activez les emails de résumé hebdomadaire ou suivez des catégories spécifiques. Vous pouvez également interagir avec les articles en laissant des commentaires et en les partageant avec d'autres.",
-      a4: "Oui ! Lors de la soumission d'actualités, vous pouvez télécharger des images et autres fichiers médias pour accompagner votre article. Cela aide à rendre votre contenu plus engageant et informatif."
+    culture: {
+      a1: "Nous présentons du contenu culturel local, des annonces, des mises à jour sur les initiatives locales, la couverture des événements communautaires, les arts et activités culturelles pertinentes pour les résidents.",
+      a2: "Oui ! Les membres de la communauté peuvent soumettre des articles culturels en utilisant 'Soumettre Culture'. Incluez un titre accrocheur, un contenu détaillé, des images pertinentes et une catégorisation appropriée. Toutes les soumissions sont examinées avant publication.",
+      a3: "Visitez la page Culture régulièrement, mettez en favoris les articles intéressants, activez les emails de résumé hebdomadaire ou utilisez les recherches sauvegardées. Les marqueurs violets 'C' montrent les emplacements culturels sur la carte.",
+      a4: "Oui ! Lors de la soumission de contenu culturel, vous pouvez télécharger des images et autres fichiers médias pour accompagner votre article. Cela aide à rendre votre contenu plus engageant et informatif."
     },
     map: {
-      a1: "La carte interactive montre tous les événements, entreprises et services avec des marqueurs codés par couleur (E pour Événements en rouge, B pour Entreprises en bleu, L pour Services Locaux en orange, N pour Actualités en violet). Cliquez sur les marqueurs pour voir les détails, utilisez le regroupement pour explorer les zones denses et redimensionnez le panneau de carte pour une meilleure visualisation.",
+      a1: "La carte interactive montre tous les événements, entreprises et services avec des marqueurs codés par couleur (E pour Événements en rouge, B pour Entreprises en bleu, L pour Services Locaux en orange, C pour Culture en violet). Cliquez sur les marqueurs pour voir les détails, utilisez le regroupement pour explorer les zones denses et redimensionnez le panneau de carte pour une meilleure visualisation.",
       a2: "Oui ! Cliquez sur n'importe quel marqueur de carte et sélectionnez 'Obtenir l'Itinéraire' pour voir les directions pas à pas avec les estimations de distance et de temps. Vous pouvez également ouvrir les directions dans des applications de cartes externes comme Google Maps ou Apple Maps pour la navigation.",
-      a3: "Les marqueurs rouges avec 'E' sont des Événements, les marqueurs bleus avec 'B' sont des Entreprises, les marqueurs orange avec 'L' sont des Services Locaux, et les marqueurs violets avec 'N' sont des emplacements d'Actualités. Les zones regroupées montrent des chiffres indiquant combien d'éléments sont dans cette zone. Cliquez sur les groupes pour zoomer.",
+      a3: "Les marqueurs rouges avec 'E' sont des Événements, les marqueurs bleus avec 'B' sont des Entreprises, les marqueurs orange avec 'L' sont des Services Locaux, et les marqueurs violets avec 'C' sont des emplacements de Culture. Les zones regroupées montrent des chiffres indiquant combien d'éléments sont dans cette zone. Cliquez sur les groupes pour zoomer.",
       a4: "Oui ! La carte inclut une boîte de recherche qui vous permet de trouver des adresses ou emplacements spécifiques. Vous pouvez également faire glisser la boîte de recherche pour la repositionner sur la carte pour une meilleure visibilité. La légende de la carte vous aide à identifier les différents types de marqueurs."
     },
     nearMe: {
@@ -917,8 +917,8 @@ export const faqTranslationsPt = {
   businessesDesc: "Aprenda sobre as funcionalidades de negócios e como usá-las",
   localServices: "Serviços Locais",
   localServicesDesc: "Aprenda sobre as funcionalidades de serviços locais e como usá-las",
-  newsUpdates: "Notícias e Atualizações",
-  newsUpdatesDesc: "Aprenda sobre as funcionalidades de notícias e como usá-las",
+  cultureUpdates: "Cultura e Atualizações",
+  cultureUpdatesDesc: "Mantenha-se informado com a cultura e as artes da comunidade local",
   mapFeatures: "Funcionalidades do Mapa",
   mapFeaturesDesc: "Aprenda sobre as funcionalidades do mapa e como usá-las",
   nearMe: "Perto de Mim e Localização",
@@ -981,11 +981,11 @@ export const faqTranslationsPt = {
       q3: "Posso listar meus serviços?",
       q4: "Qual a diferença entre serviços locais e negócios?"
     },
-    news: {
-      q1: "Que tipo de notícias são apresentadas?",
-      q2: "Posso enviar artigos de notícias?",
-      q3: "Como me mantenho atualizado com as notícias?",
-      q4: "Posso anexar mídia aos envios de notícias?"
+    culture: {
+      q1: "Que tipo de conteúdo cultural é apresentado?",
+      q2: "Posso enviar artigos culturais?",
+      q3: "Como me mantenho atualizado com a cultura?",
+      q4: "Posso anexar mídia aos envios culturais?"
     },
     map: {
       q1: "Como funciona o mapa?",
@@ -1105,16 +1105,16 @@ export const faqTranslationsPt = {
       a3: "Sim! Prestadores de serviços podem enviar seus serviços usando 'Enviar Serviço Local'. Inclua a descrição do seu serviço, categorias, informações de contato, área de cobertura e quaisquer certificações ou especializações relevantes.",
       a4: "Serviços locais geralmente se referem a profissionais individuais ou prestadores de serviços menores (como freelancers, empreiteiros ou consultores), enquanto negócios são entidades comerciais estabelecidas com uma localização física."
     },
-    news: {
-      a1: "Apresentamos notícias locais da comunidade, anúncios, atualizações sobre negócios e eventos locais, iniciativas comunitárias e outras informações locais relevantes que afetam os moradores.",
-      a2: "Sim! Membros da comunidade podem enviar artigos de notícias usando 'Enviar Notícia'. Inclua um título atraente, conteúdo detalhado, imagens relevantes e categorização apropriada. Todos os envios são revisados antes da publicação.",
-      a3: "Visite a página de Notícias regularmente, salve artigos interessantes nos favoritos, ative emails de resumo semanal ou siga categorias específicas. Você também pode interagir com artigos deixando comentários e compartilhando-os com outros.",
-      a4: "Sim! Ao enviar notícias, você pode fazer upload de imagens e outros arquivos de mídia para acompanhar seu artigo. Isso ajuda a tornar seu conteúdo mais envolvente e informativo."
+    culture: {
+      a1: "Apresentamos conteúdo cultural local, anúncios, atualizações sobre iniciativas locais, cobertura de eventos comunitários, artes e atividades culturais relevantes para os moradores.",
+      a2: "Sim! Membros da comunidade podem enviar artigos culturais usando 'Enviar Cultura'. Inclua um título atraente, conteúdo detalhado, imagens relevantes e categorização apropriada. Todos os envios são revisados antes da publicação.",
+      a3: "Visite a página de Cultura regularmente, salve artigos interessantes nos favoritos, ative emails de resumo semanal ou use pesquisas salvas. Os marcadores roxos 'C' mostram localizações culturais no mapa.",
+      a4: "Sim! Ao enviar conteúdo cultural, você pode fazer upload de imagens e outros arquivos de mídia para acompanhar seu artigo. Isso ajuda a tornar seu conteúdo mais envolvente e informativo."
     },
     map: {
-      a1: "O mapa interativo mostra todos os eventos, negócios e serviços com marcadores codificados por cor (E para Eventos em vermelho, B para Negócios em azul, L para Serviços Locais em laranja, N para Notícias em roxo). Clique nos marcadores para ver detalhes, use o agrupamento para explorar áreas densas e redimensione o painel do mapa para melhor visualização.",
+      a1: "O mapa interativo mostra todos os eventos, negócios e serviços com marcadores codificados por cor (E para Eventos em vermelho, B para Negócios em azul, L para Serviços Locais em laranja, C para Cultura em roxo). Clique nos marcadores para ver detalhes, use o agrupamento para explorar áreas densas e redimensione o painel do mapa para melhor visualização.",
       a2: "Sim! Clique em qualquer marcador do mapa e selecione 'Obter Direções' para ver direções passo a passo com estimativas de distância e tempo. Você também pode abrir direções em aplicativos de mapas externos como Google Maps ou Apple Maps para navegação.",
-      a3: "Marcadores vermelhos com 'E' são Eventos, marcadores azuis com 'B' são Negócios, marcadores laranja com 'L' são Serviços Locais, e marcadores roxos com 'N' são localizações de Notícias. Áreas agrupadas mostram números indicando quantos itens estão nessa área. Clique nos grupos para aproximar.",
+      a3: "Marcadores vermelhos com 'E' são Eventos, marcadores azuis com 'B' são Negócios, marcadores laranja com 'L' são Serviços Locais, e marcadores roxos com 'C' são localizações de Cultura. Áreas agrupadas mostram números indicando quantos itens estão nessa área. Clique nos grupos para aproximar.",
       a4: "Sim! O mapa inclui uma caixa de pesquisa que permite encontrar endereços ou localizações específicas. Você também pode arrastar a caixa de pesquisa para reposicioná-la no mapa para melhor visibilidade. A legenda do mapa ajuda a identificar diferentes tipos de marcadores."
     },
     nearMe: {
@@ -1215,8 +1215,8 @@ export const faqTranslationsVi = {
   businessesDesc: "Tìm hiểu về các tính năng doanh nghiệp và cách sử dụng chúng",
   localServices: "Dịch Vụ Địa Phương",
   localServicesDesc: "Tìm hiểu về các tính năng dịch vụ địa phương và cách sử dụng chúng",
-  newsUpdates: "Tin Tức và Cập Nhật",
-  newsUpdatesDesc: "Tìm hiểu về các tính năng tin tức và cách sử dụng chúng",
+  cultureUpdates: "Văn Hóa và Cập Nhật",
+  cultureUpdatesDesc: "Luôn cập nhật về văn hóa và nghệ thuật của cộng đồng địa phương",
   mapFeatures: "Tính Năng Bản Đồ",
   mapFeaturesDesc: "Tìm hiểu về các tính năng bản đồ và cách sử dụng chúng",
   nearMe: "Gần Tôi và Vị Trí",
@@ -1279,11 +1279,11 @@ export const faqTranslationsVi = {
       q3: "Tôi có thể liệt kê dịch vụ của mình không?",
       q4: "Sự khác biệt giữa dịch vụ địa phương và doanh nghiệp là gì?"
     },
-    news: {
-      q1: "Loại tin tức nào được đăng?",
-      q2: "Tôi có thể gửi bài viết tin tức không?",
-      q3: "Làm sao để cập nhật tin tức?",
-      q4: "Tôi có thể đính kèm phương tiện vào bài gửi tin tức không?"
+    culture: {
+      q1: "Loại nội dung văn hóa nào được đăng?",
+      q2: "Tôi có thể gửi bài viết văn hóa không?",
+      q3: "Làm sao để cập nhật văn hóa?",
+      q4: "Tôi có thể đính kèm phương tiện vào bài gửi văn hóa không?"
     },
     map: {
       q1: "Bản đồ hoạt động như thế nào?",
@@ -1403,16 +1403,16 @@ export const faqTranslationsVi = {
       a3: "Có! Nhà cung cấp dịch vụ có thể gửi dịch vụ của họ bằng cách sử dụng 'Gửi Dịch Vụ Địa Phương'. Bao gồm mô tả dịch vụ, danh mục, thông tin liên hệ, khu vực phục vụ và bất kỳ chứng chỉ hoặc chuyên môn liên quan nào.",
       a4: "Dịch vụ địa phương thường đề cập đến các chuyên gia cá nhân hoặc nhà cung cấp dịch vụ nhỏ hơn (như freelancer, nhà thầu hoặc tư vấn viên), trong khi doanh nghiệp là các thực thể thương mại đã được thành lập với địa điểm vật lý."
     },
-    news: {
-      a1: "Chúng tôi đăng tin tức cộng đồng địa phương, thông báo, cập nhật về doanh nghiệp và sự kiện địa phương, các sáng kiến cộng đồng và các thông tin địa phương liên quan khác ảnh hưởng đến cư dân.",
-      a2: "Có! Thành viên cộng đồng có thể gửi bài viết tin tức bằng cách sử dụng 'Gửi Tin Tức'. Bao gồm tiêu đề hấp dẫn, nội dung chi tiết, hình ảnh liên quan và phân loại phù hợp. Tất cả các bài gửi được xem xét trước khi xuất bản.",
-      a3: "Truy cập trang Tin Tức thường xuyên, đánh dấu các bài viết thú vị, bật email tóm tắt hàng tuần hoặc theo dõi các danh mục cụ thể. Bạn cũng có thể tương tác với các bài viết bằng cách để lại bình luận và chia sẻ với người khác.",
-      a4: "Có! Khi gửi tin tức, bạn có thể tải lên hình ảnh và các tệp phương tiện khác để đi kèm bài viết của bạn. Điều này giúp làm cho nội dung của bạn hấp dẫn và có nhiều thông tin hơn."
+    culture: {
+      a1: "Chúng tôi đăng nội dung văn hóa cộng đồng địa phương, thông báo, cập nhật về các sáng kiến địa phương, phủ sóng sự kiện cộng đồng, các hoạt động nghệ thuật và văn hóa liên quan đến cư dân.",
+      a2: "Có! Thành viên cộng đồng có thể gửi bài viết văn hóa bằng cách sử dụng 'Gửi Văn Hóa'. Bao gồm tiêu đề hấp dẫn, nội dung chi tiết, hình ảnh liên quan và phân loại phù hợp. Tất cả các bài gửi được xem xét trước khi xuất bản.",
+      a3: "Truy cập trang Văn Hóa thường xuyên, đánh dấu các bài viết thú vị, bật email tóm tắt hàng tuần hoặc sử dụng tìm kiếm đã lưu. Các điểm đánh dấu tím 'C' hiển thị vị trí văn hóa trên bản đồ.",
+      a4: "Có! Khi gửi nội dung văn hóa, bạn có thể tải lên hình ảnh và các tệp phương tiện khác để đi kèm bài viết của bạn. Điều này giúp làm cho nội dung của bạn hấp dẫn và có nhiều thông tin hơn."
     },
     map: {
-      a1: "Bản đồ tương tác hiển thị tất cả các sự kiện, doanh nghiệp và dịch vụ với các điểm đánh dấu được mã màu (E cho Sự Kiện màu đỏ, B cho Doanh Nghiệp màu xanh, L cho Dịch Vụ Địa Phương màu cam, N cho Tin Tức màu tím). Nhấp vào các điểm đánh dấu để xem chi tiết, sử dụng nhóm để khám phá các khu vực dày đặc và thay đổi kích thước bảng bản đồ để xem tốt hơn.",
+      a1: "Bản đồ tương tác hiển thị tất cả các sự kiện, doanh nghiệp và dịch vụ với các điểm đánh dấu được mã màu (E cho Sự Kiện màu đỏ, B cho Doanh Nghiệp màu xanh, L cho Dịch Vụ Địa Phương màu cam, C cho Văn Hóa màu tím). Nhấp vào các điểm đánh dấu để xem chi tiết, sử dụng nhóm để khám phá các khu vực dày đặc và thay đổi kích thước bảng bản đồ để xem tốt hơn.",
       a2: "Có! Nhấp vào bất kỳ điểm đánh dấu nào trên bản đồ và chọn 'Lấy Chỉ Đường' để xem chỉ dẫn từng bước với ước tính khoảng cách và thời gian. Bạn cũng có thể mở chỉ đường trong các ứng dụng bản đồ bên ngoài như Google Maps hoặc Apple Maps để điều hướng.",
-      a3: "Điểm đánh dấu đỏ với 'E' là Sự Kiện, điểm đánh dấu xanh với 'B' là Doanh Nghiệp, điểm đánh dấu cam với 'L' là Dịch Vụ Địa Phương, và điểm đánh dấu tím với 'N' là vị trí Tin Tức. Các khu vực nhóm hiển thị số lượng cho biết có bao nhiêu mục trong khu vực đó. Nhấp vào các nhóm để phóng to.",
+      a3: "Điểm đánh dấu đỏ với 'E' là Sự Kiện, điểm đánh dấu xanh với 'B' là Doanh Nghiệp, điểm đánh dấu cam với 'L' là Dịch Vụ Địa Phương, và điểm đánh dấu tím với 'C' là vị trí Văn Hóa. Các khu vực nhóm hiển thị số lượng cho biết có bao nhiêu mục trong khu vực đó. Nhấp vào các nhóm để phóng to.",
       a4: "Có! Bản đồ bao gồm hộp tìm kiếm cho phép bạn tìm địa chỉ hoặc vị trí cụ thể. Bạn cũng có thể kéo hộp tìm kiếm để đặt lại vị trí trên bản đồ để có khả năng hiển thị tốt hơn. Chú thích bản đồ giúp bạn xác định các loại điểm đánh dấu khác nhau."
     },
     nearMe: {
