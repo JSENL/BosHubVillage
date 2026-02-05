@@ -29,6 +29,9 @@ import UserProfile from "./pages/UserProfile";
 import { EditProfile } from "./pages/EditProfile";
 import { MapboxTest } from "./components/MapboxTest";
 import { FAQ } from "./pages/FAQ";
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import About from "./pages/About";
 import { supabase } from "@/integrations/supabase/client";
 
 // Recovery redirect component to handle email link redirects
@@ -107,6 +110,9 @@ const App = () => (
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/mapbox-test" element={<MapboxTest />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
