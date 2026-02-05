@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- SEO Meta Tags -->
-    <title>Local Community Hub - Discover Events, Businesses & Services</title>
-    <meta name="description" content="Discover local events, businesses, and community services in your area. Connect with your neighborhood and explore what's happening around you." />
-    <meta name="keywords" content="local events, community, businesses, services, neighborhood, discover, map, social" />
-    <meta name="author" content="Local Community Hub" />
+    <title>HubVillage - Connect with Your Community</title>
+    <meta name="description" content="HubVillage connects neighbors through local events, businesses, news, and community resources. Discover what's happening in your neighborhood." />
+    <meta name="keywords" content="local events, community, businesses, services, neighborhood, discover, HubVillage" />
+    <meta name="author" content="HubVillage" />
+    
+    <!-- Mobile Web App Capable -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="HubVillage" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <link rel="canonical" href="https://your-domain.com/" />
     
     <!-- Open Graph / Facebook -->
@@ -76,14 +82,5 @@
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
     <script type="module" src="/src/main.tsx"></script>
     
-    <!-- Performance: Non-critical scripts loaded defer -->
-    <script>
-      // Progressive enhancement for offline support
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {});
-        });
-      }
-    </script>
   </body>
 </html>

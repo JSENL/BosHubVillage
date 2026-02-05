@@ -80,6 +80,17 @@ export const Footer = () => {
             © {currentYear} HubVillage. {t('footer.allRightsReserved', 'All rights reserved.')}
           </p>
           <div className="flex items-center gap-4">
+            <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {t('navigation.about', 'About')}
+            </Link>
+            <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {t('legal.termsTitle', 'Terms')}
+            </Link>
+            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              {t('legal.privacyTitle', 'Privacy')}
+            </Link>
+          </div>
+          <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground flex items-center">
               {t('footer.madeWith', 'Made with')} <Heart className="h-4 w-4 mx-1 text-logo-coral-orange" /> {t('footer.forCommunity', 'for the community')}
             </span>
