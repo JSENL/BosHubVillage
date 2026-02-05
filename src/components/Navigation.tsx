@@ -90,6 +90,15 @@ export const Navigation = () => {
               <HelpCircle className="h-4 w-4 mr-2" />
               <span className="text-sm md:text-base">FAQ</span>
             </Link>
+            
+            {/* About Link - Hidden on mobile (available in drawer) */}
+            <Link 
+              to="/about" 
+              className="hidden lg:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
+              title={t('navigation.about', 'About')}
+            >
+              <span className="text-sm md:text-base">{t('navigation.about', 'About')}</span>
+            </Link>
           </div>
           
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">

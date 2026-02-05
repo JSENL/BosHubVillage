@@ -21,7 +21,10 @@ import {
   FileText,
   HelpCircle,
   Home,
-  Heart
+  Heart,
+  Info,
+  Shield,
+  ScrollText
 } from 'lucide-react';
 
 export const MobileNavDrawer = () => {
@@ -99,6 +102,40 @@ export const MobileNavDrawer = () => {
               <HelpCircle className="h-5 w-5 mr-3" />
               FAQ
             </Link>
+
+            <Link
+              to="/about"
+              onClick={handleLinkClick}
+              className={`flex items-center px-3 py-3 rounded-lg transition-colors ${
+                isActive('/about') ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'
+              }`}
+            >
+              <Info className="h-5 w-5 mr-3" />
+              {t('navigation.about', 'About')}
+            </Link>
+
+            {/* Legal Links */}
+            <div className="pt-4 border-t mt-4">
+              <p className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                {t('footer.quickLinks', 'Quick Links')}
+              </p>
+              <Link
+                to="/terms"
+                onClick={handleLinkClick}
+                className="flex items-center px-3 py-2.5 rounded-lg hover:bg-muted transition-colors"
+              >
+                <ScrollText className="h-4 w-4 mr-3" />
+                {t('legal.termsTitle', 'Terms of Service')}
+              </Link>
+              <Link
+                to="/privacy"
+                onClick={handleLinkClick}
+                className="flex items-center px-3 py-2.5 rounded-lg hover:bg-muted transition-colors"
+              >
+                <Shield className="h-4 w-4 mr-3" />
+                {t('legal.privacyTitle', 'Privacy Policy')}
+              </Link>
+            </div>
 
             {/* Submit Section */}
             {user && (
