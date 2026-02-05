@@ -10,8 +10,8 @@ interface DonateButtonProps {
   externalUrl?: string;
 }
 
-// Default donation URL - can be configured to any external platform
-const DEFAULT_DONATE_URL = 'https://donate.example.com';
+// Default donation URL - GoFundMe campaign
+const DEFAULT_DONATE_URL = 'https://gofund.me/0680eb63c';
 
 export const DonateButton = ({ 
   variant = 'default', 
