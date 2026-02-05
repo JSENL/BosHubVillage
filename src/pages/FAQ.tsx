@@ -91,16 +91,16 @@ export const FAQ = () => {
       ]
     },
     {
-      id: 'news',
-      title: t('faq.newsUpdates'),
+      id: 'culture',
+      title: t('faq.cultureUpdates'),
       icon: <Newspaper className="h-5 w-5" />,
-      description: t('faq.newsUpdatesDesc'),
+      description: t('faq.cultureUpdatesDesc'),
       color: 'bg-purple-100 text-purple-700',
       items: [
-        { question: t('faq.questions.news.q1'), answer: t('faq.answers.news.a1') },
-        { question: t('faq.questions.news.q2'), answer: t('faq.answers.news.a2') },
-        { question: t('faq.questions.news.q3'), answer: t('faq.answers.news.a3') },
-        { question: t('faq.questions.news.q4'), answer: t('faq.answers.news.a4') }
+        { question: t('faq.questions.culture.q1'), answer: t('faq.answers.culture.a1') },
+        { question: t('faq.questions.culture.q2'), answer: t('faq.answers.culture.a2') },
+        { question: t('faq.questions.culture.q3'), answer: t('faq.answers.culture.a3') },
+        { question: t('faq.questions.culture.q4'), answer: t('faq.answers.culture.a4') }
       ]
     },
     {
