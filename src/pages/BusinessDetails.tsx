@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Business } from '@/types/business';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, MapPin, Building, Clock, ExternalLink } from 'lucide-react';
+import { MapPin, Building, Clock, ExternalLink, Settings } from 'lucide-react';
 import BusinessComments from '@/components/BusinessComments';
 import BusinessMessage from '@/components/BusinessMessage';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
@@ -83,6 +83,16 @@ const BusinessDetails = () => {
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
+          {isAdmin && (
+            <div className="flex justify-end mb-4">
+              <Button asChild variant="outline">
+                <Link to="/admin">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Admin Dashboard
+                </Link>
+              </Button>
+            </div>
+          )}
 
           <Card>
             <CardHeader>
