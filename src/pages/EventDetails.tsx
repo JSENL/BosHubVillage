@@ -106,6 +106,13 @@ const EventDetails = () => {
                       <span>{getTranslatedText(event.location, (event as any).location_translations)}</span>
                     </div>
 
+                    {event.address && (
+                      <div className="flex items-center text-gray-600">
+                        <MapPin className="h-4 w-4 mr-2 opacity-50" />
+                        <span className="text-sm">{event.address}</span>
+                      </div>
+                    )}
+
                     {event.max_attendees && (
                       <div className="flex items-center text-gray-600">
                         <Users className="h-4 w-4 mr-2" />

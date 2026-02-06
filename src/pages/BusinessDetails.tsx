@@ -143,14 +143,6 @@ const BusinessDetails = () => {
                 <p className="text-gray-700 whitespace-pre-wrap">{business.description}</p>
               </div>
 
-              {business.latitude && business.longitude && (
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Location</h3>
-                  <p className="text-sm text-gray-600">
-                    Coordinates: {Number(business.latitude).toFixed(6)}, {Number(business.longitude).toFixed(6)}
-                  </p>
-                </div>
-              )}
 
               <div className="flex items-center text-sm text-gray-500">
                 <Clock className="h-4 w-4 mr-1" />
