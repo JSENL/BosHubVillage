@@ -42,9 +42,10 @@ export const Navigation = () => {
 
   return (
     <nav className="bg-card shadow-sm border-b border-border overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14 sm:h-16 md:h-18">
-          <div className="flex items-center gap-2 sm:gap-4 md:gap-8 flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16 gap-3 sm:gap-4">
+          {/* Left section */}
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6 flex-shrink min-w-0">
             {/* Mobile hamburger menu */}
             <MobileNavDrawer />
             
@@ -52,7 +53,7 @@ export const Navigation = () => {
               <img 
                 src="/lovable-uploads/76a583e0-eef3-4167-a87b-ed0504940bdc.png" 
                 alt="HubVillage Logo" 
-                className="h-7 sm:h-9 md:h-11 w-auto"
+                className="h-8 sm:h-10 w-auto"
               />
             </Link>
             
@@ -60,52 +61,53 @@ export const Navigation = () => {
             {!isHomePage && (
               <Link 
                 to="/" 
-                className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
+                className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
                 <span className="hidden lg:inline">{t('navigation.backToHome')}</span>
-                <span className="md:inline lg:hidden">Back</span>
+                <span className="lg:hidden">Back</span>
               </Link>
             )}
             
             {/* Divider */}
-            {!isHomePage && <div className="hidden md:block h-6 w-px bg-border" />}
+            {!isHomePage && <div className="hidden md:block h-5 w-px bg-border flex-shrink-0" />}
             
-            {/* News Page Link - Hidden on mobile (available in drawer) */}
-            <Link 
-              to="/news-page" 
-              className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
-              title={t('navigation.news')}
-            >
-              <Newspaper className="h-4 w-4 mr-2" />
-              <span className="text-sm md:text-base">{t('navigation.news')}</span>
-            </Link>
-            
-            {/* FAQ Link - Hidden on mobile (available in drawer) */}
-            <Link 
-              to="/faq" 
-              className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
-              title="FAQ"
-            >
-              <HelpCircle className="h-4 w-4 mr-2" />
-              <span className="text-sm md:text-base">FAQ</span>
-            </Link>
-            
-            {/* About Link - Hidden on mobile (available in drawer) */}
-            <Link 
-              to="/about" 
-              className="hidden lg:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium"
-              title={t('navigation.about', 'About')}
-            >
-              <span className="text-sm md:text-base">{t('navigation.about', 'About')}</span>
-            </Link>
+            {/* Navigation Links - Hidden on mobile */}
+            <div className="hidden md:flex items-center gap-4 lg:gap-5">
+              <Link 
+                to="/news-page" 
+                className="flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
+                title={t('navigation.news')}
+              >
+                <Newspaper className="h-4 w-4 mr-1.5" />
+                <span>{t('navigation.news')}</span>
+              </Link>
+              
+              <Link 
+                to="/faq" 
+                className="flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
+                title="FAQ"
+              >
+                <HelpCircle className="h-4 w-4 mr-1.5" />
+                <span>FAQ</span>
+              </Link>
+              
+              <Link 
+                to="/about" 
+                className="hidden lg:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
+                title={t('navigation.about', 'About')}
+              >
+                <span>{t('navigation.about', 'About')}</span>
+              </Link>
+            </div>
           </div>
           
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 flex-shrink-0">
+          {/* Right section */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <DonateButton size="sm" className="hidden md:flex" />
             <WeeklyEmailModal 
               trigger={
-                <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1.5">
+                <Button variant="outline" size="sm" className="hidden md:flex items-center gap-1.5 h-9">
                   <Mail className="h-4 w-4" />
                   <span className="hidden lg:inline">Weekly Email</span>
                 </Button>
@@ -118,8 +120,8 @@ export const Navigation = () => {
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button className="bg-logo-bright-orange hover:bg-logo-bright-orange/90 text-white text-xs sm:text-sm px-2 sm:px-3 md:px-4 h-8 sm:h-9 md:h-10">
-                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1 md:mr-2" />
+                  <Button className="bg-logo-bright-orange hover:bg-logo-bright-orange/90 text-white text-xs sm:text-sm px-2 sm:px-3 h-8 sm:h-9">
+                    <Plus className="h-4 w-4 sm:mr-1" />
                     <span className="hidden sm:inline">{t('navigation.submit')}</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -155,8 +157,8 @@ export const Navigation = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="px-1.5 sm:px-2 md:px-3 h-8 sm:h-9">
-                    <User className="h-4 w-4 sm:mr-1 md:mr-2" />
+                  <Button variant="ghost" size="sm" className="px-2 h-8 sm:h-9">
+                    <User className="h-4 w-4 sm:mr-1" />
                     <span className="hidden md:inline text-sm">Account</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -218,7 +220,7 @@ export const Navigation = () => {
               </DropdownMenu>
             ) : (
               <Link to="/auth">
-                <Button variant="outline" className="text-xs sm:text-sm px-2 sm:px-3 md:px-4 h-8 sm:h-9 md:h-10">{t('navigation.signIn')}</Button>
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-3 h-8 sm:h-9">{t('navigation.signIn')}</Button>
               </Link>
             )}
           </div>
