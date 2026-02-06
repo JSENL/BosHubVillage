@@ -2,8 +2,10 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Building, ExternalLink } from 'lucide-react';
+import { MapPin, Building, ExternalLink, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { CommentForm } from '@/components/comments/CommentForm';
 import { GenericCommentsList } from '@/components/comments/GenericCommentsList';
@@ -72,6 +74,17 @@ const LocalServiceDetails = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <Navigation />
       <div className="max-w-4xl mx-auto py-8 px-4">
+        {isAdmin && (
+          <div className="flex justify-end mb-4">
+            <Button asChild variant="outline">
+              <Link to="/admin">
+                <Settings className="h-4 w-4 mr-2" />
+                Admin Dashboard
+              </Link>
+            </Button>
+          </div>
+        )}
+        
         <Card>
           <CardHeader>
             <div className="flex justify-between items-start">

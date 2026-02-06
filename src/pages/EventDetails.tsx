@@ -1,5 +1,5 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink } from 'lucide-react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -58,14 +58,24 @@ const EventDetails = () => {
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/')} 
-            className="mb-6"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {t('pages.backToEvents')}
-          </Button>
+          <div className="flex items-center justify-between mb-6">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t('pages.backToEvents')}
+            </Button>
+            
+            {isAdmin && (
+              <Button asChild variant="outline">
+                <Link to="/admin">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Admin Dashboard
+                </Link>
+              </Button>
+            )}
+          </div>
 
           <div className="flex flex-col gap-3 mb-4">
             <div className="flex items-center justify-between">

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Calendar, ExternalLink, ArrowLeft } from 'lucide-react';
+import { MapPin, Calendar, ExternalLink, ArrowLeft, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { News } from '@/types/news';
@@ -16,7 +16,7 @@ import { LinkedContentSection } from '@/components/content/LinkedContentSection'
 
 const NewsDetails = () => {
   const { newsId } = useParams();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { t } = useTranslation();
 
   const { data: news, isLoading, error } = useQuery({
@@ -66,12 +66,23 @@ const NewsDetails = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <Link to="/" className="inline-block mb-6">
-          <Button variant="outline">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            {t('pages.backToNews')}
-          </Button>
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/">
+            <Button variant="outline">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t('pages.backToNews')}
+            </Button>
+          </Link>
+          
+          {isAdmin && (
+            <Button asChild variant="outline">
+              <Link to="/admin">
+                <Settings className="h-4 w-4 mr-2" />
+                Admin Dashboard
+              </Link>
+            </Button>
+          )}
+        </div>
 
         <Card>
           <CardHeader>
