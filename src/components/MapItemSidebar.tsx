@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { X, MapPin, Calendar, Clock, DollarSign, Building, Tag, ChevronUp, ChevronDown, Move } from 'lucide-react';
 import { DirectionsModal } from './map/DirectionsModal';
 import { useNavigate } from 'react-router-dom';
+import { formatTimeRange } from '@/utils/common/dateUtils';
 
 interface MapItemSidebarProps {
   selectedItem: UnifiedItem | null;
@@ -188,10 +189,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
                   <Clock className="h-3 w-3 text-gray-500 flex-shrink-0" />
                   <span className="font-medium">Time:</span>
                   <span className="text-gray-600 truncate">
-                    {selectedItem.start_time && selectedItem.end_time 
-                      ? `${selectedItem.start_time} - ${selectedItem.end_time}`
-                      : selectedItem.start_time || selectedItem.end_time
-                    }
+                    {formatTimeRange(selectedItem.start_time, selectedItem.end_time)}
                   </span>
                 </div>
               )}
@@ -323,10 +321,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
                     <Clock className="h-3 w-3 text-gray-500" />
                     <span className="font-medium">Time:</span>
                     <span className="text-gray-600">
-                      {selectedItem.start_time && selectedItem.end_time 
-                        ? `${selectedItem.start_time} - ${selectedItem.end_time}`
-                        : selectedItem.start_time || selectedItem.end_time
-                      }
+                      {formatTimeRange(selectedItem.start_time, selectedItem.end_time)}
                     </span>
                   </div>
                 )}
