@@ -13,12 +13,20 @@ export const escapeHtml = (unsafe: string | null | undefined): string => {
     .replace(/'/g, "&#039;");
 };
 
+const formatTo12Hour = (time: string): string => {
+  const [hours, minutes] = time.split(':');
+  const hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${minutes} ${ampm}`;
+};
+
 export const formatTimeRange = (startTime: string, endTime: string): string => {
   if (!startTime && !endTime) return 'Time TBD';
   if (startTime && endTime) {
-    return `${escapeHtml(startTime)} - ${escapeHtml(endTime)}`;
+    return `${escapeHtml(formatTo12Hour(startTime))} - ${escapeHtml(formatTo12Hour(endTime))}`;
   }
-  return escapeHtml(startTime || endTime);
+  return escapeHtml(formatTo12Hour(startTime || endTime));
 };
 
 export const createEventPopupContent = (event: Event): string => {
