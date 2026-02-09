@@ -18,6 +18,7 @@ import { MobileCategoryChips } from '@/components/mobile/MobileCategoryChips';
 import { MobileMapPreview } from '@/components/mobile/MobileMapPreview';
 import { SwipeableCardStack } from '@/components/mobile/SwipeableCardStack';
 import { PullToRefresh } from '@/components/mobile/PullToRefresh';
+import { getQuickBrowseItems } from '@/utils/quickBrowseUtils';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const MainContent = () => {
@@ -94,7 +95,7 @@ const MainContent = () => {
       {/* Swipeable Cards Overlay */}
       {showSwipeCards && filteredItems.length > 0 && (
         <SwipeableCardStack 
-          items={filteredItems} 
+          items={getQuickBrowseItems(filteredItems)} 
           onClose={() => setShowSwipeCards(false)} 
         />
       )}
