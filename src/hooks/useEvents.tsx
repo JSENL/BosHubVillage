@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+const PAGE_SIZE = 100;
+
 export interface Event {
   id: string;
   title: string;
@@ -35,19 +37,36 @@ export const useEvents = () => {
     queryKey: ['events'],
     queryFn: async () => {
       const currentDate = new Date().toISOString().split('T')[0];
-      
-      const { data, error } = await supabase
-        .from('events')
-        .select(`
-          *,
-          event_attendees(count)
-        `)
-        .gte('date', currentDate)
-        .order('date', { ascending: true });
+      const allData: any[] = [];
+      let page = 0;
+      let hasMore = true;
 
-      if (error) throw error;
+      while (hasMore) {
+        const from = page * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
 
-      return data?.map(event => ({
+        const { data, error } = await supabase
+          .from('events')
+          .select(`
+            *,
+            event_attendees(count)
+          `)
+          .gte('date', currentDate)
+          .order('date', { ascending: true })
+          .range(from, to);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          allData.push(...data);
+          hasMore = data.length === PAGE_SIZE;
+        } else {
+          hasMore = false;
+        }
+        page++;
+      }
+
+      return allData.map(event => ({
         ...event,
         attendees_count: event.event_attendees?.[0]?.count || 0,
         price: Number(event.price || 0),
@@ -59,8 +78,8 @@ export const useEvents = () => {
         address: event.address || ''
       })) || [];
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 
   const createEventMutation = useMutation({
