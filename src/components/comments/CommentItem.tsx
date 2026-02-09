@@ -19,22 +19,14 @@ interface CommentItemProps {
   depth?: number;
 }
 
-const sampleNames = [
-  'Alice Johnson', 'Bob Smith', 'Carol Williams', 'David Brown', 'Emma Davis',
-  'Frank Miller', 'Grace Wilson', 'Henry Moore', 'Ivy Taylor', 'Jack Anderson',
-  'Clyde Everyman'
-];
-
-const getDisplayName = (comment: EventComment, index: number) => {
-  // Use actual profile name if available, otherwise use sample names
+const getDisplayName = (comment: EventComment) => {
   if (comment.profiles?.full_name) {
     return comment.profiles.full_name;
   }
   if (comment.profiles?.email) {
     return comment.profiles.email;
   }
-  // Use a sample name based on the comment index for demo
-  return sampleNames[index % sampleNames.length] || 'Anonymous User';
+  return 'Anonymous Cormorant';
 };
 
 const isCommentByAdmin = (comment: EventComment) => {
@@ -86,7 +78,7 @@ export const CommentItem = ({
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-1">
                   <span className="font-medium text-gray-800">
-                    {getDisplayName(comment, index)}
+                    {getDisplayName(comment)}
                   </span>
                   {commentByAdmin && (
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
