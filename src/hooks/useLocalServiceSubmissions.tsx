@@ -15,5 +15,7 @@ export const useLocalServiceSubmissions = () => {
       if (error) throw error;
       return data as LocalResourceSubmission[];
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };

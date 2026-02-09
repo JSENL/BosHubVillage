@@ -40,6 +40,8 @@ export const useProfile = (userId?: string) => {
       return data as UserProfile | null;
     },
     enabled: !!targetUserId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
   const updateProfileMutation = useMutation({
@@ -94,5 +96,7 @@ export const usePublicProfile = (userId: string) => {
       return data;
     },
     enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
