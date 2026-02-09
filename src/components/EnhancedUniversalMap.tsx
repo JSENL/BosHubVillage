@@ -1,5 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Maximize, Minimize } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useMapboxToken } from '@/contexts/MapboxContext';
 import { useMapClusters } from '@/hooks/useMapClusters';
 import { MapOverlays } from '@/components/map/MapOverlays';
@@ -33,6 +35,7 @@ export const EnhancedUniversalMap = ({
 }: EnhancedUniversalMapProps) => {
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [containerScale, setContainerScale] = useState(1);
   const containerRef = useState<HTMLDivElement | null>(null)[0];
   const { mapboxToken, isLoadingApiKey, error } = useMapboxToken();
@@ -77,6 +80,19 @@ export const EnhancedUniversalMap = ({
   const handleGetDirections = (startLocation: string, transportMode: string, item: UnifiedItem) => {
     getDirections(startLocation, item, transportMode);
   };
+
+  // Exit fullscreen on Escape key
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFullscreen(false);
+        setTimeout(() => mapInstance?.resize(), 100);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isFullscreen, mapInstance]);
 
   // Listen for popup directions button clicks
   useEffect(() => {
@@ -186,9 +202,9 @@ export const EnhancedUniversalMap = ({
   }
 
   return (
-    <div className="w-full h-full">      
+    <div className={`${isFullscreen ? 'fixed inset-0 z-50' : 'w-full h-full'}`}>      
       <div 
-        className="bg-white rounded-lg border shadow-sm relative overflow-hidden"
+        className={`bg-card rounded-lg border shadow-sm relative overflow-hidden ${isFullscreen ? 'rounded-none border-0' : ''}`}
         style={{ 
           height: '100%',
           width: '100%'
@@ -229,6 +245,18 @@ export const EnhancedUniversalMap = ({
             />
             <MapSearchBox onLocationFound={handleLocationSearch} scale={containerScale} />
             <MapLegend scale={containerScale} />
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute top-3 right-3 z-10 bg-card/90 backdrop-blur-sm shadow-md"
+              onClick={() => {
+                setIsFullscreen(prev => !prev);
+                setTimeout(() => mapInstance?.resize(), 100);
+              }}
+              title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+            >
+              {isFullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+            </Button>
             <ClearDirectionsButton 
               onClear={clearDirections}
               isVisible={!!route}
