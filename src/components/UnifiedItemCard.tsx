@@ -29,12 +29,20 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
     navigate(`/${routePath}/${item.id}`);
   };
 
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
   const formatTimeRange = (startTime?: string, endTime?: string) => {
     if (!startTime && !endTime) return '';
     if (startTime && endTime) {
-      return `${startTime} - ${endTime}`;
+      return `${formatTime(startTime)} - ${formatTime(endTime)}`;
     }
-    return startTime || endTime || '';
+    return formatTime(startTime || endTime || '');
   };
 
   const getTypeIcon = () => {
