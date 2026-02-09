@@ -248,7 +248,7 @@ export const EnhancedUniversalMap = ({
             <Button
               variant="outline"
               size="icon"
-              className="absolute top-3 right-3 z-10 bg-card/90 backdrop-blur-sm shadow-md"
+              className="absolute bottom-3 right-3 z-10 bg-card/90 backdrop-blur-sm shadow-md"
               onClick={() => {
                 setIsFullscreen(prev => !prev);
                 setTimeout(() => mapInstance?.resize(), 100);
