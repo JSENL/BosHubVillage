@@ -31,6 +31,21 @@ export const useNewsSubmissionOperations = () => {
 
         console.log('Approving news submission:', submission);
 
+        // Get the first media file to use as the article image
+        let imageUrl: string | null = null;
+        const { data: mediaFiles } = await supabase
+          .from('news_submission_media')
+          .select('file_path')
+          .eq('news_submission_id', submissionId)
+          .limit(1);
+
+        if (mediaFiles && mediaFiles.length > 0) {
+          const { data: urlData } = supabase.storage
+            .from('comment-media')
+            .getPublicUrl(mediaFiles[0].file_path);
+          imageUrl = urlData?.publicUrl || null;
+        }
+
         // Create the news in the news table with all the new fields
         const { data: insertedNews, error: createError } = await supabase
           .from('news')
@@ -44,7 +59,8 @@ export const useNewsSubmissionOperations = () => {
             longitude: submission.longitude,
             date_posted: submission.date_posted,
             source: submission.source,
-            created_by: submission.submitted_by
+            created_by: submission.submitted_by,
+            image_url: imageUrl
           })
           .select('id')
           .single();

@@ -1261,6 +1261,7 @@ export type Database = {
           created_by: string | null
           date_posted: string
           id: string
+          image_url: string | null
           is_sponsored: boolean | null
           latitude: number | null
           location: string
@@ -1280,6 +1281,7 @@ export type Database = {
           created_by?: string | null
           date_posted?: string
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           location: string
@@ -1299,6 +1301,7 @@ export type Database = {
           created_by?: string | null
           date_posted?: string
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           location?: string
@@ -1413,6 +1416,7 @@ export type Database = {
           created_at: string
           date_posted: string
           id: string
+          image_url: string | null
           is_sponsored: boolean | null
           latitude: number | null
           link: string | null
@@ -1434,6 +1438,7 @@ export type Database = {
           created_at?: string
           date_posted?: string
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           link?: string | null
@@ -1455,6 +1460,7 @@ export type Database = {
           created_at?: string
           date_posted?: string
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           link?: string | null

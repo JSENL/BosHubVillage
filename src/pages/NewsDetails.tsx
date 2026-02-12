@@ -115,6 +115,15 @@ const NewsDetails = () => {
           </CardHeader>
           
           <CardContent>
+            {news.image_url && (
+              <div className="mb-6">
+                <img 
+                  src={news.image_url} 
+                  alt={news.title} 
+                  className="w-full max-h-96 object-cover rounded-lg"
+                />
+              </div>
+            )}
             <div className="prose max-w-none">
               <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
                 {news.content}
