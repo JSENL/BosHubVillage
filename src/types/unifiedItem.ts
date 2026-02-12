@@ -20,7 +20,8 @@ export interface UnifiedItem {
   name?: string;
   content?: string;
   source?: string;
-  originalData?: any; // Store the original data for rendering components
+  originalData?: any;
+  image_url?: string | null;
   is_sponsored?: boolean;
   // Translation fields
   title_translations?: TranslationsObject;

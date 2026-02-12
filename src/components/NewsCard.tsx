@@ -24,12 +24,22 @@ const NewsCard = ({ news }: NewsCardProps) => {
   return (
     <Link to={`/news/${news.id}`}>
       <Card className={`hover:shadow-lg transition-all duration-300 cursor-pointer h-full overflow-hidden group ${news.is_sponsored ? 'ring-2 ring-amber-400/50' : ''}`}>
-        {/* News Hero with gradient */}
-        <CategoryHero 
-          category="news" 
-          type="news"
-          height="h-20"
-        />
+        {/* News Hero with image or gradient */}
+        {news.image_url ? (
+          <div className="h-36 overflow-hidden">
+            <img 
+              src={news.image_url} 
+              alt={news.title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        ) : (
+          <CategoryHero 
+            category="news" 
+            type="news"
+            height="h-20"
+          />
+        )}
         
         <CardHeader className="pb-1 pt-3 px-3">
           <div className="flex items-start gap-2">

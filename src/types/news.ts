@@ -14,6 +14,7 @@ export interface News {
   updated_at: string;
   created_by?: string;
   is_sponsored?: boolean;
+  image_url?: string | null;
 }
 
 export interface NewsComment {

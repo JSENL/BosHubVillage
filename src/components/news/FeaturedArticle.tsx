@@ -34,6 +34,15 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          {article.image_url && (
+            <div className="mb-4 overflow-hidden rounded-lg">
+              <img 
+                src={article.image_url} 
+                alt={article.title} 
+                className="w-full max-h-72 object-cover"
+              />
+            </div>
+          )}
           <p className="text-gray-700 text-lg leading-relaxed line-clamp-4">
             {article.content}
           </p>
