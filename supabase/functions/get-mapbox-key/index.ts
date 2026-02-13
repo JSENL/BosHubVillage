@@ -1,5 +1,8 @@
-
+// Deno URL imports are resolved at runtime; suppress IDE resolution error.
+// @ts-expect-error - Supabase Edge Functions run on Deno
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+
+declare const Deno: { env: { get(key: string): string | undefined } };
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

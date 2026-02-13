@@ -52,15 +52,35 @@ export const MapboxProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       return;
     }
 
-    const fetchMapboxToken = async () => {
+    let cancelled = false;
+    let retryTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const fetchMapboxToken = async (isRetry = false) => {
       try {
-        console.log('🗝️ Fetching Mapbox API key from edge function...');
-        
-        const { data, error } = await supabase.functions.invoke('get-mapbox-key');
-        
-        if (error) {
-          console.error('Error fetching Mapbox API key:', error);
-          setError('Failed to fetch Mapbox API key');
+        if (!isRetry) {
+          console.log('🗝️ Fetching Mapbox API key from edge function...');
+        } else {
+          console.log('🗝️ Retrying Mapbox API key fetch...');
+        }
+
+        const { data, error: invokeError } = await supabase.functions.invoke('get-mapbox-key');
+
+        if (cancelled) return;
+
+        if (invokeError) {
+          console.error('Error fetching Mapbox API key:', invokeError);
+          const cached = getCachedToken();
+          if (cached) {
+            setMapboxToken(cached);
+            setError(null);
+            console.log('✅ Using cached Mapbox token after fetch error');
+          } else if (!isRetry) {
+            setError('Failed to fetch Mapbox API key. Set MAPBOX_PUBLIC_KEY in Supabase Edge Function secrets.');
+            retryTimeout = setTimeout(() => fetchMapboxToken(true), 2500);
+            return;
+          } else {
+            setError('Failed to fetch Mapbox API key. Set MAPBOX_PUBLIC_KEY in Supabase Edge Function secrets.');
+          }
           setIsLoadingApiKey(false);
           return;
         }
@@ -69,19 +89,41 @@ export const MapboxProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           console.log('✅ Mapbox API key fetched successfully');
           setMapboxToken(data.mapboxKey);
           setCachedToken(data.mapboxKey);
+          setError(null);
         } else {
-          console.error('No API key returned from edge function');
-          setError('No API key configured');
+          const cached = getCachedToken();
+          if (cached) {
+            setMapboxToken(cached);
+            setError(null);
+          } else {
+            console.error('No API key returned from edge function');
+            setError('MAPBOX_PUBLIC_KEY not set. Add it in Supabase → Project Settings → Edge Functions → Secrets.');
+          }
         }
       } catch (err) {
+        if (cancelled) return;
         console.error('Error calling edge function:', err);
-        setError('Failed to connect to API service');
+        const cached = getCachedToken();
+        if (cached) {
+          setMapboxToken(cached);
+          setError(null);
+        } else if (!isRetry) {
+          setError('Failed to connect to API service');
+          retryTimeout = setTimeout(() => fetchMapboxToken(true), 2500);
+          return;
+        } else {
+          setError('Failed to connect to API service. Check Supabase and set MAPBOX_PUBLIC_KEY in Edge Function secrets.');
+        }
       } finally {
-        setIsLoadingApiKey(false);
+        if (!cancelled) setIsLoadingApiKey(false);
       }
     };
 
     fetchMapboxToken();
+    return () => {
+      cancelled = true;
+      if (retryTimeout) clearTimeout(retryTimeout);
+    };
   }, [mapboxToken]);
 
   return (

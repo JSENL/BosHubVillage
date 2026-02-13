@@ -20,10 +20,10 @@ export const MapErrorState = () => (
         <MapPin className="h-16 w-16 text-red-400 mx-auto mb-4" />
         <h3 className="text-2xl font-bold text-gray-700 mb-4">Mapbox Unavailable</h3>
         <p className="text-gray-600 mb-4">
-          Mapbox API key is not configured. Please set the MAPBOX_PUBLIC_KEY in your Supabase environment variables.
+          Mapbox API key is not configured. Set <strong>MAPBOX_PUBLIC_KEY</strong> in Supabase: Project Settings → Edge Functions → Secrets.
         </p>
         <p className="text-sm text-gray-500">
-          You can get a Mapbox API key from the Mapbox account dashboard and add it to your Supabase project's Edge Function secrets.
+          Get a token at account.mapbox.com, then add it as the secret <strong>MAPBOX_PUBLIC_KEY</strong> and redeploy the <code>get-mapbox-key</code> function if needed.
         </p>
       </div>
     </div>
