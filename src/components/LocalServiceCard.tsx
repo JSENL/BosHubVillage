@@ -5,16 +5,9 @@ import { MapPin, Star } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
 import { useNavigate } from 'react-router-dom';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
+import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
-
-const localeMap: Record<string, string> = {
-  en: 'en-US',
-  es: 'es',
-  fr: 'fr-FR',
-  vi: 'vi-VN',
-  pt: 'pt-BR',
-};
 
 interface LocalServiceCardProps {
   localService: LocalResource;
@@ -22,21 +15,13 @@ interface LocalServiceCardProps {
 
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { getTranslatedText } = useTranslatedField();
-  const locale = localeMap[i18n.language] || 'en-US';
+  const { formatDate } = useCardLocale();
 
   // Generate random rating for visual appeal
   const rating = Math.floor(Math.random() * 2) + 4;
   const reviewCount = Math.floor(Math.random() * 150) + 10;
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      month: '2-digit',
-      day: '2-digit',
-      year: '2-digit'
-    });
-  };
 
   const handleClick = () => {
     navigate(`/local-resource/${localService.id}`);
@@ -76,7 +61,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
               className={`h-3 w-3 ${i < rating ? 'text-secondary fill-current' : 'text-muted'}`} 
             />
           ))}
-          <span className="text-xs text-muted-foreground ml-1">{reviewCount}</span>
+          <span className="text-xs text-muted-foreground ml-1">{t('cards.reviews', { count: reviewCount })}</span>
         </div>
       </CardHeader>
       <CardContent className="space-y-1 pt-1 px-3 pb-3">

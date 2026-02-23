@@ -5,33 +5,18 @@ import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
+import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
-
-const localeMap: Record<string, string> = {
-  en: 'en-US',
-  es: 'es',
-  fr: 'fr-FR',
-  vi: 'vi-VN',
-  pt: 'pt-BR',
-};
 
 interface NewsCardProps {
   news: News;
 }
 
 const NewsCard = ({ news }: NewsCardProps) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { getTranslatedText } = useTranslatedField();
-  const locale = localeMap[i18n.language] || 'en-US';
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      month: '2-digit',
-      day: '2-digit',
-      year: '2-digit'
-    });
-  };
+  const { formatDate } = useCardLocale();
 
   return (
     <Link to={`/news/${news.id}`}>

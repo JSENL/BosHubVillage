@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
+import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
 
@@ -34,30 +35,14 @@ interface EventCardProps {
   isHighlighted?: boolean;
 }
 
-const localeMap: Record<string, string> = {
-  en: 'en-US',
-  es: 'es',
-  fr: 'fr-FR',
-  vi: 'vi-VN',
-  pt: 'pt-BR',
-};
-
 export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { getTranslatedText } = useTranslatedField();
-  const locale = localeMap[i18n.language] || 'en-US';
+  const { formatDate } = useCardLocale();
 
   const handleViewDetails = () => {
     navigate(`/event/${event.id}`);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale, {
-      month: '2-digit',
-      day: '2-digit',
-      year: '2-digit'
-    });
   };
 
   const formatTimeRange = (startTime: string, endTime: string) => {
