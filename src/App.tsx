@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { MapboxProvider } from "@/contexts/MapboxContext";
 import { FilterProvider } from "@/contexts/FilterContext";
@@ -34,17 +34,17 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import About from "./pages/About";
 import { supabase } from "@/integrations/supabase/client";
 
-// Recovery redirect component to handle email link redirects
+// Recovery redirect component to handle email link redirects (client-only; hash is not sent to server)
 const RecoveryRedirect = () => {
-  const hasRecoveryTokens = window.location.hash.includes('type=recovery') || 
+  if (typeof window === 'undefined') {
+    return <Index />;
+  }
+  const hasRecoveryTokens = window.location.hash.includes('type=recovery') ||
                            window.location.hash.includes('access_token');
-  
   if (hasRecoveryTokens) {
-    // Redirect to auth page preserving the hash
     window.location.href = '/auth' + window.location.hash;
     return null;
   }
-  
   return <Index />;
 };
 
@@ -69,13 +69,15 @@ const queryClient = new QueryClient({
   },
 });
 
-// Listen for auth changes and clear query cache
-supabase.auth.onAuthStateChange((event) => {
-  if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
-    console.log(`🔄 Auth event: ${event}, clearing query cache`);
-    queryClient.clear();
-  }
-});
+// Listen for auth changes and clear query cache (client-only)
+if (typeof window !== 'undefined') {
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+      console.log(`🔄 Auth event: ${event}, clearing query cache`);
+      queryClient.clear();
+    }
+  });
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -85,8 +87,7 @@ const App = () => (
           <FilterProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
-          <Routes>
+            <Routes>
             <Route path="/" element={<RecoveryRedirect />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/submit-event" element={<SubmitEvent />} />
@@ -115,7 +116,6 @@ const App = () => (
         <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
           </FilterProvider>
         </MapboxProvider>
       </AuthProvider>

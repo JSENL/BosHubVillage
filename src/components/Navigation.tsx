@@ -63,43 +63,23 @@ export const Navigation = () => {
                 to="/" 
                 className="hidden md:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
               >
-                <ArrowLeft className="h-4 w-4 mr-1.5" />
-                <span className="hidden lg:inline">{t('navigation.backToHome')}</span>
-                <span className="lg:hidden">Back</span>
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                <span className="hidden md:inline">{t('navigation.backToHome')}</span>
+                <span className="sm:inline md:hidden">{t('common.back')}</span>
               </Link>
             )}
             
             {/* Divider */}
             {!isHomePage && <div className="hidden md:block h-5 w-px bg-border flex-shrink-0" />}
             
-            {/* Navigation Links - Hidden on mobile */}
-            <div className="hidden md:flex items-center gap-4 lg:gap-5">
-              <Link 
-                to="/news-page" 
-                className="flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
-                title={t('navigation.news')}
-              >
-                <Newspaper className="h-4 w-4 mr-1.5" />
-                <span>{t('navigation.news')}</span>
-              </Link>
-              
-              <Link 
-                to="/faq" 
-                className="flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
-                title="FAQ"
-              >
-                <HelpCircle className="h-4 w-4 mr-1.5" />
-                <span>FAQ</span>
-              </Link>
-              
-              <Link 
-                to="/about" 
-                className="hidden lg:flex items-center text-muted-foreground hover:text-primary transition-colors font-medium text-sm whitespace-nowrap"
-                title={t('navigation.about', 'About')}
-              >
-                <span>{t('navigation.about', 'About')}</span>
-              </Link>
-            </div>
+            {/* FAQ Link */}
+            <Link 
+              to="/faq" 
+              className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+            >
+              <HelpCircle className="h-4 w-4 mr-2" />
+              {t('navigation.faq')}
+            </Link>
           </div>
           
           {/* Right section */}

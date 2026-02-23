@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { UnifiedItemCard } from '@/components/UnifiedItemCard';
 import { LoadingGrid } from '@/components/common/LoadingState';
@@ -11,6 +12,7 @@ interface ListViewProps {
 }
 
 export const ListView = ({ items, isLoading = false }: ListViewProps) => {
+  const { t } = useTranslation();
   const {
     currentItems,
     currentPage,
@@ -28,8 +30,8 @@ export const ListView = ({ items, isLoading = false }: ListViewProps) => {
   if (items.length === 0) {
     return (
       <EmptyState 
-        title="No items found"
-        description="Try adjusting your search criteria to find more content."
+        title={t('emptyStates.noItemsFound')}
+        description={t('emptyStates.tryAdjustingSearch')}
       />
     );
   }

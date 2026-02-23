@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
 
 interface EmptyStateProps {
@@ -8,8 +9,8 @@ interface EmptyStateProps {
 }
 
 export const EmptyState = ({ 
-  title = 'No items found',
-  description = 'Try adjusting your search criteria.',
+  title,
+  description,
   icon,
   action
 }: EmptyStateProps) => {
@@ -18,8 +19,8 @@ export const EmptyState = ({
       <div className="mb-4">
         {icon || <Search className="h-12 w-12 text-gray-400 mx-auto" />}
       </div>
-      <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-500 mb-4">{description}</p>
+      <h3 className="text-lg font-medium text-gray-900 mb-2">{displayTitle}</h3>
+      <p className="text-gray-500 mb-4">{displayDescription}</p>
       {action}
     </div>
   );

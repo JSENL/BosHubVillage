@@ -106,35 +106,14 @@ const illustrations: Record<EmptyStateVariant, React.ReactNode> = {
   ),
 };
 
-const defaultContent: Record<EmptyStateVariant, { title: string; description: string }> = {
-  search: {
-    title: 'No results found',
-    description: 'Try adjusting your search terms or filters to find what you\'re looking for.',
-  },
-  events: {
-    title: 'No events scheduled',
-    description: 'There are no upcoming events matching your criteria. Check back soon!',
-  },
-  business: {
-    title: 'No businesses found',
-    description: 'We couldn\'t find any businesses in this area. Try expanding your search.',
-  },
-  news: {
-    title: 'No news articles',
-    description: 'There\'s no news to display right now. Stay tuned for updates!',
-  },
-  'local-service': {
-    title: 'No local services found',
-    description: 'We couldn\'t find any local services matching your search.',
-  },
-  map: {
-    title: 'No locations to display',
-    description: 'There are no items with location data to show on the map.',
-  },
-  filter: {
-    title: 'No matches for your filters',
-    description: 'Try clearing some filters or adjusting your criteria.',
-  },
+const emptyStateKeys: Record<EmptyStateVariant, { title: string; description: string }> = {
+  search: { title: 'emptyStates.noResultsFound', description: 'emptyStates.tryAdjustingFilters' },
+  events: { title: 'emptyStates.noEventsScheduled', description: 'emptyStates.noEventsDesc' },
+  business: { title: 'emptyStates.noBusinessesFound', description: 'emptyStates.noBusinessesDesc' },
+  news: { title: 'emptyStates.noNewsArticles', description: 'emptyStates.noNewsDesc' },
+  'local-service': { title: 'emptyStates.noLocalServicesFound', description: 'emptyStates.noLocalServicesDesc' },
+  map: { title: 'emptyStates.noLocationsToDisplay', description: 'emptyStates.noLocationsDesc' },
+  filter: { title: 'emptyStates.noMatchesForFilters', description: 'emptyStates.tryClearingFilters' },
 };
 
 export const IllustratedEmptyState = ({
@@ -147,8 +126,12 @@ export const IllustratedEmptyState = ({
   onRefresh,
 }: IllustratedEmptyStateProps) => {
   const { t } = useTranslation();
-  const content = defaultContent[variant];
-  
+  const keys = emptyStateKeys[variant];
+  const content = {
+    title: title || t(keys.title),
+    description: description || t(keys.description),
+  };
+
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 animate-fade-in">
       {/* Illustration */}
@@ -158,10 +141,10 @@ export const IllustratedEmptyState = ({
       
       {/* Text content */}
       <h3 className="text-lg font-semibold text-foreground mb-2 text-center">
-        {title || content.title}
+        {content.title}
       </h3>
       <p className="text-muted-foreground text-center max-w-sm mb-6">
-        {description || content.description}
+        {content.description}
       </p>
       
       {/* Actions */}
@@ -169,7 +152,7 @@ export const IllustratedEmptyState = ({
         {showRefresh && onRefresh && (
           <Button variant="outline" size="sm" onClick={onRefresh}>
             <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
+            {t('common.refresh')}
           </Button>
         )}
         {actionLabel && onAction && (

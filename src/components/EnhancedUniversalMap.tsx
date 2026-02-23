@@ -1,5 +1,5 @@
-
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Maximize, Minimize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useMapboxToken } from '@/contexts/MapboxContext';
@@ -33,6 +33,7 @@ export const EnhancedUniversalMap = ({
   onItemClick,
   viewMode = 'map'
 }: EnhancedUniversalMapProps) => {
+  const { t } = useTranslation();
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [directionsItem, setDirectionsItem] = useState<UnifiedItem | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -187,7 +188,7 @@ export const EnhancedUniversalMap = ({
     return (
       <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-        <p className="text-gray-600">Loading map...</p>
+        <p className="text-gray-600">{t('emptyStates.loadingMap')}</p>
       </div>
     );
   }
@@ -216,7 +217,7 @@ export const EnhancedUniversalMap = ({
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
-              <p className="text-sm text-gray-600">Loading map...</p>
+              <p className="text-sm text-gray-600">{t('emptyStates.loadingMap')}</p>
             </div>
           </div>
         ) : error ? (
