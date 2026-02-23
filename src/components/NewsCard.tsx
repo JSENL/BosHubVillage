@@ -4,17 +4,29 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { News } from '@/types/news';
 import { Link } from 'react-router-dom';
+import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
+
+const localeMap: Record<string, string> = {
+  en: 'en-US',
+  es: 'es',
+  fr: 'fr-FR',
+  vi: 'vi-VN',
+  pt: 'pt-BR',
+};
 
 interface NewsCardProps {
   news: News;
 }
 
 const NewsCard = ({ news }: NewsCardProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { getTranslatedText } = useTranslatedField();
+  const locale = localeMap[i18n.language] || 'en-US';
+
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(locale, {
       month: '2-digit',
       day: '2-digit',
       year: '2-digit'
@@ -46,11 +58,11 @@ const NewsCard = ({ news }: NewsCardProps) => {
             {news.is_sponsored && <SponsoredBadge />}
             <Badge variant="secondary" className="text-xs flex-shrink-0">
               <CategoryIcon category="news" type="news" size="sm" className="mr-1" />
-              News
+              {t('itemTypes.news')}
             </Badge>
           </div>
           <CardTitle className="text-base font-semibold line-clamp-2 break-words mt-2 group-hover:text-primary transition-colors">
-            {news.title}
+            {getTranslatedText(news.title, news.title_translations)}
           </CardTitle>
           <div className="flex flex-col gap-1 text-xs text-muted-foreground mt-2">
             <div className="flex items-center min-w-0">
@@ -59,7 +71,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
             </div>
             <div className="flex items-center min-w-0">
               <MapPin className="h-3 w-3 mr-1 flex-shrink-0 text-primary" />
-              <span className="truncate break-all min-w-0">{news.location}</span>
+              <span className="truncate break-all min-w-0">{getTranslatedText(news.location, news.location_translations)}</span>
             </div>
             <div className="flex items-center min-w-0">
               <ExternalLink className="h-3 w-3 mr-1 flex-shrink-0 text-primary" />
@@ -69,7 +81,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
         </CardHeader>
         <CardContent className="pt-1 px-3 pb-3">
           <p className="text-muted-foreground line-clamp-2 text-xs break-words">
-            {news.content}
+            {getTranslatedText(news.content, news.content_translations)}
           </p>
         </CardContent>
       </Card>

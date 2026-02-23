@@ -4,9 +4,17 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Star } from 'lucide-react';
 import { LocalResource } from '@/types/localServices';
 import { useNavigate } from 'react-router-dom';
-import { TranslatedText } from '@/components/common/TranslatedText';
+import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
+
+const localeMap: Record<string, string> = {
+  en: 'en-US',
+  es: 'es',
+  fr: 'fr-FR',
+  vi: 'vi-VN',
+  pt: 'pt-BR',
+};
 
 interface LocalServiceCardProps {
   localService: LocalResource;
@@ -14,14 +22,16 @@ interface LocalServiceCardProps {
 
 const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { getTranslatedText } = useTranslatedField();
+  const locale = localeMap[i18n.language] || 'en-US';
 
   // Generate random rating for visual appeal
   const rating = Math.floor(Math.random() * 2) + 4;
   const reviewCount = Math.floor(Math.random() * 150) + 10;
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(locale, {
       month: '2-digit',
       day: '2-digit',
       year: '2-digit'
@@ -52,11 +62,11 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         )}
         <div className="flex items-start justify-between">
           <CardTitle className="text-base font-semibold text-foreground line-clamp-2 break-words flex-1 min-w-0 mr-2 group-hover:text-primary transition-colors">
-            <TranslatedText text={localService.name} />
+            {getTranslatedText(localService.name, localService.name_translations)}
           </CardTitle>
           <Badge variant="secondary" className="ml-2 flex-shrink-0 text-xs">
             <CategoryIcon category={localService.category} type="local-service" size="sm" className="mr-1" />
-            <span className="truncate max-w-20">{localService.category}</span>
+            <span className="truncate max-w-20">{getTranslatedText(localService.category, localService.category_translations)}</span>
           </Badge>
         </div>
         <div className="flex items-center space-x-1 mt-1">
@@ -73,7 +83,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         <div className="flex items-start text-muted-foreground min-w-0">
           <MapPin className="h-3 w-3 mr-2 mt-0.5 flex-shrink-0 text-primary" />
           <div className="text-xs min-w-0 flex-1">
-            <p className="truncate break-all">{localService.address}</p>
+            <p className="truncate break-all">{getTranslatedText(localService.address, localService.address_translations)}</p>
             <p className="text-xs text-muted-foreground/70 truncate">
               {localService.neighborhood}
               {localService.village && `, ${localService.village}`}
@@ -83,7 +93,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         
         {localService.description && (
           <p className="text-xs text-muted-foreground line-clamp-2 break-words">
-            <TranslatedText text={localService.description} />
+            {getTranslatedText(localService.description, localService.description_translations)}
           </p>
         )}
         

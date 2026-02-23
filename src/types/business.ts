@@ -1,3 +1,5 @@
+export type TranslationsObject = Record<string, string>;
+
 export interface Business {
   id: string;
   title: string;
@@ -14,6 +16,11 @@ export interface Business {
   updated_at: string;
   created_by?: string;
   is_sponsored?: boolean;
+  title_translations?: TranslationsObject;
+  description_translations?: TranslationsObject;
+  short_description_translations?: TranslationsObject;
+  address_translations?: TranslationsObject;
+  business_type_translations?: TranslationsObject;
 }
 
 export interface BusinessComment {

@@ -1,3 +1,4 @@
+export type TranslationsObject = Record<string, string>;
 
 export interface LocalResource {
   id: string;
@@ -14,6 +15,10 @@ export interface LocalResource {
   created_at: string;
   updated_at: string;
   is_sponsored?: boolean;
+  name_translations?: TranslationsObject;
+  description_translations?: TranslationsObject;
+  address_translations?: TranslationsObject;
+  category_translations?: TranslationsObject;
 }
 
 export interface LocalResourceSubmission {

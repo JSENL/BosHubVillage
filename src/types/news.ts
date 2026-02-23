@@ -1,4 +1,6 @@
 
+export type TranslationsObject = Record<string, string>;
+
 export interface News {
   id: string;
   title: string;
@@ -15,6 +17,9 @@ export interface News {
   created_by?: string;
   is_sponsored?: boolean;
   image_url?: string | null;
+  title_translations?: TranslationsObject;
+  content_translations?: TranslationsObject;
+  location_translations?: TranslationsObject;
 }
 
 export interface NewsComment {
