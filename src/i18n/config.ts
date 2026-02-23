@@ -58,6 +58,15 @@ const resources = {
         businesses: "Businesses",
         localServices: "Local Services"
       },
+      // Map (loading & error states)
+      map: {
+        loadingTitle: "Loading Mapbox",
+        unavailableTitle: "Mapbox Unavailable",
+        unavailableMessage: "Mapbox API key is not configured. Set MAPBOX_PUBLIC_KEY in Supabase: Project Settings → Edge Functions → Secrets.",
+        unavailableHint: "Get a token at account.mapbox.com, then add it as the secret MAPBOX_PUBLIC_KEY and redeploy the get-mapbox-key function if needed.",
+        failedToLoadKey: "Failed to load Mapbox API key",
+        checkConfiguration: "Please check your Mapbox configuration"
+      },
       // FAQ Section
       faq: faqTranslationsEn,
       // Onboarding
@@ -519,7 +528,6 @@ const resources = {
         errorLoadingNews: "Error loading news",
         loadingMap: "Loading map..."
       }
-      }
     }
   },
   es: { 
@@ -559,6 +567,14 @@ const resources = {
         news: "Cultura",
         businesses: "Negocios", 
         localServices: "Servicios Locales"
+      },
+      map: {
+        loadingTitle: "Cargando Mapbox",
+        unavailableTitle: "Mapbox no disponible",
+        unavailableMessage: "La clave API de Mapbox no está configurada. Configure MAPBOX_PUBLIC_KEY en Supabase: Configuración del proyecto → Edge Functions → Secrets.",
+        unavailableHint: "Obtenga un token en account.mapbox.com, luego añádalo como el secreto MAPBOX_PUBLIC_KEY y vuelva a desplegar la función get-mapbox-key si es necesario.",
+        failedToLoadKey: "Error al cargar la clave API de Mapbox",
+        checkConfiguration: "Por favor revise la configuración de Mapbox"
       },
       faq: faqTranslationsEs,
       onboarding: onboardingTranslationsEs,
@@ -1048,6 +1064,14 @@ const resources = {
         businesses: "Entreprises",
         localServices: "Services Locaux"
       },
+      map: {
+        loadingTitle: "Chargement de Mapbox",
+        unavailableTitle: "Mapbox indisponible",
+        unavailableMessage: "La clé API Mapbox n'est pas configurée. Définissez MAPBOX_PUBLIC_KEY dans Supabase : Paramètres du projet → Edge Functions → Secrets.",
+        unavailableHint: "Obtenez un jeton sur account.mapbox.com, puis ajoutez-le comme secret MAPBOX_PUBLIC_KEY et redéployez la fonction get-mapbox-key si nécessaire.",
+        failedToLoadKey: "Échec du chargement de la clé API Mapbox",
+        checkConfiguration: "Veuillez vérifier la configuration Mapbox"
+      },
       faq: faqTranslationsFr,
       onboarding: onboardingTranslationsFr,
       // Types
@@ -1536,6 +1560,14 @@ const resources = {
         businesses: "Doanh Nghiệp",
         localServices: "Dịch Vụ Địa Phương"
       },
+      map: {
+        loadingTitle: "Đang tải Mapbox",
+        unavailableTitle: "Mapbox không khả dụng",
+        unavailableMessage: "Chưa cấu hình khóa API Mapbox. Đặt MAPBOX_PUBLIC_KEY trong Supabase: Cài đặt dự án → Edge Functions → Secrets.",
+        unavailableHint: "Lấy token tại account.mapbox.com, sau đó thêm làm secret MAPBOX_PUBLIC_KEY và triển khai lại hàm get-mapbox-key nếu cần.",
+        failedToLoadKey: "Không thể tải khóa API Mapbox",
+        checkConfiguration: "Vui lòng kiểm tra cấu hình Mapbox"
+      },
       faq: faqTranslationsVi,
       onboarding: onboardingTranslationsVi,
       // Types
@@ -2023,6 +2055,14 @@ const resources = {
         news: "Cultura",
         businesses: "Negócios",
         localServices: "Serviços Locais"
+      },
+      map: {
+        loadingTitle: "Carregando Mapbox",
+        unavailableTitle: "Mapbox indisponível",
+        unavailableMessage: "A chave da API Mapbox não está configurada. Defina MAPBOX_PUBLIC_KEY no Supabase: Configurações do projeto → Edge Functions → Secrets.",
+        unavailableHint: "Obtenha um token em account.mapbox.com, depois adicione-o como o secret MAPBOX_PUBLIC_KEY e faça o redeploy da função get-mapbox-key se necessário.",
+        failedToLoadKey: "Falha ao carregar a chave da API Mapbox",
+        checkConfiguration: "Por favor verifique a configuração do Mapbox"
       },
       faq: faqTranslationsPt,
       onboarding: onboardingTranslationsPt,

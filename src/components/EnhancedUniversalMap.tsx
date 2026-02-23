@@ -196,8 +196,8 @@ export const EnhancedUniversalMap = ({
   if (error || !mapboxToken) {
     return (
       <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
-        <p className="text-red-500 mb-4">{error || 'Failed to load Mapbox API key'}</p>
-        <p className="text-sm text-gray-400">Please check your Mapbox configuration</p>
+        <p className="text-red-500 mb-4">{error || t('map.failedToLoadKey')}</p>
+        <p className="text-sm text-gray-400">{t('map.checkConfiguration')}</p>
       </div>
     );
   }
