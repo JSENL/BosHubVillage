@@ -4,6 +4,7 @@ import { EventCard } from '@/components/EventCard';
 import NewsCard from '@/components/NewsCard';
 import BusinessCard from '@/components/BusinessCard';
 import LocalServiceCard from '@/components/LocalServiceCard';
+import { getEventCardData, getNewsCardData, getBusinessCardData, getLocalServiceCardData } from '@/utils/cardTranslationData';
 
 interface FeaturedSectionProps {
   items: UnifiedItem[];
@@ -66,26 +67,26 @@ function renderCard(item: UnifiedItem) {
     case 'event':
       return (
         <EventCard
-          event={item.originalData}
+          event={getEventCardData(item)}
           viewMode="grid"
         />
       );
     case 'news':
       return (
         <NewsCard
-          news={item.originalData}
+          news={getNewsCardData(item)}
         />
       );
     case 'business':
       return (
         <BusinessCard
-          business={item.originalData}
+          business={getBusinessCardData(item)}
         />
       );
     case 'local-service':
       return (
         <LocalServiceCard
-          localService={item.originalData}
+          localService={getLocalServiceCardData(item)}
         />
       );
     default:

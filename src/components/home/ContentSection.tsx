@@ -2,6 +2,7 @@ import { EventCard } from "@/components/EventCard";
 import NewsCard from "@/components/NewsCard";
 import BusinessCard from "@/components/BusinessCard";
 import LocalServiceCard from "@/components/LocalServiceCard";
+import { getEventCardData, getNewsCardData, getBusinessCardData, getLocalServiceCardData } from '@/utils/cardTranslationData';
 
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UnifiedItem } from "@/types/unifiedItem";
@@ -62,7 +63,7 @@ export const ContentSection = ({
               return (
                 <EventCard
                   key={`event-${item.id}`}
-                  event={item.originalData}
+                  event={getEventCardData(item)}
                   viewMode="grid"
                 />
               );
@@ -70,21 +71,21 @@ export const ContentSection = ({
               return (
                 <NewsCard
                   key={`news-${item.id}`}
-                  news={item.originalData}
+                  news={getNewsCardData(item)}
                 />
               );
             case 'business':
               return (
                 <BusinessCard
                   key={`business-${item.id}`}
-                  business={item.originalData}
+                  business={getBusinessCardData(item)}
                 />
               );
             case 'local-service':
               return (
                 <LocalServiceCard
                   key={`local-service-${item.id}`}
-                  localService={item.originalData}
+                  localService={getLocalServiceCardData(item)}
                 />
               );
             default:

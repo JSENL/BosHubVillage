@@ -3,6 +3,7 @@ import BusinessCard from "@/components/BusinessCard";
 import LocalServiceCard from "@/components/LocalServiceCard";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { useAppState } from '@/contexts/AppStateContext';
+import { getEventCardData, getBusinessCardData, getLocalServiceCardData } from '@/utils/cardTranslationData';
 
 export const ItemGrid = () => {
   const { isLoading, filteredItems } = useAppState();
@@ -10,11 +11,11 @@ export const ItemGrid = () => {
   const renderItem = (item: UnifiedItem) => {
     switch (item.type) {
       case 'event':
-        return <EventCard key={item.id} event={item.originalData} viewMode="grid" />;
+        return <EventCard key={item.id} event={getEventCardData(item)} viewMode="grid" />;
       case 'business':
-        return <BusinessCard key={item.id} business={item.originalData} />;
+        return <BusinessCard key={item.id} business={getBusinessCardData(item)} />;
       case 'local-service':
-        return <LocalServiceCard key={item.id} localService={item.originalData} />;
+        return <LocalServiceCard key={item.id} localService={getLocalServiceCardData(item)} />;
       default:
         return null;
     }
