@@ -34,7 +34,7 @@ function makeQueryClient() {
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(makeQueryClient);
+  const [queryClient] = useState(() => makeQueryClient());
 
   if (typeof window !== 'undefined') {
     supabase.auth.onAuthStateChange((event) => {
