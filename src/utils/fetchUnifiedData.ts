@@ -4,6 +4,8 @@ import { UnifiedItem, TranslationsObject } from '@/types/unifiedItem';
 import { geocodeNewsItems } from './geocodeNewsItems';
 import { Json } from '@/integrations/supabase/types';
 
+const isDev = import.meta.env.DEV;
+
 // Helper to safely cast JSON to TranslationsObject
 const toTranslationsObject = (json: Json | undefined | null): TranslationsObject | undefined => {
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
@@ -16,8 +18,8 @@ export const fetchAllUnifiedData = async (
   geocode: (address: string) => Promise<any>,
   includePastEvents = false
 ): Promise<UnifiedItem[]> => {
-  console.log('🔄 Starting unified data fetch...');
-  
+  if (isDev) console.log('🔄 Starting unified data fetch...');
+
   const currentDate = new Date().toISOString().split('T')[0];
   const [eventsRes, pastEventsRes, newsRes, localResourcesRes, businessRes] = await Promise.all([
     supabase.from('events').select('*').gte('date', currentDate).order('created_at', { ascending: false }),
@@ -27,25 +29,25 @@ export const fetchAllUnifiedData = async (
     supabase.from('business').select('*').order('created_at', { ascending: false })
   ]);
 
-  console.log('📊 Database fetch results:', {
-    events: { count: eventsRes.data?.length || 0, error: eventsRes.error },
-    pastEvents: { count: pastEventsRes.data?.length || 0, error: pastEventsRes.error },
-    news: { count: newsRes.data?.length || 0, error: newsRes.error },
-    business: { count: businessRes.data?.length || 0, error: businessRes.error },
-    localResources: { count: localResourcesRes.data?.length || 0, error: localResourcesRes.error }
-  });
-
-  // Log specific business data for debugging
-  if (businessRes.data && businessRes.data.length > 0) {
-    console.log('🏢 Business data details (from Supabase):', businessRes.data.map(b => ({
-      id: b.id,
-      title: b.title,
-      lat: b.latitude,
-      lng: b.longitude,
-      address: b.address
-    })));
-  } else {
-    console.log('🚨 No business data found in Supabase');
+  if (isDev) {
+    console.log('📊 Database fetch results:', {
+      events: { count: eventsRes.data?.length || 0, error: eventsRes.error },
+      pastEvents: { count: pastEventsRes.data?.length || 0, error: pastEventsRes.error },
+      news: { count: newsRes.data?.length || 0, error: newsRes.error },
+      business: { count: businessRes.data?.length || 0, error: businessRes.error },
+      localResources: { count: localResourcesRes.data?.length || 0, error: localResourcesRes.error }
+    });
+    if (businessRes.data && businessRes.data.length > 0) {
+      console.log('🏢 Business data details (from Supabase):', businessRes.data.map(b => ({
+        id: b.id,
+        title: b.title,
+        lat: b.latitude,
+        lng: b.longitude,
+        address: b.address
+      })));
+    } else if (!businessRes.data?.length) {
+      console.log('🚨 No business data found in Supabase');
+    }
   }
 
   if (eventsRes.error) {
@@ -68,13 +70,11 @@ export const fetchAllUnifiedData = async (
 
   // Process current events with enhanced coordinate validation and address support
   if (eventsRes.data) {
-    console.log('📅 Processing events:', eventsRes.data.length);
-    eventsRes.data.forEach((event, index) => {
+    if (isDev) console.log('📅 Processing events:', eventsRes.data.length);
+    eventsRes.data.forEach((event) => {
       const lat = event.latitude ? Number(event.latitude) : null;
       const lng = event.longitude ? Number(event.longitude) : null;
-      
-      console.log(`Event ${index + 1} "${event.title}": lat=${lat}, lng=${lng}, location=${event.location}, address=${event.address}`);
-      
+
       items.push({
         id: event.id,
         title: event.title,
@@ -104,14 +104,11 @@ export const fetchAllUnifiedData = async (
 
   // Process news with enhanced geocoding and coordinate validation
   if (newsRes.data) {
-    console.log('📰 Processing news:', newsRes.data.length);
-    
-    newsRes.data.forEach((news, index) => {
+    if (isDev) console.log('📰 Processing news:', newsRes.data.length);
+    newsRes.data.forEach((news) => {
       const lat = news.latitude ? Number(news.latitude) : null;
       const lng = news.longitude ? Number(news.longitude) : null;
-      
-      console.log(`News ${index + 1} "${news.title}": lat=${lat}, lng=${lng}, location=${news.location}, address=${news.Address}`);
-      
+
       items.push({
         id: news.id,
         title: news.title,
@@ -136,13 +133,11 @@ export const fetchAllUnifiedData = async (
 
   // Process businesses with coordinate validation (from Supabase)
   if (businessRes.data) {
-    console.log('🏢 Processing businesses from Supabase:', businessRes.data.length);
-    businessRes.data.forEach((business, index) => {
+    if (isDev) console.log('🏢 Processing businesses from Supabase:', businessRes.data.length);
+    businessRes.data.forEach((business) => {
       const lat = business.latitude ? Number(business.latitude) : null;
       const lng = business.longitude ? Number(business.longitude) : null;
-      
-      console.log(`Business ${index + 1} "${business.title}": lat=${lat}, lng=${lng}, address=${business.address}`);
-      
+
       const item = {
         id: business.id,
         title: business.title,
@@ -162,21 +157,18 @@ export const fetchAllUnifiedData = async (
         address_translations: toTranslationsObject(business.address_translations),
         short_description_translations: toTranslationsObject(business.short_description_translations),
       };
-      
-      console.log(`🏢 Transformed business item:`, item);
+
       items.push(item);
     });
   }
 
   // Process local resources with coordinate validation
   if (localResourcesRes.data) {
-    console.log('🏪 Processing local resources:', localResourcesRes.data.length);
-    localResourcesRes.data.forEach((resource, index) => {
+    if (isDev) console.log('🏪 Processing local resources:', localResourcesRes.data.length);
+    localResourcesRes.data.forEach((resource) => {
       const lat = resource.latitude ? Number(resource.latitude) : null;
       const lng = resource.longitude ? Number(resource.longitude) : null;
-      
-      console.log(`Local Resource ${index + 1} "${resource.name}": lat=${lat}, lng=${lng}, address=${resource.address}`);
-      
+
       items.push({
         id: resource.id,
         title: resource.name,
@@ -200,41 +192,39 @@ export const fetchAllUnifiedData = async (
 
   // Filter out items with invalid coordinates
   const validItems = items.filter(item => {
-    const hasValidCoords = item.latitude !== null && 
-                          item.longitude !== null && 
-                          !isNaN(Number(item.latitude)) && 
+    const hasValidCoords = item.latitude !== null &&
+                          item.longitude !== null &&
+                          !isNaN(Number(item.latitude)) &&
                           !isNaN(Number(item.longitude)) &&
                           Number(item.latitude) !== 0 &&
                           Number(item.longitude) !== 0;
-    
-    if (!hasValidCoords) {
+
+    if (!hasValidCoords && isDev) {
       console.log(`⚠️ Excluding item "${item.title}" - invalid coordinates:`, {
         lat: item.latitude,
         lng: item.longitude
       });
     }
-    
+
     return hasValidCoords;
   });
 
-  console.log('✅ Unified data processing complete:', {
-    totalItemsFetched: items.length,
-    validItemsWithCoords: validItems.length,
-    byType: {
-      events: items.filter(item => item.type === 'event').length,
-      pastEvents: items.filter(item => item.type === 'past-event').length,
-      news: items.filter(item => item.type === 'news').length,
-      business: items.filter(item => item.type === 'business').length,
-      localServices: items.filter(item => item.type === 'local-service').length
-    },
-    validCoordsByType: {
-      events: validItems.filter(item => item.type === 'event').length,
-      pastEvents: validItems.filter(item => item.type === 'past-event').length,
-      news: validItems.filter(item => item.type === 'news').length,
-      business: validItems.filter(item => item.type === 'business').length,
-      localServices: validItems.filter(item => item.type === 'local-service').length
-    }
-  });
-  
+  if (isDev) {
+    const byType = items.reduce((acc, item) => {
+      acc[item.type] = (acc[item.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    const validByType = validItems.reduce((acc, item) => {
+      acc[item.type] = (acc[item.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    console.log('✅ Unified data processing complete:', {
+      totalItemsFetched: items.length,
+      validItemsWithCoords: validItems.length,
+      byType,
+      validCoordsByType: validByType
+    });
+  }
+
   return validItems;
 };

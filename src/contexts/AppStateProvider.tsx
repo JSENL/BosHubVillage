@@ -36,14 +36,14 @@ export const AppStateProvider = ({ children }: AppStateProviderProps) => {
   
   // Filter state
   const [filters, setFilters] = useState(initialFilters);
-  
-  // Filter actions
-  const updateFilter = <K extends keyof typeof filters>(
-    key: K, 
-    value: typeof filters[K]
-  ) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  };
+
+  // Filter actions (stable callback to avoid context consumer re-renders)
+  const updateFilter = useCallback(
+    <K extends keyof typeof initialFilters>(key: K, value: typeof initialFilters[K]) => {
+      setFilters(prev => ({ ...prev, [key]: value }));
+    },
+    []
+  );
   
   const clearAllFilters = useCallback(() => {
     setFilters(initialFilters);

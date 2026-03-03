@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
 import { useBusiness } from "@/hooks/useBusiness";
@@ -22,15 +22,26 @@ export const useDataLoader = () => {
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedItems, setHasGeocodedItems] = useState(false);
 
-  // Transform raw data to unified items
-  const allItems: UnifiedItem[] = transformDataToUnifiedItems({
-    events: events || [],
-    news: news || [],
-    businesses: businesses || [],
-    businessSubmissions: businessSubmissions || [],
-    localServices: localServices || [],
-    localServiceSubmissions: localServiceSubmissions || [],
-  });
+  // Transform raw data to unified items (memoized to avoid recalc on every render)
+  const allItems = useMemo(
+    () =>
+      transformDataToUnifiedItems({
+        events: events || [],
+        news: news || [],
+        businesses: businesses || [],
+        businessSubmissions: businessSubmissions || [],
+        localServices: localServices || [],
+        localServiceSubmissions: localServiceSubmissions || [],
+      }),
+    [
+      events,
+      news,
+      businesses,
+      businessSubmissions,
+      localServices,
+      localServiceSubmissions
+    ]
+  );
 
   const isLoading = eventsLoading || newsLoading || 
                    businessLoading || businessSubmissionsLoading ||
