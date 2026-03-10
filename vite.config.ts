@@ -6,6 +6,10 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  build: {
+    // When running SSR build after client build, do not empty dist so we keep index.html + assets
+    emptyOutDir: !process.env.VITE_SSR_BUILD,
+  },
   server: {
     host: "::",
     port: 8080,
