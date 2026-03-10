@@ -19,16 +19,20 @@ import { MobileMapPreview } from '@/components/mobile/MobileMapPreview';
 import { SwipeableCardStack } from '@/components/mobile/SwipeableCardStack';
 import { PullToRefresh } from '@/components/mobile/PullToRefresh';
 import { getQuickBrowseItems } from '@/utils/quickBrowseUtils';
+import { useQuickBrowse, getQuickBrowseIds } from '@/hooks/useQuickBrowse';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const MainContent = () => {
-  const { 
-    allItems, 
-    isLoading, 
-    filters, 
-    updateFilter, 
+  const {
+    allItems,
+    isLoading,
+    filters,
+    updateFilter,
     filteredItems
   } = useAppState();
+  const { entries } = useQuickBrowse();
+  const adminQuickBrowseIds = getQuickBrowseIds(entries);
+  const quickBrowseItems = getQuickBrowseItems(filteredItems, 10, adminQuickBrowseIds.length > 0 ? adminQuickBrowseIds : undefined);
   
   const tourRef = useRef<OnboardingTourRef>(null);
   const [showMobileMap, setShowMobileMap] = useState(false);
@@ -93,10 +97,10 @@ const MainContent = () => {
       </Button>
 
       {/* Swipeable Cards Overlay */}
-      {showSwipeCards && filteredItems.length > 0 && (
-        <SwipeableCardStack 
-          items={getQuickBrowseItems(filteredItems)} 
-          onClose={() => setShowSwipeCards(false)} 
+      {showSwipeCards && quickBrowseItems.length > 0 && (
+        <SwipeableCardStack
+          items={quickBrowseItems}
+          onClose={() => setShowSwipeCards(false)}
         />
       )}
 
@@ -146,14 +150,14 @@ const MainContent = () => {
                   ) : (
                     <>
                       {/* Swipe Browse Button */}
-                      {filteredItems.length > 0 && (
+                      {quickBrowseItems.length > 0 && (
                         <Button
                           variant="outline"
                           onClick={() => setShowSwipeCards(true)}
                           className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20 hover:from-primary/10 hover:to-secondary/10 transition-all duration-300"
                         >
                           <Layers className="h-4 w-4" />
-                          Quick Browse ({filteredItems.length} items)
+                          Quick Browse ({quickBrowseItems.length} items)
                         </Button>
                       )}
 

@@ -32,7 +32,8 @@ import {
   BarChart3,
   UserCircle,
   Table,
-  Languages
+  Languages,
+  Layers
 } from 'lucide-react';
 import { AdminEventRegistrations } from '@/components/admin/AdminEventRegistrations';
 import { BatchTranslationTool } from '@/components/admin/BatchTranslationTool';
@@ -42,6 +43,7 @@ import UserActivityMonitor from '@/components/admin/UserActivityMonitor';
 import BookmarksManagement from '@/components/admin/BookmarksManagement';
 import SocialNetworkAnalytics from '@/components/admin/SocialNetworkAnalytics';
 import WeeklyDigestManagement from '@/components/admin/WeeklyDigestManagement';
+import { QuickBrowseManagement } from '@/components/admin/QuickBrowseManagement';
 
 
 const AdminDashboard = () => {
@@ -263,10 +265,14 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <Tabs defaultValue="analytics" className="w-full">
-                      <TabsList className="grid w-full grid-cols-5 mb-6">
+                      <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-6">
                         <TabsTrigger value="analytics" className="flex items-center gap-2">
                           <BarChart3 className="h-4 w-4" />
                           Analytics
+                        </TabsTrigger>
+                        <TabsTrigger value="quick-browse" className="flex items-center gap-2">
+                          <Layers className="h-4 w-4" />
+                          Quick Browse
                         </TabsTrigger>
                         <TabsTrigger value="translations" className="flex items-center gap-2">
                           <Languages className="h-4 w-4" />
@@ -288,6 +294,10 @@ const AdminDashboard = () => {
                       
                       <TabsContent value="analytics">
                         <AnalyticsOverview />
+                      </TabsContent>
+                      
+                      <TabsContent value="quick-browse">
+                        <QuickBrowseManagement />
                       </TabsContent>
                       
                       <TabsContent value="translations">

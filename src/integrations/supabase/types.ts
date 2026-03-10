@@ -83,6 +83,30 @@ export type Database = {
         }
         Relationships: []
       }
+      quick_browse: {
+        Row: {
+          id: string
+          item_type: string
+          item_id: string
+          position: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          item_type: string
+          item_id: string
+          position: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          item_type?: string
+          item_id?: string
+          position?: number
+          created_at?: string
+        }
+        Relationships: []
+      }
       business: {
         Row: {
           address: string
