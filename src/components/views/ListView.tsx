@@ -1,18 +1,20 @@
-import { useTranslation } from 'react-i18next';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { UnifiedItemCard } from '@/components/UnifiedItemCard';
 import { LoadingGrid } from '@/components/common/LoadingState';
-import { EmptyState } from '@/components/common/EmptyState';
+import { IllustratedEmptyState } from '@/components/common/IllustratedEmptyState';
 import { usePagination } from '@/hooks/usePagination';
 import { PaginationControls } from '@/components/common/PaginationControls';
+
+type EmptyVariant = 'search' | 'events' | 'business' | 'news' | 'local-service' | 'filter';
 
 interface ListViewProps {
   items: UnifiedItem[];
   isLoading?: boolean;
+  /** Variant for the empty state when no items match (default: filter) */
+  emptyStateVariant?: EmptyVariant;
 }
 
-export const ListView = ({ items, isLoading = false }: ListViewProps) => {
-  const { t } = useTranslation();
+export const ListView = ({ items, isLoading = false, emptyStateVariant = 'filter' }: ListViewProps) => {
   const {
     currentItems,
     currentPage,
@@ -28,12 +30,7 @@ export const ListView = ({ items, isLoading = false }: ListViewProps) => {
   }
 
   if (items.length === 0) {
-    return (
-      <EmptyState 
-        title={t('emptyStates.noItemsFound')}
-        description={t('emptyStates.tryAdjustingSearch')}
-      />
-    );
+    return <IllustratedEmptyState variant={emptyStateVariant} />;
   }
 
   return (

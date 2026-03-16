@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
+import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -38,7 +39,7 @@ const EventDetails = () => {
   const canEditLinks = isEventCreator || isAdmin;
 
   if (loading) {
-    return t('common.loading');
+    return <DetailPageLoading />;
   }
 
   if (!event) {

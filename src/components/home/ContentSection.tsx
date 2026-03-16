@@ -3,7 +3,7 @@ import NewsCard from "@/components/NewsCard";
 import BusinessCard from "@/components/BusinessCard";
 import LocalServiceCard from "@/components/LocalServiceCard";
 import { getEventCardData, getNewsCardData, getBusinessCardData, getLocalServiceCardData } from '@/utils/cardTranslationData';
-
+import { IllustratedEmptyState } from '@/components/common/IllustratedEmptyState';
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
@@ -94,17 +94,7 @@ export const ContentSection = ({
         })}
       </div>
 
-      {/* No results message */}
-      {filteredItems.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground text-lg">
-            No items found matching your criteria.
-          </p>
-          <p className="text-muted-foreground text-sm mt-2">
-            Try adjusting your filters or search terms.
-          </p>
-        </div>
-      )}
+      {filteredItems.length === 0 && <IllustratedEmptyState variant="filter" />}
     </div>
   );
 };

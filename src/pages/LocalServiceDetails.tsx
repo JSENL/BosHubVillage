@@ -14,6 +14,7 @@ import { Navigation } from '@/components/Navigation';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
+import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
@@ -49,17 +50,7 @@ const LocalServiceDetails = () => {
   } = useLocalResourceComments(serviceId as string);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-        <Navigation />
-        <div className="max-w-4xl mx-auto py-8 px-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4" />
-            <p>Loading...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DetailPageLoading />;
   }
 
   if (!resource) {

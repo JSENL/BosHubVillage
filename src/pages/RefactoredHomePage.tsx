@@ -1,4 +1,6 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { MapView } from '@/components/views/MapView';
 import { ListView } from '@/components/views/ListView';
@@ -24,6 +26,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ErrorState } from '@/components/common/ErrorState';
 
 const MainContent = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const {
     allItems,
     isLoading,
@@ -34,6 +38,14 @@ const MainContent = () => {
     filteredItems
   } = useAppState();
   const { entries } = useQuickBrowse();
+
+  useEffect(() => {
+    const state = location.state as { unauthorized?: boolean } | undefined;
+    if (state?.unauthorized) {
+      toast.error("You don't have access to that page.");
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
   const adminQuickBrowseIds = getQuickBrowseIds(entries);
   const quickBrowseItems = getQuickBrowseItems(filteredItems, 10, adminQuickBrowseIds.length > 0 ? adminQuickBrowseIds : undefined);
   
@@ -205,6 +217,7 @@ const MainContent = () => {
                         <ListView
                           items={filteredItems}
                           isLoading={isLoading}
+                          emptyStateVariant={filters.selectedType === 'all' ? 'filter' : filters.selectedType === 'event' ? 'events' : (filters.selectedType as 'business' | 'news' | 'local-service')}
                         />
                       </div>
                     </>
@@ -233,6 +246,7 @@ const MainContent = () => {
                           <ListView
                             items={filteredItems}
                             isLoading={isLoading}
+                            emptyStateVariant={filters.selectedType === 'all' ? 'filter' : filters.selectedType === 'event' ? 'events' : (filters.selectedType as 'business' | 'news' | 'local-service')}
                           />
                         </div>
                       </ResizablePanel>
@@ -241,6 +255,7 @@ const MainContent = () => {
                     <ListView
                       items={filteredItems}
                       isLoading={isLoading}
+                      emptyStateVariant={filters.selectedType === 'all' ? 'filter' : filters.selectedType === 'event' ? 'events' : (filters.selectedType as 'business' | 'news' | 'local-service')}
                     />
                   )}
                 </div>

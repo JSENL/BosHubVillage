@@ -14,6 +14,7 @@ import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { useTranslation } from 'react-i18next';
 import { LinkedContentSection } from '@/components/content/LinkedContentSection';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
+import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -41,16 +42,7 @@ const NewsDetails = () => {
   useDocumentHead(news?.title, metaDescription);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4" />
-            <p>{t('common.loading')}</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <DetailPageLoading />;
   }
 
   if (error || !news) {

@@ -15,6 +15,7 @@ import { ClearDirectionsButton } from '@/components/map/ClearDirectionsButton';
 import { TurnByTurnDirections } from '@/components/map/TurnByTurnDirections';
 import { MapLegend } from '@/components/map/MapLegend';
 import { MapSearchBox } from '@/components/map/MapSearchBox';
+import { MapLoadingState, MapErrorState } from '@/components/map/MapLoadingState';
 import { useDirections } from '@/hooks/useDirections';
 import { UnifiedItem } from '@/types/unifiedItem';
 
@@ -186,18 +187,16 @@ export const EnhancedUniversalMap = ({
 
   if (isLoadingApiKey) {
     return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-        <p className="text-gray-600">{t('emptyStates.loadingMap')}</p>
+      <div style={{ height }}>
+        <MapLoadingState />
       </div>
     );
   }
 
   if (error || !mapboxToken) {
     return (
-      <div className="bg-gray-100 rounded-lg flex items-center justify-center flex-col p-8" style={{ height }}>
-        <p className="text-red-500 mb-4">{error || t('map.failedToLoadKey')}</p>
-        <p className="text-sm text-gray-400">{t('map.checkConfiguration')}</p>
+      <div style={{ height }}>
+        <MapErrorState />
       </div>
     );
   }
