@@ -33,6 +33,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import About from "./pages/About";
 import { supabase } from "@/integrations/supabase/client";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 
 // Recovery redirect component to handle email link redirects (client-only; hash is not sent to server)
 const RecoveryRedirect = () => {
@@ -87,6 +88,7 @@ const App = () => (
           <FilterProvider>
             <Toaster />
             <Sonner />
+            <ErrorBoundary>
             <Routes>
             <Route path="/" element={<RecoveryRedirect />} />
             <Route path="/auth" element={<Auth />} />
@@ -116,6 +118,7 @@ const App = () => (
         <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+            </ErrorBoundary>
           </FilterProvider>
         </MapboxProvider>
       </AuthProvider>

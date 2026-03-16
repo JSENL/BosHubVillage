@@ -7,7 +7,9 @@ interface AppStateContextType {
   // Data state
   allItems: UnifiedItem[];
   isLoading: boolean;
-  
+  error: string | null;
+  refetch: () => void;
+
   // Filter state
   filters: {
     selectedType: string;

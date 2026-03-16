@@ -33,7 +33,7 @@ export interface Event {
 export const useEvents = () => {
   const queryClient = useQueryClient();
 
-  const { data: events = [], isLoading: loading, refetch: fetchEvents } = useQuery({
+  const { data: events = [], isLoading: loading, isError, error, refetch: fetchEvents } = useQuery({
     queryKey: ['events'],
     queryFn: async () => {
       const currentDate = new Date().toISOString().split('T')[0];
@@ -134,6 +134,8 @@ export const useEvents = () => {
   return {
     events,
     loading,
+    isError,
+    error,
     fetchEvents,
     createEvent
   };

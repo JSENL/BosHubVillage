@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
+import { useDocumentHead } from '@/hooks/useDocumentHead';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -27,8 +28,12 @@ const EventDetails = () => {
   const { getTranslatedText } = useTranslatedField();
 
   const event = events.find(e => e.id === eventId);
-  
-  // Check if user is the event creator
+  const displayTitle = event ? getTranslatedText(event.title, event.translations?.title) : undefined;
+  const displayDescription = event?.description
+    ? String(getTranslatedText(event.description, event.translations?.description) ?? event.description).replace(/<[^>]*>/g, '').slice(0, 160)
+    : undefined;
+  useDocumentHead(displayTitle, displayDescription);
+
   const isEventCreator = user && event && event.created_by === user.id;
   const canEditLinks = isEventCreator || isAdmin;
 

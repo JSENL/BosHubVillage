@@ -13,6 +13,7 @@ import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
 import { useAuth } from '@/hooks/useAuth';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
+import { useDocumentHead } from '@/hooks/useDocumentHead';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -41,6 +42,11 @@ const BusinessDetails = () => {
     },
     enabled: !!businessId,
   });
+
+  const metaDescription = business
+    ? String(business.short_description || business.description || '').replace(/<[^>]*>/g, '').slice(0, 160)
+    : undefined;
+  useDocumentHead(business?.title, metaDescription);
 
   if (isLoading) {
     return (

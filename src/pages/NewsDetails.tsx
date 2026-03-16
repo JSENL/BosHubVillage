@@ -13,6 +13,7 @@ import NewsComments from '@/components/NewsComments';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { useTranslation } from 'react-i18next';
 import { LinkedContentSection } from '@/components/content/LinkedContentSection';
+import { useDocumentHead } from '@/hooks/useDocumentHead';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -33,6 +34,11 @@ const NewsDetails = () => {
     },
     enabled: !!newsId
   });
+
+  const metaDescription = news
+    ? String(news.content || news.title || '').replace(/<[^>]*>/g, '').slice(0, 160)
+    : undefined;
+  useDocumentHead(news?.title, metaDescription);
 
   if (isLoading) {
     return (

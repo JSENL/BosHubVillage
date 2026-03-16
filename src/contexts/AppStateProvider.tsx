@@ -24,7 +24,7 @@ const initialFilters = {
 
 export const AppStateProvider = ({ children }: AppStateProviderProps) => {
   // Data loading
-  const { allItems, isLoading } = useDataLoader();
+  const { allItems, isLoading, error, refetch } = useDataLoader();
   
   // Geolocation
   const { 
@@ -56,6 +56,8 @@ export const AppStateProvider = ({ children }: AppStateProviderProps) => {
   const value = useMemo(() => ({
     allItems,
     isLoading,
+    error,
+    refetch,
     filters,
     userLocation,
     isLoadingLocation,
@@ -64,7 +66,7 @@ export const AppStateProvider = ({ children }: AppStateProviderProps) => {
     updateFilter,
     clearAllFilters,
     filteredItems,
-  }), [allItems, isLoading, filters, filteredItems, userLocation, isLoadingLocation, requestLocation, clearLocation, clearAllFilters]);
+  }), [allItems, isLoading, error, refetch, filters, filteredItems, userLocation, isLoadingLocation, requestLocation, clearLocation, clearAllFilters]);
 
   return (
     <AppStateContext.Provider value={value}>

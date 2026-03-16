@@ -27,7 +27,7 @@ export const useBusinessSubmissions = () => {
   const queryClient = useQueryClient();
   const submissionOperations = useBusinessSubmissionOperations();
 
-  const { data: submissions = [], isLoading: loading, refetch: fetchSubmissions } = useQuery({
+  const { data: submissions = [], isLoading: loading, isError, error, refetch: fetchSubmissions } = useQuery({
     queryKey: ['business-submissions'],
     queryFn: async () => {
       console.log('Fetching business submissions from Supabase...');
@@ -53,6 +53,8 @@ export const useBusinessSubmissions = () => {
   return {
     submissions,
     loading,
+    isError,
+    error,
     fetchSubmissions,
     approveSubmission: async (submissionId: string, adminNotes?: string) => {
       await submissionOperations.updateSubmissionStatus(submissionId, 'approved', adminNotes);

@@ -21,11 +21,14 @@ import { PullToRefresh } from '@/components/mobile/PullToRefresh';
 import { getQuickBrowseItems } from '@/utils/quickBrowseUtils';
 import { useQuickBrowse, getQuickBrowseIds } from '@/hooks/useQuickBrowse';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ErrorState } from '@/components/common/ErrorState';
 
 const MainContent = () => {
   const {
     allItems,
     isLoading,
+    error,
+    refetch,
     filters,
     updateFilter,
     filteredItems
@@ -83,6 +86,14 @@ const MainContent = () => {
       </div>
     </div>
   );
+
+  if (error) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center p-4">
+        <ErrorState error={error} onRetry={refetch} title="Couldn't load content" />
+      </div>
+    );
+  }
 
   return (
     <>

@@ -13,6 +13,7 @@ import { useLocalResourceComments } from '@/hooks/useLocalResourceComments';
 import { Navigation } from '@/components/Navigation';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
+import { useDocumentHead } from '@/hooks/useDocumentHead';
 
 const LocalServiceDetails = () => {
   const { serviceId } = useParams();
@@ -35,6 +36,11 @@ const LocalServiceDetails = () => {
     },
     enabled: !!serviceId
   });
+
+  const metaDescription = resource
+    ? String(resource.description || resource.name || '').replace(/<[^>]*>/g, '').slice(0, 160)
+    : undefined;
+  useDocumentHead(resource?.name, metaDescription);
 
   const { 
     comments, 
