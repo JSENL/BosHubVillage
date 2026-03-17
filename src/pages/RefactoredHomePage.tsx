@@ -128,7 +128,7 @@ const MainContent = () => {
       )}
 
       <PullToRefresh onRefresh={handleRefresh} disabled={isLoading}>
-        <div className="w-full overflow-x-hidden">
+        <div className="w-full overflow-x-hidden" aria-live="polite" aria-busy={isLoading}>
           <ResizablePanelGroup direction="horizontal" className="gap-4 md:gap-6">
             {/* Main content */}
             <ResizablePanel defaultSize={70} minSize={40}>

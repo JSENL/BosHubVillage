@@ -15,7 +15,7 @@ export const AppLayout = ({ children, showHero = false }: AppLayoutProps) => {
           {/* Hero content can be passed as prop or rendered conditionally */}
         </div>
       )}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+      <main id="main-content" role="main" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         {children}
       </main>
     </div>

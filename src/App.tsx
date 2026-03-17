@@ -1,4 +1,4 @@
-
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,32 +8,40 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { MapboxProvider } from "@/contexts/MapboxContext";
 import { FilterProvider } from "@/contexts/FilterContext";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import SubmitEvent from "./pages/SubmitEvent";
-import SubmitBusiness from "./pages/SubmitBusiness";
-import SubmitLocalService from "./pages/SubmitLocalService";
-import SubmitNews from "./pages/SubmitNews";
-import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "./components/routing/AdminRoute";
-import EventDetails from "./pages/EventDetails";
-import BusinessDetails from "./pages/BusinessDetails";
-import BusinessDashboard from "./pages/BusinessDashboard";
-import NewsDetails from "./pages/NewsDetails";
-import LocalServiceDetails from "./pages/LocalServiceDetails";
-import NewsPage from "./pages/NewsPage";
-import ContactAdmin from "./pages/ContactAdmin";
-import MyMessages from "./pages/MyMessages";
-import MySubmissions from "./pages/MySubmissions";
-import NotFound from "./pages/NotFound";
-import UserProfile from "./pages/UserProfile";
-import { EditProfile } from "./pages/EditProfile";
-import { MapboxTest } from "./components/MapboxTest";
-import { FAQ } from "./pages/FAQ";
-import TermsOfService from "./pages/TermsOfService";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import About from "./pages/About";
 import { supabase } from "@/integrations/supabase/client";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+
+// Route-level code-splitting: lazy load everything except home (Index)
+const Auth = lazy(() => import("./pages/Auth"));
+const SubmitEvent = lazy(() => import("./pages/SubmitEvent"));
+const SubmitBusiness = lazy(() => import("./pages/SubmitBusiness"));
+const SubmitLocalService = lazy(() => import("./pages/SubmitLocalService"));
+const SubmitNews = lazy(() => import("./pages/SubmitNews"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const EventDetails = lazy(() => import("./pages/EventDetails"));
+const BusinessDetails = lazy(() => import("./pages/BusinessDetails"));
+const BusinessDashboard = lazy(() => import("./pages/BusinessDashboard"));
+const NewsDetails = lazy(() => import("./pages/NewsDetails"));
+const LocalServiceDetails = lazy(() => import("./pages/LocalServiceDetails"));
+const NewsPage = lazy(() => import("./pages/NewsPage"));
+const ContactAdmin = lazy(() => import("./pages/ContactAdmin"));
+const MyMessages = lazy(() => import("./pages/MyMessages"));
+const MySubmissions = lazy(() => import("./pages/MySubmissions"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const UserProfile = lazy(() => import("./pages/UserProfile"));
+const EditProfile = lazy(() => import("./pages/EditProfile").then(m => ({ default: m.EditProfile })));
+const MapboxTest = lazy(() => import("./components/MapboxTest").then(m => ({ default: m.MapboxTest })));
+const FAQ = lazy(() => import("./pages/FAQ").then(m => ({ default: m.FAQ })));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const About = lazy(() => import("./pages/About"));
+
+const RouteFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background" role="status" aria-label="Loading page">
+    <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent" />
+  </div>
+);
 
 // Recovery redirect component to handle email link redirects (client-only; hash is not sent to server)
 const RecoveryRedirect = () => {
@@ -89,35 +97,35 @@ const App = () => (
             <Toaster />
             <Sonner />
             <ErrorBoundary>
-            <Routes>
-            <Route path="/" element={<RecoveryRedirect />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/submit-event" element={<SubmitEvent />} />
-            <Route path="/submit-business" element={<SubmitBusiness />} />
-            <Route path="/submit-local-resource" element={<SubmitLocalService />} />
-            <Route path="/submit-news" element={<SubmitNews />} />
-            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            
-            
-            <Route path="/event/:eventId" element={<EventDetails />} />
-            <Route path="/business/:businessId" element={<BusinessDetails />} />
-            <Route path="/business-dashboard" element={<BusinessDashboard />} />
-            <Route path="/news/:newsId" element={<NewsDetails />} />
-            <Route path="/news-page" element={<NewsPage />} />
-            <Route path="/news" element={<NewsPage />} />
-            <Route path="/local-resource/:serviceId" element={<LocalServiceDetails />} />
-        <Route path="/contact-admin" element={<ContactAdmin />} />
-        <Route path="/my-messages" element={<MyMessages />} />
-        <Route path="/my-submissions" element={<MySubmissions />} />
-        <Route path="/user/:userId" element={<UserProfile />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/mapbox-test" element={<MapboxTest />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/about" element={<About />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Suspense fallback={<RouteFallback />}>
+                <Routes>
+                  <Route path="/" element={<RecoveryRedirect />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/submit-event" element={<SubmitEvent />} />
+                  <Route path="/submit-business" element={<SubmitBusiness />} />
+                  <Route path="/submit-local-resource" element={<SubmitLocalService />} />
+                  <Route path="/submit-news" element={<SubmitNews />} />
+                  <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+                  <Route path="/event/:eventId" element={<EventDetails />} />
+                  <Route path="/business/:businessId" element={<BusinessDetails />} />
+                  <Route path="/business-dashboard" element={<BusinessDashboard />} />
+                  <Route path="/news/:newsId" element={<NewsDetails />} />
+                  <Route path="/news-page" element={<NewsPage />} />
+                  <Route path="/news" element={<NewsPage />} />
+                  <Route path="/local-resource/:serviceId" element={<LocalServiceDetails />} />
+                  <Route path="/contact-admin" element={<ContactAdmin />} />
+                  <Route path="/my-messages" element={<MyMessages />} />
+                  <Route path="/my-submissions" element={<MySubmissions />} />
+                  <Route path="/user/:userId" element={<UserProfile />} />
+                  <Route path="/edit-profile" element={<EditProfile />} />
+                  <Route path="/mapbox-test" element={<MapboxTest />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/terms" element={<TermsOfService />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
             </ErrorBoundary>
           </FilterProvider>
         </MapboxProvider>
