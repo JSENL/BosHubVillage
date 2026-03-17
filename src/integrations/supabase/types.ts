@@ -943,6 +943,8 @@ export type Database = {
           address: string | null
           category: string
           category_translations: Json
+          contact_type: string | null
+          contact_value: string | null
           created_at: string
           created_by: string
           date: string
@@ -974,6 +976,8 @@ export type Database = {
           address?: string | null
           category: string
           category_translations?: Json
+          contact_type?: string | null
+          contact_value?: string | null
           created_at?: string
           created_by: string
           date: string
@@ -1005,6 +1009,8 @@ export type Database = {
           address?: string | null
           category?: string
           category_translations?: Json
+          contact_type?: string | null
+          contact_value?: string | null
           created_at?: string
           created_by?: string
           date?: string

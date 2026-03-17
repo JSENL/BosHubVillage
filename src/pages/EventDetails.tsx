@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink, Settings } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink, Settings, Mail, Phone, MessageCircle, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -189,6 +189,59 @@ const EventDetails = () => {
                       <ExternalLink className="h-4 w-4 mr-2" />
                       {t('pages.visitWebsite', 'Visit Website')}
                     </Button>
+                  )}
+
+                  {/* Contact (message, phone, email, or website) */}
+                  {(event.contact_type === 'message' || event.contact_type === 'phone' || event.contact_type === 'email' || event.contact_type === 'website') && (
+                    <div className="pt-2 border-t">
+                      <h4 className="text-sm font-medium text-muted-foreground mb-2">{t('pages.contact', 'Contact')}</h4>
+                      {event.contact_type === 'message' && (
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          asChild
+                        >
+                          <Link to={`/contact-admin?subject=Event: ${encodeURIComponent(event.title)}&eventId=${event.id}`}>
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            {t('pages.messageThroughSystem', 'Message through our system')}
+                          </Link>
+                        </Button>
+                      )}
+                      {event.contact_type === 'phone' && event.contact_value && (
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          asChild
+                        >
+                          <a href={`tel:${event.contact_value.trim()}`}>
+                            <Phone className="h-4 w-4 mr-2" />
+                            {event.contact_value}
+                          </a>
+                        </Button>
+                      )}
+                      {event.contact_type === 'email' && event.contact_value && (
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          asChild
+                        >
+                          <a href={`mailto:${event.contact_value.trim()}`}>
+                            <Mail className="h-4 w-4 mr-2" />
+                            {event.contact_value}
+                          </a>
+                        </Button>
+                      )}
+                      {event.contact_type === 'website' && event.contact_value && (
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => window.open(event.contact_value!.trim().startsWith('http') ? event.contact_value! : `https://${event.contact_value}`, '_blank')}
+                        >
+                          <Globe className="h-4 w-4 mr-2" />
+                          {t('pages.visitLink', 'Visit link')}
+                        </Button>
+                      )}
+                    </div>
                   )}
 
                   <div className="text-sm text-muted-foreground space-y-2 pt-4 border-t">

@@ -1,13 +1,20 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Event } from '@/hooks/useEvents';
+import { Event, type EventContactType } from '@/hooks/useEvents';
 import { useTranslation } from 'react-i18next';
 
 interface EditEventDialogProps {
@@ -42,7 +49,31 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
     latitude: event.latitude?.toString() || '',
     longitude: event.longitude?.toString() || '',
     is_sponsored: event.is_sponsored || false,
+    contact_type: (event.contact_type || '') as EventContactType | '',
+    contact_value: event.contact_value || '',
   });
+
+  useEffect(() => {
+    if (open) {
+      setFormData({
+        title: event.title,
+        description: event.description || '',
+        category: event.category,
+        location: event.location,
+        address: event.address || '',
+        date: formatDateForInput(event.date),
+        start_time: event.start_time || '',
+        end_time: event.end_time || '',
+        price: event.price || 0,
+        max_attendees: event.max_attendees || null,
+        latitude: event.latitude?.toString() || '',
+        longitude: event.longitude?.toString() || '',
+        is_sponsored: event.is_sponsored || false,
+        contact_type: (event.contact_type || '') as EventContactType | '',
+        contact_value: event.contact_value || '',
+      });
+    }
+  }, [open, event.id, event.title, event.description, event.category, event.location, event.address, event.date, event.start_time, event.end_time, event.price, event.max_attendees, event.latitude, event.longitude, event.is_sponsored, event.contact_type, event.contact_value]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,12 +86,14 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
         category: formData.category,
         location: formData.location,
         address: formData.address,
-        date: formData.date, // Keep as YYYY-MM-DD format to avoid timezone conversion
+        date: formData.date,
         start_time: formData.start_time || null,
         end_time: formData.end_time || null,
         price: formData.price,
         max_attendees: formData.max_attendees,
         is_sponsored: formData.is_sponsored,
+        contact_type: formData.contact_type || null,
+        contact_value: formData.contact_type ? (formData.contact_value?.trim() || null) : null,
       };
 
       // Handle coordinates - only include if they have values
@@ -266,6 +299,41 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
             <Label htmlFor="is_sponsored" className="text-sm font-medium">
               🌟 Sponsored/Special Event (will have glowing marker)
             </Label>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Contact</Label>
+            <p className="text-xs text-muted-foreground mb-2">
+              How attendees can contact about this event: message through our system, phone, email, or website.
+            </p>
+            <Select
+              value={formData.contact_type || 'none'}
+              onValueChange={(v) => setFormData({ ...formData, contact_type: (v === 'none' ? '' : v) as EventContactType | '', contact_value: v === 'message' ? '' : formData.contact_value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="No contact" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No contact</SelectItem>
+                <SelectItem value="message">Message through our system</SelectItem>
+                <SelectItem value="phone">Phone number</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="website">Website</SelectItem>
+              </SelectContent>
+            </Select>
+            {formData.contact_type && formData.contact_type !== 'message' && (
+              <Input
+                value={formData.contact_value}
+                onChange={(e) => setFormData({ ...formData, contact_value: e.target.value })}
+                placeholder={
+                  formData.contact_type === 'phone'
+                    ? 'e.g. (617) 555-0123'
+                    : formData.contact_type === 'email'
+                    ? 'e.g. organizer@example.com'
+                    : 'e.g. https://example.com/event'
+                }
+              />
+            )}
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

@@ -4,6 +4,8 @@ import { toast } from 'sonner';
 
 const PAGE_SIZE = 100;
 
+export type EventContactType = 'message' | 'phone' | 'email' | 'website';
+
 export interface Event {
   id: string;
   title: string;
@@ -28,6 +30,8 @@ export interface Event {
   villages: string | null;
   attendees_count?: number;
   is_sponsored?: boolean;
+  contact_type?: EventContactType | null;
+  contact_value?: string | null;
 }
 
 export const useEvents = () => {
