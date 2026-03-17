@@ -217,11 +217,35 @@ export const useCSVImport = () => {
 
     setIsUploading(true);
     setUploadProgress(0);
+    setImportResult(null);
 
     try {
       const text = await selectedFile.text();
-      const rows =
-        rowsToImport.length > 0 ? rowsToImport : parseCSV(text).map(filterCSVData);
+      let rows: CSVRow[];
+      try {
+        rows = rowsToImport.length > 0 ? rowsToImport : parseCSV(text).map(filterCSVData);
+      } catch (parseErr) {
+        const message = parseErr instanceof Error ? parseErr.message : 'Invalid CSV';
+        toast.error(message);
+        setImportResult({
+          success: 0,
+          errors: [{ row: 0, error: message, data: {} }],
+          geocoded: 0,
+          total: 0,
+        });
+        return;
+      }
+
+      if (rows.length === 0) {
+        toast.warning('No rows to import. Ensure your CSV has a header row and at least one data row.');
+        setImportResult({
+          success: 0,
+          errors: [],
+          geocoded: 0,
+          total: 0,
+        });
+        return;
+      }
 
       const result: ImportResult = {
         success: 0,
@@ -282,10 +306,21 @@ export const useCSVImport = () => {
       }
 
       if (result.errors.length > 0) {
-        toast.error(`${result.errors.length} records failed to import`);
+        toast.error(`${result.errors.length} record(s) failed to import. See details below.`);
       }
-    } catch {
-      toast.error('Failed to import CSV file');
+
+      if (result.success === 0 && result.errors.length === 0 && result.total > 0) {
+        toast.warning('No records were imported. Check error details below.');
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      toast.error(`Import failed: ${message}`);
+      setImportResult({
+        success: 0,
+        errors: [{ row: 0, error: message, data: {} }],
+        geocoded: 0,
+        total: 0,
+      });
     } finally {
       setIsUploading(false);
       setUploadProgress(0);

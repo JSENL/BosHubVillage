@@ -58,19 +58,24 @@ export const parseCSVLine = (line: string, delimiter: string = ','): string[] =>
   return result;
 };
 
+/** Strip BOM if present (e.g. from Excel exports) */
+const stripBOM = (text: string): string =>
+  text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
+
 /**
  * Parse full CSV text into array of row objects
  */
 export const parseCSV = (text: string): CSVRow[] => {
-  const lines = text.split(/\r?\n/).filter(line => line.trim());
+  const cleaned = stripBOM(text.trim());
+  const lines = cleaned.split(/\r?\n/).filter(line => line.trim());
 
-  if (lines.length === 0) {
+if (lines.length === 0) {
     throw new Error('CSV file is empty');
   }
 
   const delimiter = detectDelimiter(lines[0]);
-  const headers = parseCSVLine(lines[0], delimiter).map(h => 
-    h.replace(/"/g, '').trim().toLowerCase()
+  const headers = parseCSVLine(lines[0], delimiter).map(h =>
+    h.replace(/"/g, '').trim().toLowerCase().replace(/^\ufeff/, '')
   );
 
   return lines.slice(1).map((line) => {
@@ -87,14 +92,17 @@ export const parseCSV = (text: string): CSVRow[] => {
  * Parse CSV for preview (first N rows with original headers)
  */
 export const parseCSVPreview = (text: string, maxRows: number = 5): CSVRow[] => {
-  const lines = text.split(/\r?\n/).filter(line => line.trim());
+  const cleaned = stripBOM(text.trim());
+  const lines = cleaned.split(/\r?\n/).filter(line => line.trim());
 
   if (lines.length === 0) {
     return [];
   }
 
   const delimiter = detectDelimiter(lines[0]);
-  const headers = parseCSVLine(lines[0], delimiter).map(h => h.replace(/"/g, '').trim());
+  const headers = parseCSVLine(lines[0], delimiter).map(h =>
+    h.replace(/"/g, '').trim().replace(/^\ufeff/, '')
+  );
 
   return lines.slice(1, maxRows + 1).map((line) => {
     const values = parseCSVLine(line, delimiter).map(v => v.replace(/"/g, '').trim());

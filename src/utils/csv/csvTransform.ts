@@ -12,6 +12,37 @@ interface TransformOptions {
 }
 
 /**
+ * Parse price: accept "Free", "$10.00", "10", etc.
+ */
+const parsePrice = (value: string | undefined): number => {
+  if (value == null || value.trim() === '') return 0;
+  const lower = value.trim().toLowerCase();
+  if (lower === 'free' || lower === 'n/a') return 0;
+  const num = parseFloat(value.replace(/[^0-9.-]/g, ''));
+  return Number.isFinite(num) ? num : 0;
+};
+
+/**
+ * Parse max_attendees: accept numbers or "N/A" -> null.
+ */
+const parseMaxAttendees = (value: string | undefined): number | null => {
+  if (value == null || value.trim() === '') return null;
+  const lower = value.trim().toLowerCase();
+  if (lower === 'n/a' || lower === 'na') return null;
+  const num = parseInt(value.replace(/[^0-9]/g, ''), 10);
+  return Number.isFinite(num) ? num : null;
+};
+
+/**
+ * Parse registration_required: accept "Yes", "No", "true", "false", "1", "0".
+ */
+const parseRegistrationRequired = (value: string | undefined): boolean => {
+  if (value == null || value.trim() === '') return false;
+  const lower = value.trim().toLowerCase();
+  return lower === 'yes' || lower === 'true' || lower === '1';
+};
+
+/**
  * Parse and validate coordinates from CSV row
  */
 const parseCoordinates = (row: CSVRow): { latitude: number | null; longitude: number | null } => {
@@ -80,9 +111,9 @@ export const transformRowForDatabase = async (
         location: row.location,
         address: row.address || null,
         description: row.description || null,
-        price: row.price ? parseFloat(row.price) : 0,
-        max_attendees: row.max_attendees ? parseInt(row.max_attendees) : null,
-        registration_required: row.registration_required === 'true',
+        price: parsePrice(row.price),
+        max_attendees: parseMaxAttendees(row.max_attendees),
+        registration_required: parseRegistrationRequired(row.registration_required),
         neighborhoods: row.neighborhoods || null,
         villages: row.villages || null,
         website_link: row.website_link || null,
