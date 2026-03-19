@@ -11,6 +11,7 @@
     "dev:ssr": "node server/index.js",
     "dev:next": "next dev",
     "build": "vite build && VITE_SSR_BUILD=1 vite build --ssr src/entry-server.tsx && node scripts/prerender.mjs",
+    "build:serverless-ssr": "DISABLE_PWA=1 vite build && VITE_SSR_BUILD=1 DISABLE_PWA=1 vite build --ssr src/entry-server.tsx",
     "build:next": "next build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",

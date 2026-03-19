@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === 'development' && componentTagger(),
-    VitePWA({
+    !process.env.DISABLE_PWA && VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'lovable-uploads/*.png'],
       manifest: {
