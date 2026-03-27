@@ -22,12 +22,12 @@ const initI18n = async (language: string) => {
     resources: {
       en: { 
         translation: {
-          itemTypes: { events: 'Events', news: 'News', businesses: 'Businesses', localServices: 'Local Services' }
+          itemTypes: { events: 'Events', news: 'Culture', businesses: 'Businesses', localServices: 'Local Services' }
         } 
       },
       es: { 
         translation: {
-          itemTypes: { events: 'Eventos', news: 'Noticias', businesses: 'Negocios', localServices: 'Servicios Locales' }
+          itemTypes: { events: 'Eventos', news: 'Cultura', businesses: 'Negocios', localServices: 'Servicios Locales' }
         } 
       },
       fr: { 
@@ -37,12 +37,12 @@ const initI18n = async (language: string) => {
       },
       pt: { 
         translation: {
-          itemTypes: { events: 'Eventos', news: 'Notícias', businesses: 'Negócios', localServices: 'Serviços Locais' }
+          itemTypes: { events: 'Eventos', news: 'Cultura', businesses: 'Negócios', localServices: 'Serviços Locais' }
         } 
       },
       vi: { 
         translation: {
-          itemTypes: { events: 'Sự kiện', news: 'Tin tức', businesses: 'Doanh nghiệp', localServices: 'Dịch vụ Địa phương' }
+          itemTypes: { events: 'Sự kiện', news: 'Văn Hóa', businesses: 'Doanh nghiệp', localServices: 'Dịch vụ Địa phương' }
         } 
       },
     },

@@ -12,7 +12,7 @@ export const About = () => {
     { icon: Users, value: '1,000+', label: t('about.stats.members', 'Community Members') },
     { icon: Calendar, value: '500+', label: t('about.stats.events', 'Events Hosted') },
     { icon: Building2, value: '200+', label: t('about.stats.businesses', 'Local Businesses') },
-    { icon: Newspaper, value: '300+', label: t('about.stats.articles', 'News Articles') },
+    { icon: Newspaper, value: '300+', label: t('about.stats.articles', 'Culture Articles') },
   ];
 
   const values = [

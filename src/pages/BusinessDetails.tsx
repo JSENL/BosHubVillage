@@ -160,7 +160,7 @@ const BusinessDetails = () => {
             </CardContent>
           </Card>
 
-          {/* Related News Section */}
+          {/* Related culture section */}
           <div className="mt-6">
             <LinkedNewsSection 
               contentType="business" 

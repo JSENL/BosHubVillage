@@ -33,13 +33,13 @@ export const EventFilters = ({
     { value: 'all', label: 'Categories' },
     { value: 'business', label: 'Business' },
     { value: 'events', label: 'Events' },
-    { value: 'news', label: 'News' },
+    { value: 'news', label: 'Culture' },
   ];
 
   const eventTypes = [
     { value: 'all', label: 'All Types' },
     { value: 'business', label: 'Business' },
-    { value: 'news', label: 'News' },
+    { value: 'news', label: 'Culture' },
     { value: 'event', label: 'Event' },
   ];
 

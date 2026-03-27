@@ -181,9 +181,9 @@ export const faqTranslationsEn = {
   // Answers
   answers: {
     gettingStarted: {
-      a1: "HubVillage is a community platform connecting residents of Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain with local events, businesses, services, and news. Discover what's happening in your neighborhood, find trusted local services, and stay connected with your community.",
-      a2: "You can browse events, businesses, services, and news without an account. However, creating a free account lets you submit content, save bookmarks, leave comments and ratings, message businesses, follow other users, save searches, and receive personalized recommendations.",
-      a3: "The homepage shows all content types in a unified view with grid, list, and map layouts. Use the type filter to focus on Events, Businesses, Local Services, or News. Filter by neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), category, or date. The map view uses Mapbox to show everything on an interactive map.",
+      a1: "HubVillage is a community platform connecting residents of Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain with local events, businesses, services, and culture. Discover what's happening in your neighborhood, find trusted local services, and stay connected with your community.",
+      a2: "You can browse events, businesses, services, and culture without an account. However, creating a free account lets you submit content, save bookmarks, leave comments and ratings, message businesses, follow other users, save searches, and receive personalized recommendations.",
+      a3: "The homepage shows all content types in a unified view with grid, list, and map layouts. Use the type filter to focus on Events, Businesses, Local Services, or Culture. Filter by neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), category, or date. The map view uses Mapbox to show everything on an interactive map.",
       a4: "First-time users see an interactive onboarding tour explaining key features. You can restart the tour anytime by clearing your browser's local storage. This FAQ covers all features in detail."
     },
     events: {
@@ -238,7 +238,7 @@ export const faqTranslationsEn = {
       a1: "Click 'Sign In' in the navigation and select 'Sign Up' to create a free account using your email. Account creation is quick and unlocks all interactive features.",
       a2: "With an account you can: submit content, leave comments and ratings, bookmark items, send messages to businesses, follow other users, save searches, receive notifications, customize your profile, and subscribe to the weekly digest.",
       a3: "Visit 'My Submissions' from your account menu to see all content you've submitted, track approval status (pending, approved, rejected), and view admin notes.",
-      a4: "Yes! Click the bookmark icon on any event, business, service, or news article to save it. Access your bookmarks through the Discovery sidebar or the Bookmarks section.",
+      a4: "Yes! Click the bookmark icon on any event, business, service, or culture article to save it. Access your bookmarks through the Discovery sidebar or the Bookmarks section.",
       a5: "The Discovery sidebar shows trending content, your saved searches, bookmarked items, recently viewed items, and suggested people to follow. It helps you discover new content and manage your personalized experience.",
       a6: "Go to 'Edit Profile' from your account menu. Update your display name, bio, profile picture, location, website, and interests. Your interests help personalize recommendations."
     },

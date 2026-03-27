@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { UniversalFilters } from "@/components/UniversalFilters";
 import NewsCard from "@/components/NewsCard";
@@ -11,6 +12,7 @@ import { News } from "@/types/news";
 
 
 export const NewsTab = () => {
+  const { t } = useTranslation();
   const { data: news, isLoading: newsLoading, error: newsError } = useNews();
   
   const { geocode, isReady } = useGeocoding();
@@ -82,7 +84,9 @@ export const NewsTab = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Community News</h2>
+      <h2 className="text-2xl font-bold text-gray-900">
+        {t('newsTab.communityHeading', 'Community {{label}}', { label: t('navigation.news') })}
+      </h2>
       
       <UniversalFilters
         allItems={allNewsItems}
@@ -102,19 +106,19 @@ export const NewsTab = () => {
       {/* News map will be added to news page separately */}
       
       <div className="mb-4 text-sm text-gray-500">
-        Total news items: {allNews.length}
+        Total items: {allNews.length}
       </div>
       
       {newsError && (
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-red-800">Error loading news: {newsError.message}</p>
+          <p className="text-red-800">{t('emptyStates.errorLoadingNews')}: {newsError.message}</p>
         </div>
       )}
       
       {isNewsLoading ? (
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-2 text-gray-600">Loading news...</p>
+          <p className="mt-2 text-gray-600">{t('emptyStates.loadingNews')}</p>
         </div>
       ) : allNews && allNews.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
@@ -124,7 +128,7 @@ export const NewsTab = () => {
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          No news found. Be the first to add some!
+          {t('newsTab.empty', 'No culture content found. Be the first to add some!')}
         </div>
       )}
     </div>

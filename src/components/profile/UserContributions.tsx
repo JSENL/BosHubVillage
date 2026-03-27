@@ -126,7 +126,7 @@ export const UserContributions = ({ userId }: UserContributionsProps) => {
       case 'business':
         return t('contributions.business', 'Business');
       case 'news':
-        return t('contributions.news', 'News');
+        return t('contributions.news', 'Culture');
       default:
         return type;
     }

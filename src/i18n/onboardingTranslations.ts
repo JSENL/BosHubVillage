@@ -8,7 +8,7 @@ export const onboardingTranslationsEn = {
   },
   modal: {
     title: "Welcome to HubVillage! 🎉",
-    subtitle: "Your community hub for events, businesses, news, and local services in Southern Boston.",
+    subtitle: "Your community hub for events, businesses, culture, and local services in Southern Boston.",
     generalTitle: "🌟 Show me everything!",
     generalDesc: "Complete tour of all features (recommended)",
     eventsTitle: "Events",
@@ -28,18 +28,18 @@ export const onboardingTranslationsEn = {
     skip: "Skip"
   },
   general: {
-    welcome: "Welcome to HubVillage! Your community hub for Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain. Discover local events, businesses, news, and services all in one place.",
+    welcome: "Welcome to HubVillage! Your community hub for Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain. Discover local events, businesses, culture, and services all in one place.",
     viewToggle: "Switch between Map and List views. The Map shows everything with color-coded markers on an interactive Mapbox map. List view displays items in a scrollable grid.",
-    search: "Search across all content - events, businesses, news, and local services. Results update in real-time as you type.",
-    filters: "Filter by type (Events, Businesses, News, Services), category, neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), village, and date. Use 'Near Me' to find content close to you!",
+    search: "Search across all content - events, businesses, culture, and local services. Results update in real-time as you type.",
+    filters: "Filter by type (Events, Businesses, Culture, Services), category, neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), village, and date. Use 'Near Me' to find content close to you!",
     nearMe: "📍 NEAR ME: Enable location to find events, businesses, and services within 1-50km of you. Perfect for discovering what's happening in your immediate area!",
     discovery: "📊 DISCOVERY SIDEBAR: See trending content, your bookmarks, people to follow, activity from users you follow, and your saved searches with notification options.",
     savedSearches: "🔍 SAVED SEARCHES: Save your favorite filter combinations! Enable notifications to get alerts when new content matches - via email or in-app!",
-    submitContent: "✏️ SUBMIT CONTENT: Click 'Submit' in the navigation to add Events, Businesses, News, or Local Services. All submissions are reviewed before publishing.",
+    submitContent: "✏️ SUBMIT CONTENT: Click 'Submit' in the navigation to add Events, Businesses, Culture, or Local Services. All submissions are reviewed before publishing.",
     socialFeatures: "👥 SOCIAL FEATURES: Bookmark items, leave comments and ratings, message businesses, follow other users, and see trending content. Build your community network!",
     account: "👤 YOUR ACCOUNT: Track your submissions in 'My Submissions', manage conversations in 'My Messages', and edit your profile to personalize your experience.",
     weeklyDigest: "📧 WEEKLY DIGEST: Enable email digests in your profile settings. Choose your preferred day and receive a summary of community highlights.",
-    news: "📰 NEWS: Visit the News page for community announcements in a magazine-style layout. You can submit your own news articles too!",
+    news: "🎭 CULTURE: Visit the Culture page for community announcements in a magazine-style layout. You can submit your own culture articles too!",
     help: "❓ NEED HELP? Visit the FAQ page for answers to 75+ questions. Contact admins through 'Contact Admin' in your account menu. Click the help button anytime to restart this tour."
   },
   events: {
@@ -80,7 +80,7 @@ export const onboardingTranslationsEs = {
   },
   modal: {
     title: "¡Bienvenido a HubVillage! 🎉",
-    subtitle: "Tu centro comunitario para eventos, negocios, noticias y servicios locales en el sur de Boston.",
+    subtitle: "Tu centro comunitario para eventos, negocios, cultura y servicios locales en el sur de Boston.",
     generalTitle: "🌟 ¡Muéstrame todo!",
     generalDesc: "Tour completo de todas las funciones (recomendado)",
     eventsTitle: "Eventos",
@@ -100,18 +100,18 @@ export const onboardingTranslationsEs = {
     skip: "Saltar"
   },
   general: {
-    welcome: "¡Bienvenido a HubVillage! Tu centro comunitario para Mattapan, Roxbury, Hyde Park, Dorchester y Jamaica Plain. Descubre eventos, negocios, noticias y servicios locales en un solo lugar.",
+    welcome: "¡Bienvenido a HubVillage! Tu centro comunitario para Mattapan, Roxbury, Hyde Park, Dorchester y Jamaica Plain. Descubre eventos, negocios, cultura y servicios locales en un solo lugar.",
     viewToggle: "Cambia entre vistas de Mapa y Lista. El Mapa muestra todo con marcadores de colores en un mapa interactivo de Mapbox. La vista de Lista muestra elementos en una cuadrícula desplazable.",
-    search: "Busca en todo el contenido - eventos, negocios, noticias y servicios locales. Los resultados se actualizan en tiempo real mientras escribes.",
-    filters: "Filtra por tipo (Eventos, Negocios, Noticias, Servicios), categoría, vecindario (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), villa y fecha. ¡Usa 'Cerca de Mí' para encontrar contenido cerca!",
+    search: "Busca en todo el contenido - eventos, negocios, cultura y servicios locales. Los resultados se actualizan en tiempo real mientras escribes.",
+    filters: "Filtra por tipo (Eventos, Negocios, Cultura, Servicios), categoría, vecindario (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), villa y fecha. ¡Usa 'Cerca de Mí' para encontrar contenido cerca!",
     nearMe: "📍 CERCA DE MÍ: Habilita la ubicación para encontrar eventos, negocios y servicios a 1-50km de ti. ¡Perfecto para descubrir lo que está pasando en tu área!",
     discovery: "📊 BARRA LATERAL DE DESCUBRIMIENTO: Ve contenido en tendencia, tus marcadores, personas para seguir, actividad de usuarios que sigues y tus búsquedas guardadas con opciones de notificación.",
     savedSearches: "🔍 BÚSQUEDAS GUARDADAS: ¡Guarda tus combinaciones de filtros favoritas! Habilita notificaciones para recibir alertas cuando haya contenido nuevo - ¡por email o en la app!",
-    submitContent: "✏️ ENVIAR CONTENIDO: Haz clic en 'Enviar' en la navegación para agregar Eventos, Negocios, Noticias o Servicios Locales. Todos los envíos son revisados antes de publicarse.",
+    submitContent: "✏️ ENVIAR CONTENIDO: Haz clic en 'Enviar' en la navegación para agregar Eventos, Negocios, Cultura o Servicios Locales. Todos los envíos son revisados antes de publicarse.",
     socialFeatures: "👥 FUNCIONES SOCIALES: Marca favoritos, deja comentarios y calificaciones, envía mensajes a negocios, sigue a otros usuarios y ve contenido en tendencia. ¡Construye tu red comunitaria!",
     account: "👤 TU CUENTA: Rastrea tus envíos en 'Mis Envíos', gestiona conversaciones en 'Mis Mensajes' y edita tu perfil para personalizar tu experiencia.",
     weeklyDigest: "📧 RESUMEN SEMANAL: Habilita resúmenes por email en tu configuración de perfil. Elige tu día preferido y recibe un resumen de los destacados de la comunidad.",
-    news: "📰 NOTICIAS: Visita la página de Noticias para anuncios comunitarios en un diseño estilo revista. ¡También puedes enviar tus propias noticias!",
+    news: "🎭 CULTURA: Visita la página de Cultura para anuncios comunitarios en un diseño estilo revista. ¡También puedes enviar tus propios artículos de cultura!",
     help: "❓ ¿NECESITAS AYUDA? Visita la página de FAQ para respuestas a más de 75 preguntas. Contacta a los administradores a través de 'Contactar Admin' en el menú de tu cuenta. Haz clic en el botón de ayuda en cualquier momento para reiniciar este tour."
   },
   events: {
@@ -152,7 +152,7 @@ export const onboardingTranslationsFr = {
   },
   modal: {
     title: "Bienvenue sur HubVillage ! 🎉",
-    subtitle: "Votre centre communautaire pour les événements, entreprises, actualités et services locaux dans le sud de Boston.",
+    subtitle: "Votre centre communautaire pour les événements, entreprises, la culture et les services locaux dans le sud de Boston.",
     generalTitle: "🌟 Montrez-moi tout !",
     generalDesc: "Visite complète de toutes les fonctionnalités (recommandé)",
     eventsTitle: "Événements",
@@ -172,18 +172,18 @@ export const onboardingTranslationsFr = {
     skip: "Passer"
   },
   general: {
-    welcome: "Bienvenue sur HubVillage ! Votre centre communautaire pour Mattapan, Roxbury, Hyde Park, Dorchester et Jamaica Plain. Découvrez les événements, entreprises, actualités et services locaux en un seul endroit.",
+    welcome: "Bienvenue sur HubVillage ! Votre centre communautaire pour Mattapan, Roxbury, Hyde Park, Dorchester et Jamaica Plain. Découvrez les événements, entreprises, la culture et les services locaux en un seul endroit.",
     viewToggle: "Basculez entre les vues Carte et Liste. La Carte affiche tout avec des marqueurs colorés sur une carte interactive Mapbox. La vue Liste affiche les éléments dans une grille défilante.",
-    search: "Recherchez dans tout le contenu - événements, entreprises, actualités et services locaux. Les résultats se mettent à jour en temps réel.",
-    filters: "Filtrez par type (Événements, Entreprises, Actualités, Services), catégorie, quartier (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), village et date. Utilisez 'Près de moi' pour trouver du contenu proche !",
+    search: "Recherchez dans tout le contenu - événements, entreprises, culture et services locaux. Les résultats se mettent à jour en temps réel.",
+    filters: "Filtrez par type (Événements, Entreprises, Culture, Services), catégorie, quartier (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), village et date. Utilisez 'Près de moi' pour trouver du contenu proche !",
     nearMe: "📍 PRÈS DE MOI : Activez la localisation pour trouver des événements, entreprises et services à 1-50km de vous. Parfait pour découvrir ce qui se passe dans votre zone !",
     discovery: "📊 BARRE LATÉRALE DÉCOUVERTE : Voyez le contenu tendance, vos favoris, les personnes à suivre, l'activité des utilisateurs que vous suivez et vos recherches sauvegardées avec options de notification.",
     savedSearches: "🔍 RECHERCHES SAUVEGARDÉES : Sauvegardez vos combinaisons de filtres préférées ! Activez les notifications pour être alerté du nouveau contenu - par email ou dans l'app !",
-    submitContent: "✏️ SOUMETTRE DU CONTENU : Cliquez sur 'Soumettre' dans la navigation pour ajouter des Événements, Entreprises, Actualités ou Services Locaux. Toutes les soumissions sont vérifiées avant publication.",
+    submitContent: "✏️ SOUMETTRE DU CONTENU : Cliquez sur 'Soumettre' dans la navigation pour ajouter des Événements, Entreprises, de la Culture ou des Services Locaux. Toutes les soumissions sont vérifiées avant publication.",
     socialFeatures: "👥 FONCTIONNALITÉS SOCIALES : Ajoutez aux favoris, laissez des commentaires et notes, messagez les entreprises, suivez d'autres utilisateurs et voyez le contenu tendance. Construisez votre réseau communautaire !",
     account: "👤 VOTRE COMPTE : Suivez vos soumissions dans 'Mes Soumissions', gérez les conversations dans 'Mes Messages' et modifiez votre profil pour personnaliser votre expérience.",
     weeklyDigest: "📧 RÉSUMÉ HEBDOMADAIRE : Activez les résumés par email dans vos paramètres de profil. Choisissez votre jour préféré et recevez un résumé des points forts de la communauté.",
-    news: "📰 ACTUALITÉS : Visitez la page Actualités pour les annonces communautaires dans un format magazine. Vous pouvez aussi soumettre vos propres articles !",
+    news: "🎭 CULTURE : Visitez la page Culture pour les annonces communautaires dans un format magazine. Vous pouvez aussi soumettre vos propres articles de culture !",
     help: "❓ BESOIN D'AIDE ? Visitez la page FAQ pour des réponses à plus de 75 questions. Contactez les administrateurs via 'Contacter l'Admin' dans le menu de votre compte. Cliquez sur le bouton d'aide à tout moment pour relancer cette visite."
   },
   events: {
@@ -224,7 +224,7 @@ export const onboardingTranslationsPt = {
   },
   modal: {
     title: "Bem-vindo ao HubVillage! 🎉",
-    subtitle: "Seu centro comunitário para eventos, negócios, notícias e serviços locais no sul de Boston.",
+    subtitle: "Seu centro comunitário para eventos, negócios, cultura e serviços locais no sul de Boston.",
     generalTitle: "🌟 Mostre-me tudo!",
     generalDesc: "Tour completo de todas as funcionalidades (recomendado)",
     eventsTitle: "Eventos",
@@ -244,18 +244,18 @@ export const onboardingTranslationsPt = {
     skip: "Pular"
   },
   general: {
-    welcome: "Bem-vindo ao HubVillage! Seu centro comunitário para Mattapan, Roxbury, Hyde Park, Dorchester e Jamaica Plain. Descubra eventos, negócios, notícias e serviços locais em um só lugar.",
+    welcome: "Bem-vindo ao HubVillage! Seu centro comunitário para Mattapan, Roxbury, Hyde Park, Dorchester e Jamaica Plain. Descubra eventos, negócios, cultura e serviços locais em um só lugar.",
     viewToggle: "Alterne entre as visualizações de Mapa e Lista. O Mapa mostra tudo com marcadores coloridos em um mapa interativo Mapbox. A visualização de Lista exibe itens em uma grade rolável.",
-    search: "Pesquise em todo o conteúdo - eventos, negócios, notícias e serviços locais. Os resultados atualizam em tempo real enquanto você digita.",
-    filters: "Filtre por tipo (Eventos, Negócios, Notícias, Serviços), categoria, bairro (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), vila e data. Use 'Perto de Mim' para encontrar conteúdo próximo!",
+    search: "Pesquise em todo o conteúdo - eventos, negócios, cultura e serviços locais. Os resultados atualizam em tempo real enquanto você digita.",
+    filters: "Filtre por tipo (Eventos, Negócios, Cultura, Serviços), categoria, bairro (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), vila e data. Use 'Perto de Mim' para encontrar conteúdo próximo!",
     nearMe: "📍 PERTO DE MIM: Ative a localização para encontrar eventos, negócios e serviços a 1-50km de você. Perfeito para descobrir o que está acontecendo na sua área!",
     discovery: "📊 BARRA LATERAL DE DESCOBERTA: Veja conteúdo em alta, seus favoritos, pessoas para seguir, atividade de usuários que você segue e suas pesquisas salvas com opções de notificação.",
     savedSearches: "🔍 PESQUISAS SALVAS: Salve suas combinações de filtros favoritas! Ative notificações para receber alertas de novo conteúdo - por email ou no app!",
-    submitContent: "✏️ ENVIAR CONTEÚDO: Clique em 'Enviar' na navegação para adicionar Eventos, Negócios, Notícias ou Serviços Locais. Todas as submissões são revisadas antes da publicação.",
+    submitContent: "✏️ ENVIAR CONTEÚDO: Clique em 'Enviar' na navegação para adicionar Eventos, Negócios, Cultura ou Serviços Locais. Todas as submissões são revisadas antes da publicação.",
     socialFeatures: "👥 RECURSOS SOCIAIS: Salve favoritos, deixe comentários e avaliações, envie mensagens para negócios, siga outros usuários e veja conteúdo em alta. Construa sua rede comunitária!",
     account: "👤 SUA CONTA: Acompanhe suas submissões em 'Minhas Submissões', gerencie conversas em 'Minhas Mensagens' e edite seu perfil para personalizar sua experiência.",
     weeklyDigest: "📧 RESUMO SEMANAL: Ative resumos por email nas configurações do perfil. Escolha seu dia preferido e receba um resumo dos destaques da comunidade.",
-    news: "📰 NOTÍCIAS: Visite a página de Notícias para anúncios comunitários em um layout estilo revista. Você também pode enviar seus próprios artigos!",
+    news: "🎭 CULTURA: Visite a página de Cultura para anúncios comunitários em um layout estilo revista. Você também pode enviar seus próprios artigos de cultura!",
     help: "❓ PRECISA DE AJUDA? Visite a página FAQ para respostas a mais de 75 perguntas. Contate os administradores através de 'Contatar Admin' no menu da sua conta. Clique no botão de ajuda a qualquer momento para reiniciar este tour."
   },
   events: {
@@ -296,7 +296,7 @@ export const onboardingTranslationsVi = {
   },
   modal: {
     title: "Chào mừng đến HubVillage! 🎉",
-    subtitle: "Trung tâm cộng đồng của bạn cho sự kiện, doanh nghiệp, tin tức và dịch vụ địa phương tại Nam Boston.",
+    subtitle: "Trung tâm cộng đồng của bạn cho sự kiện, doanh nghiệp, văn hóa và dịch vụ địa phương tại Nam Boston.",
     generalTitle: "🌟 Cho tôi xem tất cả!",
     generalDesc: "Tour đầy đủ tất cả tính năng (khuyến nghị)",
     eventsTitle: "Sự kiện",
@@ -316,18 +316,18 @@ export const onboardingTranslationsVi = {
     skip: "Bỏ qua"
   },
   general: {
-    welcome: "Chào mừng đến HubVillage! Trung tâm cộng đồng của bạn cho Mattapan, Roxbury, Hyde Park, Dorchester và Jamaica Plain. Khám phá sự kiện, doanh nghiệp, tin tức và dịch vụ địa phương tại một nơi.",
+    welcome: "Chào mừng đến HubVillage! Trung tâm cộng đồng của bạn cho Mattapan, Roxbury, Hyde Park, Dorchester và Jamaica Plain. Khám phá sự kiện, doanh nghiệp, văn hóa và dịch vụ địa phương tại một nơi.",
     viewToggle: "Chuyển đổi giữa chế độ xem Bản đồ và Danh sách. Bản đồ hiển thị mọi thứ với các điểm đánh dấu màu trên bản đồ Mapbox tương tác. Chế độ xem Danh sách hiển thị các mục trong lưới có thể cuộn.",
-    search: "Tìm kiếm trong tất cả nội dung - sự kiện, doanh nghiệp, tin tức và dịch vụ địa phương. Kết quả cập nhật theo thời gian thực khi bạn gõ.",
-    filters: "Lọc theo loại (Sự kiện, Doanh nghiệp, Tin tức, Dịch vụ), danh mục, khu phố (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), làng và ngày. Sử dụng 'Gần Tôi' để tìm nội dung gần bạn!",
+    search: "Tìm kiếm trong tất cả nội dung - sự kiện, doanh nghiệp, văn hóa và dịch vụ địa phương. Kết quả cập nhật theo thời gian thực khi bạn gõ.",
+    filters: "Lọc theo loại (Sự kiện, Doanh nghiệp, Văn hóa, Dịch vụ), danh mục, khu phố (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), làng và ngày. Sử dụng 'Gần Tôi' để tìm nội dung gần bạn!",
     nearMe: "📍 GẦN TÔI: Bật vị trí để tìm sự kiện, doanh nghiệp và dịch vụ trong 1-50km từ bạn. Hoàn hảo để khám phá những gì đang xảy ra trong khu vực của bạn!",
     discovery: "📊 THANH BÊN KHÁM PHÁ: Xem nội dung xu hướng, dấu trang của bạn, người để theo dõi, hoạt động từ người bạn theo dõi và các tìm kiếm đã lưu với tùy chọn thông báo.",
     savedSearches: "🔍 TÌM KIẾM ĐÃ LƯU: Lưu các kết hợp bộ lọc yêu thích của bạn! Bật thông báo để nhận cảnh báo khi có nội dung mới - qua email hoặc trong ứng dụng!",
-    submitContent: "✏️ GỬI NỘI DUNG: Nhấp 'Gửi' trong điều hướng để thêm Sự kiện, Doanh nghiệp, Tin tức hoặc Dịch vụ Địa phương. Tất cả bài gửi được xem xét trước khi xuất bản.",
+    submitContent: "✏️ GỬI NỘI DUNG: Nhấp 'Gửi' trong điều hướng để thêm Sự kiện, Doanh nghiệp, Văn hóa hoặc Dịch vụ Địa phương. Tất cả bài gửi được xem xét trước khi xuất bản.",
     socialFeatures: "👥 TÍNH NĂNG XÃ HỘI: Đánh dấu các mục, để lại bình luận và đánh giá, nhắn tin cho doanh nghiệp, theo dõi người dùng khác và xem nội dung xu hướng. Xây dựng mạng lưới cộng đồng của bạn!",
     account: "👤 TÀI KHOẢN CỦA BẠN: Theo dõi bài gửi trong 'Bài Gửi Của Tôi', quản lý cuộc hội thoại trong 'Tin Nhắn Của Tôi' và chỉnh sửa hồ sơ để cá nhân hóa trải nghiệm.",
     weeklyDigest: "📧 TÓM TẮT HÀNG TUẦN: Bật tóm tắt email trong cài đặt hồ sơ. Chọn ngày ưa thích và nhận tóm tắt điểm nổi bật cộng đồng.",
-    news: "📰 TIN TỨC: Truy cập trang Tin tức để xem thông báo cộng đồng trong bố cục kiểu tạp chí. Bạn cũng có thể gửi bài viết của riêng mình!",
+    news: "🎭 VĂN HÓA: Truy cập trang Văn hóa để xem thông báo cộng đồng trong bố cục kiểu tạp chí. Bạn cũng có thể gửi bài viết văn hóa của riêng mình!",
     help: "❓ CẦN GIÚP ĐỠ? Truy cập trang FAQ để xem câu trả lời cho hơn 75 câu hỏi. Liên hệ quản trị viên qua 'Liên Hệ Quản Trị' trong menu tài khoản. Nhấp nút trợ giúp bất cứ lúc nào để khởi động lại tour này."
   },
   events: {

@@ -1,5 +1,5 @@
-
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, MapPin } from 'lucide-react';
 import { News } from '@/types/news';
@@ -10,12 +10,15 @@ interface NewsGridProps {
 }
 
 const NewsGrid = ({ articles }: NewsGridProps) => {
+  const { t } = useTranslation();
   if (articles.length === 0) return null;
 
   return (
     <section>
       <div className="border-t-2 border-gray-200 pt-8">
-        <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6">More News</h2>
+        <h2 className="text-2xl font-serif font-bold text-gray-900 mb-6">
+          {t('newsPage.moreHeading', 'More {{label}}', { label: t('navigation.news') })}
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {articles.map((article) => (
             <Link key={article.id} to={`/news/${article.id}`}>

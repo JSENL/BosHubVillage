@@ -105,12 +105,12 @@ export const TrendingSection = () => {
           </div>
         )}
 
-        {/* Trending News */}
+        {/* Trending culture */}
         {trendingNews && trendingNews.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Newspaper className="h-4 w-4 text-green-600" />
-              <h4 className="font-medium text-sm">News</h4>
+              <h4 className="font-medium text-sm">{t('navigation.news')}</h4>
             </div>
             <div className="space-y-1.5">
               {trendingNews.slice(0, 3).map((news) => (

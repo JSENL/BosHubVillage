@@ -1,4 +1,4 @@
-
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,6 +47,7 @@ import { QuickBrowseManagement } from '@/components/admin/QuickBrowseManagement'
 
 
 const AdminDashboard = () => {
+  const { t } = useTranslation();
   const { user, isAdmin, loading } = useAuth();
 
   if (loading) {
@@ -151,7 +152,7 @@ const AdminDashboard = () => {
                         </TabsTrigger>
                         <TabsTrigger value="news" className="flex items-center gap-2">
                           <Newspaper className="h-4 w-4" />
-                          News
+                          {t('navigation.news')}
                         </TabsTrigger>
                       </TabsList>
                       

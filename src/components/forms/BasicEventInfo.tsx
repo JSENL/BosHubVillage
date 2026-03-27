@@ -30,7 +30,7 @@ const BasicEventInfo = ({ formData, onInputChange }: BasicEventInfoProps) => {
   const eventTypes = [
     { value: 'event', label: 'Event', icon: CalendarIcon },
     { value: 'business', label: 'Business', icon: Building },
-    { value: 'news', label: 'News', icon: FileText },
+    { value: 'news', label: 'Culture', icon: FileText },
   ];
 
   return (

@@ -195,7 +195,7 @@ serve(async (req) => {
           <span style="color: #666;">${n.location}</span>
         </li>
       `).join('')
-      : '<li>No recent news</li>';
+      : '<li>No recent culture articles</li>';
 
     const buildEmailHtml = (name: string, isTest: boolean = false) => `
       <!DOCTYPE html>
@@ -226,7 +226,7 @@ serve(async (req) => {
           <h2>📅 Upcoming Events</h2>
           <ul>${eventsHtml}</ul>
           
-          <h2>📰 Latest News</h2>
+          <h2>🎭 Latest Culture</h2>
           <ul>${newsHtml}</ul>
           
           <div class="footer">

@@ -269,7 +269,7 @@ const EventDetails = () => {
             onClose={() => setShowRegistrationForm(false)}
           />
 
-          {/* Related News Section */}
+          {/* Related culture section */}
           <div className="mt-8">
             <LinkedNewsSection 
               contentType="event" 

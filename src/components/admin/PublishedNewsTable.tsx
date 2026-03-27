@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -29,6 +30,7 @@ interface PublishedNewsTableProps {
 }
 
 export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) => {
+  const { t } = useTranslation();
   const [editingNews, setEditingNews] = useState<News | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -53,7 +55,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
   };
 
   const handleDeleteNews = async (newsId: string) => {
-    if (!confirm('Are you sure you want to delete this news article? This action cannot be undone.')) {
+    if (!confirm('Are you sure you want to delete this culture article? This action cannot be undone.')) {
       return;
     }
 
@@ -66,11 +68,11 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
 
       if (error) throw error;
 
-      toast.success('News article deleted successfully');
+      toast.success('Culture article deleted successfully');
       onUpdate();
     } catch (error: any) {
       console.error('Error deleting news:', error);
-      toast.error('Failed to delete news article');
+      toast.error('Failed to delete culture article');
     } finally {
       setActionLoading(false);
     }
@@ -79,7 +81,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0) return;
     
-    if (!confirm(`Are you sure you want to delete ${selectedIds.size} news article(s)? This action cannot be undone.`)) {
+    if (!confirm(`Are you sure you want to delete ${selectedIds.size} culture article(s)? This action cannot be undone.`)) {
       return;
     }
 
@@ -92,12 +94,12 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
 
       if (error) throw error;
 
-      toast.success(`${selectedIds.size} news article(s) deleted successfully`);
+      toast.success(`${selectedIds.size} culture article(s) deleted successfully`);
       setSelectedIds(new Set());
       onUpdate();
     } catch (error: any) {
       console.error('Error bulk deleting news:', error);
-      toast.error('Failed to delete news articles');
+      toast.error('Failed to delete culture articles');
     } finally {
       setBulkDeleting(false);
     }
@@ -113,7 +115,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
           <CardTitle className="flex items-center justify-between text-gray-900">
             <div className="flex items-center">
               <Newspaper className="h-5 w-5 mr-2 text-purple-600" />
-              Published News ({news?.length || 0})
+              Published {t('navigation.news')} ({news?.length || 0})
             </div>
             {someSelected && (
               <Button
@@ -132,8 +134,8 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
           {!news || news.length === 0 ? (
             <div className="text-center p-8">
               <Newspaper className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Published News</h3>
-              <p className="text-gray-600">Published news articles will appear here.</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Published {t('navigation.news')}</h3>
+              <p className="text-gray-600">Published {t('navigation.news').toLowerCase()} articles will appear here.</p>
             </div>
           ) : (
             <Table>

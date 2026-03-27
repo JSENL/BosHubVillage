@@ -47,7 +47,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
   const eventTypes = [
     { value: 'event', label: 'Event' },
     { value: 'business', label: 'Business' },
-    { value: 'news', label: 'News' },
+    { value: 'news', label: 'Culture' },
   ];
 
   const neighborhoods = [

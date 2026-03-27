@@ -59,7 +59,7 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit News Article</DialogTitle>
+          <DialogTitle>Edit Culture Article</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

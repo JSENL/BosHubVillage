@@ -72,24 +72,24 @@ export const LinkedNewsSection = ({ contentType, contentId, canEdit }: LinkedNew
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
             <Newspaper className="h-5 w-5 text-primary" />
-            {t('content.relatedNews', 'Related News')}
+            {t('content.relatedNews', 'Related Culture')}
           </CardTitle>
           {canEdit && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Plus className="h-4 w-4 mr-1" />
-                  {t('content.linkNews', 'Link News')}
+                  {t('content.linkNews', 'Link Culture')}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                  <DialogTitle>{t('content.selectNewsArticle', 'Select News Article')}</DialogTitle>
+                  <DialogTitle>{t('content.selectNewsArticle', 'Select Culture Article')}</DialogTitle>
                 </DialogHeader>
                 <Command className="rounded-lg border shadow-md">
-                  <CommandInput placeholder={t('content.searchNews', 'Search news articles...')} />
+                  <CommandInput placeholder={t('content.searchNews', 'Search culture articles...')} />
                   <CommandList>
-                    <CommandEmpty>{t('content.noNewsFound', 'No news articles found.')}</CommandEmpty>
+                    <CommandEmpty>{t('content.noNewsFound', 'No culture articles found.')}</CommandEmpty>
                     <CommandGroup>
                       {unlinkedNews.map((news) => (
                         <CommandItem
@@ -118,7 +118,7 @@ export const LinkedNewsSection = ({ contentType, contentId, canEdit }: LinkedNew
       <CardContent className="pt-0">
         {linkedNews.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            {t('content.noLinkedNews', 'No news articles linked yet.')}
+            {t('content.noLinkedNews', 'No culture articles linked yet.')}
           </p>
         ) : (
           <div className="space-y-3">

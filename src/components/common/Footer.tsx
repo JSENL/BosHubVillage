@@ -32,7 +32,7 @@ export const Footer = () => {
               <li>
                 <Link to="/news-page" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center">
                   <Newspaper className="h-4 w-4 mr-2" />
-                  {t('navigation.news', 'News')}
+                  {t('navigation.news', 'Culture')}
                 </Link>
               </li>
               <li>

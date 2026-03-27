@@ -37,8 +37,8 @@ export const useAdminSubmissions = () => {
         .order('created_at', { ascending: false });
 
       if (newsError) {
-        console.error('News submissions error:', newsError);
-        throw new Error(`News submissions: ${newsError.message}`);
+        console.error('Culture submissions error:', newsError);
+        throw new Error(`Culture submissions: ${newsError.message}`);
       }
 
       // Fetch event submissions

@@ -1,5 +1,5 @@
-
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { useNews } from '@/hooks/useNews';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import { PendingNewsSubmissions } from '@/components/admin/PendingNewsSubmission
 import { PublishedNewsTable } from '@/components/admin/PublishedNewsTable';
 
 const AdminNewsApproval = () => {
+  const { t } = useTranslation();
   const { isAdmin } = useAuth();
   const { data: news, refetch: refetchNews } = useNews();
   const [submissions, setSubmissions] = useState<NewsSubmission[]>([]);
@@ -36,7 +37,7 @@ const AdminNewsApproval = () => {
       setSubmissions(typedData);
     } catch (error: any) {
       console.error('Error fetching news submissions:', error);
-      toast.error('Failed to load news submissions');
+      toast.error(t('admin.failedLoadCultureSubmissions', 'Failed to load culture submissions'));
     } finally {
       setLoading(false);
     }
@@ -55,7 +56,7 @@ const AdminNewsApproval = () => {
       <Card>
         <CardContent className="p-8 text-center">
           <Clock className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-600" />
-          <p>Loading news submissions...</p>
+          <p>{t('admin.loadingCultureSubmissions', 'Loading culture submissions...')}</p>
         </CardContent>
       </Card>
     );

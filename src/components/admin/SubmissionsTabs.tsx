@@ -1,4 +1,4 @@
-
+import { useTranslation } from 'react-i18next';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Building,
@@ -26,12 +26,13 @@ export const SubmissionsTabs = ({
   localResourceSubmissions,
   onUpdate
 }: SubmissionsTabsProps) => {
+  const { t } = useTranslation();
   return (
     <Tabs defaultValue="news" className="w-full">
       <TabsList className="grid w-full grid-cols-3 mb-6">
         <TabsTrigger value="news" className="flex items-center">
           <Newspaper className="h-4 w-4 mr-2" />
-          News ({newsSubmissions.length})
+          {t('navigation.news')} ({newsSubmissions.length})
         </TabsTrigger>
         <TabsTrigger value="events" className="flex items-center">
           <Calendar className="h-4 w-4 mr-2" />
@@ -48,7 +49,7 @@ export const SubmissionsTabs = ({
           {newsSubmissions.length === 0 ? (
             <div className="text-center p-8">
               <Newspaper className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p className="text-gray-600">No pending news submissions.</p>
+              <p className="text-gray-600">{t('admin.submissions.noPendingCulture', 'No pending culture submissions.')}</p>
             </div>
           ) : (
             newsSubmissions.map((submission) => (

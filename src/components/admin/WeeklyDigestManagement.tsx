@@ -92,7 +92,7 @@ const defaultTemplate: EmailTemplate = {
   subject: 'Your Weekly Community Digest',
   headerText: "Here's what's happening in your community this week:",
   eventsHeading: '📅 Upcoming Events',
-  newsHeading: '📰 Latest News',
+  newsHeading: '🎭 Latest Culture',
   footerText: "You're receiving this because you subscribed to weekly digests. To unsubscribe, update your email preferences in your account settings.",
 };
 

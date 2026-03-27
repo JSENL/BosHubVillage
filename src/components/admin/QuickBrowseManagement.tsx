@@ -15,7 +15,7 @@ import type { UnifiedItem } from '@/types/unifiedItem';
 
 const typeLabels: Record<string, string> = {
   event: 'Event',
-  news: 'News',
+  news: 'Culture',
   business: 'Business',
   'local-service': 'Local Resource',
 };

@@ -12,7 +12,7 @@ describe("Vietnamese Translations", () => {
     });
 
     it("should have Vietnamese translation for news", () => {
-      expect(i18n.t("navigation.news")).toBe("Tin Tức");
+      expect(i18n.t("navigation.news")).toBe("Văn Hóa");
     });
 
     it("should have Vietnamese translation for submit", () => {
@@ -68,7 +68,7 @@ describe("Vietnamese Translations", () => {
     });
 
     it("should have Vietnamese translation for news", () => {
-      expect(i18n.t("itemTypes.news")).toBe("Tin Tức");
+      expect(i18n.t("itemTypes.news")).toBe("Văn Hóa");
     });
 
     it("should have Vietnamese translation for businesses", () => {

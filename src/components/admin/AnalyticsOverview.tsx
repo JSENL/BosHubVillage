@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ import { toast } from 'sonner';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
 export function AnalyticsOverview() {
+  const { t } = useTranslation();
   const { data: analytics, isLoading, error, refetch } = useAnalytics();
 
   if (isLoading) {
@@ -332,7 +334,7 @@ export function AnalyticsOverview() {
                 />
                 
                 <div className="flex justify-between items-center">
-                  <span>News Articles</span>
+                  <span>{t('analytics.cultureArticles', 'Culture Articles')}</span>
                   <span className="font-bold">{analytics.contentStats.totalNews}</span>
                 </div>
                 <Progress 

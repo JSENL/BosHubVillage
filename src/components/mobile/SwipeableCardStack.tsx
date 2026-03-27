@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, X, Heart, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,6 +14,7 @@ interface SwipeableCardStackProps {
 }
 
 export const SwipeableCardStack = ({ items, onClose }: SwipeableCardStackProps) => {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right' | null>(null);
   const [startX, setStartX] = useState(0);
@@ -101,7 +103,7 @@ export const SwipeableCardStack = ({ items, onClose }: SwipeableCardStackProps) 
       case 'event': return 'Event';
       case 'business': return 'Business';
       case 'local-service': return 'Service';
-      case 'news': return 'News';
+      case 'news': return t('navigation.news');
       default: return type;
     }
   };

@@ -62,7 +62,7 @@ export const EmailDigestSettings = () => {
           Weekly Digest
         </CardTitle>
         <CardDescription>
-          Get a weekly email with trending events, news, and activities in your area.
+          Get a weekly email with trending events, culture, and activities in your area.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

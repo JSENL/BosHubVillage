@@ -202,7 +202,7 @@ export const TranslationTestComponent = () => {
             price={50}
           />
           <TranslationTestCard
-            title="Sample News"
+            title="Sample Culture"
             type="news"
           />
           <TranslationTestCard
@@ -217,14 +217,14 @@ export const TranslationTestComponent = () => {
       <div className="bg-white p-4 rounded-lg border">
         <h3 className="text-lg font-semibold mb-3">Navigation Translations</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-          <div><strong>News:</strong> {t('navigation.news')}</div>
+          <div><strong>Culture:</strong> {t('navigation.news')}</div>
           <div><strong>Submit:</strong> {t('navigation.submit')}</div>
           <div><strong>Sign In:</strong> {t('navigation.signIn')}</div>
           <div><strong>Sign Out:</strong> {t('navigation.signOut')}</div>
           <div><strong>Back to Home:</strong> {t('navigation.backToHome')}</div>
           <div><strong>Submit Event:</strong> {t('navigation.submitEvent')}</div>
           <div><strong>Submit Business:</strong> {t('navigation.submitBusiness')}</div>
-          <div><strong>Submit News:</strong> {t('navigation.submitNews')}</div>
+          <div><strong>Submit Culture:</strong> {t('navigation.submitNews')}</div>
         </div>
       </div>
     </div>

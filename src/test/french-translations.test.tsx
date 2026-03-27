@@ -12,7 +12,7 @@ describe("French Translations", () => {
     });
 
     it("should have French translation for news", () => {
-      expect(i18n.t("navigation.news")).toBe("Actualités");
+      expect(i18n.t("navigation.news")).toBe("Culture");
     });
 
     it("should have French translation for submit", () => {
@@ -68,7 +68,7 @@ describe("French Translations", () => {
     });
 
     it("should have French translation for news", () => {
-      expect(i18n.t("itemTypes.news")).toBe("Actualités");
+      expect(i18n.t("itemTypes.news")).toBe("Culture");
     });
 
     it("should have French translation for businesses", () => {

@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigation } from '@/components/Navigation';
 import { useNews } from '@/hooks/useNews';
 import NewsHeader from '@/components/news/NewsHeader';
@@ -9,6 +9,7 @@ import SecondaryArticles from '@/components/news/SecondaryArticles';
 import NewsGrid from '@/components/news/NewsGrid';
 
 const NewsPage = () => {
+  const { t } = useTranslation();
   const { data: news, isLoading, error } = useNews();
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -33,7 +34,7 @@ const NewsPage = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading news...</p>
+            <p className="text-gray-600">{t('emptyStates.loadingNews')}</p>
           </div>
         </div>
       </div>
@@ -46,7 +47,7 @@ const NewsPage = () => {
         <Navigation />
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <p className="text-red-600">Error loading news: {error.message}</p>
+            <p className="text-red-600">{t('emptyStates.errorLoadingNews')}: {error.message}</p>
             <p className="text-gray-600 mt-2">Please check the console for more details.</p>
           </div>
         </div>
@@ -62,17 +63,17 @@ const NewsPage = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-4 text-sm text-gray-500">
-          Total news items: {news?.length || 0} | Filtered: {filteredNews.length}
+          Total items: {news?.length || 0} | Filtered: {filteredNews.length}
         </div>
         
         {filteredNews.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
-              {news?.length === 0 ? 'No news articles found in database.' : 'No news articles match your search.'}
+              {news?.length === 0 ? t('emptyStates.noNewsArticles') : t('emptyStates.tryAdjustingSearch')}
             </p>
             {news?.length === 0 && (
               <p className="text-gray-400 text-sm mt-2">
-                Try submitting news articles or check if they need admin approval.
+                Try submitting culture articles or check if they need admin approval.
               </p>
             )}
           </div>

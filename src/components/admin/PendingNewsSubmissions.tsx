@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { NewsSubmissionCard } from '@/components/NewsSubmissionCard';
@@ -17,6 +17,7 @@ interface PendingNewsSubmissionsProps {
 }
 
 export const PendingNewsSubmissions = ({ submissions, onUpdate }: PendingNewsSubmissionsProps) => {
+  const { t } = useTranslation();
   const [actionLoading, setActionLoading] = useState(false);
   const pendingSubmissions = submissions.filter(s => s.status === 'pending');
 
@@ -34,7 +35,7 @@ export const PendingNewsSubmissions = ({ submissions, onUpdate }: PendingNewsSub
 
       if (error) throw error;
 
-      toast.success('News submission deleted successfully');
+      toast.success(t('admin.toast.cultureSubmissionDeleted', 'Culture submission deleted successfully'));
       onUpdate();
     } catch (error: any) {
       console.error('Error deleting submission:', error);
@@ -49,7 +50,7 @@ export const PendingNewsSubmissions = ({ submissions, onUpdate }: PendingNewsSub
       <CardHeader>
         <CardTitle className="flex items-center text-gray-900">
           <Newspaper className="h-5 w-5 mr-2 text-purple-600" />
-          News Submissions ({pendingSubmissions.length} pending)
+          {t('navigation.news')} Submissions ({pendingSubmissions.length} pending)
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -57,7 +58,7 @@ export const PendingNewsSubmissions = ({ submissions, onUpdate }: PendingNewsSub
           <div className="text-center p-8">
             <CheckCircle className="h-16 w-16 mx-auto mb-4 text-gray-300" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">All Caught Up!</h3>
-            <p className="text-gray-600">No pending news submissions to review.</p>
+            <p className="text-gray-600">{t('admin.noPendingCultureToReview', 'No pending culture submissions to review.')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">

@@ -173,7 +173,7 @@ export const WeeklyEmailModal = ({ trigger }: WeeklyEmailModalProps) => {
             </div>
           </div>
           <DialogDescription className="text-base">
-            {t('weeklyEmail.description', 'Get a curated email with trending events, news, and activities in your area every week.')}
+            {t('weeklyEmail.description', 'Get a curated email with trending events, culture, and activities in your area every week.')}
           </DialogDescription>
         </DialogHeader>
 
@@ -313,7 +313,7 @@ export const WeeklyEmailModal = ({ trigger }: WeeklyEmailModalProps) => {
                   <div className="p-1.5 rounded-md bg-purple-100 text-purple-600">
                     <Newspaper className="h-3.5 w-3.5" />
                   </div>
-                  <span className="text-muted-foreground">{t('weeklyEmail.feature2', 'Latest community news')}</span>
+                  <span className="text-muted-foreground">{t('weeklyEmail.feature2', 'Latest community culture')}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <div className="p-1.5 rounded-md bg-blue-100 text-blue-600">

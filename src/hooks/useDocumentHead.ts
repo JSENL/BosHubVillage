@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 const DEFAULT_TITLE = 'HubVillage - Connect with Your Community';
-const DEFAULT_DESCRIPTION = "HubVillage connects neighbors through local events, businesses, news, and community resources. Discover what's happening in your neighborhood.";
+const DEFAULT_DESCRIPTION = "HubVillage connects neighbors through local events, businesses, culture, and community resources. Discover what's happening in your neighborhood.";
 
 /**
  * Sets document title and meta description for the current page (SEO and sharing).

@@ -91,7 +91,7 @@ const SubmitNews = () => {
     if (!validation.success) {
       const errorValidation = validation as { success: false; errors: string[] };
       setValidationErrors(errorValidation.errors);
-      handleValidationError(errorValidation.errors, 'News');
+      handleValidationError(errorValidation.errors, 'Culture');
       return;
     }
 
@@ -165,11 +165,11 @@ const SubmitNews = () => {
           if (mediaError) {
             console.error('Failed to save media records:', mediaError);
             // Don't fail the submission if media upload fails
-            toast.error('Media files failed to upload, but your news submission was saved.');
+            toast.error('Media files failed to upload, but your culture submission was saved.');
           }
         } catch (mediaError) {
           console.error('Media upload failed:', mediaError);
-          toast.error('Media files failed to upload, but your news submission was saved.');
+          toast.error('Media files failed to upload, but your culture submission was saved.');
         }
       }
 
@@ -200,8 +200,8 @@ const SubmitNews = () => {
 
   const handleFinish = () => {
     setShowSuccessDialog(false);
-    toast.success('News submitted successfully!', {
-      description: 'Your news article will be reviewed by our admin team.',
+    toast.success('Culture submitted successfully!', {
+      description: 'Your culture article will be reviewed by our admin team.',
       duration: 5000
     });
   };

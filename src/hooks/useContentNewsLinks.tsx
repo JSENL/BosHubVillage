@@ -85,10 +85,10 @@ export const useContentNewsLinks = (contentType: ContentType, contentId: string)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['content-news-links', contentType, contentId] });
-      toast.success('News article linked successfully');
+      toast.success('Culture article linked successfully');
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Failed to link news article');
+      toast.error(error.message || 'Failed to link culture article');
     }
   });
 
@@ -104,7 +104,7 @@ export const useContentNewsLinks = (contentType: ContentType, contentId: string)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['content-news-links', contentType, contentId] });
-      toast.success('News link removed');
+      toast.success('Culture link removed');
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to remove link');

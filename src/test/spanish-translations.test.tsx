@@ -13,7 +13,7 @@ describe("Spanish Translations", () => {
     });
 
     it("should have Spanish translation for news", () => {
-      expect(i18n.t("navigation.news")).toBe("Noticias");
+      expect(i18n.t("navigation.news")).toBe("Cultura");
     });
 
     it("should have Spanish translation for submit", () => {
@@ -69,7 +69,7 @@ describe("Spanish Translations", () => {
     });
 
     it("should have Spanish translation for news", () => {
-      expect(i18n.t("itemTypes.news")).toBe("Noticias");
+      expect(i18n.t("itemTypes.news")).toBe("Cultura");
     });
 
     it("should have Spanish translation for businesses", () => {
@@ -205,7 +205,7 @@ describe("Spanish Translations", () => {
     });
 
     it("should have Spanish translation for news type", () => {
-      expect(i18n.t("types.news")).toBe("Noticias");
+      expect(i18n.t("types.news")).toBe("Cultura");
     });
 
     it("should have Spanish translation for services type", () => {

@@ -100,8 +100,8 @@ export const useNewsSubmissionOperations = () => {
         }
       }
 
-      console.log(`News ${status} successfully!`);
-      toast.success(`News ${status} successfully!`);
+      console.log(`Culture submission ${status} successfully!`);
+      toast.success(`Culture submission ${status} successfully!`);
 
       // Trigger auto-translation for the new news
       if (status === 'approved' && newNewsId) {
@@ -109,7 +109,7 @@ export const useNewsSubmissionOperations = () => {
       }
     } catch (error: any) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} news:`, error);
-      toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} news: ${error.message}`);
+      toast.error(`Failed to ${status === 'approved' ? 'approve' : 'reject'} culture submission: ${error.message}`);
       throw error;
     } finally {
       setActionLoading(false);

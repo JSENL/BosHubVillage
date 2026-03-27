@@ -12,7 +12,7 @@ describe("Portuguese Translations", () => {
     });
 
     it("should have Portuguese translation for news", () => {
-      expect(i18n.t("navigation.news")).toBe("Notícias");
+      expect(i18n.t("navigation.news")).toBe("Cultura");
     });
 
     it("should have Portuguese translation for submit", () => {
@@ -68,7 +68,7 @@ describe("Portuguese Translations", () => {
     });
 
     it("should have Portuguese translation for news", () => {
-      expect(i18n.t("itemTypes.news")).toBe("Notícias");
+      expect(i18n.t("itemTypes.news")).toBe("Cultura");
     });
 
     it("should have Portuguese translation for businesses", () => {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Navigation } from '@/components/Navigation';
@@ -19,6 +20,7 @@ interface UserSubmission {
 }
 
 const MySubmissions = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [submissions, setSubmissions] = useState<UserSubmission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,7 +141,7 @@ const MySubmissions = () => {
     switch (type) {
       case 'event': return 'Event';
       case 'business': return 'Business';
-      case 'news': return 'News';
+      case 'news': return t('navigation.news');
       case 'local_resource': return 'Local Resource';
       default: return 'Submission';
     }
@@ -266,6 +268,7 @@ interface SubmissionsListProps {
 }
 
 const SubmissionsList = ({ submissions, loading }: SubmissionsListProps) => {
+  const { t } = useTranslation();
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -306,7 +309,7 @@ const SubmissionsList = ({ submissions, loading }: SubmissionsListProps) => {
     switch (type) {
       case 'event': return 'Event';
       case 'business': return 'Business';
-      case 'news': return 'News';
+      case 'news': return t('navigation.news');
       case 'local_resource': return 'Local Resource';
       default: return 'Submission';
     }

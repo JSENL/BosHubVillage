@@ -32,7 +32,7 @@ export const BatchTranslationTool = () => {
     { key: 'events', label: 'Events', translationFields: ['title_translations', 'description_translations', 'location_translations', 'category_translations'] },
     { key: 'business', label: 'Businesses', translationFields: ['title_translations', 'description_translations', 'address_translations', 'short_description_translations'] },
     { key: 'local_resources', label: 'Local Resources', translationFields: ['name_translations', 'description_translations', 'address_translations'] },
-    { key: 'news', label: 'News', translationFields: ['title_translations', 'content_translations', 'location_translations'] },
+    { key: 'news', label: 'Culture', translationFields: ['title_translations', 'content_translations', 'location_translations'] },
   ];
 
   const targetLanguages = ['es', 'fr', 'vi', 'pt'];

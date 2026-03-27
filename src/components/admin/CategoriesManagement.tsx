@@ -138,7 +138,7 @@ export const CategoriesManagement = () => {
   const typeOptions = [
     { value: 'business', label: 'Business' },
     { value: 'event', label: 'Event' },
-    { value: 'news', label: 'News' },
+    { value: 'news', label: 'Culture' },
     { value: 'local_service', label: 'Local Resource' }
   ];
 

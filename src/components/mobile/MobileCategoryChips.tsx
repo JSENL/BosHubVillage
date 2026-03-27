@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { 
@@ -22,12 +23,13 @@ export const MobileCategoryChips = ({
   onTypeChange,
   onQuickAction 
 }: MobileCategoryChipsProps) => {
+  const { t } = useTranslation();
   const categories = [
     { id: 'all', label: 'All', icon: Sparkles },
     { id: 'event', label: 'Events', icon: Calendar },
     { id: 'business', label: 'Business', icon: Building },
     { id: 'local-service', label: 'Services', icon: Heart },
-    { id: 'news', label: 'News', icon: Newspaper },
+    { id: 'news', label: t('navigation.news'), icon: Newspaper },
   ];
 
   const quickActions = [
