@@ -89,7 +89,7 @@ export const MobileNavDrawer = () => {
               }`}
             >
               <Newspaper className="h-5 w-5 mr-3" />
-              {t('navigation.news')}
+              {t('navigation.news', 'Culture')}
             </Link>
 
             <Link
@@ -165,7 +165,7 @@ export const MobileNavDrawer = () => {
                   className="flex items-center px-3 py-2.5 rounded-lg hover:bg-muted transition-colors"
                 >
                   <Newspaper className="h-4 w-4 mr-3 text-logo-bright-orange" />
-                  {t('navigation.submitNews')}
+                  {t('navigation.submitNews', 'Submit Culture')}
                 </Link>
                 <Link
                   to="/submit-local-resource"

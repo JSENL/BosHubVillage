@@ -72,6 +72,15 @@ export const Navigation = () => {
             {/* Divider */}
             {!isHomePage && <div className="hidden md:block h-5 w-px bg-border flex-shrink-0" />}
             
+            {/* Culture (news) page — same route as /news-page */}
+            <Link
+              to="/news-page"
+              className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium"
+            >
+              <Newspaper className="h-4 w-4 mr-2" />
+              {t('navigation.news', 'Culture')}
+            </Link>
+
             {/* FAQ Link */}
             <Link 
               to="/faq" 
@@ -121,7 +130,7 @@ export const Navigation = () => {
                    <DropdownMenuItem asChild>
                      <Link to="/submit-news" className="cursor-pointer">
                         <Newspaper className="h-4 w-4 mr-2" />
-                        {t('navigation.submitNews')}
+                        {t('navigation.submitNews', 'Submit Culture')}
                      </Link>
                    </DropdownMenuItem>
                    <DropdownMenuItem asChild data-tour="submit-resource">
