@@ -13,21 +13,20 @@ const NewsPage = () => {
   const { data: news, isLoading, error } = useNews();
   const [searchTerm, setSearchTerm] = useState('');
 
-  console.log('NewsPage - news data:', news);
-  console.log('NewsPage - isLoading:', isLoading);
-  console.log('NewsPage - error:', error);
-
-  const filteredNews = (news || []).filter(article =>
-    article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    article.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    article.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const q = searchTerm.toLowerCase().trim();
+  const filteredNews = (news || []).filter((article) => {
+    const title = String(article.title ?? '').toLowerCase();
+    const content = String(article.content ?? '').toLowerCase();
+    const location = String(article.location ?? '').toLowerCase();
+    if (!q) return true;
+    return title.includes(q) || content.includes(q) || location.includes(q);
+  });
 
   const featuredArticle = filteredNews[0];
   const secondaryArticles = filteredNews.slice(1, 3);
   const remainingArticles = filteredNews.slice(3);
 
-  if (isLoading) {
+  if (isLoading && !news?.length) {
     return (
       <div className="min-h-screen bg-white">
         <Navigation />
@@ -62,10 +61,6 @@ const NewsPage = () => {
       <NewsSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-4 text-sm text-gray-500">
-          Total items: {news?.length || 0} | Filtered: {filteredNews.length}
-        </div>
-        
         {filteredNews.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">

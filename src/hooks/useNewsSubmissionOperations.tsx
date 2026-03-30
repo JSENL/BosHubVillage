@@ -1,11 +1,12 @@
-
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAutoTranslate } from './useAutoTranslate';
 
 export const useNewsSubmissionOperations = () => {
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const [actionLoading, setActionLoading] = useState(false);
   const { translateContent } = useAutoTranslate();
@@ -102,6 +103,12 @@ export const useNewsSubmissionOperations = () => {
 
       console.log(`Culture submission ${status} successfully!`);
       toast.success(`Culture submission ${status} successfully!`);
+
+      // New row is in `news`; invalidate caches so home, Culture tab, and trending refetch
+      if (status === 'approved') {
+        await queryClient.invalidateQueries({ queryKey: ['news'] });
+        await queryClient.invalidateQueries({ queryKey: ['trending-news'] });
+      }
 
       // Trigger auto-translation for the new news
       if (status === 'approved' && newNewsId) {

@@ -45,7 +45,9 @@ export const useNews = () => {
           []
       })) as News[];
     },
-    staleTime: 5 * 60 * 1000,
+    // Fresh list when visiting Culture — admins approve often; avoid 5min stale empty/wrong cache
+    staleTime: 0,
     gcTime: 10 * 60 * 1000,
+    refetchOnMount: 'always',
   });
 };
