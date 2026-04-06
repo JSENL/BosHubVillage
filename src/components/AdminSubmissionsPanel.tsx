@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAdminSubmissions } from '@/hooks/useAdminSubmissions';
 import { SubmissionsOverviewCards } from '@/components/admin/SubmissionsOverviewCards';
 import { SubmissionsTabs } from '@/components/admin/SubmissionsTabs';
-import { 
-  CheckCircle, 
+import { Button } from '@/components/ui/button';
+import {
+  CheckCircle,
   Clock,
   AlertCircle
 } from 'lucide-react';
@@ -16,6 +17,7 @@ const AdminSubmissionsPanel = () => {
     newsSubmissions,
     eventSubmissions,
     localResourceSubmissions,
+    businessSubmissions,
     loading,
     error,
     fetchAllSubmissions
@@ -43,18 +45,19 @@ const AdminSubmissionsPanel = () => {
           <AlertCircle className="h-8 w-8 mx-auto mb-4 text-red-500" />
           <h3 className="text-lg font-semibold text-red-700 mb-2">Error Loading Submissions</h3>
           <p className="text-red-600 mb-4">{error}</p>
-          <button 
-            onClick={fetchAllSubmissions}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
-          >
+          <Button onClick={() => void fetchAllSubmissions()} variant="default">
             Retry
-          </button>
+          </Button>
         </CardContent>
       </Card>
     );
   }
 
-  const totalPendingSubmissions = newsSubmissions.length + eventSubmissions.length + localResourceSubmissions.length;
+  const totalPendingSubmissions =
+    newsSubmissions.length +
+    eventSubmissions.length +
+    localResourceSubmissions.length +
+    businessSubmissions.length;
 
   return (
     <div className="space-y-6">
@@ -70,6 +73,7 @@ const AdminSubmissionsPanel = () => {
             newsSubmissions={newsSubmissions}
             eventSubmissions={eventSubmissions}
             localResourceSubmissions={localResourceSubmissions}
+            businessSubmissions={businessSubmissions}
           />
 
           {totalPendingSubmissions > 0 && (
@@ -77,6 +81,7 @@ const AdminSubmissionsPanel = () => {
               newsSubmissions={newsSubmissions}
               eventSubmissions={eventSubmissions}
               localResourceSubmissions={localResourceSubmissions}
+              businessSubmissions={businessSubmissions}
               onUpdate={fetchAllSubmissions}
             />
           )}

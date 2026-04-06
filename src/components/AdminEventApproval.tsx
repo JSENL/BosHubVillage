@@ -9,8 +9,13 @@ import { RecentlyReviewedSubmissions } from '@/components/admin/RecentlyReviewed
 import { GeocodeAllEventsButton } from '@/components/GeocodeAllEventsButton';
 
 const AdminEventApproval = () => {
-  const { submissions, loading } = useEventSubmissions();
+  const { submissions, loading, fetchSubmissions } = useEventSubmissions();
   const { events, fetchEvents } = useEvents();
+
+  const handleListsUpdated = () => {
+    void fetchSubmissions();
+    void fetchEvents();
+  };
 
   if (loading) {
     return (
@@ -32,7 +37,7 @@ const AdminEventApproval = () => {
       
       <PendingEventSubmissions 
         submissions={submissions} 
-        onUpdate={() => window.location.reload()} 
+        onUpdate={handleListsUpdated} 
       />
       <PublishedEventsTable 
         events={events} 
@@ -40,7 +45,7 @@ const AdminEventApproval = () => {
       />
       <RecentlyReviewedSubmissions 
         submissions={submissions} 
-        onUpdate={() => window.location.reload()} 
+        onUpdate={handleListsUpdated} 
       />
     </div>
   );

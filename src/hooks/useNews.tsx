@@ -5,9 +5,15 @@ import { News } from '@/types/news';
 
 const PAGE_SIZE = 100;
 
-export const useNews = () => {
+export type UseNewsOptions = {
+  /** When false, the query does not run until set to true (e.g. lazy-load in admin). Default true. */
+  enabled?: boolean;
+};
+
+export const useNews = (options?: UseNewsOptions) => {
   return useQuery({
     queryKey: ['news'],
+    enabled: options?.enabled ?? true,
     queryFn: async () => {
       const allData: any[] = [];
       let page = 0;

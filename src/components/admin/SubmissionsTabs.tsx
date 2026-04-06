@@ -9,14 +9,17 @@ import {
 import { NewsSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
 import { LocalResourceSubmission } from '@/types/localServices';
+import { BusinessSubmission } from '@/types/submissions';
 import { NewsSubmissionCard } from '@/components/NewsSubmissionCard';
 import { EventSubmissionCard } from '@/components/EventSubmissionCard';
 import LocalServiceSubmissionCard from '@/components/LocalServiceSubmissionCard';
+import { BusinessSubmissionCard } from '@/components/BusinessSubmissionCard';
 
 interface SubmissionsTabsProps {
   newsSubmissions: NewsSubmission[];
   eventSubmissions: EventSubmission[];
   localResourceSubmissions: LocalResourceSubmission[];
+  businessSubmissions: BusinessSubmission[];
   onUpdate: () => void;
 }
 
@@ -24,12 +27,13 @@ export const SubmissionsTabs = ({
   newsSubmissions,
   eventSubmissions,
   localResourceSubmissions,
+  businessSubmissions,
   onUpdate
 }: SubmissionsTabsProps) => {
   const { t } = useTranslation();
   return (
     <Tabs defaultValue="news" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-6">
+      <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
         <TabsTrigger value="news" className="flex items-center">
           <Newspaper className="h-4 w-4 mr-2" />
           {t('navigation.news')} ({newsSubmissions.length})
@@ -41,6 +45,10 @@ export const SubmissionsTabs = ({
         <TabsTrigger value="local-resources" className="flex items-center">
           <Heart className="h-4 w-4 mr-2" />
           Local Resources ({localResourceSubmissions.length})
+        </TabsTrigger>
+        <TabsTrigger value="business" className="flex items-center">
+          <Building className="h-4 w-4 mr-2" />
+          {t('navigation.businesses', 'Business')} ({businessSubmissions.length})
         </TabsTrigger>
       </TabsList>
       
@@ -97,6 +105,27 @@ export const SubmissionsTabs = ({
                 onUpdate={onUpdate}
               />
             ))
+          )}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="business">
+        <div className="space-y-4">
+          {businessSubmissions.length === 0 ? (
+            <div className="text-center p-8">
+              <Building className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <p className="text-gray-600">No pending business submissions.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {businessSubmissions.map((submission) => (
+                <BusinessSubmissionCard
+                  key={submission.id}
+                  submission={submission}
+                  onUpdate={onUpdate}
+                />
+              ))}
+            </div>
           )}
         </div>
       </TabsContent>

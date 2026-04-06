@@ -3,17 +3,32 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { useNews } from '@/hooks/useNews';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { NewsSubmission } from '@/types/submissions';
-import { Clock } from 'lucide-react';
+import { Clock, ChevronDown } from 'lucide-react';
 import { PendingNewsSubmissions } from '@/components/admin/PendingNewsSubmissions';
 import { PublishedNewsTable } from '@/components/admin/PublishedNewsTable';
+import { cn } from '@/lib/utils';
 
 const AdminNewsApproval = () => {
   const { t } = useTranslation();
   const { isAdmin } = useAuth();
-  const { data: news, refetch: refetchNews } = useNews();
+  const [publishedOpen, setPublishedOpen] = useState(false);
+  const [publishedRequested, setPublishedRequested] = useState(false);
+  const {
+    data: publishedNews,
+    refetch: refetchPublished,
+    isPending: publishedPending,
+    isError: publishedQueryError,
+    error: publishedQueryErrorObj,
+  } = useNews({ enabled: publishedRequested });
   const [submissions, setSubmissions] = useState<NewsSubmission[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -64,14 +79,70 @@ const AdminNewsApproval = () => {
 
   return (
     <div className="space-y-6">
-      <PendingNewsSubmissions 
-        submissions={submissions} 
-        onUpdate={fetchSubmissions} 
+      <PendingNewsSubmissions
+        submissions={submissions}
+        onUpdate={fetchSubmissions}
       />
-      <PublishedNewsTable 
-        news={news || []} 
-        onUpdate={refetchNews} 
-      />
+
+      <Collapsible
+        open={publishedOpen}
+        onOpenChange={(open) => {
+          setPublishedOpen(open);
+          if (open) setPublishedRequested(true);
+        }}
+      >
+        <Card>
+          <CardContent className="p-4">
+            <CollapsibleTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-between font-medium"
+              >
+                {t(
+                  'admin.publishedCultureSection',
+                  'Published culture articles'
+                )}
+                <ChevronDown
+                  className={cn(
+                    'h-4 w-4 shrink-0 opacity-70 transition-transform',
+                    publishedOpen && 'rotate-180'
+                  )}
+                />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-4">
+              {publishedRequested && publishedPending && (
+                <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
+                  <Clock className="h-8 w-8 animate-spin mb-3 text-purple-600" />
+                  <p>{t('admin.loadingPublishedCulture', 'Loading published articles…')}</p>
+                </div>
+              )}
+              {publishedRequested && !publishedPending && publishedQueryError && (
+                <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+                  {publishedQueryErrorObj?.message ||
+                    t('admin.failedLoadPublishedCulture', 'Failed to load published articles.')}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => void refetchPublished()}
+                  >
+                    {t('common.retry', 'Retry')}
+                  </Button>
+                </div>
+              )}
+              {publishedRequested && !publishedPending && !publishedQueryError && (
+                <PublishedNewsTable
+                  news={publishedNews ?? []}
+                  onUpdate={() => void refetchPublished()}
+                />
+              )}
+            </CollapsibleContent>
+          </CardContent>
+        </Card>
+      </Collapsible>
     </div>
   );
 };

@@ -48,24 +48,9 @@ import { QuickBrowseManagement } from '@/components/admin/QuickBrowseManagement'
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin } = useAuth();
 
-  if (loading) {
-    return (
-      <>
-        <Navigation />
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
-          <div className="max-w-4xl mx-auto px-4">
-            <div className="text-center">
-              <Shield className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-600" />
-              <p>Loading...</p>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-
+  /* Access is enforced by AdminRoute; this is a fallback if the page is mounted elsewhere. */
   if (!user || !isAdmin) {
     return (
       <>

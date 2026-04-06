@@ -3,10 +3,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { NewsSubmission } from '@/types/submissions';
+import { NewsSubmission, BusinessSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
 import { LocalResourceSubmission } from '@/types/localServices';
-import { BusinessSubmission } from '@/hooks/useBusinessSubmissions';
 
 export const useAdminSubmissions = () => {
   const { isAdmin, user } = useAuth();
@@ -19,59 +18,53 @@ export const useAdminSubmissions = () => {
 
   const fetchAllSubmissions = async () => {
     if (!isAdmin || !user) {
-      console.log('User is not admin or not authenticated');
       return;
     }
     
     try {
       setLoading(true);
       setError(null);
-      
-      console.log('Fetching all submissions for admin user:', user.id);
-      
-      // Fetch news submissions
-      const { data: newsData, error: newsError } = await supabase
-        .from('news_submissions')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
+
+      const [
+        { data: newsData, error: newsError },
+        { data: eventData, error: eventError },
+        { data: localResourceData, error: localResourceError },
+        { data: businessData, error: businessError },
+      ] = await Promise.all([
+        supabase
+          .from('news_submissions')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('event_submissions')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('local_resources_submissions')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('business_submissions')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false }),
+      ]);
 
       if (newsError) {
         console.error('Culture submissions error:', newsError);
         throw new Error(`Culture submissions: ${newsError.message}`);
       }
-
-      // Fetch event submissions
-      const { data: eventData, error: eventError } = await supabase
-        .from('event_submissions')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
-
       if (eventError) {
         console.error('Event submissions error:', eventError);
         throw new Error(`Event submissions: ${eventError.message}`);
       }
-
-      // Fetch local resource submissions
-      const { data: localResourceData, error: localResourceError } = await supabase
-        .from('local_resources_submissions')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
-
       if (localResourceError) {
         console.error('Local resource submissions error:', localResourceError);
         throw new Error(`Local resource submissions: ${localResourceError.message}`);
       }
-
-      // Fetch business submissions
-      const { data: businessData, error: businessError } = await supabase
-        .from('business_submissions')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
-
       if (businessError) {
         console.error('Business submissions error:', businessError);
         throw new Error(`Business submissions: ${businessError.message}`);
@@ -98,13 +91,6 @@ export const useAdminSubmissions = () => {
         status: submission.status as 'pending' | 'approved' | 'rejected'
       }));
 
-      console.log('Successfully fetched submissions:', {
-        news: typedNewsData.length,
-        events: typedEventData.length,
-        localResources: typedLocalResourceData.length,
-        business: typedBusinessData.length
-      });
-
       setNewsSubmissions(typedNewsData);
       setEventSubmissions(typedEventData);
       setLocalResourceSubmissions(typedLocalResourceData);
@@ -120,10 +106,8 @@ export const useAdminSubmissions = () => {
 
   useEffect(() => {
     if (isAdmin && user) {
-      console.log('Admin user detected, fetching submissions...');
       fetchAllSubmissions();
     } else {
-      console.log('Not admin or no user, skipping fetch');
       setLoading(false);
     }
   }, [isAdmin, user]);

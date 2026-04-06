@@ -8,6 +8,7 @@ import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { UnifiedItemCard } from '@/components/UnifiedItemCard';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from '@/hooks/useAuth';
 
 // Initialize i18n for testing
 const initI18n = async (language: string) => {
@@ -60,11 +61,13 @@ const createWrapper = () => {
 
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
-      <I18nextProvider i18n={i18n}>
-        <BrowserRouter>
-          {children}
-        </BrowserRouter>
-      </I18nextProvider>
+      <AuthProvider>
+        <I18nextProvider i18n={i18n}>
+          <BrowserRouter>
+            {children}
+          </BrowserRouter>
+        </I18nextProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

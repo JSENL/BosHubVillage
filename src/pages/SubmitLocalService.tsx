@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,7 +15,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { useLocalServiceCategories } from '@/hooks/useCategories';
-import { Building2, Check, Plus, AlertCircle, Info } from 'lucide-react';
+import { Building2, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTranslation } from 'react-i18next';
 
@@ -95,6 +96,7 @@ const SubmitLocalService = () => {
           latitude,
           longitude,
           submitted_by: user.id,
+          status: 'pending',
         });
 
       if (error) throw error;
@@ -119,6 +121,24 @@ const SubmitLocalService = () => {
     setShowSuccessDialog(false);
     toast.success('Local resource submitted successfully! It will be reviewed by our team.');
   };
+
+  if (!user) {
+    return (
+      <>
+        <Navigation />
+        <div className="container mx-auto py-10 max-w-2xl px-4">
+          <Card className="mt-8">
+            <CardContent className="p-8 text-center">
+              <Building2 className="h-16 w-16 mx-auto mb-4 text-primary" />
+              <h3 className="text-xl font-semibold mb-2">{t('pages.signInRequired')}</h3>
+              <p className="text-gray-600 mb-4">{t('pages.submitLocalResourceDesc')}</p>
+              <Button onClick={() => window.location.href = '/auth'}>{t('navigation.signIn')}</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -152,7 +172,7 @@ const SubmitLocalService = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('common.category')}</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || undefined}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={t('pages.selectCategory')} />
