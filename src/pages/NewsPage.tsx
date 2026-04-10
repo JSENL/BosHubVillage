@@ -3,24 +3,59 @@ import { useTranslation } from 'react-i18next';
 import { Navigation } from '@/components/Navigation';
 import { useNews } from '@/hooks/useNews';
 import NewsHeader from '@/components/news/NewsHeader';
-import NewsSearch from '@/components/news/NewsSearch';
+import NewsSearch, { type NewsSearchField } from '@/components/news/NewsSearch';
 import FeaturedArticle from '@/components/news/FeaturedArticle';
 import SecondaryArticles from '@/components/news/SecondaryArticles';
 import NewsGrid from '@/components/news/NewsGrid';
+import type { News } from '@/types/news';
+
+function villagesSearchText(article: News): string {
+  const v = article.villages;
+  if (!v?.length) return '';
+  return v.map((s) => String(s).toLowerCase().trim()).join(' ');
+}
+
+function articleMatchesSearch(
+  article: News,
+  q: string,
+  field: NewsSearchField
+): boolean {
+  if (!q) return true;
+  const title = String(article.title ?? '').toLowerCase();
+  const location = String(article.location ?? '').toLowerCase();
+  const source = String(article.source ?? '').toLowerCase();
+  const villages = villagesSearchText(article);
+  switch (field) {
+    case 'all':
+      return (
+        title.includes(q) ||
+        location.includes(q) ||
+        source.includes(q) ||
+        villages.includes(q)
+      );
+    case 'title':
+      return title.includes(q);
+    case 'location':
+      return location.includes(q);
+    case 'source':
+      return source.includes(q);
+    case 'village':
+      return villages.includes(q);
+    default:
+      return true;
+  }
+}
 
 const NewsPage = () => {
   const { t } = useTranslation();
   const { data: news, isLoading, error } = useNews();
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchField, setSearchField] = useState<NewsSearchField>('all');
 
   const q = searchTerm.toLowerCase().trim();
-  const filteredNews = (news || []).filter((article) => {
-    const title = String(article.title ?? '').toLowerCase();
-    const content = String(article.content ?? '').toLowerCase();
-    const location = String(article.location ?? '').toLowerCase();
-    if (!q) return true;
-    return title.includes(q) || content.includes(q) || location.includes(q);
-  });
+  const filteredNews = (news || []).filter((article) =>
+    articleMatchesSearch(article, q, searchField)
+  );
 
   const featuredArticle = filteredNews[0];
   const secondaryArticles = filteredNews.slice(1, 3);
@@ -58,7 +93,12 @@ const NewsPage = () => {
     <div className="min-h-screen bg-white">
       <Navigation />
       <NewsHeader />
-      <NewsSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <NewsSearch
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchField={searchField}
+        onSearchFieldChange={setSearchField}
+      />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {filteredNews.length === 0 ? (
