@@ -72,8 +72,8 @@ export const useEventSubmissions = () => {
     submissions,
     loading,
     fetchSubmissions,
-    submitEvent: async (eventData: any) => {
-      const result = await submissionCreation.submitEvent(eventData);
+    submitEvent: async (...args: Parameters<typeof submissionCreation.submitEvent>) => {
+      const result = await submissionCreation.submitEvent(...args);
       handleOperationComplete();
       return result;
     },

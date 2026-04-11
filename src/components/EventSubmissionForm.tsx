@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { useEventCategories } from '@/hooks/useCategories';
+import NewsMediaUpload from '@/components/forms/NewsMediaUpload';
 
 interface EventSubmissionFormProps {
   onClose?: () => void;
@@ -41,6 +42,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
   const { submitEvent } = useEventSubmissions();
   const { geocode, isGeocoding, isReady } = useGeocoding();
   const { data: eventCategories = [] } = useEventCategories();
+  const [mediaFiles, setMediaFiles] = useState<File[]>([]);
 
   // Event categories now come from the database
 
@@ -88,26 +90,29 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         toast.warning('Could not find exact coordinates for the address, but your submission will be reviewed by our team.');
       }
 
-      await submitEvent({
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        event_type: formData.event_type,
-        date: formData.date,
-        start_time: formData.start_time || '00:00',
-        end_time: formData.end_time || '00:00',
-        location: formData.location,
-        website_link: formData.website_link || null,
-        price: parseFloat(formData.price) || 0,
-        max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
-        is_recurring: formData.is_recurring,
-        recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
-        registration_required: formData.registration_required,
-        neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods : null,
-        villages: formData.villages || null,
-        latitude: coordinates?.latitude || null,
-        longitude: coordinates?.longitude || null,
-      });
+      await submitEvent(
+        {
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          event_type: formData.event_type,
+          date: formData.date,
+          start_time: formData.start_time || '00:00',
+          end_time: formData.end_time || '00:00',
+          location: formData.location,
+          website_link: formData.website_link || null,
+          price: parseFloat(formData.price) || 0,
+          max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
+          is_recurring: formData.is_recurring,
+          recurring_pattern: formData.is_recurring ? formData.recurring_pattern : null,
+          registration_required: formData.registration_required,
+          neighborhoods: formData.neighborhoods.length > 0 ? formData.neighborhoods : null,
+          villages: formData.villages || null,
+          latitude: coordinates?.latitude || null,
+          longitude: coordinates?.longitude || null,
+        },
+        mediaFiles.length > 0 ? mediaFiles : undefined
+      );
       
       // Reset form
       setFormData({
@@ -128,7 +133,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         neighborhoods: [],
         villages: '',
       });
-      
+      setMediaFiles([]);
+
       if (onClose) onClose();
     } catch (error) {
       // Error handling is done in the hook
@@ -201,6 +207,24 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
                 rows={3}
+              />
+            </div>
+
+            <div
+              data-testid="event-submission-media-section"
+              className="space-y-2"
+            >
+              <p className="text-sm text-gray-500">
+                Optional: add images or video. The first image is saved as your
+                submission cover (<span className="font-mono text-xs">image_url</span>)
+                for reviewers.
+              </p>
+              <NewsMediaUpload
+                mediaFiles={mediaFiles}
+                onFilesSelect={setMediaFiles}
+                onFileRemove={(index) =>
+                  setMediaFiles((prev) => prev.filter((_, i) => i !== index))
+                }
               />
             </div>
 

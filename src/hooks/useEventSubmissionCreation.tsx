@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { useAuth } from './useAuth';
 import { useGeocoding } from './useGeocoding';
 import { eventSubmissionSchema, validateFormData } from '@/utils/validation/formSchemas';
+import { uploadMediaFiles } from '@/services/mediaUploadService';
 
 interface CreateEventSubmissionData {
   title: string;
@@ -30,7 +31,10 @@ export const useEventSubmissionCreation = () => {
   const { user } = useAuth();
   const { geocode, isReady } = useGeocoding();
 
-  const submitEvent = async (eventData: CreateEventSubmissionData) => {
+  const submitEvent = async (
+    eventData: CreateEventSubmissionData,
+    mediaFiles?: File[]
+  ) => {
     try {
       if (!user) {
         throw new Error('User not authenticated');
@@ -104,6 +108,58 @@ export const useEventSubmissionCreation = () => {
         .single();
 
       if (error) throw error;
+
+      const files = mediaFiles ?? [];
+      if (files.length > 0 && data) {
+        try {
+          const uploadedFiles = await uploadMediaFiles(files, user.id);
+          const mediaRecords = uploadedFiles.map((file) => ({
+            event_submission_id: data.id,
+            file_path: file.path,
+            file_name: file.name,
+            file_type: file.type,
+            file_size: file.size,
+          }));
+
+          const { error: mediaError } = await supabase
+            .from('event_submissions_media')
+            .insert(mediaRecords);
+
+          if (mediaError) {
+            console.error('Failed to save event submission media records:', mediaError);
+            toast.error(
+              'Media files failed to upload, but your event submission was saved.'
+            );
+          } else {
+            const firstImage = uploadedFiles.find((f) =>
+              f.type.startsWith('image/')
+            );
+            if (firstImage) {
+              const { data: urlData } = supabase.storage
+                .from('comment-media')
+                .getPublicUrl(firstImage.path);
+              const publicUrl = urlData?.publicUrl ?? null;
+              if (publicUrl) {
+                const { error: imageUrlError } = await supabase
+                  .from('event_submissions')
+                  .update({ image_url: publicUrl })
+                  .eq('id', data.id);
+                if (imageUrlError) {
+                  console.error(
+                    'Failed to set event submission image_url:',
+                    imageUrlError
+                  );
+                }
+              }
+            }
+          }
+        } catch (mediaErr) {
+          console.error('Event media upload failed:', mediaErr);
+          toast.error(
+            'Media files failed to upload, but your event submission was saved.'
+          );
+        }
+      }
 
       toast.success('Event submitted successfully! It will be reviewed by our admin team.');
       return data;

@@ -34,9 +34,10 @@ describe('submission forms → Supabase tables', () => {
     expect(src).toMatch(/status:\s*['"]pending['"]/);
   });
 
-  it('useEventSubmissionCreation inserts into event_submissions', () => {
+  it('useEventSubmissionCreation inserts into event_submissions and optionally event_submissions_media', () => {
     const src = readSrc('hooks/useEventSubmissionCreation.tsx');
     expect(src).toMatch(/\.from\(\s*['"]event_submissions['"]\s*\)/);
+    expect(src).toMatch(/\.from\(\s*['"]event_submissions_media['"]\s*\)/);
     expect(src).toMatch(/submitted_by:\s*user\.id/);
   });
 });

@@ -858,6 +858,7 @@ export type Database = {
           end_time: string | null
           event_type: string | null
           id: string
+          image_url: string | null
           is_recurring: boolean | null
           is_sponsored: boolean | null
           latitude: number | null
@@ -887,6 +888,7 @@ export type Database = {
           end_time?: string | null
           event_type?: string | null
           id?: string
+          image_url?: string | null
           is_recurring?: boolean | null
           is_sponsored?: boolean | null
           latitude?: number | null
@@ -916,6 +918,7 @@ export type Database = {
           end_time?: string | null
           event_type?: string | null
           id?: string
+          image_url?: string | null
           is_recurring?: boolean | null
           is_sponsored?: boolean | null
           latitude?: number | null
@@ -937,6 +940,44 @@ export type Database = {
           website_link?: string | null
         }
         Relationships: []
+      }
+      event_submissions_media: {
+        Row: {
+          created_at: string
+          event_submission_id: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          event_submission_id: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          event_submission_id?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_submissions_media_event_submission_id_fkey"
+            columns: ["event_submission_id"]
+            isOneToOne: false
+            referencedRelation: "event_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       events: {
         Row: {
