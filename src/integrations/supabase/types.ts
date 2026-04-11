@@ -994,6 +994,7 @@ export type Database = {
           end_time: string | null
           event_type: string | null
           id: string
+          image_url: string | null
           is_private: boolean
           is_recurring: boolean | null
           is_sponsored: boolean | null
@@ -1027,6 +1028,7 @@ export type Database = {
           end_time?: string | null
           event_type?: string | null
           id?: string
+          image_url?: string | null
           is_private?: boolean
           is_recurring?: boolean | null
           is_sponsored?: boolean | null
@@ -1060,6 +1062,7 @@ export type Database = {
           end_time?: string | null
           event_type?: string | null
           id?: string
+          image_url?: string | null
           is_private?: boolean
           is_recurring?: boolean | null
           is_sponsored?: boolean | null

@@ -40,7 +40,8 @@ export const useEventSubmissionOperations = () => {
           recurring_pattern: submission.recurring_pattern,
           latitude: submission.latitude,
           longitude: submission.longitude,
-          created_by: submission.submitted_by
+          created_by: submission.submitted_by,
+          image_url: submission.image_url ?? null,
         })
         .select('id')
         .single();

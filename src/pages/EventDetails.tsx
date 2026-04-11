@@ -18,6 +18,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
+import { EventHeroImageEditor } from '@/components/events/EventHeroImageEditor';
 
 const EventDetails = () => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -82,6 +83,13 @@ const EventDetails = () => {
               </Button>
             )}
           </div>
+
+          <EventHeroImageEditor
+            eventId={event.id}
+            eventTitle={event.title}
+            imageUrl={event.image_url}
+            canEdit={!!canEditLinks}
+          />
 
           <div className="flex flex-col gap-3 mb-4">
             <div className="flex items-center justify-between">

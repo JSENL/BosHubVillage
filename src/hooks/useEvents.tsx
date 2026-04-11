@@ -32,6 +32,7 @@ export interface Event {
   is_sponsored?: boolean;
   contact_type?: EventContactType | null;
   contact_value?: string | null;
+  image_url?: string | null;
 }
 
 export const useEvents = () => {
