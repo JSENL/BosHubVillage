@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Event, type EventContactType } from '@/hooks/useEvents';
 import { useTranslation } from 'react-i18next';
+import { AdminContentCoverImageSection } from '@/components/admin/AdminContentCoverImageSection';
 
 interface EditEventDialogProps {
   event: Event;
@@ -27,6 +28,9 @@ interface EditEventDialogProps {
 export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEventDialogProps) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(
+    event.image_url ?? null
+  );
   
   // Helper function to format date properly without timezone issues
   const formatDateForInput = (dateString: string) => {
@@ -75,6 +79,12 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
     }
   }, [open, event.id, event.title, event.description, event.category, event.location, event.address, event.date, event.start_time, event.end_time, event.price, event.max_attendees, event.latitude, event.longitude, event.is_sponsored, event.contact_type, event.contact_value]);
 
+  useEffect(() => {
+    if (open) {
+      setCoverImageUrl(event.image_url ?? null);
+    }
+  }, [open, event.id, event.image_url]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -94,6 +104,7 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
         is_sponsored: formData.is_sponsored,
         contact_type: formData.contact_type || null,
         contact_value: formData.contact_type ? (formData.contact_value?.trim() || null) : null,
+        image_url: coverImageUrl || null,
       };
 
       // Handle coordinates - only include if they have values
@@ -335,6 +346,14 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
               />
             )}
           </div>
+
+          <AdminContentCoverImageSection
+            table="events"
+            recordId={event.id}
+            imageUrl={coverImageUrl}
+            onImageUrlChange={setCoverImageUrl}
+            onPersisted={onUpdate}
+          />
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { News } from '@/types/news';
+import { AdminContentCoverImageSection } from '@/components/admin/AdminContentCoverImageSection';
 
 interface EditNewsDialogProps {
   news: News;
@@ -18,6 +19,9 @@ interface EditNewsDialogProps {
 
 export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsDialogProps) => {
   const [loading, setLoading] = useState(false);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(
+    news.image_url ?? null
+  );
   const [formData, setFormData] = useState({
     title: news.title,
     content: news.content,
@@ -25,6 +29,19 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
     location: news.location,
     date_posted: news.date_posted,
   });
+
+  useEffect(() => {
+    if (open) {
+      setCoverImageUrl(news.image_url ?? null);
+      setFormData({
+        title: news.title,
+        content: news.content,
+        source: news.source,
+        location: news.location,
+        date_posted: news.date_posted,
+      });
+    }
+  }, [open, news.id, news.title, news.content, news.source, news.location, news.date_posted, news.image_url]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +56,7 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
           source: formData.source,
           location: formData.location,
           date_posted: formData.date_posted,
+          image_url: coverImageUrl || null,
         })
         .eq('id', news.id);
 
@@ -114,6 +132,14 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
               required
             />
           </div>
+
+          <AdminContentCoverImageSection
+            table="news"
+            recordId={news.id}
+            imageUrl={coverImageUrl}
+            onImageUrlChange={setCoverImageUrl}
+            onPersisted={onUpdate}
+          />
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
