@@ -11,6 +11,10 @@ import { toast } from 'sonner';
 
 const MAX_BYTES = 10 * 1024 * 1024;
 
+/** Matches DB check `events_cover_zoom_range` */
+const ZOOM_MIN = 0.25;
+const ZOOM_MAX = 3;
+
 function clamp(n: number, lo: number, hi: number) {
   return Math.min(hi, Math.max(lo, n));
 }
@@ -41,7 +45,7 @@ export function EventHeroImageEditor({
   const [savingFraming, setSavingFraming] = useState(false);
 
   const [draftZoom, setDraftZoom] = useState(() =>
-    clamp(Number(coverZoom) || 1, 0.5, 2)
+    clamp(Number(coverZoom) || 1, ZOOM_MIN, ZOOM_MAX)
   );
   const [draftFocusX, setDraftFocusX] = useState(() =>
     clamp(Number(coverFocusX) || 50, 0, 100)
@@ -51,7 +55,7 @@ export function EventHeroImageEditor({
   );
 
   useEffect(() => {
-    setDraftZoom(clamp(Number(coverZoom) || 1, 0.5, 2));
+    setDraftZoom(clamp(Number(coverZoom) || 1, ZOOM_MIN, ZOOM_MAX));
     setDraftFocusX(clamp(Number(coverFocusX) || 50, 0, 100));
     setDraftFocusY(clamp(Number(coverFocusY) || 50, 0, 100));
   }, [eventId, coverZoom, coverFocusX, coverFocusY]);
@@ -114,7 +118,7 @@ export function EventHeroImageEditor({
   const saveFraming = async () => {
     setSavingFraming(true);
     try {
-      const zoom = clamp(draftZoom, 0.5, 2);
+      const zoom = clamp(draftZoom, ZOOM_MIN, ZOOM_MAX);
       const fx = clamp(draftFocusX, 0, 100);
       const fy = clamp(draftFocusY, 0, 100);
 
@@ -184,12 +188,20 @@ export function EventHeroImageEditor({
 
       {imageUrl ? (
         <>
-          <div className="relative aspect-[21/9] max-h-72 bg-gray-100 overflow-hidden">
+          {/* Tall responsive frame so portrait images can show top-to-bottom; landscape fits width */}
+          <div
+            className="relative w-full overflow-hidden bg-neutral-200/95 flex items-center justify-center"
+            style={{
+              height: 'clamp(12rem, min(36vw, 52vh), 32rem)',
+              minHeight: 'min(28rem, 88vw)',
+            }}
+          >
             <img
               src={imageUrl}
               alt={`${eventTitle} cover`}
-              className="h-full w-full object-cover will-change-transform"
+              className="max-h-full max-w-full h-full w-full object-contain will-change-transform"
               style={{
+                objectPosition: `${displayFocusX}% ${displayFocusY}%`,
                 transform: `scale(${displayZoom})`,
                 transformOrigin: `${displayFocusX}% ${displayFocusY}%`,
               }}
@@ -222,6 +234,11 @@ export function EventHeroImageEditor({
               <p className="text-sm font-medium text-gray-800">
                 Adjust how the cover fits (you and admins only)
               </p>
+              <p className="text-xs text-muted-foreground -mt-2">
+                The full image stays visible at 100% zoom (letterboxing may appear for very wide or
+                tall photos). Use zoom to shrink the image in the frame or enlarge it; use focus to
+                pan the focal point for portrait or landscape shots.
+              </p>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <Label htmlFor={`cover-zoom-${eventId}`}>Zoom</Label>
@@ -229,20 +246,22 @@ export function EventHeroImageEditor({
                 </div>
                 <Slider
                   id={`cover-zoom-${eventId}`}
-                  min={50}
-                  max={200}
+                  min={25}
+                  max={300}
                   step={5}
                   value={[zoomPercent]}
-                  onValueChange={([v]) => setDraftZoom(clamp((v ?? 100) / 100, 0.5, 2))}
+                  onValueChange={([v]) =>
+                    setDraftZoom(clamp((v ?? 100) / 100, ZOOM_MIN, ZOOM_MAX))
+                  }
                   disabled={savingFraming}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Below 100% shows more of the surroundings; above 100% crops in tighter.
+                  Under 100% shrinks the photo inside the hero; over 100% zooms in (may crop edges).
                 </p>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <Label htmlFor={`cover-fx-${eventId}`}>Horizontal focus</Label>
+                  <Label htmlFor={`cover-fx-${eventId}`}>Horizontal pan</Label>
                   <span>{Math.round(draftFocusX)}%</span>
                 </div>
                 <Slider
@@ -259,7 +278,7 @@ export function EventHeroImageEditor({
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <Label htmlFor={`cover-fy-${eventId}`}>Vertical focus</Label>
+                  <Label htmlFor={`cover-fy-${eventId}`}>Vertical pan</Label>
                   <span>{Math.round(draftFocusY)}%</span>
                 </div>
                 <Slider
@@ -306,7 +325,11 @@ export function EventHeroImageEditor({
             type="button"
             onClick={pickFile}
             disabled={uploading}
-            className="flex w-full flex-col items-center justify-center gap-2 aspect-[21/9] max-h-48 border-2 border-dashed border-gray-300 bg-gray-50/80 px-4 py-8 text-center text-sm text-gray-600 transition hover:border-caribbean-teal/50 hover:bg-caribbean-teal/5"
+            className="flex w-full flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-300 bg-gray-50/80 px-4 py-8 text-center text-sm text-gray-600 transition hover:border-caribbean-teal/50 hover:bg-caribbean-teal/5"
+            style={{
+              minHeight: 'min(16rem, 55vw)',
+              height: 'clamp(12rem, min(36vw, 40vh), 20rem)',
+            }}
           >
             {uploading ? (
               <Loader2 className="h-8 w-8 animate-spin text-caribbean-teal" />

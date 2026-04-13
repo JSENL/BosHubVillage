@@ -87,7 +87,10 @@ export const useEvents = () => {
         event_type: event.event_type || 'event',
         is_recurring: event.is_recurring || false,
         address: event.address || '',
-        cover_zoom: Number(event.cover_zoom ?? 1),
+        cover_zoom: Math.min(
+          3,
+          Math.max(0.25, Number(event.cover_zoom ?? 1))
+        ),
         cover_focus_x: Number(event.cover_focus_x ?? 50),
         cover_focus_y: Number(event.cover_focus_y ?? 50),
       })) || [];
