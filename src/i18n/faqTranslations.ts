@@ -65,7 +65,8 @@ export const faqTranslationsEn = {
       q3: "What types of events can I submit?",
       q4: "How do I register for events?",
       q5: "Can I create recurring events?",
-      q6: "How do I share events with others?"
+      q6: "How do I share events with others?",
+      q7: "Can I add or change the event cover photo, or adjust how it fits?"
     },
     businesses: {
       q1: "How do I find local businesses?",
@@ -184,15 +185,16 @@ export const faqTranslationsEn = {
       a1: "HubVillage is a community platform connecting residents of Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain with local events, businesses, services, and culture. Discover what's happening in your neighborhood, find trusted local services, and stay connected with your community.",
       a2: "You can browse events, businesses, services, and culture without an account. However, creating a free account lets you submit content, save bookmarks, leave comments and ratings, message businesses, follow other users, save searches, and receive personalized recommendations.",
       a3: "The homepage shows all content types in a unified view with grid, list, and map layouts. Use the type filter to focus on Events, Businesses, Local Services, or Culture. Filter by neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), category, or date. The map view uses Mapbox to show everything on an interactive map.",
-      a4: "First-time users see an interactive onboarding tour explaining key features. You can restart the tour anytime by clearing your browser's local storage. This FAQ covers all features in detail."
+      a4: "First-time users see an interactive onboarding tour explaining key features. You can revisit help from your account menu where available, clear site-specific tour data in your browser if you need a fresh start, and use this FAQ (search at the top) anytime."
     },
     events: {
-      a1: "Browse events using grid, list, map, or calendar views. Filter by date, category, event type (free/paid), neighborhood, or village. Use the calendar view to see events by specific dates, or the Mapbox map to find events near you. Red 'E' markers indicate events on the map.",
-      a2: "Yes! Click 'Submit Event' from the Submit menu in the navigation. Provide title, description, date/time, location, category, and pricing. Your submission goes through admin review before being published.",
+      a1: "Browse events using grid, list, map, or calendar views. Filter by date, category, event type, neighborhood, or village. Use the calendar view to see events by specific dates, or the Mapbox map to find events near you. Red \"E\" markers indicate events on the map.",
+      a2: "Yes. Use Submit Event from the Submit menu. Enter title, description, date and time, location, category, pricing, and optional details such as neighborhoods, villages, website link, and whether registration is required. You can attach optional images and videos; the first image may be saved as a cover preview for reviewers. Submissions are reviewed before they appear on the map.",
       a3: "Any community-relevant events including workshops, concerts, meetups, festivals, classes, sports events, cultural activities, community meetings, and more. Both free and paid events are welcome.",
-      a4: "Click on any event to view full details. If registration is required, you'll see the event organizer's contact information or website link for registration.",
+      a4: "Open any event for its full page. If the organizer enabled registration, use Register for Event on the page. The Contact area may offer messaging through HubVillage, phone, email, or an external website link, depending on what the organizer set. You can bookmark the event, share it, add it to your calendar, and read or leave comments when signed in.",
       a5: "Yes! When submitting an event, mark it as recurring and specify the pattern (daily, weekly, monthly). Perfect for regular classes, meetups, or ongoing community activities.",
-      a6: "Each event has social sharing options. Share via social media, copy the direct link, or add events to your personal calendar using the calendar share feature."
+      a6: "Each event has social sharing options. Share via social media, copy the direct link, or add events to your personal calendar using the calendar share feature.",
+      a7: "Yes. After an event is published, the event organizer and HubVillage admins can add or replace the cover image on the event details page. The hero is designed to show the whole photo by default (you may see neutral bands for very wide or tall shots). Zoom and horizontal / vertical pan adjust how the image sits in the banner—click Save framing to keep changes, or Reset to defaults to restore the standard layout. Replacing the image resets framing to defaults. When you submit an event, optional media can still be attached as above. Admins can also set or change cover images for published events and culture articles from Admin Dashboard → Content Management (open Edit on a published item)."
     },
     businesses: {
       a1: "Browse the Businesses section using list or map view. Blue 'B' markers show businesses on the Mapbox map. Filter by category, neighborhood, or search by name/keywords. Each listing includes description, contact info, and location.",
@@ -210,9 +212,9 @@ export const faqTranslationsEn = {
     },
     culture: {
       a1: "HubVillage features local community culture content, announcements, updates about local initiatives, community events coverage, arts and cultural activities relevant to Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain residents.",
-      a2: "Yes! Community members can submit culture articles using 'Submit Culture'. Include a headline, content, source, and location. You can also attach images and media files. All submissions are reviewed before publication.",
+      a2: "Yes! Community members can submit culture articles using Submit Culture. Include a headline, content, source, location, and optional images or media. Submissions are reviewed before publication. Admins can edit published articles—including cover image URL and uploads—from Admin Dashboard → Content Management → Culture via Edit on a published item.",
       a3: "Visit the Culture page regularly, bookmark interesting articles, enable weekly digest emails, or use saved searches with notifications. Purple 'C' markers show culture locations on the map.",
-      a4: "Yes! When submitting culture content, you can upload images and media files to accompany your article through the media upload feature."
+      a4: "Yes. The submission form includes media uploads (images and videos) similar to events. Admins can also paste or upload a cover image when editing a published article."
     },
     map: {
       a1: "The interactive Mapbox map shows all content with color-coded markers: Red 'E' for Events, Blue 'B' for Businesses, Orange 'L' for Local Services, and Purple 'C' for Culture. Click markers for details, use clustering for dense areas, and resize the map panel. The map is centered on Southern Boston covering all five neighborhoods.",
@@ -236,7 +238,7 @@ export const faqTranslationsEn = {
     },
     user: {
       a1: "Click 'Sign In' in the navigation and select 'Sign Up' to create a free account using your email. Account creation is quick and unlocks all interactive features.",
-      a2: "With an account you can: submit content, leave comments and ratings, bookmark items, send messages to businesses, follow other users, save searches, receive notifications, customize your profile, and subscribe to the weekly digest.",
+      a2: "With an account you can: submit events, businesses, local services, and culture; leave comments and ratings; bookmark items; message businesses; follow other users; save searches; receive notifications; customize your profile; subscribe to the weekly digest; register for events when offered; and manage cover images and framing on events you created once they are published.",
       a3: "Visit 'My Submissions' from your account menu to see all content you've submitted, track approval status (pending, approved, rejected), and view admin notes.",
       a4: "Yes! Click the bookmark icon on any event, business, service, or culture article to save it. Access your bookmarks through the Discovery sidebar or the Bookmarks section.",
       a5: "The Discovery sidebar shows trending content, your saved searches, bookmarked items, recently viewed items, and suggested people to follow. It helps you discover new content and manage your personalized experience.",
@@ -272,7 +274,7 @@ export const faqTranslationsEn = {
       a5: "Yes! When leaving a comment, you can attach images to share photos of your experience. Especially useful for reviews of businesses and events."
     },
     messaging: {
-      a1: "On business detail pages, registered users can send direct messages to business owners using the 'Contact' or 'Message' button. Use this for inquiries, questions, or service requests.",
+      a1: "On business detail pages, registered users can send direct messages to business owners using the contact options on the listing. Events may expose a Contact section too (for example message through our system, phone, email, or an external website), depending on what the organizer configured.",
       a2: "Access 'My Messages' from your account menu to view all conversations with businesses, check message status, and continue ongoing conversations.",
       a3: "Yes! Business owners can respond to your messages. You'll see their replies in My Messages and may receive notifications depending on your settings.",
       a4: "Yes! Attach images and documents when messaging businesses. Useful for sharing photos of repair needs, requesting quotes, or providing relevant documentation."
@@ -288,7 +290,7 @@ export const faqTranslationsEn = {
       a2: "Most submissions are reviewed within 24-48 hours. Check the status in 'My Submissions' - you'll see Pending, Approved, or Rejected status with any admin notes.",
       a3: "If rejected, you'll see admin notes explaining what needs to be changed. You can edit and resubmit your content for another review.",
       a4: "Once approved and published, you can request edits through 'My Submissions'. Significant changes may require re-approval by administrators.",
-      a5: "Ensure content is accurate and relevant to our neighborhoods (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain). Use appropriate categories, include complete information, and provide clear contact details where applicable."
+      a5: "Keep content accurate and relevant to our neighborhoods. Pick the right categories, add complete date and location details for events, and attach optional images or video for events and culture when it helps reviewers and the public. Respect file-size limits shown on the form."
     },
     trending: {
       a1: "Trending content is calculated based on views, bookmarks, comments, and recent engagement. Content with high activity in a short period appears in the trending section of the Discovery sidebar.",
@@ -369,7 +371,8 @@ export const faqTranslationsEs = {
       q3: "¿Qué tipos de eventos puedo enviar?",
       q4: "¿Cómo me registro para eventos?",
       q5: "¿Puedo crear eventos recurrentes?",
-      q6: "¿Cómo comparto eventos con otros?"
+      q6: "¿Cómo comparto eventos con otros?",
+      q7: "¿Puedo agregar o cambiar la foto de portada del evento o ajustar cómo se ve?"
     },
     businesses: {
       q1: "¿Cómo encuentro negocios locales?",
@@ -485,15 +488,16 @@ export const faqTranslationsEs = {
       a1: "Esta es una plataforma comunitaria integral que conecta a los locales con eventos, negocios, servicios y noticias en su área. Puedes descubrir lo que está pasando a tu alrededor, encontrar servicios locales, leer noticias de la comunidad y conectarte con negocios locales.",
       a2: "Puedes navegar por eventos, negocios, servicios y noticias sin una cuenta. Sin embargo, crear una cuenta te permite enviar contenido, guardar favoritos, dejar comentarios y calificaciones, enviar mensajes a negocios, seguir a otros usuarios, guardar búsquedas y personalizar tu experiencia.",
       a3: "Usa la navegación principal para cambiar entre Eventos, Negocios, Servicios Locales y Noticias. Puedes ver el contenido en formatos de cuadrícula, lista, mapa o calendario. Usa la barra de búsqueda y los filtros para encontrar exactamente lo que buscas. La interfaz tiene paneles redimensionables para personalizar tu experiencia de visualización.",
-      a4: "¡Sí! Los usuarios nuevos son recibidos con un tour de incorporación interactivo. Elige si estás publicando un evento, negocio o recurso local, y te guiaremos a través de las funciones relevantes paso a paso. Puedes reiniciar el tour en cualquier momento borrando el almacenamiento local de tu navegador."
+      a4: "Los usuarios nuevos ven un tour de incorporación interactivo. Puedes volver a la ayuda desde el menú de tu cuenta cuando exista, borrar datos del tour en el navegador si necesitas empezar de cero, y usar este FAQ (búsqueda arriba) en cualquier momento."
     },
     events: {
-      a1: "Navega por eventos usando vistas de cuadrícula, lista, mapa o calendario. Filtra por fecha, categoría, tipo (gratis/pago), barrio o aldea. Usa la vista de calendario para ver eventos por fechas específicas, o el mapa para encontrar eventos cerca de ti. La barra de búsqueda te permite encontrar eventos por palabras clave.",
-      a2: "¡Sí! Haz clic en 'Enviar Evento' para agregar tu evento. Proporciona detalles como título, descripción, fecha/hora, ubicación, categoría y precio. Los eventos pasan por un proceso de aprobación antes de ser publicados.",
+      a1: "Navega por eventos en cuadrícula, lista, mapa o calendario. Filtra por fecha, categoría, tipo, barrio o aldea. El mapa Mapbox muestra eventos con marcadores rojos \"E\". La búsqueda encuentra eventos por palabras clave.",
+      a2: "Sí. Usa Enviar evento en el menú Enviar. Indica título, descripción, fecha y hora, ubicación, categoría, precio y datos opcionales (barrios, aldeas, enlace web, registro obligatorio). Puedes adjuntar imágenes y videos opcionales; la primera imagen puede guardarse como vista previa de portada para revisores. Los envíos se revisan antes de publicarse en el mapa.",
       a3: "Cualquier evento relevante para la comunidad incluyendo talleres, conciertos, reuniones, festivales, clases, eventos deportivos, actividades culturales y más. Tanto eventos gratuitos como pagos son bienvenidos.",
-      a4: "Haz clic en cualquier evento para ver los detalles. Si el registro está disponible, verás opciones de registro con la información de contacto del organizador del evento o enlaces de registro.",
+      a4: "Abre un evento para ver la página completa. Si el organizador activó el registro, usa Registrarse en el evento. La sección Contacto puede ofrecer mensaje por HubVillage, teléfono, correo o enlace web externo. Puedes guardar en favoritos, compartir, añadir al calendario y comentar si iniciaste sesión.",
       a5: "¡Sí! Al enviar un evento, puedes marcarlo como recurrente y especificar el patrón (diario, semanal, mensual). Esto es perfecto para clases regulares, reuniones o actividades comunitarias continuas.",
-      a6: "Cada evento tiene opciones de compartir en redes sociales. Puedes compartir eventos a través de redes sociales, copiar el enlace directo o agregar eventos a tu calendario personal usando la función de compartir calendario."
+      a6: "Cada evento tiene opciones de compartir en redes sociales. Puedes compartir eventos a través de redes sociales, copiar el enlace directo o agregar eventos a tu calendario personal usando la función de compartir calendario.",
+      a7: "Sí. Cuando el evento ya está publicado, el organizador y los administradores de HubVillage pueden subir o cambiar la imagen de portada en la página del evento. El héroe muestra la foto completa por defecto (pueden verse bandas neutras en fotos muy anchas o altas). Zoom y desplazamiento horizontal/vertical ajustan el encuadre: guarda con Guardar encuadre o restablece con Restablecer valores predeterminados. Al reemplazar la imagen se restablece el encuadre. Los administradores también pueden gestionar portadas de eventos y artículos de cultura publicados en Panel de administración → Gestión de contenido → Editar."
     },
     businesses: {
       a1: "Navega por la sección de Negocios usando vista de lista o mapa. Filtra por categoría, busca por nombre o palabras clave, o explora negocios cerca de ubicaciones específicas. Cada listado de negocio incluye información de contacto, horarios y detalles de ubicación.",
@@ -511,9 +515,9 @@ export const faqTranslationsEs = {
     },
     culture: {
       a1: "Presentamos contenido cultural de la comunidad local, anuncios, actualizaciones sobre iniciativas locales, cobertura de eventos comunitarios, artes y actividades culturales relevantes para los residentes.",
-      a2: "¡Sí! Los miembros de la comunidad pueden enviar artículos culturales usando 'Enviar Cultura'. Incluye un título atractivo, contenido detallado, imágenes relevantes y categorización apropiada. Todos los envíos son revisados antes de su publicación.",
+      a2: "¡Sí! Los miembros pueden enviar artículos con Enviar cultura: titular, contenido, fuente, ubicación e imágenes o medios opcionales. Los envíos se revisan antes de publicarse. Los administradores pueden editar artículos publicados, incluida la portada (URL y subida), en Panel de administración → Gestión de contenido → Cultura → Editar.",
       a3: "Visita la página de Cultura regularmente, guarda artículos interesantes en favoritos, activa los emails de resumen semanal o sigue categorías específicas. Los marcadores púrpura 'C' muestran ubicaciones culturales en el mapa.",
-      a4: "¡Sí! Al enviar contenido cultural, puedes subir imágenes y otros archivos multimedia para acompañar tu artículo. Esto ayuda a hacer tu contenido más atractivo e informativo."
+      a4: "Sí: el formulario permite subir imágenes y videos. Los administradores también pueden pegar o subir una portada al editar un artículo publicado."
     },
     map: {
       a1: "El mapa interactivo muestra todos los eventos, negocios y servicios con marcadores codificados por color (E para Eventos en rojo, B para Negocios en azul, L para Servicios Locales en naranja, C para Cultura en púrpura). Haz clic en los marcadores para ver detalles, usa el agrupamiento para explorar áreas densas y redimensiona el panel del mapa para mejor visualización.",
@@ -537,7 +541,7 @@ export const faqTranslationsEs = {
     },
     user: {
       a1: "Haz clic en 'Iniciar Sesión' en la navegación y selecciona 'Registrarse' para crear una cuenta usando tu email. También puedes iniciar sesión si ya tienes una cuenta. La creación de cuenta es rápida y te da acceso a todas las funciones interactivas.",
-      a2: "Con una cuenta, puedes enviar contenido, dejar comentarios y calificaciones, guardar elementos en favoritos, enviar mensajes a negocios, seguir a otros usuarios, guardar búsquedas, recibir notificaciones, personalizar tu perfil y configurar preferencias de resumen por email.",
+      a2: "Con una cuenta puedes enviar eventos, negocios, servicios locales y cultura; comentar y calificar; favoritos; mensajes a negocios; seguir usuarios; búsquedas guardadas; notificaciones; perfil; resumen por correo; registrarte en eventos cuando exista la opción; y gestionar la portada y el encuadre de los eventos que creaste una vez publicados.",
       a3: "Visita 'Mis Envíos' en el menú de tu cuenta para ver todo el contenido que has enviado, seguir el estado de aprobación y hacer actualizaciones al contenido aprobado.",
       a4: "¡Sí! Los usuarios registrados pueden guardar eventos, negocios, servicios y artículos de noticias en favoritos. Haz clic en el ícono de favoritos en cualquier elemento para guardarlo. Accede a tus favoritos a través de la barra lateral de Descubrimiento para volver fácilmente al contenido interesante.",
       a5: "La barra lateral de Descubrimiento muestra contenido en tendencia, tus búsquedas guardadas, elementos en favoritos y conexiones sugeridas. Puedes redimensionar o colapsar este panel. Te ayuda a descubrir nuevo contenido y administrar tu experiencia personalizada.",
@@ -571,7 +575,7 @@ export const faqTranslationsEs = {
       a5: "¡Sí! Al dejar un comentario, puedes adjuntar imágenes para compartir fotos de tu experiencia. Esto es especialmente útil para reseñas de negocios y eventos."
     },
     messaging: {
-      a1: "En las páginas de detalle de negocios, los usuarios registrados pueden enviar mensajes directos a los propietarios de negocios. Usa esta función para consultas, preguntas o para discutir servicios.",
+      a1: "En páginas de negocios, los usuarios registrados pueden contactar a los propietarios según las opciones del listado. En eventos, la sección Contacto puede ofrecer mensaje por HubVillage, teléfono, correo o sitio web externo, según lo configure el organizador.",
       a2: "Accede a 'Mis Mensajes' desde el menú de tu cuenta para ver todas tus conversaciones con negocios y administrar tu historial de mensajes.",
       a3: "¡Sí! El sistema de mensajería funciona en ambos sentidos. Los negocios pueden responder a tus mensajes, y serás notificado de nuevos mensajes en tu cuenta.",
       a4: "¡Sí! Puedes adjuntar imágenes y documentos a tus mensajes cuando te comunicas con negocios. Esto es útil para compartir fotos, cotizaciones o documentos relevantes."
@@ -587,7 +591,7 @@ export const faqTranslationsEs = {
       a2: "La mayoría de los envíos son revisados dentro de 24-48 horas. Puedes verificar el estado de tus envíos en 'Mis Envíos' y serás notificado cuando sean aprobados o si se necesitan cambios.",
       a3: "Si un envío necesita cambios, recibirás retroalimentación sobre lo que necesita actualizarse. Luego puedes editar y reenviar tu contenido para otra revisión.",
       a4: "¡Sí! Una vez que tu contenido es aprobado y publicado, puedes solicitar ediciones a través de tu página 'Mis Envíos'. Los cambios significativos pueden requerir re-aprobación.",
-      a5: "Asegúrate de que tu contenido sea preciso, relevante para la comunidad e incluya información completa. Evita envíos duplicados, usa categorías apropiadas e incluye detalles de contacto claros donde sea aplicable."
+      a5: "Mantén el contenido preciso y relevante. Elige categorías adecuadas, fechas y ubicación completas para eventos, y adjunta imágenes o video opcionales para eventos y cultura cuando ayude a revisores y al público. Respeta los límites de tamaño del formulario."
     },
     trending: {
       a1: "El contenido en tendencia se calcula basándose en vistas, favoritos, comentarios y actividad reciente. El contenido que recibe alto compromiso en un período corto aparece en la sección de tendencias.",
@@ -667,7 +671,8 @@ export const faqTranslationsFr = {
       q3: "Quels types d'événements puis-je soumettre ?",
       q4: "Comment m'inscrire aux événements ?",
       q5: "Puis-je créer des événements récurrents ?",
-      q6: "Comment partager des événements avec d'autres ?"
+      q6: "Comment partager des événements avec d'autres ?",
+      q7: "Puis-je ajouter ou modifier la photo de couverture ou ajuster le cadrage ?"
     },
     businesses: {
       q1: "Comment trouver des entreprises locales ?",
@@ -783,15 +788,16 @@ export const faqTranslationsFr = {
       a1: "C'est une plateforme communautaire complète qui connecte les habitants avec les événements, entreprises, services et actualités de leur région. Vous pouvez découvrir ce qui se passe autour de vous, trouver des services locaux, lire les actualités de la communauté et vous connecter avec les entreprises locales.",
       a2: "Vous pouvez parcourir les événements, entreprises, services et actualités sans compte. Cependant, créer un compte vous permet de soumettre du contenu, sauvegarder des favoris, laisser des commentaires et évaluations, envoyer des messages aux entreprises, suivre d'autres utilisateurs, sauvegarder des recherches et personnaliser votre expérience.",
       a3: "Utilisez la navigation principale pour basculer entre Événements, Entreprises, Services Locaux et Actualités. Vous pouvez voir le contenu en formats grille, liste, carte ou calendrier. Utilisez la barre de recherche et les filtres pour trouver exactement ce que vous cherchez. L'interface propose des panneaux redimensionnables pour personnaliser votre expérience.",
-      a4: "Oui ! Les nouveaux utilisateurs sont accueillis avec une visite d'intégration interactive. Choisissez si vous publiez un événement, une entreprise ou une ressource locale, et nous vous guiderons à travers les fonctionnalités pertinentes étape par étape. Vous pouvez redémarrer la visite à tout moment en effaçant le stockage local de votre navigateur."
+      a4: "Les nouveaux utilisateurs voient une visite d'intégration interactive. Vous pouvez retrouver l'aide dans le menu du compte lorsque c'est disponible, effacer les données du tour dans le navigateur pour recommencer, et utiliser cette FAQ (recherche en haut) à tout moment."
     },
     events: {
-      a1: "Parcourez les événements en utilisant les vues grille, liste, carte ou calendrier. Filtrez par date, catégorie, type (gratuit/payant), quartier ou village. Utilisez la vue calendrier pour voir les événements par dates spécifiques, ou la carte pour trouver des événements près de vous. La barre de recherche vous permet de trouver des événements par mots-clés.",
-      a2: "Oui ! Cliquez sur 'Soumettre un Événement' pour ajouter votre événement. Fournissez des détails comme le titre, la description, la date/heure, le lieu, la catégorie et le prix. Les événements passent par un processus d'approbation avant d'être publiés.",
+      a1: "Parcourez les événements en grille, liste, carte ou calendrier. Filtrez par date, catégorie, type, quartier ou village. La carte Mapbox affiche les événements avec des marqueurs rouges « E ». La recherche fonctionne par mots-clés.",
+      a2: "Oui. Utilisez Soumettre un événement dans le menu Soumettre. Indiquez titre, description, date et heure, lieu, catégorie, prix et détails optionnels (quartiers, villages, site web, inscription obligatoire). Vous pouvez joindre images et vidéos optionnelles ; la première image peut servir d'aperçu de couverture pour les relecteurs. Les soumissions sont examinées avant publication sur la carte.",
       a3: "Tout événement pertinent pour la communauté incluant ateliers, concerts, rencontres, festivals, cours, événements sportifs, activités culturelles et plus. Les événements gratuits et payants sont les bienvenus.",
-      a4: "Cliquez sur n'importe quel événement pour voir les détails. Si l'inscription est disponible, vous verrez les options d'inscription avec les coordonnées de l'organisateur ou les liens d'inscription.",
+      a4: "Ouvrez un événement pour la page complète. Si l'organisateur a activé l'inscription, utilisez S'inscrire à l'événement. La section Contact peut proposer un message via HubVillage, téléphone, e-mail ou site externe. Favoris, partage, calendrier et commentaires sont disponibles lorsque vous êtes connecté.",
       a5: "Oui ! Lors de la soumission d'un événement, vous pouvez le marquer comme récurrent et spécifier le motif (quotidien, hebdomadaire, mensuel). C'est parfait pour les cours réguliers, les rencontres ou les activités communautaires continues.",
-      a6: "Chaque événement a des options de partage social. Vous pouvez partager des événements via les réseaux sociaux, copier le lien direct ou ajouter des événements à votre calendrier personnel en utilisant la fonction de partage de calendrier."
+      a6: "Chaque événement a des options de partage social. Vous pouvez partager des événements via les réseaux sociaux, copier le lien direct ou ajouter des événements à votre calendrier personnel en utilisant la fonction de partage de calendrier.",
+      a7: "Oui. Une fois l'événement publié, l'organisateur et les administrateurs HubVillage peuvent ajouter ou remplacer l'image de couverture sur la page de l'événement. La bannière affiche la photo entière par défaut (bandes neutres possibles). Zoom et panoramique horizontal/vertical ajustent le cadrage : enregistrez avec Enregistrer le cadrage ou réinitialisez avec Rétablir les valeurs par défaut. Remplacer l'image réinitialise le cadrage. Les administrateurs peuvent aussi gérer les couvertures des événements et articles culturels publiés via Tableau de bord → Gestion du contenu → Modifier."
     },
     businesses: {
       a1: "Parcourez la section Entreprises en utilisant la vue liste ou carte. Filtrez par catégorie, recherchez par nom ou mots-clés, ou explorez les entreprises près d'emplacements spécifiques. Chaque fiche d'entreprise inclut les coordonnées, les horaires et les détails de localisation.",
@@ -809,9 +815,9 @@ export const faqTranslationsFr = {
     },
     culture: {
       a1: "Nous présentons du contenu culturel local, des annonces, des mises à jour sur les initiatives locales, la couverture des événements communautaires, les arts et activités culturelles pertinentes pour les résidents.",
-      a2: "Oui ! Les membres de la communauté peuvent soumettre des articles culturels en utilisant 'Soumettre Culture'. Incluez un titre accrocheur, un contenu détaillé, des images pertinentes et une catégorisation appropriée. Toutes les soumissions sont examinées avant publication.",
+      a2: "Oui ! Soumettez des articles avec Soumettre culture : titre, contenu, source, lieu et médias optionnels. Examen avant publication. Les administrateurs peuvent modifier les articles publiés, y compris la couverture (URL et téléchargement), via Tableau de bord → Gestion du contenu → Culture → Modifier.",
       a3: "Visitez la page Culture régulièrement, mettez en favoris les articles intéressants, activez les emails de résumé hebdomadaire ou utilisez les recherches sauvegardées. Les marqueurs violets 'C' montrent les emplacements culturels sur la carte.",
-      a4: "Oui ! Lors de la soumission de contenu culturel, vous pouvez télécharger des images et autres fichiers médias pour accompagner votre article. Cela aide à rendre votre contenu plus engageant et informatif."
+      a4: "Oui : le formulaire permet des images et vidéos. Les administrateurs peuvent aussi coller ou télécharger une couverture lors de l'édition d'un article publié."
     },
     map: {
       a1: "La carte interactive montre tous les événements, entreprises et services avec des marqueurs codés par couleur (E pour Événements en rouge, B pour Entreprises en bleu, L pour Services Locaux en orange, C pour Culture en violet). Cliquez sur les marqueurs pour voir les détails, utilisez le regroupement pour explorer les zones denses et redimensionnez le panneau de carte pour une meilleure visualisation.",
@@ -835,7 +841,7 @@ export const faqTranslationsFr = {
     },
     user: {
       a1: "Cliquez sur 'Se Connecter' dans la navigation et sélectionnez 'S'inscrire' pour créer un compte avec votre email. Vous pouvez également vous connecter si vous avez déjà un compte. La création de compte est rapide et vous donne accès à toutes les fonctionnalités interactives.",
-      a2: "Avec un compte, vous pouvez soumettre du contenu, laisser des commentaires et évaluations, mettre des éléments en favoris, envoyer des messages aux entreprises, suivre d'autres utilisateurs, sauvegarder des recherches, recevoir des notifications, personnaliser votre profil et configurer les préférences de résumé par email.",
+      a2: "Avec un compte vous pouvez soumettre événements, entreprises, services locaux et culture ; commenter et noter ; favoris ; messages aux entreprises ; suivre des utilisateurs ; recherches sauvegardées ; notifications ; profil ; résumé par e-mail ; vous inscrire aux événements proposés ; et gérer la couverture et le cadrage des événements que vous avez créés une fois publiés.",
       a3: "Visitez 'Mes Soumissions' dans le menu de votre compte pour voir tout le contenu que vous avez soumis, suivre le statut d'approbation et faire des mises à jour au contenu approuvé.",
       a4: "Oui ! Les utilisateurs inscrits peuvent mettre en favoris les événements, entreprises, services et articles d'actualités. Cliquez sur l'icône de favoris sur n'importe quel élément pour le sauvegarder. Accédez à vos favoris via la barre latérale Découverte pour revenir facilement au contenu intéressant.",
       a5: "La barre latérale Découverte montre le contenu tendance, vos recherches sauvegardées, les éléments en favoris et les connexions suggérées. Vous pouvez redimensionner ou réduire ce panneau. Elle vous aide à découvrir du nouveau contenu et à gérer votre expérience personnalisée.",
@@ -869,7 +875,7 @@ export const faqTranslationsFr = {
       a5: "Oui ! Lors de la rédaction d'un commentaire, vous pouvez joindre des images pour partager des photos de votre expérience. C'est particulièrement utile pour les avis sur les entreprises et événements."
     },
     messaging: {
-      a1: "Sur les pages de détail des entreprises, les utilisateurs inscrits peuvent envoyer des messages directs aux propriétaires d'entreprise. Utilisez cette fonction pour les demandes, questions ou pour discuter des services.",
+      a1: "Sur les fiches entreprises, les utilisateurs inscrits contactent les propriétaires selon les options du listing. Sur les événements, la section Contact peut proposer un message via HubVillage, téléphone, e-mail ou site externe, selon l'organisateur.",
       a2: "Accédez à 'Mes Messages' depuis le menu de votre compte pour voir toutes vos conversations avec les entreprises et gérer votre historique de messages.",
       a3: "Oui ! Le système de messagerie fonctionne dans les deux sens. Les entreprises peuvent répondre à vos messages, et vous serez notifié des nouveaux messages dans votre compte.",
       a4: "Oui ! Vous pouvez joindre des images et documents à vos messages lorsque vous communiquez avec les entreprises. C'est utile pour partager des photos, devis ou documents pertinents."
@@ -885,7 +891,7 @@ export const faqTranslationsFr = {
       a2: "La plupart des soumissions sont examinées dans les 24-48 heures. Vous pouvez vérifier le statut de vos soumissions dans 'Mes Soumissions' et serez notifié quand elles sont approuvées ou si des changements sont nécessaires.",
       a3: "Si une soumission nécessite des changements, vous recevrez des commentaires sur ce qui doit être mis à jour. Vous pouvez ensuite modifier et resoumettre votre contenu pour une autre révision.",
       a4: "Oui ! Une fois votre contenu approuvé et publié, vous pouvez demander des modifications via votre page 'Mes Soumissions'. Les changements significatifs peuvent nécessiter une ré-approbation.",
-      a5: "Assurez-vous que votre contenu est exact, pertinent pour la communauté et inclut des informations complètes. Évitez les soumissions en double, utilisez les catégories appropriées et incluez des coordonnées claires où applicable."
+      a5: "Gardez le contenu précis et pertinent. Choisissez les bonnes catégories, des dates et lieux complets pour les événements, et joignez images ou vidéo optionnelles pour les événements et la culture lorsque cela aide. Respectez les limites de taille du formulaire."
     },
     trending: {
       a1: "Le contenu tendance est calculé en fonction des vues, favoris, commentaires et activité récente. Le contenu qui reçoit un fort engagement en peu de temps apparaît dans la section tendance.",
@@ -965,7 +971,8 @@ export const faqTranslationsPt = {
       q3: "Que tipos de eventos posso enviar?",
       q4: "Como me inscrevo para eventos?",
       q5: "Posso criar eventos recorrentes?",
-      q6: "Como compartilho eventos com outros?"
+      q6: "Como compartilho eventos com outros?",
+      q7: "Posso adicionar ou alterar a foto de capa do evento ou ajustar como ela aparece?"
     },
     businesses: {
       q1: "Como encontro negócios locais?",
@@ -1081,15 +1088,16 @@ export const faqTranslationsPt = {
       a1: "Esta é uma plataforma comunitária abrangente que conecta os moradores locais com eventos, negócios, serviços e notícias em sua área. Você pode descobrir o que está acontecendo ao seu redor, encontrar serviços locais, ler notícias da comunidade e se conectar com negócios locais.",
       a2: "Você pode navegar por eventos, negócios, serviços e notícias sem uma conta. No entanto, criar uma conta permite enviar conteúdo, salvar favoritos, deixar comentários e avaliações, enviar mensagens para negócios, seguir outros usuários, salvar pesquisas e personalizar sua experiência.",
       a3: "Use a navegação principal para alternar entre Eventos, Negócios, Serviços Locais e Notícias. Você pode visualizar o conteúdo em formatos de grade, lista, mapa ou calendário. Use a barra de pesquisa e os filtros para encontrar exatamente o que procura. A interface possui painéis redimensionáveis para personalizar sua experiência de visualização.",
-      a4: "Sim! Novos usuários são recebidos com um tour de integração interativo. Escolha se você está postando um evento, negócio ou recurso local, e nós o guiaremos pelas funcionalidades relevantes passo a passo. Você pode reiniciar o tour a qualquer momento limpando o armazenamento local do seu navegador."
+      a4: "Novos usuários veem um tour de integração interativo. Você pode voltar à ajuda no menu da sua conta quando disponível, limpar dados do tour no navegador se precisar de um novo início, e usar este FAQ (pesquisa no topo) a qualquer momento."
     },
     events: {
-      a1: "Navegue pelos eventos usando visualizações de grade, lista, mapa ou calendário. Filtre por data, categoria, tipo (gratuito/pago), bairro ou vila. Use a visualização de calendário para ver eventos por datas específicas, ou o mapa para encontrar eventos perto de você. A barra de pesquisa permite encontrar eventos por palavras-chave.",
-      a2: "Sim! Clique em 'Enviar Evento' para adicionar seu evento. Forneça detalhes como título, descrição, data/hora, local, categoria e preço. Os eventos passam por um processo de aprovação antes de serem publicados.",
+      a1: "Navegue pelos eventos em grade, lista, mapa ou calendário. Filtre por data, categoria, tipo, bairro ou vila. O mapa Mapbox mostra eventos com marcadores vermelhos \"E\". A pesquisa encontra eventos por palavras-chave.",
+      a2: "Sim. Use Enviar evento no menu Enviar. Indique título, descrição, data e hora, local, categoria, preço e detalhes opcionais (bairros, vilas, site, inscrição obrigatória). Você pode anexar imagens e vídeos opcionais; a primeira imagem pode ser salva como pré-visualização de capa para os revisores. Os envios são revisados antes de aparecerem no mapa.",
       a3: "Qualquer evento relevante para a comunidade, incluindo workshops, concertos, encontros, festivais, aulas, eventos esportivos, atividades culturais e mais. Eventos gratuitos e pagos são bem-vindos.",
-      a4: "Clique em qualquer evento para ver os detalhes. Se a inscrição estiver disponível, você verá opções de inscrição com as informações de contato do organizador do evento ou links de inscrição.",
+      a4: "Abra um evento para ver a página completa. Se o organizador ativou a inscrição, use Inscrever-se no evento. A área Contato pode oferecer mensagem pelo HubVillage, telefone, e-mail ou link para um site externo. Você pode favoritar, compartilhar, adicionar ao calendário e comentar quando estiver logado.",
       a5: "Sim! Ao enviar um evento, você pode marcá-lo como recorrente e especificar o padrão (diário, semanal, mensal). Isso é perfeito para aulas regulares, encontros ou atividades comunitárias contínuas.",
-      a6: "Cada evento tem opções de compartilhamento social. Você pode compartilhar eventos via redes sociais, copiar o link direto ou adicionar eventos ao seu calendário pessoal usando a função de compartilhamento de calendário."
+      a6: "Cada evento tem opções de compartilhamento social. Você pode compartilhar eventos via redes sociais, copiar o link direto ou adicionar eventos ao seu calendário pessoal usando a função de compartilhamento de calendário.",
+      a7: "Sim. Depois de publicado, o organizador do evento e os administradores do HubVillage podem adicionar ou substituir a imagem de capa na página do evento. O banner principal mostra a foto inteira por padrão (podem aparecer faixas neutras em fotos muito largas ou altas). Zoom e deslocamento horizontal/vertical ajustam o enquadramento — clique em Salvar enquadramento para manter ou Redefinir padrões para restaurar o layout padrão. Substituir a imagem redefine o enquadramento. Nos envios, você ainda pode anexar mídia opcional. Os administradores também podem definir ou alterar capas de eventos publicados e artigos de cultura em Painel de administração → Gerenciamento de conteúdo → Editar."
     },
     businesses: {
       a1: "Navegue pela seção de Negócios usando visualização de lista ou mapa. Filtre por categoria, pesquise por nome ou palavras-chave, ou explore negócios perto de locais específicos. Cada listagem de negócio inclui informações de contato, horários e detalhes de localização.",
@@ -1107,9 +1115,9 @@ export const faqTranslationsPt = {
     },
     culture: {
       a1: "Apresentamos conteúdo cultural local, anúncios, atualizações sobre iniciativas locais, cobertura de eventos comunitários, artes e atividades culturais relevantes para os moradores.",
-      a2: "Sim! Membros da comunidade podem enviar artigos culturais usando 'Enviar Cultura'. Inclua um título atraente, conteúdo detalhado, imagens relevantes e categorização apropriada. Todos os envios são revisados antes da publicação.",
+      a2: "Sim! Os membros podem enviar artigos com Enviar cultura: título, conteúdo, fonte, localização e imagens ou mídia opcionais. Os envios são revisados antes da publicação. Os administradores podem editar artigos publicados, incluindo a capa (URL e upload), em Painel de administração → Gerenciamento de conteúdo → Cultura → Editar.",
       a3: "Visite a página de Cultura regularmente, salve artigos interessantes nos favoritos, ative emails de resumo semanal ou use pesquisas salvas. Os marcadores roxos 'C' mostram localizações culturais no mapa.",
-      a4: "Sim! Ao enviar conteúdo cultural, você pode fazer upload de imagens e outros arquivos de mídia para acompanhar seu artigo. Isso ajuda a tornar seu conteúdo mais envolvente e informativo."
+      a4: "Sim: o formulário permite enviar imagens e vídeos. Os administradores também podem colar ou enviar uma capa ao editar um artigo publicado."
     },
     map: {
       a1: "O mapa interativo mostra todos os eventos, negócios e serviços com marcadores codificados por cor (E para Eventos em vermelho, B para Negócios em azul, L para Serviços Locais em laranja, C para Cultura em roxo). Clique nos marcadores para ver detalhes, use o agrupamento para explorar áreas densas e redimensione o painel do mapa para melhor visualização.",
@@ -1133,7 +1141,7 @@ export const faqTranslationsPt = {
     },
     user: {
       a1: "Clique em 'Entrar' na navegação e selecione 'Cadastrar' para criar uma conta usando seu email. Você também pode entrar se já tiver uma conta. A criação de conta é rápida e dá acesso a todas as funcionalidades interativas.",
-      a2: "Com uma conta, você pode enviar conteúdo, deixar comentários e avaliações, favoritar itens, enviar mensagens para negócios, seguir outros usuários, salvar pesquisas, receber notificações, personalizar seu perfil e configurar preferências de resumo por email.",
+      a2: "Com uma conta você pode enviar eventos, negócios, serviços locais e cultura; comentar e avaliar; favoritar; enviar mensagens a negócios; seguir outros usuários; salvar pesquisas; receber notificações; personalizar o perfil; resumo por e-mail; inscrever-se em eventos quando houver a opção; e gerenciar a capa e o enquadramento dos eventos que você criou depois de publicados.",
       a3: "Visite 'Meus Envios' no menu da sua conta para ver todo o conteúdo que você enviou, acompanhar o status de aprovação e fazer atualizações no conteúdo aprovado.",
       a4: "Sim! Usuários registrados podem favoritar eventos, negócios, serviços e artigos de notícias. Clique no ícone de favorito em qualquer item para salvá-lo. Acesse seus favoritos através da barra lateral de Descoberta para retornar facilmente ao conteúdo interessante.",
       a5: "A barra lateral de Descoberta mostra conteúdo em tendência, suas pesquisas salvas, itens favoritados e conexões sugeridas. Você pode redimensionar ou recolher este painel. Ela ajuda a descobrir novo conteúdo e gerenciar sua experiência personalizada.",
@@ -1167,7 +1175,7 @@ export const faqTranslationsPt = {
       a5: "Sim! Ao deixar um comentário, você pode anexar imagens para compartilhar fotos da sua experiência. Isso é especialmente útil para avaliações de negócios e eventos."
     },
     messaging: {
-      a1: "Nas páginas de detalhes de negócios, usuários registrados podem enviar mensagens diretas para proprietários de negócios. Use esta função para consultas, perguntas ou para discutir serviços.",
+      a1: "Nas páginas de negócios, usuários registrados entram em contato com os proprietários conforme as opções da listagem. Nos eventos, a seção Contato pode oferecer mensagem pelo HubVillage, telefone, e-mail ou site externo, conforme o organizador.",
       a2: "Acesse 'Minhas Mensagens' no menu da sua conta para ver todas as suas conversas com negócios e gerenciar seu histórico de mensagens.",
       a3: "Sim! O sistema de mensagens funciona nos dois sentidos. Negócios podem responder às suas mensagens, e você será notificado de novas mensagens na sua conta.",
       a4: "Sim! Você pode anexar imagens e documentos às suas mensagens ao se comunicar com negócios. Isso é útil para compartilhar fotos, orçamentos ou documentos relevantes."
@@ -1183,7 +1191,7 @@ export const faqTranslationsPt = {
       a2: "A maioria dos envios é revisada dentro de 24-48 horas. Você pode verificar o status dos seus envios em 'Meus Envios' e será notificado quando forem aprovados ou se mudanças forem necessárias.",
       a3: "Se um envio precisar de mudanças, você receberá feedback sobre o que precisa ser atualizado. Você pode então editar e reenviar seu conteúdo para outra revisão.",
       a4: "Sim! Uma vez que seu conteúdo é aprovado e publicado, você pode solicitar edições através da sua página 'Meus Envios'. Mudanças significativas podem exigir re-aprovação.",
-      a5: "Certifique-se de que seu conteúdo seja preciso, relevante para a comunidade e inclua informações completas. Evite envios duplicados, use categorias apropriadas e inclua detalhes de contato claros onde aplicável."
+      a5: "Mantenha o conteúdo preciso e relevante. Escolha as categorias certas, datas e locais completos para eventos, e anexe imagem ou vídeo opcionais para eventos e cultura quando ajude. Respeite os limites de tamanho indicados no formulário."
     },
     trending: {
       a1: "Conteúdo em tendência é calculado com base em visualizações, favoritos, comentários e atividade recente. Conteúdo que recebe alto engajamento em um curto período aparece na seção de tendências.",
@@ -1263,7 +1271,8 @@ export const faqTranslationsVi = {
       q3: "Tôi có thể gửi loại sự kiện nào?",
       q4: "Làm sao để đăng ký sự kiện?",
       q5: "Tôi có thể tạo sự kiện định kỳ không?",
-      q6: "Làm sao để chia sẻ sự kiện với người khác?"
+      q6: "Làm sao để chia sẻ sự kiện với người khác?",
+      q7: "Tôi có thể thêm hoặc đổi ảnh bìa sự kiện hoặc điều chỉnh cách hiển thị không?"
     },
     businesses: {
       q1: "Làm sao để tìm doanh nghiệp địa phương?",
@@ -1379,15 +1388,16 @@ export const faqTranslationsVi = {
       a1: "Đây là nền tảng cộng đồng toàn diện kết nối người dân địa phương với các sự kiện, doanh nghiệp, dịch vụ và tin tức trong khu vực của họ. Bạn có thể khám phá những gì đang xảy ra xung quanh, tìm dịch vụ địa phương, đọc tin tức cộng đồng và kết nối với các doanh nghiệp địa phương.",
       a2: "Bạn có thể duyệt sự kiện, doanh nghiệp, dịch vụ và tin tức mà không cần tài khoản. Tuy nhiên, tạo tài khoản cho phép bạn gửi nội dung, lưu đánh dấu, để lại bình luận và đánh giá, nhắn tin cho doanh nghiệp, theo dõi người dùng khác, lưu tìm kiếm và cá nhân hóa trải nghiệm của bạn.",
       a3: "Sử dụng điều hướng chính để chuyển đổi giữa Sự Kiện, Doanh Nghiệp, Dịch Vụ Địa Phương và Tin Tức. Bạn có thể xem nội dung ở định dạng lưới, danh sách, bản đồ hoặc lịch. Sử dụng thanh tìm kiếm và bộ lọc để tìm chính xác những gì bạn đang tìm kiếm. Giao diện có các bảng có thể thay đổi kích thước để tùy chỉnh trải nghiệm xem của bạn.",
-      a4: "Có! Người dùng lần đầu được chào đón với chuyến tham quan giới thiệu tương tác. Chọn xem bạn đang đăng sự kiện, doanh nghiệp hay tài nguyên địa phương, và chúng tôi sẽ hướng dẫn bạn qua các tính năng liên quan từng bước. Bạn có thể khởi động lại chuyến tham quan bất cứ lúc nào bằng cách xóa bộ nhớ cục bộ của trình duyệt."
+      a4: "Người mới xem tour giới thiệu tương tác. Bạn có thể mở lại trợ giúp trong menu tài khoản khi có, xóa dữ liệu tour trên trình duyệt nếu muốn bắt đầu lại, và dùng FAQ này (ô tìm phía trên) bất cứ lúc nào."
     },
     events: {
-      a1: "Duyệt sự kiện bằng chế độ xem lưới, danh sách, bản đồ hoặc lịch. Lọc theo ngày, danh mục, loại (miễn phí/trả phí), khu phố hoặc làng. Sử dụng chế độ xem lịch để xem sự kiện theo ngày cụ thể, hoặc bản đồ để tìm sự kiện gần bạn. Thanh tìm kiếm cho phép bạn tìm sự kiện theo từ khóa.",
-      a2: "Có! Nhấp vào 'Gửi Sự Kiện' để thêm sự kiện của bạn. Cung cấp chi tiết như tiêu đề, mô tả, ngày/giờ, địa điểm, danh mục và giá. Sự kiện trải qua quá trình phê duyệt trước khi được xuất bản.",
+      a1: "Duyệt sự kiện bằng lưới, danh sách, bản đồ Mapbox hoặc lịch. Lọc theo ngày, danh mục, loại, khu phố hoặc làng. Bản đồ hiển thị sự kiện bằng điểm đánh dấu đỏ \"E\". Thanh tìm kiếm giúp tìm theo từ khóa.",
+      a2: "Có. Dùng Gửi sự kiện trong menu Gửi. Điền tiêu đề, mô tả, ngày giờ, địa điểm, danh mục, giá và các trường tùy chọn (khu phố, làng, trang web, bắt buộc đăng ký). Bạn có thể đính kèm ảnh và video tùy chọn; ảnh đầu tiên có thể được lưu làm bản xem trước ảnh bìa cho người duyệt. Nội dung được duyệt trước khi hiện trên bản đồ.",
       a3: "Bất kỳ sự kiện nào liên quan đến cộng đồng bao gồm hội thảo, buổi hòa nhạc, gặp gỡ, lễ hội, lớp học, sự kiện thể thao, hoạt động văn hóa và hơn thế nữa. Cả sự kiện miễn phí và trả phí đều được chào đón.",
-      a4: "Nhấp vào bất kỳ sự kiện nào để xem chi tiết. Nếu đăng ký có sẵn, bạn sẽ thấy các tùy chọn đăng ký với thông tin liên hệ của ban tổ chức hoặc liên kết đăng ký.",
+      a4: "Mở một sự kiện để xem trang đầy đủ. Nếu ban tổ chức bật đăng ký, dùng Đăng ký sự kiện trên trang. Phần Liên hệ có thể có nhắn tin qua HubVillage, điện thoại, email hoặc liên kết trang web bên ngoài, tùy cài đặt của ban tổ chức. Bạn có thể đánh dấu, chia sẻ, thêm vào lịch và bình luận khi đã đăng nhập.",
       a5: "Có! Khi gửi sự kiện, bạn có thể đánh dấu là định kỳ và chỉ định mẫu (hàng ngày, hàng tuần, hàng tháng). Điều này hoàn hảo cho các lớp học thường xuyên, gặp gỡ hoặc hoạt động cộng đồng liên tục.",
-      a6: "Mỗi sự kiện có các tùy chọn chia sẻ xã hội. Bạn có thể chia sẻ sự kiện qua mạng xã hội, sao chép liên kết trực tiếp hoặc thêm sự kiện vào lịch cá nhân bằng tính năng chia sẻ lịch."
+      a6: "Mỗi sự kiện có các tùy chọn chia sẻ xã hội. Bạn có thể chia sẻ sự kiện qua mạng xã hội, sao chép liên kết trực tiếp hoặc thêm sự kiện vào lịch cá nhân bằng tính năng chia sẻ lịch.",
+      a7: "Có. Sau khi xuất bản, ban tổ chức và quản trị viên HubVillage có thể thêm hoặc thay ảnh bìa trên trang chi tiết sự kiện. Khu vực banner mặc định hiển thị cả ảnh (có thể có dải trung tính với ảnh rất rộng hoặc rất cao). Thu phóng và kéo ngang/dọc để chỉnh khung — bấm Lưu khung hình để giữ hoặc Đặt lại mặc định để khôi phục bố cục chuẩn. Thay ảnh sẽ đặt lại khung hình. Khi gửi sự kiện, bạn vẫn có thể đính kèm phương tiện tùy chọn như trên. Quản trị viên cũng có thể đặt hoặc đổi ảnh bìa cho sự kiện và bài văn hóa đã xuất bản tại Bảng quản trị → Quản lý nội dung → Chỉnh sửa."
     },
     businesses: {
       a1: "Duyệt phần Doanh Nghiệp bằng chế độ xem danh sách hoặc bản đồ. Lọc theo danh mục, tìm kiếm theo tên hoặc từ khóa, hoặc khám phá doanh nghiệp gần các địa điểm cụ thể. Mỗi danh sách doanh nghiệp bao gồm thông tin liên hệ, giờ làm việc và chi tiết địa điểm.",
@@ -1405,9 +1415,9 @@ export const faqTranslationsVi = {
     },
     culture: {
       a1: "Chúng tôi đăng nội dung văn hóa cộng đồng địa phương, thông báo, cập nhật về các sáng kiến địa phương, phủ sóng sự kiện cộng đồng, các hoạt động nghệ thuật và văn hóa liên quan đến cư dân.",
-      a2: "Có! Thành viên cộng đồng có thể gửi bài viết văn hóa bằng cách sử dụng 'Gửi Văn Hóa'. Bao gồm tiêu đề hấp dẫn, nội dung chi tiết, hình ảnh liên quan và phân loại phù hợp. Tất cả các bài gửi được xem xét trước khi xuất bản.",
+      a2: "Có! Thành viên có thể gửi bài qua Gửi văn hóa: tiêu đề, nội dung, nguồn, vị trí và ảnh hoặc phương tiện tùy chọn. Bài gửi được duyệt trước khi xuất bản. Quản trị viên có thể chỉnh sửa bài đã xuất bản, kể cả ảnh bìa (URL và tải lên), tại Bảng quản trị → Quản lý nội dung → Văn hóa → Chỉnh sửa.",
       a3: "Truy cập trang Văn Hóa thường xuyên, đánh dấu các bài viết thú vị, bật email tóm tắt hàng tuần hoặc sử dụng tìm kiếm đã lưu. Các điểm đánh dấu tím 'C' hiển thị vị trí văn hóa trên bản đồ.",
-      a4: "Có! Khi gửi nội dung văn hóa, bạn có thể tải lên hình ảnh và các tệp phương tiện khác để đi kèm bài viết của bạn. Điều này giúp làm cho nội dung của bạn hấp dẫn và có nhiều thông tin hơn."
+      a4: "Có: biểu mẫu cho phép tải ảnh và video. Quản trị viên cũng có thể dán URL hoặc tải ảnh bìa khi chỉnh sửa bài đã xuất bản."
     },
     map: {
       a1: "Bản đồ tương tác hiển thị tất cả các sự kiện, doanh nghiệp và dịch vụ với các điểm đánh dấu được mã màu (E cho Sự Kiện màu đỏ, B cho Doanh Nghiệp màu xanh, L cho Dịch Vụ Địa Phương màu cam, C cho Văn Hóa màu tím). Nhấp vào các điểm đánh dấu để xem chi tiết, sử dụng nhóm để khám phá các khu vực dày đặc và thay đổi kích thước bảng bản đồ để xem tốt hơn.",
@@ -1431,7 +1441,7 @@ export const faqTranslationsVi = {
     },
     user: {
       a1: "Nhấp vào 'Đăng Nhập' trong thanh điều hướng và chọn 'Đăng Ký' để tạo tài khoản bằng email của bạn. Bạn cũng có thể đăng nhập nếu đã có tài khoản. Việc tạo tài khoản nhanh chóng và cho phép bạn truy cập tất cả các tính năng tương tác.",
-      a2: "Với tài khoản, bạn có thể gửi nội dung, để lại bình luận và đánh giá, đánh dấu mục, gửi tin nhắn đến doanh nghiệp, theo dõi người dùng khác, lưu tìm kiếm, nhận thông báo, tùy chỉnh hồ sơ và cài đặt tùy chọn tóm tắt email.",
+      a2: "Với tài khoản bạn có thể: gửi sự kiện, doanh nghiệp, dịch vụ địa phương và văn hóa; bình luận và đánh giá; đánh dấu; nhắn tin doanh nghiệp; theo dõi người khác; lưu tìm kiếm; nhận thông báo; chỉnh hồ sơ; đăng ký bản tin email; đăng ký sự kiện khi có; và quản lý ảnh bìa cùng khung hình cho các sự kiện bạn tạo sau khi đã xuất bản.",
       a3: "Truy cập 'Bài Gửi Của Tôi' trong menu tài khoản của bạn để xem tất cả nội dung bạn đã gửi, theo dõi trạng thái phê duyệt và thực hiện cập nhật cho nội dung đã được phê duyệt.",
       a4: "Có! Người dùng đã đăng ký có thể đánh dấu sự kiện, doanh nghiệp, dịch vụ và bài viết tin tức. Nhấp vào biểu tượng đánh dấu trên bất kỳ mục nào để lưu nó. Truy cập các mục đánh dấu của bạn thông qua thanh bên Khám Phá để dễ dàng quay lại nội dung thú vị.",
       a5: "Thanh bên Khám Phá hiển thị nội dung xu hướng, các tìm kiếm đã lưu, mục đã đánh dấu và các kết nối được đề xuất. Bạn có thể thay đổi kích thước hoặc thu gọn bảng này. Nó giúp bạn khám phá nội dung mới và quản lý trải nghiệm cá nhân hóa của mình.",
@@ -1465,7 +1475,7 @@ export const faqTranslationsVi = {
       a5: "Có! Khi để lại bình luận, bạn có thể đính kèm hình ảnh để chia sẻ ảnh về trải nghiệm của mình. Điều này đặc biệt hữu ích cho các đánh giá về doanh nghiệp và sự kiện."
     },
     messaging: {
-      a1: "Trên các trang chi tiết doanh nghiệp, người dùng đã đăng ký có thể gửi tin nhắn trực tiếp đến chủ doanh nghiệp. Sử dụng tính năng này để hỏi thăm, đặt câu hỏi hoặc thảo luận về dịch vụ.",
+      a1: "Trên trang doanh nghiệp, người đã đăng ký liên hệ chủ theo các tùy chọn trên tin đăng. Trên sự kiện, phần Liên hệ có thể có nhắn tin qua HubVillage, điện thoại, email hoặc trang web bên ngoài, tùy ban tổ chức cấu hình.",
       a2: "Truy cập 'Tin Nhắn Của Tôi' từ menu tài khoản của bạn để xem tất cả các cuộc trò chuyện của bạn với doanh nghiệp và quản lý lịch sử tin nhắn của bạn.",
       a3: "Có! Hệ thống nhắn tin hoạt động hai chiều. Doanh nghiệp có thể trả lời tin nhắn của bạn, và bạn sẽ được thông báo về tin nhắn mới trong tài khoản của mình.",
       a4: "Có! Bạn có thể đính kèm hình ảnh và tài liệu vào tin nhắn của mình khi giao tiếp với doanh nghiệp. Điều này hữu ích để chia sẻ ảnh, báo giá hoặc tài liệu liên quan."
@@ -1481,7 +1491,7 @@ export const faqTranslationsVi = {
       a2: "Hầu hết các bài gửi được xem xét trong vòng 24-48 giờ. Bạn có thể kiểm tra trạng thái của các bài gửi trong 'Bài Gửi Của Tôi' và sẽ được thông báo khi chúng được phê duyệt hoặc nếu cần thay đổi.",
       a3: "Nếu bài gửi cần thay đổi, bạn sẽ nhận được phản hồi về những gì cần được cập nhật. Sau đó, bạn có thể chỉnh sửa và gửi lại nội dung của mình để xem xét lần nữa.",
       a4: "Có! Sau khi nội dung của bạn được phê duyệt và xuất bản, bạn có thể yêu cầu chỉnh sửa thông qua trang 'Bài Gửi Của Tôi'. Các thay đổi đáng kể có thể yêu cầu phê duyệt lại.",
-      a5: "Đảm bảo nội dung của bạn chính xác, liên quan đến cộng đồng và bao gồm thông tin đầy đủ. Tránh gửi trùng lặp, sử dụng danh mục phù hợp và bao gồm thông tin liên hệ rõ ràng khi áp dụng."
+      a5: "Giữ nội dung chính xác và phù hợp. Chọn đúng danh mục, điền đủ ngày và địa điểm cho sự kiện, và đính kèm ảnh hoặc video tùy chọn cho sự kiện và văn hóa khi hữu ích. Tuân thủ giới hạn dung lượng tệp trên biểu mẫu."
     },
     trending: {
       a1: "Nội dung xu hướng được tính toán dựa trên lượt xem, đánh dấu, bình luận và hoạt động gần đây. Nội dung nhận được mức độ tương tác cao trong một khoảng thời gian ngắn xuất hiện trong phần xu hướng.",

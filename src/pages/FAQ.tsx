@@ -59,7 +59,8 @@ export const FAQ = () => {
         { question: t('faq.questions.events.q3'), answer: t('faq.answers.events.a3') },
         { question: t('faq.questions.events.q4'), answer: t('faq.answers.events.a4') },
         { question: t('faq.questions.events.q5'), answer: t('faq.answers.events.a5') },
-        { question: t('faq.questions.events.q6'), answer: t('faq.answers.events.a6') }
+        { question: t('faq.questions.events.q6'), answer: t('faq.answers.events.a6') },
+        { question: t('faq.questions.events.q7'), answer: t('faq.answers.events.a7') }
       ]
     },
     {

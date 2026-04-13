@@ -40,7 +40,7 @@ export const onboardingTranslationsEn = {
     account: "👤 YOUR ACCOUNT: Track your submissions in 'My Submissions', manage conversations in 'My Messages', and edit your profile to personalize your experience.",
     weeklyDigest: "📧 WEEKLY DIGEST: Enable email digests in your profile settings. Choose your preferred day and receive a summary of community highlights.",
     news: "🎭 CULTURE: Visit the Culture page for community announcements in a magazine-style layout. You can submit your own culture articles too!",
-    help: "❓ NEED HELP? Visit the FAQ page for answers to 75+ questions. Contact admins through 'Contact Admin' in your account menu. Click the help button anytime to restart this tour."
+    help: "❓ NEED HELP? Visit the FAQ page for answers to 88 questions. Contact admins through 'Contact Admin' in your account menu. Click the help button anytime to restart this tour."
   },
   events: {
     intro: "Let's explore events in your community! Browse, submit, and engage with events happening in Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain.",
@@ -112,7 +112,7 @@ export const onboardingTranslationsEs = {
     account: "👤 TU CUENTA: Rastrea tus envíos en 'Mis Envíos', gestiona conversaciones en 'Mis Mensajes' y edita tu perfil para personalizar tu experiencia.",
     weeklyDigest: "📧 RESUMEN SEMANAL: Habilita resúmenes por email en tu configuración de perfil. Elige tu día preferido y recibe un resumen de los destacados de la comunidad.",
     news: "🎭 CULTURA: Visita la página de Cultura para anuncios comunitarios en un diseño estilo revista. ¡También puedes enviar tus propios artículos de cultura!",
-    help: "❓ ¿NECESITAS AYUDA? Visita la página de FAQ para respuestas a más de 75 preguntas. Contacta a los administradores a través de 'Contactar Admin' en el menú de tu cuenta. Haz clic en el botón de ayuda en cualquier momento para reiniciar este tour."
+    help: "❓ ¿NECESITAS AYUDA? Visita la página de FAQ para respuestas a 88 preguntas. Contacta a los administradores a través de 'Contactar Admin' en el menú de tu cuenta. Haz clic en el botón de ayuda en cualquier momento para reiniciar este tour."
   },
   events: {
     intro: "¡Exploremos eventos en tu comunidad! Navega, envía e interactúa con eventos que suceden en Mattapan, Roxbury, Hyde Park, Dorchester y Jamaica Plain.",
@@ -184,7 +184,7 @@ export const onboardingTranslationsFr = {
     account: "👤 VOTRE COMPTE : Suivez vos soumissions dans 'Mes Soumissions', gérez les conversations dans 'Mes Messages' et modifiez votre profil pour personnaliser votre expérience.",
     weeklyDigest: "📧 RÉSUMÉ HEBDOMADAIRE : Activez les résumés par email dans vos paramètres de profil. Choisissez votre jour préféré et recevez un résumé des points forts de la communauté.",
     news: "🎭 CULTURE : Visitez la page Culture pour les annonces communautaires dans un format magazine. Vous pouvez aussi soumettre vos propres articles de culture !",
-    help: "❓ BESOIN D'AIDE ? Visitez la page FAQ pour des réponses à plus de 75 questions. Contactez les administrateurs via 'Contacter l'Admin' dans le menu de votre compte. Cliquez sur le bouton d'aide à tout moment pour relancer cette visite."
+    help: "❓ BESOIN D'AIDE ? Visitez la page FAQ pour des réponses à 88 questions. Contactez les administrateurs via 'Contacter l'Admin' dans le menu de votre compte. Cliquez sur le bouton d'aide à tout moment pour relancer cette visite."
   },
   events: {
     intro: "Explorons les événements de votre communauté ! Parcourez, soumettez et interagissez avec les événements à Mattapan, Roxbury, Hyde Park, Dorchester et Jamaica Plain.",
@@ -256,7 +256,7 @@ export const onboardingTranslationsPt = {
     account: "👤 SUA CONTA: Acompanhe suas submissões em 'Minhas Submissões', gerencie conversas em 'Minhas Mensagens' e edite seu perfil para personalizar sua experiência.",
     weeklyDigest: "📧 RESUMO SEMANAL: Ative resumos por email nas configurações do perfil. Escolha seu dia preferido e receba um resumo dos destaques da comunidade.",
     news: "🎭 CULTURA: Visite a página de Cultura para anúncios comunitários em um layout estilo revista. Você também pode enviar seus próprios artigos de cultura!",
-    help: "❓ PRECISA DE AJUDA? Visite a página FAQ para respostas a mais de 75 perguntas. Contate os administradores através de 'Contatar Admin' no menu da sua conta. Clique no botão de ajuda a qualquer momento para reiniciar este tour."
+    help: "❓ PRECISA DE AJUDA? Visite a página FAQ para respostas a 88 perguntas. Contate os administradores através de 'Contatar Admin' no menu da sua conta. Clique no botão de ajuda a qualquer momento para reiniciar este tour."
   },
   events: {
     intro: "Vamos explorar eventos na sua comunidade! Navegue, envie e interaja com eventos acontecendo em Mattapan, Roxbury, Hyde Park, Dorchester e Jamaica Plain.",
@@ -328,7 +328,7 @@ export const onboardingTranslationsVi = {
     account: "👤 TÀI KHOẢN CỦA BẠN: Theo dõi bài gửi trong 'Bài Gửi Của Tôi', quản lý cuộc hội thoại trong 'Tin Nhắn Của Tôi' và chỉnh sửa hồ sơ để cá nhân hóa trải nghiệm.",
     weeklyDigest: "📧 TÓM TẮT HÀNG TUẦN: Bật tóm tắt email trong cài đặt hồ sơ. Chọn ngày ưa thích và nhận tóm tắt điểm nổi bật cộng đồng.",
     news: "🎭 VĂN HÓA: Truy cập trang Văn hóa để xem thông báo cộng đồng trong bố cục kiểu tạp chí. Bạn cũng có thể gửi bài viết văn hóa của riêng mình!",
-    help: "❓ CẦN GIÚP ĐỠ? Truy cập trang FAQ để xem câu trả lời cho hơn 75 câu hỏi. Liên hệ quản trị viên qua 'Liên Hệ Quản Trị' trong menu tài khoản. Nhấp nút trợ giúp bất cứ lúc nào để khởi động lại tour này."
+    help: "❓ CẦN GIÚP ĐỠ? Truy cập trang FAQ để xem câu trả lời cho 88 câu hỏi. Liên hệ quản trị viên qua 'Liên Hệ Quản Trị' trong menu tài khoản. Nhấp nút trợ giúp bất cứ lúc nào để khởi động lại tour này."
   },
   events: {
     intro: "Hãy khám phá sự kiện trong cộng đồng của bạn! Duyệt, gửi và tương tác với các sự kiện đang diễn ra tại Mattapan, Roxbury, Hyde Park, Dorchester và Jamaica Plain.",
