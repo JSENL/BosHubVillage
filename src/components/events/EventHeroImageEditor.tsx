@@ -1,7 +1,9 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ImagePlus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { uploadMediaFiles } from '@/services/mediaUploadService';
@@ -9,10 +11,17 @@ import { toast } from 'sonner';
 
 const MAX_BYTES = 10 * 1024 * 1024;
 
+function clamp(n: number, lo: number, hi: number) {
+  return Math.min(hi, Math.max(lo, n));
+}
+
 interface EventHeroImageEditorProps {
   eventId: string;
   eventTitle: string;
   imageUrl: string | null | undefined;
+  coverZoom?: number | null;
+  coverFocusX?: number | null;
+  coverFocusY?: number | null;
   canEdit: boolean;
 }
 
@@ -20,12 +29,36 @@ export function EventHeroImageEditor({
   eventId,
   eventTitle,
   imageUrl,
+  coverZoom = 1,
+  coverFocusX = 50,
+  coverFocusY = 50,
   canEdit,
 }: EventHeroImageEditorProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [savingFraming, setSavingFraming] = useState(false);
+
+  const [draftZoom, setDraftZoom] = useState(() =>
+    clamp(Number(coverZoom) || 1, 0.5, 2)
+  );
+  const [draftFocusX, setDraftFocusX] = useState(() =>
+    clamp(Number(coverFocusX) || 50, 0, 100)
+  );
+  const [draftFocusY, setDraftFocusY] = useState(() =>
+    clamp(Number(coverFocusY) || 50, 0, 100)
+  );
+
+  useEffect(() => {
+    setDraftZoom(clamp(Number(coverZoom) || 1, 0.5, 2));
+    setDraftFocusX(clamp(Number(coverFocusX) || 50, 0, 100));
+    setDraftFocusY(clamp(Number(coverFocusY) || 50, 0, 100));
+  }, [eventId, coverZoom, coverFocusX, coverFocusY]);
+
+  const displayZoom = draftZoom;
+  const displayFocusX = draftFocusX;
+  const displayFocusY = draftFocusY;
 
   const pickFile = () => inputRef.current?.click();
 
@@ -54,10 +87,19 @@ export function EventHeroImageEditor({
 
       const { error } = await supabase
         .from('events')
-        .update({ image_url: publicUrl })
+        .update({
+          image_url: publicUrl,
+          cover_zoom: 1,
+          cover_focus_x: 50,
+          cover_focus_y: 50,
+        })
         .eq('id', eventId);
 
       if (error) throw error;
+
+      setDraftZoom(1);
+      setDraftFocusX(50);
+      setDraftFocusY(50);
 
       await queryClient.invalidateQueries({ queryKey: ['events'] });
       toast.success('Cover image updated.');
@@ -69,9 +111,66 @@ export function EventHeroImageEditor({
     }
   };
 
+  const saveFraming = async () => {
+    setSavingFraming(true);
+    try {
+      const zoom = clamp(draftZoom, 0.5, 2);
+      const fx = clamp(draftFocusX, 0, 100);
+      const fy = clamp(draftFocusY, 0, 100);
+
+      const { error } = await supabase
+        .from('events')
+        .update({
+          cover_zoom: zoom,
+          cover_focus_x: fx,
+          cover_focus_y: fy,
+        })
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ['events'] });
+      toast.success('Cover framing saved.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to save framing.');
+    } finally {
+      setSavingFraming(false);
+    }
+  };
+
+  const resetFramingAndSave = async () => {
+    setDraftZoom(1);
+    setDraftFocusX(50);
+    setDraftFocusY(50);
+    setSavingFraming(true);
+    try {
+      const { error } = await supabase
+        .from('events')
+        .update({
+          cover_zoom: 1,
+          cover_focus_x: 50,
+          cover_focus_y: 50,
+        })
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      await queryClient.invalidateQueries({ queryKey: ['events'] });
+      toast.success('Framing reset to defaults.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to reset framing.');
+    } finally {
+      setSavingFraming(false);
+    }
+  };
+
   if (!canEdit && !imageUrl) {
     return null;
   }
+
+  const zoomPercent = Math.round(displayZoom * 100);
 
   return (
     <div className="mb-6 rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm">
@@ -84,34 +183,123 @@ export function EventHeroImageEditor({
       />
 
       {imageUrl ? (
-        <div className="relative aspect-[21/9] max-h-72 bg-gray-100">
-          <img
-            src={imageUrl}
-            alt={`${eventTitle} cover`}
-            className="h-full w-full object-cover"
-          />
+        <>
+          <div className="relative aspect-[21/9] max-h-72 bg-gray-100 overflow-hidden">
+            <img
+              src={imageUrl}
+              alt={`${eventTitle} cover`}
+              className="h-full w-full object-cover will-change-transform"
+              style={{
+                transform: `scale(${displayZoom})`,
+                transformOrigin: `${displayFocusX}% ${displayFocusY}%`,
+              }}
+            />
+            {canEdit && (
+              <div className="absolute bottom-3 right-3">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  className="shadow-md"
+                  disabled={uploading}
+                  onClick={pickFile}
+                >
+                  {uploading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <ImagePlus className="h-4 w-4 mr-2" />
+                      Replace image
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
+
           {canEdit && (
-            <div className="absolute bottom-3 right-3">
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                className="shadow-md"
-                disabled={uploading}
-                onClick={pickFile}
-              >
-                {uploading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <ImagePlus className="h-4 w-4 mr-2" />
-                    Replace image
-                  </>
-                )}
-              </Button>
+            <div className="border-t border-gray-100 bg-gray-50/90 px-4 py-4 space-y-4">
+              <p className="text-sm font-medium text-gray-800">
+                Adjust how the cover fits (you and admins only)
+              </p>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <Label htmlFor={`cover-zoom-${eventId}`}>Zoom</Label>
+                  <span>{zoomPercent}%</span>
+                </div>
+                <Slider
+                  id={`cover-zoom-${eventId}`}
+                  min={50}
+                  max={200}
+                  step={5}
+                  value={[zoomPercent]}
+                  onValueChange={([v]) => setDraftZoom(clamp((v ?? 100) / 100, 0.5, 2))}
+                  disabled={savingFraming}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Below 100% shows more of the surroundings; above 100% crops in tighter.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <Label htmlFor={`cover-fx-${eventId}`}>Horizontal focus</Label>
+                  <span>{Math.round(draftFocusX)}%</span>
+                </div>
+                <Slider
+                  id={`cover-fx-${eventId}`}
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={[draftFocusX]}
+                  onValueChange={([v]) =>
+                    setDraftFocusX(clamp(v ?? 50, 0, 100))
+                  }
+                  disabled={savingFraming}
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <Label htmlFor={`cover-fy-${eventId}`}>Vertical focus</Label>
+                  <span>{Math.round(draftFocusY)}%</span>
+                </div>
+                <Slider
+                  id={`cover-fy-${eventId}`}
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={[draftFocusY]}
+                  onValueChange={([v]) =>
+                    setDraftFocusY(clamp(v ?? 50, 0, 100))
+                  }
+                  disabled={savingFraming}
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => void saveFraming()}
+                  disabled={savingFraming}
+                >
+                  {savingFraming ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    'Save framing'
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => void resetFramingAndSave()}
+                  disabled={savingFraming}
+                >
+                  Reset to defaults
+                </Button>
+              </div>
             </div>
           )}
-        </div>
+        </>
       ) : (
         canEdit && (
           <button

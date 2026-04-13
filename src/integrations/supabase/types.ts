@@ -986,6 +986,9 @@ export type Database = {
           category_translations: Json
           contact_type: string | null
           contact_value: string | null
+          cover_focus_x: number
+          cover_focus_y: number
+          cover_zoom: number
           created_at: string
           created_by: string
           date: string
@@ -1020,6 +1023,9 @@ export type Database = {
           category_translations?: Json
           contact_type?: string | null
           contact_value?: string | null
+          cover_focus_x?: number
+          cover_focus_y?: number
+          cover_zoom?: number
           created_at?: string
           created_by: string
           date: string
@@ -1054,6 +1060,9 @@ export type Database = {
           category_translations?: Json
           contact_type?: string | null
           contact_value?: string | null
+          cover_focus_x?: number
+          cover_focus_y?: number
+          cover_zoom?: number
           created_at?: string
           created_by?: string
           date?: string

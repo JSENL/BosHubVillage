@@ -88,6 +88,9 @@ const EventDetails = () => {
             eventId={event.id}
             eventTitle={event.title}
             imageUrl={event.image_url}
+            coverZoom={event.cover_zoom}
+            coverFocusX={event.cover_focus_x}
+            coverFocusY={event.cover_focus_y}
             canEdit={!!canEditLinks}
           />
 
