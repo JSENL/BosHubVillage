@@ -4,6 +4,7 @@ import { Calendar, MapPin, DollarSign, Users, Star } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
@@ -13,6 +14,7 @@ type TranslationsObject = Record<string, string>;
 
 interface Event {
   id: string;
+  slug?: string;
   title: string;
   description: string;
   category: string;
@@ -42,7 +44,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
   const { formatDate } = useCardLocale();
 
   const handleViewDetails = () => {
-    navigate(`/event/${event.id}`);
+    navigate(eventDetailPath({ slug: event.slug, id: event.id }));
   };
 
   const formatTimeRange = (startTime: string, endTime: string) => {

@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { useTrending } from '@/hooks/useTrending';
 import { TrendingUp, Calendar, Building2, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { useTranslation } from 'react-i18next';
 
 export const TrendingSection = () => {
@@ -58,7 +59,7 @@ export const TrendingSection = () => {
               {trendingEvents.slice(0, 3).map((event) => (
                 <Link 
                   key={event.id} 
-                  to={`/event/${event.id}`}
+                  to={eventDetailPath({ slug: (event as { slug?: string }).slug, id: event.id })}
                   className="block hover:bg-muted/50 p-2 rounded-md transition-colors"
                 >
                   <div className="flex items-center justify-between gap-2">

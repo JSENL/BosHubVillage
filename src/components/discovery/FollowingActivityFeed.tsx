@@ -8,6 +8,7 @@ import { useFollowingActivity, ActivityType } from '@/hooks/useFollowingActivity
 import { useAuth } from '@/hooks/useAuth';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { CheckCircle2, Clock, Bookmark, MessageSquare, Calendar, Newspaper, Briefcase, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,10 +23,10 @@ export const FollowingActivityFeed = () => {
     return null;
   }
 
-  const getItemLink = (type: string, id: string) => {
+  const getItemLink = (type: string, id: string, eventSlug?: string | null) => {
     switch (type) {
       case 'event':
-        return `/event/${id}`;
+        return eventDetailPath({ slug: eventSlug, id });
       case 'news':
         return `/news/${id}`;
       case 'business':
@@ -124,7 +125,7 @@ export const FollowingActivityFeed = () => {
                   </p>
 
                   <Link 
-                    to={getItemLink(activity.item.type, activity.item.id)}
+                    to={getItemLink(activity.item.type, activity.item.id, activity.item.slug)}
                     className="text-xs font-medium hover:underline mt-1 line-clamp-1 flex items-center gap-1.5"
                   >
                     {getItemIcon(activity.type)}

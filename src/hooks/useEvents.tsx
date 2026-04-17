@@ -39,6 +39,8 @@ export interface Event {
   cover_focus_x?: number | null;
   /** 0–100, vertical transform-origin / focal point */
   cover_focus_y?: number | null;
+  /** URL segment for /event/:slug (human-readable, unique). */
+  slug: string;
 }
 
 export const useEvents = () => {
@@ -93,6 +95,7 @@ export const useEvents = () => {
         ),
         cover_focus_x: Number(event.cover_focus_x ?? 50),
         cover_focus_y: Number(event.cover_focus_y ?? 50),
+        slug: String((event as { slug?: string }).slug ?? event.id),
       })) || [];
     },
     staleTime: 5 * 60 * 1000,

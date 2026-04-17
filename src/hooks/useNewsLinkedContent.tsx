@@ -14,6 +14,7 @@ interface LinkedContent {
   };
   event?: {
     id: string;
+    slug?: string;
     title: string;
     category: string;
     date: string;
@@ -49,7 +50,7 @@ export const useNewsLinkedContent = (newsId: string) => {
           ? supabase.from('business').select('id, title, business_type, neighborhood').in('id', businessIds)
           : { data: [] },
         eventIds.length > 0 
-          ? supabase.from('events').select('id, title, category, date').in('id', eventIds)
+          ? supabase.from('events').select('id, slug, title, category, date').in('id', eventIds)
           : { data: [] },
         localServiceIds.length > 0 
           ? supabase.from('local_resources').select('id, name, category, neighborhood').in('id', localServiceIds)

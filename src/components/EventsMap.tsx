@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Event } from '@/hooks/useEvents';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { EventsSidebar } from './map/EventsSidebar';
 import { useEventHighlight } from '@/hooks/useEventHighlight';
@@ -77,7 +78,7 @@ const EventsMap = ({ searchQuery, selectedCategory, events, onEventSelect }: Eve
   // No need for additional useMapMarkers call here
 
   const handleEventClick = (event: Event) => {
-    navigate(`/event/${event.id}`);
+    navigate(eventDetailPath({ slug: event.slug, id: event.id }));
   };
 
   if (isLoadingApiKey) {

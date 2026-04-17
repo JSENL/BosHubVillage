@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink, Settings, Mail, Phone, MessageCircle, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +13,7 @@ import { EventRegistrationForm } from '@/components/EventRegistrationForm';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
 import { EventCreatorInfo } from '@/components/events/EventCreatorInfo';
-import { useState } from 'react';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
@@ -21,7 +22,7 @@ import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { EventHeroImageEditor } from '@/components/events/EventHeroImageEditor';
 
 const EventDetails = () => {
-  const { eventId } = useParams<{ eventId: string }>();
+  const { eventSlug } = useParams<{ eventSlug: string }>();
   const navigate = useNavigate();
   const { events, loading } = useEvents();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
@@ -29,7 +30,21 @@ const EventDetails = () => {
   const { user, isAdmin } = useAuth();
   const { getTranslatedText } = useTranslatedField();
 
-  const event = events.find(e => e.id === eventId);
+  const param = eventSlug ?? '';
+  const event = useMemo(
+    () =>
+      param
+        ? events.find((e) => e.slug === param) ?? events.find((e) => e.id === param)
+        : undefined,
+    [events, param]
+  );
+
+  useEffect(() => {
+    if (!event?.slug || !param) return;
+    if (param === event.id && event.slug !== event.id) {
+      navigate(eventDetailPath({ slug: event.slug, id: event.id }), { replace: true });
+    }
+  }, [event, param, navigate]);
   const displayTitle = event ? getTranslatedText(event.title, event.translations?.title) : undefined;
   const displayDescription = event?.description
     ? String(getTranslatedText(event.description, event.translations?.description) ?? event.description).replace(/<[^>]*>/g, '').slice(0, 160)
@@ -168,7 +183,7 @@ const EventDetails = () => {
                     <SocialShare
                       title={event.title}
                       description={event.description || ''}
-                      url={window.location.href}
+                      url={`${window.location.origin}${eventDetailPath({ slug: event.slug, id: event.id })}`}
                     />
                   </div>
                 </CardContent>

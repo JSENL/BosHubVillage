@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Event } from '@/hooks/useEvents';
+import { eventDetailPath } from '@/lib/eventUrl';
 
 interface EventsCalendarProps {
   searchQuery: string;
@@ -47,7 +48,7 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
   }).filter(date => date !== null) as Date[];
 
   const handleEventClick = (event: Event) => {
-    navigate(`/event/${event.id}`);
+    navigate(eventDetailPath({ slug: event.slug, id: event.id }));
   };
 
   const formatTimeRange = (startTime: string, endTime: string) => {

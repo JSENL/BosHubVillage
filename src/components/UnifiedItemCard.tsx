@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { UnifiedItem } from '@/types/unifiedItem';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { useNavigate } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
 
 interface UnifiedItemCardProps {
@@ -24,6 +25,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const { getTranslatedText } = useTranslatedField();
   
   const handleViewDetails = () => {
+    if (item.type === 'event') {
+      navigate(eventDetailPath({ slug: item.slug, id: item.id }));
+      return;
+    }
     const routePath = item.type === 'local-service' ? 'local-resource' : 
                      item.type === 'business' ? 'business' : item.type;
     navigate(`/${routePath}/${item.id}`);

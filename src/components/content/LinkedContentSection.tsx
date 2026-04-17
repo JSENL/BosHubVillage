@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Building2, Calendar, MapPin, Loader2, ExternalLink } from 'lucide-react';
 import { useNewsLinkedContent } from '@/hooks/useNewsLinkedContent';
 import { format } from 'date-fns';
+import { eventDetailPath } from '@/lib/eventUrl';
 
 interface LinkedContentSectionProps {
   newsId: string;
@@ -46,7 +47,7 @@ export const LinkedContentSection = ({ newsId }: LinkedContentSectionProps) => {
       case 'business':
         return `/business/${item.content_id}`;
       case 'event':
-        return `/event/${item.content_id}`;
+        return eventDetailPath({ slug: item.event?.slug, id: item.content_id });
       case 'local_service':
         return `/local-service/${item.content_id}`;
       default:

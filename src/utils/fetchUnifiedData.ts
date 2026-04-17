@@ -77,6 +77,7 @@ export const fetchAllUnifiedData = async (
 
       items.push({
         id: event.id,
+        slug: (event as { slug?: string }).slug,
         title: event.title,
         description: event.description || '',
         latitude: (lat !== null && !isNaN(lat) && lat !== 0) ? lat : null,

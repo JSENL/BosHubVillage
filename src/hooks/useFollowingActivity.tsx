@@ -17,6 +17,7 @@ export interface FollowingActivity {
     id: string;
     title: string;
     type: string;
+    slug?: string | null;
   };
   created_at: string;
   action: string;
@@ -47,7 +48,7 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
         // Events (no status column - all events in this table are approved)
         const eventsResponse = await (supabase as any)
           .from('events')
-          .select('id, title, created_at, created_by')
+          .select('id, slug, title, created_at, created_by')
           .in('created_by', followingIds)
           .order('created_at', { ascending: false })
           .limit(10);
@@ -71,7 +72,12 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
                   avatar_url: profile.avatar_url,
                   is_verified: profile.is_verified || false,
                 },
-                item: { id: event.id, title: event.title || '', type: 'event' },
+                item: {
+                  id: event.id,
+                  title: event.title || '',
+                  type: 'event',
+                  slug: event.slug as string | undefined,
+                },
                 created_at: event.created_at || new Date().toISOString(),
                 action: 'created an event',
               });
@@ -174,16 +180,20 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
           const profile = profileResponse.data;
 
           let itemTitle = 'an item';
+          let eventSlug: string | undefined;
           const itemType = activity.item_type || 'unknown';
 
           // Fetch item details based on type
           if (activity.item_type === 'event') {
             const eventResponse: any = await supabase
               .from('events')
-              .select('title')
+              .select('title, slug')
               .eq('id', activity.item_id || '')
               .maybeSingle();
-            if (eventResponse.data) itemTitle = eventResponse.data.title || 'Untitled Event';
+            if (eventResponse.data) {
+              itemTitle = eventResponse.data.title || 'Untitled Event';
+              eventSlug = eventResponse.data.slug;
+            }
           } else if (activity.item_type === 'news') {
             const newsResponse: any = await supabase
               .from('news')
@@ -230,7 +240,12 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
               avatar_url: profile.avatar_url,
               is_verified: profile.is_verified || false,
             },
-            item: { id: activity.item_id || '', title: itemTitle, type: itemType },
+            item: {
+              id: activity.item_id || '',
+              title: itemTitle,
+              type: itemType,
+              slug: itemType === 'event' ? eventSlug : undefined,
+            },
             created_at: activity.created_at || new Date().toISOString(),
             action,
           });

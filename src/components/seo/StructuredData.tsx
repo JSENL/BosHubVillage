@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
+import { eventDetailPath } from '@/lib/eventUrl';
 
 interface EventStructuredDataProps {
   event: {
     id: string;
+    slug?: string | null;
     title: string;
     description?: string;
     date: string;
@@ -46,7 +48,7 @@ export const EventStructuredData = ({ event }: EventStructuredDataProps) => {
         "availability": "https://schema.org/InStock"
       } : undefined,
       "image": event.image || "",
-      "url": `${window.location.origin}/event/${event.id}`
+      "url": `${window.location.origin}${eventDetailPath({ slug: event.slug, id: event.id })}`
     };
 
     const script = document.createElement('script');

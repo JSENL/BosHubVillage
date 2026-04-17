@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { Bookmark, Calendar, Building2, Newspaper, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +31,7 @@ export const BookmarksSection = () => {
         const currentDate = new Date().toISOString().split('T')[0];
         const { data: events } = await supabase
           .from('events')
-          .select('id, title, location, date')
+          .select('id, slug, title, location, date')
           .gte('date', currentDate)
           .in('id', eventIds);
         
@@ -126,7 +127,7 @@ export const BookmarksSection = () => {
   const getItemLink = (item: any) => {
     switch (item.type) {
       case 'event':
-        return `/event/${item.id}`;
+        return eventDetailPath({ slug: item.slug, id: item.id });
       case 'business':
         return `/business/${item.id}`;
       case 'news':

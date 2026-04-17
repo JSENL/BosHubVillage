@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Building2, Newspaper, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { useTranslation } from 'react-i18next';
 
 interface UserContributionsProps {
@@ -18,6 +19,8 @@ interface Contribution {
   title: string;
   type: 'event' | 'business' | 'news';
   created_at: string;
+  /** Event slug for readable URLs; only set when type is event. */
+  slug?: string;
 }
 
 const INITIAL_DISPLAY_COUNT = 5;
@@ -35,7 +38,7 @@ export const UserContributions = ({ userId }: UserContributionsProps) => {
       const [eventsRes, businessRes, newsRes] = await Promise.all([
         supabase
           .from('events')
-          .select('id, title, created_at')
+          .select('id, slug, title, created_at')
           .eq('created_by', userId)
           .order('created_at', { ascending: false }),
         supabase
@@ -56,6 +59,7 @@ export const UserContributions = ({ userId }: UserContributionsProps) => {
         eventsRes.data.forEach((e) => {
           allContributions.push({
             id: e.id,
+            slug: (e as { slug?: string }).slug,
             title: e.title,
             type: 'event',
             created_at: e.created_at,
@@ -106,10 +110,10 @@ export const UserContributions = ({ userId }: UserContributionsProps) => {
     }
   };
 
-  const getLink = (type: string, id: string) => {
+  const getLink = (type: string, id: string, slug?: string) => {
     switch (type) {
       case 'event':
-        return `/event/${id}`;
+        return eventDetailPath({ slug, id });
       case 'business':
         return `/business/${id}`;
       case 'news':
@@ -196,7 +200,7 @@ export const UserContributions = ({ userId }: UserContributionsProps) => {
               {displayedContributions.map((contribution) => (
                 <Link
                   key={`${contribution.type}-${contribution.id}`}
-                  to={getLink(contribution.type, contribution.id)}
+                  to={getLink(contribution.type, contribution.id, contribution.slug)}
                   className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border"
                 >
                   <div className="p-2 rounded-full bg-muted shrink-0">

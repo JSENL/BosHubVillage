@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Bookmark, UserPlus, MessageCircle, Calendar, Heart, Building2, Newspaper, MapPin } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { useTranslation } from 'react-i18next';
 
 interface UserActivityFeedProps {
@@ -22,6 +23,8 @@ interface Activity {
 
 interface EnrichedActivity extends Activity {
   itemName?: string;
+  /** When item_type is event, slug for /event/:slug URLs. */
+  eventSlug?: string;
 }
 
 export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
@@ -54,7 +57,7 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
           ? supabase.from('profiles').select('id, full_name').in('id', userIds)
           : { data: [] },
         eventIds.length > 0 
-          ? supabase.from('events').select('id, title').in('id', eventIds)
+          ? supabase.from('events').select('id, slug, title').in('id', eventIds)
           : { data: [] },
         businessIds.length > 0 
           ? supabase.from('business').select('id, title').in('id', businessIds)
@@ -70,6 +73,9 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
       // Create lookup maps
       const userMap = new Map((usersData.data || []).map(u => [u.id, u.full_name || 'Unknown User']));
       const eventMap = new Map((eventsData.data || []).map(e => [e.id, e.title]));
+      const eventSlugMap = new Map(
+        (eventsData.data || []).map((e) => [e.id, (e as { slug?: string }).slug])
+      );
       const businessMap = new Map((businessData.data || []).map(b => [b.id, b.title]));
       const newsMap = new Map((newsData.data || []).map(n => [n.id, n.title]));
       const localServiceMap = new Map((localServicesData.data || []).map(l => [l.id, l.name]));
@@ -96,7 +102,11 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
             break;
         }
         
-        return { ...activity, itemName };
+        return {
+          ...activity,
+          itemName,
+          eventSlug: activity.item_type === 'event' ? eventSlugMap.get(activity.item_id) : undefined,
+        };
       });
     },
     enabled: !!userId,
@@ -167,10 +177,10 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
     }
   };
 
-  const getItemLink = (itemType: string, itemId: string) => {
+  const getItemLink = (itemType: string, itemId: string, eventSlug?: string) => {
     switch (itemType) {
       case 'event':
-        return `/event/${itemId}`;
+        return eventDetailPath({ slug: eventSlug, id: itemId });
       case 'business':
         return `/business/${itemId}`;
       case 'news':
@@ -230,7 +240,7 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
           {activities.map((activity) => (
             <Link
               key={activity.id}
-              to={getItemLink(activity.item_type, activity.item_id)}
+              to={getItemLink(activity.item_type, activity.item_id, activity.eventSlug)}
               className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border"
             >
               <div className="p-2 rounded-full bg-muted shrink-0">

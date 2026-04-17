@@ -106,7 +106,7 @@ const App = () => (
                   <Route path="/submit-local-resource" element={<SubmitLocalService />} />
                   <Route path="/submit-news" element={<SubmitNews />} />
                   <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-                  <Route path="/event/:eventId" element={<EventDetails />} />
+                  <Route path="/event/:eventSlug" element={<EventDetails />} />
                   <Route path="/business/:businessId" element={<BusinessDetails />} />
                   <Route path="/business-dashboard" element={<BusinessDashboard />} />
                   <Route path="/news/:newsId" element={<NewsDetails />} />

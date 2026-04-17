@@ -1,4 +1,5 @@
 import { Event } from '@/hooks/useEvents';
+import { eventDetailPath } from '@/lib/eventUrl';
 
 /**
  * Escapes HTML to prevent XSS attacks in popup content
@@ -48,7 +49,7 @@ export const createEventPopupContent = (event: Event): string => {
         <strong>📍 ${safeLocation}</strong>
       </div>
       <div style="margin: 8px 0 0 0;">
-        <button onclick="window.location.href='/event/${escapeHtml(event.id)}'" style="
+        <button onclick="window.location.href='${escapeHtml(eventDetailPath({ slug: event.slug, id: event.id }))}'" style="
           background: linear-gradient(to right, #8b5cf6, #3b82f6);
           color: white;
           border: none;

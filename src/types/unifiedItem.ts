@@ -2,6 +2,8 @@ export type TranslationsObject = Record<string, string>;
 
 export interface UnifiedItem {
   id: string;
+  /** Present for type === 'event': human-readable URL segment. */
+  slug?: string;
   title: string;
   description: string;
   latitude: number | null;

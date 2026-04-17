@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { UnifiedItem } from '@/types/unifiedItem';
 import { useNavigate } from 'react-router-dom';
+import { eventDetailPath } from '@/lib/eventUrl';
 import { format } from 'date-fns';
 
 interface SwipeableCardStackProps {
@@ -73,7 +74,7 @@ export const SwipeableCardStack = ({ items, onClose }: SwipeableCardStackProps) 
     const item = currentItem;
     switch (item.type) {
       case 'event':
-        navigate(`/event/${item.id}`);
+        navigate(eventDetailPath({ slug: item.slug, id: item.id }));
         break;
       case 'business':
         navigate(`/business/${item.id}`);

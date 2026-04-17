@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Users } from 'lucide-react';
 import { Event } from '@/hooks/useEvents';
+import { eventDetailPath } from '@/lib/eventUrl';
 
 interface EventsListProps {
   searchQuery: string;
@@ -24,7 +25,7 @@ const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) 
   });
 
   const handleEventClick = (event: Event) => {
-    navigate(`/event/${event.id}`);
+    navigate(eventDetailPath({ slug: event.slug, id: event.id }));
   };
 
   const formatTimeRange = (startTime: string, endTime: string) => {

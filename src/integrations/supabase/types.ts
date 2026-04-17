@@ -1010,6 +1010,7 @@ export type Database = {
           price: number | null
           recurring_pattern: string | null
           registration_required: boolean | null
+          slug: string
           start_time: string | null
           title: string
           title_translations: Json
@@ -1047,6 +1048,7 @@ export type Database = {
           price?: number | null
           recurring_pattern?: string | null
           registration_required?: boolean | null
+          slug?: string
           start_time?: string | null
           title: string
           title_translations?: Json
@@ -1084,6 +1086,7 @@ export type Database = {
           price?: number | null
           recurring_pattern?: string | null
           registration_required?: boolean | null
+          slug?: string
           start_time?: string | null
           title?: string
           title_translations?: Json
