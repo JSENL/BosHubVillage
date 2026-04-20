@@ -24,6 +24,7 @@ import { Event } from '@/hooks/useEvents';
 import { EditEventDialog } from '@/components/admin/EditEventDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { dateOnlySortKey, formatDateOnly } from '@/utils/common/dateUtils';
 
 interface PublishedEventsTableProps {
   events: Event[];
@@ -65,12 +66,12 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
           bValue = b.title.toLowerCase();
           break;
         case 'date':
-          aValue = new Date(a.date).getTime();
-          bValue = new Date(b.date).getTime();
+          aValue = dateOnlySortKey(a.date);
+          bValue = dateOnlySortKey(b.date);
           break;
         case 'updated_at':
-          aValue = new Date(a.date).getTime();
-          bValue = new Date(b.date).getTime();
+          aValue = dateOnlySortKey(a.date);
+          bValue = dateOnlySortKey(b.date);
           break;
         default:
           return 0;
@@ -299,7 +300,7 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
                     <TableCell>
                       <div className="flex items-center text-sm">
                         <Calendar className="h-4 w-4 mr-1" />
-                        {new Date(event.date + 'T00:00:00').toLocaleDateString()}
+                        {formatDateOnly(event.date)}
                       </div>
                     </TableCell>
                     <TableCell>

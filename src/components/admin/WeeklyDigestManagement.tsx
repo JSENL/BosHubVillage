@@ -48,6 +48,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { formatDateOnly } from '@/utils/common/dateUtils';
 
 interface EmailPreference {
   id: string;
@@ -556,7 +557,7 @@ const WeeklyDigestManagement = () => {
                       <li key={event.id} className="border-l-2 border-primary pl-3">
                         <strong>{event.title}</strong>
                         <p className="text-sm text-muted-foreground">
-                          {new Date(event.date).toLocaleDateString()} • {event.location}
+                          {formatDateOnly(event.date)} • {event.location}
                         </p>
                       </li>
                     )) : (

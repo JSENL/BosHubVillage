@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { formatDateOnly } from '@/utils/common/dateUtils';
 
 interface PendingEventSubmissionsProps {
   submissions: any[];
@@ -27,7 +28,7 @@ export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventS
   const [actionLoading, setActionLoading] = useState(false);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return formatDateOnly(dateString, 'en-US', {
       month: '2-digit',
       day: '2-digit',
       year: 'numeric'

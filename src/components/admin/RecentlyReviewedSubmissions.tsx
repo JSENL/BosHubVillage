@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { formatDateOnly } from '@/utils/common/dateUtils';
 
 interface RecentlyReviewedSubmissionsProps {
   submissions: any[];
@@ -106,7 +107,7 @@ export const RecentlyReviewedSubmissions = ({ submissions, onUpdate }: RecentlyR
                   <TableCell>
                     <div className="flex items-center text-sm">
                       <Calendar className="h-4 w-4 mr-1" />
-                      {new Date(submission.date).toLocaleDateString()}
+                      {formatDateOnly(submission.date)}
                     </div>
                   </TableCell>
                   <TableCell>
