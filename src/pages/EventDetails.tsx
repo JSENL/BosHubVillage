@@ -4,7 +4,7 @@ import { ArrowLeft, MapPin, Clock, Users, DollarSign, ExternalLink, Settings, Ma
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { useEvents } from '@/hooks/useEvents';
+import { Event, useEvents } from '@/hooks/useEvents';
 import EventComments from '@/components/EventComments';
 import { Navigation } from '@/components/Navigation';
 import { SocialShare } from '@/components/SocialShare';
@@ -20,6 +20,50 @@ import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { EventHeroImageEditor } from '@/components/events/EventHeroImageEditor';
+import { supabase } from '@/integrations/supabase/client';
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const slugifyTitle = (raw: string): string =>
+  raw
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 120);
+
+const normalizeEventRow = (row: Record<string, any>, slugFallback?: string): Event => ({
+  id: String(row.id),
+  title: String(row.title ?? ''),
+  description: String(row.description ?? ''),
+  category: String(row.category ?? ''),
+  event_type: String(row.event_type ?? 'event'),
+  date: String(row.date ?? ''),
+  start_time: String(row.start_time ?? '00:00:00'),
+  end_time: String(row.end_time ?? '00:00:00'),
+  location: String(row.location ?? ''),
+  address: row.address ? String(row.address) : '',
+  website_link: row.website_link ? String(row.website_link) : undefined,
+  price: Number(row.price ?? 0),
+  max_attendees: row.max_attendees ?? null,
+  is_recurring: Boolean(row.is_recurring ?? false),
+  recurring_pattern: row.recurring_pattern ?? null,
+  registration_required: Boolean(row.registration_required ?? false),
+  created_by: String(row.created_by ?? ''),
+  latitude: row.latitude != null ? Number(row.latitude) : null,
+  longitude: row.longitude != null ? Number(row.longitude) : null,
+  neighborhoods: row.neighborhoods ?? null,
+  villages: row.villages ?? null,
+  attendees_count: typeof row.attendees_count === 'number' ? row.attendees_count : 0,
+  is_sponsored: Boolean(row.is_sponsored ?? false),
+  contact_type: row.contact_type ?? null,
+  contact_value: row.contact_value ?? null,
+  image_url: row.image_url ?? null,
+  cover_zoom: Number(row.cover_zoom ?? 1),
+  cover_focus_x: Number(row.cover_focus_x ?? 50),
+  cover_focus_y: Number(row.cover_focus_y ?? 50),
+  slug: String(row.slug ?? slugFallback ?? row.id),
+});
 
 const EventDetails = () => {
   const { eventSlug } = useParams<{ eventSlug: string }>();
@@ -29,15 +73,98 @@ const EventDetails = () => {
   const { t } = useTranslation();
   const { user, isAdmin } = useAuth();
   const { getTranslatedText } = useTranslatedField();
+  const [resolvedEvent, setResolvedEvent] = useState<Event | null>(null);
+  const [resolvingDirect, setResolvingDirect] = useState(false);
 
   const param = eventSlug ?? '';
-  const event = useMemo(
+  const listEvent = useMemo(
     () =>
       param
         ? events.find((e) => e.slug === param) ?? events.find((e) => e.id === param)
         : undefined,
     [events, param]
   );
+
+  useEffect(() => {
+    if (!param || loading) return;
+    if (listEvent) {
+      setResolvedEvent(listEvent);
+      return;
+    }
+    setResolvedEvent(null);
+
+    let cancelled = false;
+
+    const resolveDirect = async () => {
+      setResolvingDirect(true);
+      try {
+        // 1) Live events table (canonical source, includes slugs)
+        const liveBySlug = await supabase
+          .from('events')
+          .select('*')
+          .eq('slug', param)
+          .maybeSingle();
+
+        if (!cancelled && liveBySlug.data) {
+          setResolvedEvent(normalizeEventRow(liveBySlug.data));
+          return;
+        }
+
+        if (UUID_RE.test(param)) {
+          const liveById = await supabase
+            .from('events')
+            .select('*')
+            .eq('id', param)
+            .maybeSingle();
+          if (!cancelled && liveById.data) {
+            setResolvedEvent(normalizeEventRow(liveById.data));
+            return;
+          }
+        }
+
+        // 2) Archived events table fallback
+        if (UUID_RE.test(param)) {
+          const pastById = await supabase
+            .from('past_events')
+            .select('*')
+            .eq('id', param)
+            .maybeSingle();
+          if (!cancelled && pastById.data) {
+            setResolvedEvent(normalizeEventRow(pastById.data, slugifyTitle(String(pastById.data.title ?? 'event'))));
+            return;
+          }
+        }
+
+        // 3) Match old archived rows by slugified title
+        const titleSearch = `%${param.replace(/-/g, '%')}%`;
+        const pastCandidates = await supabase
+          .from('past_events')
+          .select('*')
+          .ilike('title', titleSearch)
+          .order('date', { ascending: false })
+          .limit(40);
+
+        const match = (pastCandidates.data ?? []).find(
+          (row) => slugifyTitle(String(row.title ?? '')) === param
+        );
+        if (!cancelled) {
+          setResolvedEvent(
+            match ? normalizeEventRow(match as Record<string, any>, slugifyTitle(String(match.title ?? 'event'))) : null
+          );
+        }
+      } finally {
+        if (!cancelled) setResolvingDirect(false);
+      }
+    };
+
+    void resolveDirect();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [listEvent, loading, param]);
+
+  const event = listEvent ?? resolvedEvent ?? undefined;
 
   useEffect(() => {
     if (!event?.slug || !param) return;
@@ -54,7 +181,7 @@ const EventDetails = () => {
   const isEventCreator = user && event && event.created_by === user.id;
   const canEditLinks = isEventCreator || isAdmin;
 
-  if (loading) {
+  if (loading || resolvingDirect) {
     return <DetailPageLoading />;
   }
 
