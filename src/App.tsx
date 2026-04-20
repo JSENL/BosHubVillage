@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -42,6 +42,44 @@ const RouteFallback = () => (
     <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent" />
   </div>
 );
+
+const TRACKING_QUERY_KEYS = new Set([
+  "fbclid",
+  "gclid",
+  "dclid",
+  "msclkid",
+  "mc_cid",
+  "mc_eid",
+  "igshid",
+  "ref",
+  "ref_src",
+  "_hsenc",
+  "_hsmi",
+]);
+
+const UrlTrackingParamCleaner = () => {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    let changed = false;
+
+    for (const key of Array.from(url.searchParams.keys())) {
+      const lowered = key.toLowerCase();
+      if (TRACKING_QUERY_KEYS.has(lowered) || lowered.startsWith("utm_")) {
+        url.searchParams.delete(key);
+        changed = true;
+      }
+    }
+
+    if (!changed) return;
+    const query = url.searchParams.toString();
+    const cleanUrl = `${url.pathname}${query ? `?${query}` : ""}${url.hash}`;
+    window.history.replaceState(window.history.state, "", cleanUrl);
+  }, []);
+
+  return null;
+};
 
 // Recovery redirect component to handle email link redirects (client-only; hash is not sent to server)
 const RecoveryRedirect = () => {
@@ -94,6 +132,7 @@ const App = () => (
       <AuthProvider>
         <MapboxProvider>
           <FilterProvider>
+            <UrlTrackingParamCleaner />
             <Toaster />
             <Sonner />
             <ErrorBoundary>
