@@ -21,6 +21,7 @@ import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { EventHeroImageEditor } from '@/components/events/EventHeroImageEditor';
 import { supabase } from '@/integrations/supabase/client';
+import { formatDateOnly } from '@/utils/common/dateUtils';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -267,7 +268,7 @@ const EventDetails = () => {
                   <div className="space-y-4 mb-6">
                     <div className="flex items-center text-gray-600">
                       <Clock className="h-4 w-4 mr-2" />
-                      <span>{new Date(event.date).toLocaleDateString('en-US')} at {event.start_time}</span>
+                      <span>{formatDateOnly(event.date, 'en-US')} at {event.start_time}</span>
                     </div>
                     
                     <div className="flex items-center text-gray-600">

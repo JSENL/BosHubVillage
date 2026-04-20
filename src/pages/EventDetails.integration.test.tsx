@@ -70,7 +70,7 @@ const baseEventRow = {
   description: "Community photo exhibit.",
   category: "Art",
   event_type: "event",
-  date: "2026-04-20",
+  date: "2026-04-24",
   start_time: "10:00:00",
   end_time: "12:00:00",
   location: "Boston",
@@ -156,6 +156,7 @@ describe("EventDetails integration", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Who Are We? Photo Project" })).toBeInTheDocument();
     });
+    expect(screen.getByText("4/24/2026 at 10:00:00")).toBeInTheDocument();
   });
 
   it("loads archived events by slugified title fallback", async () => {
