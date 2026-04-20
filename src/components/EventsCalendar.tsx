@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Event } from '@/hooks/useEvents';
 import { eventDetailPath } from '@/lib/eventUrl';
+import { formatTimeRange } from '@/utils/common/dateUtils';
 
 interface EventsCalendarProps {
   searchQuery: string;
@@ -49,14 +50,6 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
 
   const handleEventClick = (event: Event) => {
     navigate(eventDetailPath({ slug: event.slug, id: event.id }));
-  };
-
-  const formatTimeRange = (startTime: string, endTime: string) => {
-    if (!startTime && !endTime) return 'Time TBD';
-    if (startTime && endTime) {
-      return `${startTime} - ${endTime}`;
-    }
-    return startTime || endTime;
   };
 
   return (
@@ -161,7 +154,7 @@ const EventsCalendar = ({ searchQuery, selectedCategory, events }: EventsCalenda
                     <div className="space-y-1 text-sm text-gray-600 mb-3">
                       <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-2 text-purple-500" />
-                        {formatTimeRange(event.start_time, event.end_time)}
+                        {formatTimeRange(event.start_time, event.end_time) || 'Time TBD'}
                       </div>
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-2 text-purple-500" />

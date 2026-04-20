@@ -156,7 +156,7 @@ describe("EventDetails integration", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Who Are We? Photo Project" })).toBeInTheDocument();
     });
-    expect(screen.getByText("4/24/2026 at 10:00:00")).toBeInTheDocument();
+    expect(screen.getByText("4/24/2026 at 10:00 AM - 12:00 PM")).toBeInTheDocument();
   });
 
   it("loads archived events by slugified title fallback", async () => {

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Users } from 'lucide-react';
 import { Event } from '@/hooks/useEvents';
 import { eventDetailPath } from '@/lib/eventUrl';
+import { formatTimeRange } from '@/utils/common/dateUtils';
 
 interface EventsListProps {
   searchQuery: string;
@@ -26,14 +27,6 @@ const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) 
 
   const handleEventClick = (event: Event) => {
     navigate(eventDetailPath({ slug: event.slug, id: event.id }));
-  };
-
-  const formatTimeRange = (startTime: string, endTime: string) => {
-    if (!startTime && !endTime) return 'Time TBD';
-    if (startTime && endTime) {
-      return `${startTime} - ${endTime}`;
-    }
-    return startTime || endTime;
   };
 
   return (
@@ -83,7 +76,7 @@ const EventsList = ({ searchQuery, selectedCategory, events }: EventsListProps) 
                       <Clock className="h-4 w-4 mr-2 text-purple-500" />
                       <div>
                         <div>{new Date(event.date).toLocaleDateString()}</div>
-                        <div>{formatTimeRange(event.start_time, event.end_time)}</div>
+                        <div>{formatTimeRange(event.start_time, event.end_time) || 'Time TBD'}</div>
                       </div>
                     </div>
                     <div className="flex items-center">
