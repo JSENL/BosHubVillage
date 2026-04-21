@@ -47,17 +47,19 @@ const ContactAdmin = () => {
 
       const validatedData = validation.data;
 
-      const { error } = await supabase
-        .from('contact_admin')
-        .insert({
+      if (!user?.id) {
+        throw new Error('You must be signed in to send a message.');
+      }
+
+      const { error } = await supabase.functions.invoke('contact-admin-notify', {
+        body: {
           subject: validatedData.subject,
           message: validatedData.message,
           priority: validatedData.priority,
           user_name: validatedData.user_name || null,
-          user_email: validatedData.user_email,
-          user_id: user?.id || null,
-          status: 'pending'
-        });
+          user_email: validatedData.user_email
+        }
+      });
 
       if (error) throw error;
 

@@ -16,7 +16,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "verify:sharing": "./scripts/verify-sharing.sh"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.8",
