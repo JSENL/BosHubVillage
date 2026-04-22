@@ -12,7 +12,11 @@ interface ContactAdminNotifyRequest {
   user_email?: string;
 }
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resend = new Resend(Deno.env.get("RESEND_API_KEYI"));
+const defaultFromEmail = "onboarding@resend.dev";
+const emailFromAddress = Deno.env.get("ADMIN_MESSAGE_FROM_EMAIL")?.trim() || defaultFromEmail;
+const emailFromName = Deno.env.get("ADMIN_MESSAGE_FROM_NAME")?.trim() || "HubVillage Messages";
+const emailFrom = `${emailFromName} <${emailFromAddress}>`;
 
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -153,7 +157,7 @@ serve(async (req: Request) => {
     for (const job of jobs) {
       try {
         await resend.emails.send({
-          from: "HubVillage Messages <onboarding@resend.dev>",
+          from: emailFrom,
           to: [job.to],
           subject: job.subject,
           html: job.html,
