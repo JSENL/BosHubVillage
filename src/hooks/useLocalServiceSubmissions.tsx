@@ -1,9 +1,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { LocalResourceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localresources';
 
-export const useLocalServiceSubmissions = () => {
+export const uselocalresourcesubmissions = () => {
   return useQuery({
     queryKey: ['local-resource-submissions'],
     queryFn: async () => {

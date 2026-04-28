@@ -8,7 +8,7 @@ import { GripVertical, Plus, Trash2, Loader2, Search } from 'lucide-react';
 import { useEvents } from '@/hooks/useEvents';
 import { useNews } from '@/hooks/useNews';
 import { useBusiness } from '@/hooks/useBusiness';
-import { useLocalServices } from '@/hooks/useLocalServices';
+import { uselocalresources } from '@/hooks/uselocalresources';
 import { transformDataToUnifiedItems } from '@/utils/data/dataTransformers';
 import { useQuickBrowse, getQuickBrowseIds, type QuickBrowseItemType } from '@/hooks/useQuickBrowse';
 import type { UnifiedItem } from '@/types/unifiedItem';
@@ -27,7 +27,7 @@ export const QuickBrowseManagement = () => {
   const { events, loading: eventsLoading } = useEvents();
   const { data: news, isLoading: newsLoading } = useNews();
   const { data: businesses, isLoading: businessLoading } = useBusiness();
-  const { data: localServices, isLoading: localServicesLoading } = useLocalServices();
+  const { data: localresources, isLoading: localresourcesLoading } = uselocalresources();
 
   const allItems = useMemo(
     () =>
@@ -36,10 +36,10 @@ export const QuickBrowseManagement = () => {
         news: news ?? [],
         businesses: businesses ?? [],
         businessSubmissions: [],
-        localServices: localServices ?? [],
-        localServiceSubmissions: [],
+        localresources: localresources ?? [],
+        localresourcesubmissions: [],
       }),
-    [events, news, businesses, localServices]
+    [events, news, businesses, localresources]
   );
 
   const { entries, isLoading: qbLoading, save, isSaving } = useQuickBrowse();
@@ -91,7 +91,7 @@ export const QuickBrowseManagement = () => {
       .catch(() => toast({ title: 'Error', description: 'Failed to save Quick Browse.', variant: 'destructive' }));
   };
 
-  const isLoading = eventsLoading || newsLoading || businessLoading || localServicesLoading || qbLoading;
+  const isLoading = eventsLoading || newsLoading || businessLoading || localresourcesLoading || qbLoading;
 
   return (
     <Card>

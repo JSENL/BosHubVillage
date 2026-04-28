@@ -19,7 +19,7 @@ const TranslationTestCard: React.FC<TranslationTestCardProps> = ({ title, type, 
       case 'event': return t('itemTypes.events');
       case 'business': return t('itemTypes.businesses'); 
       case 'news': return t('itemTypes.news');
-      case 'local-service': return t('itemTypes.localServices');
+      case 'local-service': return t('itemTypes.localresources');
       default: return type;
     }
   };

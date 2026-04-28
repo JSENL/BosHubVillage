@@ -2,7 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export const geocodeLocalServices = async (services: any[], geocode: (address: string) => Promise<any>) => {
+export const geocodelocalresources = async (services: any[], geocode: (address: string) => Promise<any>) => {
   const servicesWithoutCoords = services.filter(service => 
     (!service.latitude || !service.longitude || service.latitude === null || service.longitude === null) && 
     service.address
@@ -53,7 +53,7 @@ export const geocodeLocalServices = async (services: any[], geocode: (address: s
   }
 };
 
-export const geocodeAllLocalServices = async (geocode: (address: string) => Promise<any>) => {
+export const geocodeAlllocalresources = async (geocode: (address: string) => Promise<any>) => {
   console.log('Starting to geocode all local resources...');
   
   try {
@@ -141,7 +141,7 @@ export const geocodeAllLocalServices = async (geocode: (address: string) => Prom
     }
 
   } catch (error) {
-    console.error('Error in geocodeAllLocalServices:', error);
+    console.error('Error in geocodeAlllocalresources:', error);
     toast.error('Failed to geocode local resources');
   }
 };

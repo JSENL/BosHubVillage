@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useGeocoding } from '@/hooks/useGeocoding';
-import { geocodeAllLocalServices } from '@/utils/geocodeLocalServices';
+import { geocodeAlllocalresources } from '@/utils/geocodelocalresources';
 import { MapPin, Loader2 } from 'lucide-react';
 
-export const GeocodeAllLocalServicesButton = () => {
+export const GeocodeAlllocalresourcesButton = () => {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const { geocode, isReady } = useGeocoding();
 
@@ -17,7 +17,7 @@ export const GeocodeAllLocalServicesButton = () => {
 
     setIsGeocoding(true);
     try {
-      await geocodeAllLocalServices(geocode);
+      await geocodeAlllocalresources(geocode);
     } catch (error) {
       console.error('Error geocoding all local services:', error);
     } finally {

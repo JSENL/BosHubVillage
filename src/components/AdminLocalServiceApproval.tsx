@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useLocalServiceSubmissions } from '@/hooks/useLocalServiceSubmissions';
+import { uselocalresourcesubmissions } from '@/hooks/uselocalresourcesubmissions';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
@@ -14,10 +14,10 @@ import {
   Calendar,
   User
 } from 'lucide-react';
-import { LocalResourceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localresources';
 
 const AdminLocalResourceApproval = () => {
-  const { data: submissions, isLoading, refetch } = useLocalServiceSubmissions();
+  const { data: submissions, isLoading, refetch } = uselocalresourcesubmissions();
   const { user } = useAuth();
 
   const handleApprove = async (submission: LocalResourceSubmission) => {

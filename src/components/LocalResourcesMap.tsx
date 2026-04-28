@@ -1,16 +1,16 @@
 import { UnifiedItem } from '@/types/unifiedItem';
-import { LocalResource } from '@/types/localServices';
+import { LocalResource } from '@/types/localresources';
 import { EnhancedUniversalMap } from '@/components/EnhancedUniversalMap';
 
 interface LocalResourcesMapProps {
-  localServices: LocalResource[];
+  localresources: LocalResource[];
 }
 
-export const LocalResourcesMap = ({ localServices }: LocalResourcesMapProps) => {
-  console.log('🏪 LocalResourcesMap: Starting with', localServices.length, 'local services');
+export const LocalResourcesMap = ({ localresources }: LocalResourcesMapProps) => {
+  console.log('🏪 LocalResourcesMap: Starting with', localresources.length, 'local services');
   
   // Convert local resources to unified items for map display
-  const unifiedItems: UnifiedItem[] = localServices.map(service => {
+  const unifiedItems: UnifiedItem[] = localresources.map(service => {
     const item: UnifiedItem = {
       id: service.id,
       title: service.name,

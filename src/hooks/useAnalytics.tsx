@@ -8,7 +8,7 @@ interface AnalyticsData {
     totalEvents: number;
     totalNews: number;
     totalBusinesses: number;
-    totalLocalServices: number;
+    totallocalresources: number;
     totalComments: number;
   };
   submissionStats: {
@@ -48,7 +48,7 @@ export const useAnalytics = () => {
       const userGrowth = generateUserGrowthData(userGrowthData || []);
 
       // Content Statistics
-      const [eventsCount, newsCount, businessCount, localServicesCount, commentsCount] = await Promise.all([
+      const [eventsCount, newsCount, businessCount, localresourcesCount, commentsCount] = await Promise.all([
         supabase.from('events').select('id', { count: 'exact' }),
         supabase.from('news').select('id', { count: 'exact' }),
         supabase.from('business').select('id', { count: 'exact' }),
@@ -115,7 +115,7 @@ export const useAnalytics = () => {
           totalEvents: eventsCount.count || 0,
           totalNews: newsCount.count || 0,
           totalBusinesses: businessCount.count || 0,
-          totalLocalServices: localServicesCount.count || 0,
+          totallocalresources: localresourcesCount.count || 0,
           totalComments: commentsCount.count || 0,
         },
         submissionStats: {

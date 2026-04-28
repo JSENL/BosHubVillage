@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star } from 'lucide-react';
-import { LocalResource } from '@/types/localServices';
+import { LocalResource } from '@/types/localresources';
 import { useNavigate } from 'react-router-dom';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useCardLocale } from '@/hooks/useCardLocale';

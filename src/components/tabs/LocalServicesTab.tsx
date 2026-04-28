@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { useLocalServices } from '@/hooks/useLocalServices';
+import { uselocalresources } from '@/hooks/uselocalresources';
 import LocalServiceCard from '@/components/LocalServiceCard';
 import { ViewToggle } from '@/components/ViewToggle';
 import { LocalResourcesMap } from '@/components/LocalResourcesMap';
 
-export const LocalServicesTab = () => {
-  const { data: localServices, isLoading } = useLocalServices();
+export const localresourcesTab = () => {
+  const { data: localresources, isLoading } = uselocalresources();
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'calendar'>('grid');
 
-  console.log('🏪 LocalServicesTab: Rendering with', localServices?.length || 0, 'services');
-  console.log('🏪 LocalServicesTab: Services with coordinates:', 
-    localServices?.filter(service => service.latitude && service.longitude).length || 0
+  console.log('🏪 localresourcesTab: Rendering with', localresources?.length || 0, 'services');
+  console.log('🏪 localresourcesTab: Services with coordinates:', 
+    localresources?.filter(service => service.latitude && service.longitude).length || 0
   );
 
   if (isLoading) {
@@ -22,7 +22,7 @@ export const LocalServicesTab = () => {
     );
   }
 
-  if (!localServices || localServices.length === 0) {
+  if (!localresources || localresources.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
         <p>No local resources found.</p>
@@ -38,10 +38,10 @@ export const LocalServicesTab = () => {
       </div>
 
       {viewMode === 'map' ? (
-        <LocalResourcesMap localServices={localServices} />
+        <LocalResourcesMap localresources={localresources} />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
-          {localServices.map((service) => (
+          {localresources.map((service) => (
             <LocalServiceCard key={service.id} localService={service} />
           ))}
         </div>

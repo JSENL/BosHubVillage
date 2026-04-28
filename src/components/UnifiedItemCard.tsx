@@ -80,7 +80,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       event: t('itemTypes.events'),
       news: t('itemTypes.news'),
       business: t('itemTypes.businesses'),
-      'local-service': t('itemTypes.localServices')
+      'local-service': t('itemTypes.localresources')
     };
     return labels[item.type] || 'View';
   };

@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import i18n from "@/i18n/config";
 
 describe("French Translations", () => {
-  beforeEach(() => {
-    i18n.changeLanguage("fr");
+  beforeEach(async () => {
+    await i18n.changeLanguage("fr");
   });
 
   describe("Navigation translations", () => {
@@ -75,8 +75,8 @@ describe("French Translations", () => {
       expect(i18n.t("itemTypes.businesses")).toBe("Entreprises");
     });
 
-    it("should have French translation for localServices", () => {
-      expect(i18n.t("itemTypes.localServices")).toBe("Services Locaux");
+    it("should have French translation for localresources", () => {
+      expect(i18n.t("itemTypes.localresources")).toBe("Services Locaux");
     });
   });
 

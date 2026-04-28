@@ -1,11 +1,11 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { LocalResource } from '@/types/localServices';
+import { LocalResource } from '@/types/localresources';
 
 const PAGE_SIZE = 100;
 
-export const useLocalServices = () => {
+export const uselocalresources = () => {
   return useQuery({
     queryKey: ['local-resources'],
     queryFn: async () => {

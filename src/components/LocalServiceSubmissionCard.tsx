@@ -6,18 +6,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Building, Check, X, Clock } from 'lucide-react';
-import { LocalResourceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localresources';
 import { SubmissionStatusBadge } from '@/components/SubmissionStatusBadge';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 
-interface LocalServiceSubmissionCardProps {
+interface localresourcesubmissionCardProps {
   submission: LocalResourceSubmission;
   onUpdate: () => void;
 }
 
-const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmissionCardProps) => {
+const localresourcesubmissionCard = ({ submission, onUpdate }: localresourcesubmissionCardProps) => {
   const { t } = useTranslation();
   const { isAdmin, user } = useAuth();
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
@@ -198,4 +198,4 @@ const LocalServiceSubmissionCard = ({ submission, onUpdate }: LocalServiceSubmis
   );
 };
 
-export default LocalServiceSubmissionCard;
+export default localresourcesubmissionCard;

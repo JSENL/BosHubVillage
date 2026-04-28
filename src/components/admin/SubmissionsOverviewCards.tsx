@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { NewsSubmission, BusinessSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
-import { LocalResourceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localresources';
 
 interface SubmissionsOverviewCardsProps {
   newsSubmissions: NewsSubmission[];

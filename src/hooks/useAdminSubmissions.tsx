@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { NewsSubmission, BusinessSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
-import { LocalResourceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localresources';
 
 export const useAdminSubmissions = () => {
   const { isAdmin, user } = useAuth();

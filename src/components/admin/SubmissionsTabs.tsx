@@ -8,11 +8,11 @@ import {
 } from 'lucide-react';
 import { NewsSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
-import { LocalResourceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localresources';
 import { BusinessSubmission } from '@/types/submissions';
 import { NewsSubmissionCard } from '@/components/NewsSubmissionCard';
 import { EventSubmissionCard } from '@/components/EventSubmissionCard';
-import LocalServiceSubmissionCard from '@/components/LocalServiceSubmissionCard';
+import localresourcesubmissionCard from '@/components/localresourcesubmissionCard';
 import { BusinessSubmissionCard } from '@/components/BusinessSubmissionCard';
 
 interface SubmissionsTabsProps {
@@ -99,7 +99,7 @@ export const SubmissionsTabs = ({
             </div>
           ) : (
             localResourceSubmissions.map((submission) => (
-              <LocalServiceSubmissionCard
+              <localresourcesubmissionCard
                 key={submission.id}
                 submission={submission}
                 onUpdate={onUpdate}

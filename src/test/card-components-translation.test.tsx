@@ -9,7 +9,7 @@ import LocalServiceCard from '@/components/LocalServiceCard';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import type { News } from '@/types/news';
 import type { Business } from '@/types/business';
-import type { LocalResource } from '@/types/localServices';
+import type { LocalResource } from '@/types/localresources';
 
 beforeEach(() => {
   vi.spyOn(Math, 'random').mockReturnValue(0.5);

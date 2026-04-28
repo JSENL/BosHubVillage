@@ -176,7 +176,7 @@ describe("All Languages Translation Tests", () => {
       "itemTypes.events",
       "itemTypes.news",
       "itemTypes.businesses",
-      "itemTypes.localServices",
+      "itemTypes.localresources",
     ];
 
     languages.forEach((lang) => {

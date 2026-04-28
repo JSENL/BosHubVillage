@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { LocalResource } from '@/types/localServices';
+import { LocalResource } from '@/types/localresources';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface EditLocalResourceDialogProps {

@@ -13,8 +13,8 @@ export const faqTranslationsEn = {
   eventsDesc: "Discover and share community events in your neighborhood",
   businesses: "Businesses",
   businessesDesc: "Find and connect with local businesses",
-  localServices: "Local Services",
-  localServicesDesc: "Discover service providers and professionals in your area",
+  localresources: "Local Services",
+  localresourcesDesc: "Discover service providers and professionals in your area",
   cultureUpdates: "Culture & Updates",
   cultureUpdatesDesc: "Stay informed with local community culture and arts",
   mapFeatures: "Map Features",
@@ -76,7 +76,7 @@ export const faqTranslationsEn = {
       q5: "How do I claim my business?",
       q6: "Can I feature or sponsor my business?"
     },
-    localServices: {
+    localresources: {
       q1: "What are local services?",
       q2: "How do I find service providers?",
       q3: "Can I list my services?",
@@ -204,7 +204,7 @@ export const faqTranslationsEn = {
       a5: "If your business is already listed, contact the admin to claim ownership. Once verified, you'll have access to respond to messages and manage your business through the Business Dashboard.",
       a6: "Sponsored businesses receive enhanced visibility with a 'Sponsored' badge. Contact the platform administrators through the Contact Admin option to learn about sponsorship."
     },
-    localServices: {
+    localresources: {
       a1: "Local services include professionals and service providers like plumbers, electricians, tutors, cleaners, repair services, consultants, healthcare providers, and other skilled services available in our neighborhoods.",
       a2: "Browse the Local Services section, filter by service category, or use the Mapbox map to find services nearby (orange 'L' markers). Each listing includes provider details, description, and contact information.",
       a3: "Yes! Service providers can submit their services using 'Submit Local Service'. Include your service description, category, contact info, address, and any relevant details.",
@@ -321,8 +321,8 @@ export const faqTranslationsEs = {
   eventsDesc: "Aprende sobre las funciones de eventos y cómo usarlas",
   businesses: "Negocios",
   businessesDesc: "Aprende sobre las funciones de negocios y cómo usarlas",
-  localServices: "Servicios Locales",
-  localServicesDesc: "Aprende sobre las funciones de servicios locales y cómo usarlas",
+  localresources: "Servicios Locales",
+  localresourcesDesc: "Aprende sobre las funciones de servicios locales y cómo usarlas",
   cultureUpdates: "Cultura y Actualizaciones",
   cultureUpdatesDesc: "Mantente informado con la cultura y las artes de la comunidad local",
   mapFeatures: "Funciones del Mapa",
@@ -382,7 +382,7 @@ export const faqTranslationsEs = {
       q5: "¿Cómo reclamo mi negocio?",
       q6: "¿Puedo destacar o patrocinar mi negocio?"
     },
-    localServices: {
+    localresources: {
       q1: "¿Qué son los servicios locales?",
       q2: "¿Cómo encuentro proveedores de servicios?",
       q3: "¿Puedo listar mis servicios?",
@@ -507,7 +507,7 @@ export const faqTranslationsEs = {
       a5: "Si tu negocio ya está listado, puedes reclamar la propiedad contactando al administrador. Una vez verificado como propietario, tendrás acceso para responder mensajes, actualizar listados y administrar el perfil de tu negocio.",
       a6: "Los negocios patrocinados reciben mayor visibilidad en los resultados de búsqueda y en el mapa. Contacta a los administradores de la plataforma para conocer las oportunidades de patrocinio."
     },
-    localServices: {
+    localresources: {
       a1: "Los servicios locales incluyen profesionales y proveedores de servicios como plomeros, electricistas, tutores, limpiadores, servicios de reparación, consultores y otros servicios especializados disponibles en tu área.",
       a2: "Navega por la sección de Servicios Locales, filtra por categoría de servicio, busca por palabras clave o usa el mapa para encontrar servicios cerca de ti. Cada listado incluye detalles del proveedor e información de contacto.",
       a3: "¡Sí! Los proveedores de servicios pueden enviar sus servicios usando 'Enviar Servicio Local'. Incluye la descripción de tu servicio, categorías, información de contacto, área de cobertura y cualquier certificación o especialización relevante.",
@@ -621,8 +621,8 @@ export const faqTranslationsFr = {
   eventsDesc: "Apprenez les fonctionnalités d'événements et comment les utiliser",
   businesses: "Entreprises",
   businessesDesc: "Apprenez les fonctionnalités d'entreprises et comment les utiliser",
-  localServices: "Services Locaux",
-  localServicesDesc: "Apprenez les fonctionnalités de services locaux et comment les utiliser",
+  localresources: "Services Locaux",
+  localresourcesDesc: "Apprenez les fonctionnalités de services locaux et comment les utiliser",
   cultureUpdates: "Culture et Mises à Jour",
   cultureUpdatesDesc: "Restez informé avec la culture et les arts de la communauté locale",
   mapFeatures: "Fonctionnalités de Carte",
@@ -682,7 +682,7 @@ export const faqTranslationsFr = {
       q5: "Comment revendiquer mon entreprise ?",
       q6: "Puis-je mettre en avant ou sponsoriser mon entreprise ?"
     },
-    localServices: {
+    localresources: {
       q1: "Que sont les services locaux ?",
       q2: "Comment trouver des prestataires de services ?",
       q3: "Puis-je lister mes services ?",
@@ -807,7 +807,7 @@ export const faqTranslationsFr = {
       a5: "Si votre entreprise est déjà listée, vous pouvez revendiquer la propriété en contactant l'administrateur. Une fois vérifié comme propriétaire, vous aurez accès pour répondre aux messages, mettre à jour les fiches et gérer le profil de votre entreprise.",
       a6: "Les entreprises sponsorisées reçoivent une visibilité améliorée dans les résultats de recherche et sur la carte. Contactez les administrateurs de la plateforme pour en savoir plus sur les opportunités de sponsoring."
     },
-    localServices: {
+    localresources: {
       a1: "Les services locaux incluent les professionnels et prestataires de services comme les plombiers, électriciens, tuteurs, nettoyeurs, services de réparation, consultants et autres services qualifiés disponibles dans votre région.",
       a2: "Parcourez la section Services Locaux, filtrez par catégorie de service, recherchez par mots-clés ou utilisez la carte pour trouver des services près de vous. Chaque fiche inclut les détails du prestataire et les coordonnées.",
       a3: "Oui ! Les prestataires de services peuvent soumettre leurs services en utilisant 'Soumettre un Service Local'. Incluez la description de votre service, les catégories, les coordonnées, la zone de couverture et toute certification ou spécialisation pertinente.",
@@ -921,8 +921,8 @@ export const faqTranslationsPt = {
   eventsDesc: "Aprenda sobre as funcionalidades de eventos e como usá-las",
   businesses: "Negócios",
   businessesDesc: "Aprenda sobre as funcionalidades de negócios e como usá-las",
-  localServices: "Serviços Locais",
-  localServicesDesc: "Aprenda sobre as funcionalidades de serviços locais e como usá-las",
+  localresources: "Serviços Locais",
+  localresourcesDesc: "Aprenda sobre as funcionalidades de serviços locais e como usá-las",
   cultureUpdates: "Cultura e Atualizações",
   cultureUpdatesDesc: "Mantenha-se informado com a cultura e as artes da comunidade local",
   mapFeatures: "Funcionalidades do Mapa",
@@ -982,7 +982,7 @@ export const faqTranslationsPt = {
       q5: "Como reivindico meu negócio?",
       q6: "Posso destacar ou patrocinar meu negócio?"
     },
-    localServices: {
+    localresources: {
       q1: "O que são serviços locais?",
       q2: "Como encontro prestadores de serviços?",
       q3: "Posso listar meus serviços?",
@@ -1107,7 +1107,7 @@ export const faqTranslationsPt = {
       a5: "Se seu negócio já está listado, você pode reivindicar a propriedade entrando em contato com o administrador. Uma vez verificado como proprietário, você terá acesso para responder mensagens, atualizar listagens e gerenciar o perfil do seu negócio.",
       a6: "Negócios patrocinados recebem maior visibilidade nos resultados de pesquisa e no mapa. Entre em contato com os administradores da plataforma para saber sobre oportunidades de patrocínio."
     },
-    localServices: {
+    localresources: {
       a1: "Serviços locais incluem profissionais e prestadores de serviços como encanadores, eletricistas, tutores, faxineiros, serviços de reparo, consultores e outros serviços especializados disponíveis em sua área.",
       a2: "Navegue pela seção de Serviços Locais, filtre por categoria de serviço, pesquise por palavras-chave ou use o mapa para encontrar serviços perto de você. Cada listagem inclui detalhes do prestador e informações de contato.",
       a3: "Sim! Prestadores de serviços podem enviar seus serviços usando 'Enviar Serviço Local'. Inclua a descrição do seu serviço, categorias, informações de contato, área de cobertura e quaisquer certificações ou especializações relevantes.",
@@ -1221,8 +1221,8 @@ export const faqTranslationsVi = {
   eventsDesc: "Tìm hiểu về các tính năng sự kiện và cách sử dụng chúng",
   businesses: "Doanh Nghiệp",
   businessesDesc: "Tìm hiểu về các tính năng doanh nghiệp và cách sử dụng chúng",
-  localServices: "Dịch Vụ Địa Phương",
-  localServicesDesc: "Tìm hiểu về các tính năng dịch vụ địa phương và cách sử dụng chúng",
+  localresources: "Dịch Vụ Địa Phương",
+  localresourcesDesc: "Tìm hiểu về các tính năng dịch vụ địa phương và cách sử dụng chúng",
   cultureUpdates: "Văn Hóa và Cập Nhật",
   cultureUpdatesDesc: "Luôn cập nhật về văn hóa và nghệ thuật của cộng đồng địa phương",
   mapFeatures: "Tính Năng Bản Đồ",
@@ -1282,7 +1282,7 @@ export const faqTranslationsVi = {
       q5: "Làm sao để xác nhận quyền sở hữu doanh nghiệp?",
       q6: "Tôi có thể nổi bật hoặc tài trợ doanh nghiệp không?"
     },
-    localServices: {
+    localresources: {
       q1: "Dịch vụ địa phương là gì?",
       q2: "Làm sao để tìm nhà cung cấp dịch vụ?",
       q3: "Tôi có thể liệt kê dịch vụ của mình không?",
@@ -1407,7 +1407,7 @@ export const faqTranslationsVi = {
       a5: "Nếu doanh nghiệp của bạn đã được liệt kê, bạn có thể xác nhận quyền sở hữu bằng cách liên hệ với quản trị viên. Sau khi được xác minh là chủ sở hữu, bạn sẽ có quyền truy cập để trả lời tin nhắn, cập nhật danh sách và quản lý hồ sơ doanh nghiệp của mình.",
       a6: "Doanh nghiệp được tài trợ nhận được khả năng hiển thị nâng cao trong kết quả tìm kiếm và trên bản đồ. Liên hệ với quản trị viên nền tảng để tìm hiểu về cơ hội tài trợ."
     },
-    localServices: {
+    localresources: {
       a1: "Dịch vụ địa phương bao gồm các chuyên gia và nhà cung cấp dịch vụ như thợ sửa ống nước, thợ điện, gia sư, người dọn dẹp, dịch vụ sửa chữa, tư vấn viên và các dịch vụ chuyên môn khác có sẵn trong khu vực của bạn.",
       a2: "Duyệt phần Dịch Vụ Địa Phương, lọc theo danh mục dịch vụ, tìm kiếm theo từ khóa hoặc sử dụng bản đồ để tìm dịch vụ gần bạn. Mỗi danh sách bao gồm chi tiết nhà cung cấp và thông tin liên hệ.",
       a3: "Có! Nhà cung cấp dịch vụ có thể gửi dịch vụ của họ bằng cách sử dụng 'Gửi Dịch Vụ Địa Phương'. Bao gồm mô tả dịch vụ, danh mục, thông tin liên hệ, khu vực phục vụ và bất kỳ chứng chỉ hoặc chuyên môn liên quan nào.",

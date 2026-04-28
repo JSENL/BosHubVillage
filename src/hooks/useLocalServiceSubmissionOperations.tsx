@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useGeocoding } from './useGeocoding';
 import { useAutoTranslate } from './useAutoTranslate';
 
-export const useLocalServiceSubmissionOperations = () => {
+export const uselocalresourcesubmissionOperations = () => {
   const { user } = useAuth();
   const [actionLoading, setActionLoading] = useState(false);
   const { geocode, isReady } = useGeocoding();

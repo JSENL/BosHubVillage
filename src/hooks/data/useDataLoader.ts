@@ -4,8 +4,8 @@ import { useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
-import { useLocalServices } from "@/hooks/useLocalServices";
-import { useLocalServiceSubmissions } from "@/hooks/useLocalServiceSubmissions";
+import { uselocalresources } from "@/hooks/uselocalresources";
+import { uselocalresourcesubmissions } from "@/hooks/uselocalresourcesubmissions";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { transformDataToUnifiedItems } from '@/utils/data/dataTransformers';
@@ -28,8 +28,8 @@ export const useDataLoader = () => {
   const { data: news, isLoading: newsLoading, isError: newsError, error: newsErrorObj } = useNews();
   const { data: businesses, isLoading: businessLoading, isError: businessError, error: businessErrorObj } = useBusiness();
   const { submissions: businessSubmissions, loading: businessSubmissionsLoading, isError: businessSubmissionsError, error: businessSubmissionsErrorObj } = useBusinessSubmissions();
-  const { data: localServices, isLoading: localServicesLoading, isError: localServicesError, error: localServicesErrorObj } = useLocalServices();
-  const { data: localServiceSubmissions, isLoading: localServiceSubmissionsLoading, isError: localServiceSubmissionsError, error: localServiceSubmissionsErrorObj } = useLocalServiceSubmissions();
+  const { data: localresources, isLoading: localresourcesLoading, isError: localresourcesError, error: localresourcesErrorObj } = uselocalresources();
+  const { data: localresourcesubmissions, isLoading: localresourcesubmissionsLoading, isError: localresourcesubmissionsError, error: localresourcesubmissionsErrorObj } = uselocalresourcesubmissions();
 
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedItems, setHasGeocodedItems] = useState(false);
@@ -42,31 +42,31 @@ export const useDataLoader = () => {
         news: news || [],
         businesses: businesses || [],
         businessSubmissions: businessSubmissions || [],
-        localServices: localServices || [],
-        localServiceSubmissions: localServiceSubmissions || [],
+        localresources: localresources || [],
+        localresourcesubmissions: localresourcesubmissions || [],
       }),
     [
       events,
       news,
       businesses,
       businessSubmissions,
-      localServices,
-      localServiceSubmissions
+      localresources,
+      localresourcesubmissions
     ]
   );
 
   const isLoading = eventsLoading || newsLoading ||
                    businessLoading || businessSubmissionsLoading ||
-                   localServicesLoading || localServiceSubmissionsLoading;
+                   localresourcesLoading || localresourcesubmissionsLoading;
 
   const hasError = eventsError || newsError || businessError || businessSubmissionsError ||
-                   localServicesError || localServiceSubmissionsError;
+                   localresourcesError || localresourcesubmissionsError;
   const errorMessage = useMemo(() => {
     if (!hasError) return null;
     const err = eventsErrorObj ?? newsErrorObj ?? businessErrorObj ?? businessSubmissionsErrorObj ??
-      localServicesErrorObj ?? localServiceSubmissionsErrorObj;
+      localresourcesErrorObj ?? localresourcesubmissionsErrorObj;
     return err?.message ?? 'Failed to load content. Please try again.';
-  }, [hasError, eventsErrorObj, newsErrorObj, businessErrorObj, businessSubmissionsErrorObj, localServicesErrorObj, localServiceSubmissionsErrorObj]);
+  }, [hasError, eventsErrorObj, newsErrorObj, businessErrorObj, businessSubmissionsErrorObj, localresourcesErrorObj, localresourcesubmissionsErrorObj]);
 
   const refetch = useCallback(() => {
     DATA_QUERY_KEYS.forEach((key) => queryClient.refetchQueries({ queryKey: key }));
@@ -105,8 +105,8 @@ export const useDataLoader = () => {
       news: news || [],
       businesses: businesses || [],
       businessSubmissions: businessSubmissions || [],
-      localServices: localServices || [],
-      localServiceSubmissions: localServiceSubmissions || [],
+      localresources: localresources || [],
+      localresourcesubmissions: localresourcesubmissions || [],
     }
   };
 };

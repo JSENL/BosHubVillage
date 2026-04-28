@@ -5,8 +5,8 @@ interface RawDataSources {
   news: any[];
   businesses: any[];
   businessSubmissions: any[];
-  localServices: any[];
-  localServiceSubmissions: any[];
+  localresources: any[];
+  localresourcesubmissions: any[];
 }
 
 export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[] => {
@@ -72,7 +72,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
   items.push(...businessSubmissionItems);
 
   // Transform local services
-  items.push(...data.localServices.map(localService => ({
+  items.push(...data.localresources.map(localService => ({
     id: localService.id,
     title: localService.name,
     description: localService.description || '',
@@ -89,20 +89,20 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
   })));
 
   // Transform local service submissions
-  items.push(...data.localServiceSubmissions.map(localServiceSubmission => ({
-    id: localServiceSubmission.id,
-    title: localServiceSubmission.name,
-    description: localServiceSubmission.description || '',
-    latitude: localServiceSubmission.latitude,
-    longitude: localServiceSubmission.longitude,
+  items.push(...data.localresourcesubmissions.map(localresourcesubmission => ({
+    id: localresourcesubmission.id,
+    title: localresourcesubmission.name,
+    description: localresourcesubmission.description || '',
+    latitude: localresourcesubmission.latitude,
+    longitude: localresourcesubmission.longitude,
     type: 'local-service' as const,
-    address: localServiceSubmission.address,
-    category: localServiceSubmission.category,
-    name: localServiceSubmission.name,
-    neighborhoods: localServiceSubmission.neighborhood,
-    villages: localServiceSubmission.village,
-    is_sponsored: localServiceSubmission.is_sponsored || false,
-    originalData: localServiceSubmission
+    address: localresourcesubmission.address,
+    category: localresourcesubmission.category,
+    name: localresourcesubmission.name,
+    neighborhoods: localresourcesubmission.neighborhood,
+    villages: localresourcesubmission.village,
+    is_sponsored: localresourcesubmission.is_sponsored || false,
+    originalData: localresourcesubmission
   })));
 
   // Transform news

@@ -16,7 +16,7 @@ import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 
-const LocalServiceDetails = () => {
+const LocalResourceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
   
@@ -163,4 +163,4 @@ const LocalServiceDetails = () => {
   );
 };
 
-export default LocalServiceDetails;
+export default LocalResourceDetails;

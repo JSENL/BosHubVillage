@@ -56,7 +56,7 @@ const resources = {
         events: "Events",
         news: "Culture", 
         businesses: "Businesses",
-        localServices: "Local Services"
+        localresources: "Local Services"
       },
       // Map (loading & error states)
       map: {
@@ -502,8 +502,8 @@ const resources = {
         noBusinessesDesc: "We couldn't find any businesses in this area. Try expanding your search.",
         noNewsArticles: "No culture articles",
         noNewsDesc: "There's no culture content to display right now. Stay tuned for updates!",
-        noLocalServicesFound: "No local services found",
-        noLocalServicesDesc: "We couldn't find any local services matching your search.",
+        nolocalresourcesFound: "No local services found",
+        nolocalresourcesDesc: "We couldn't find any local services matching your search.",
         noLocationsToDisplay: "No locations to display",
         noLocationsDesc: "There are no items with location data to show on the map.",
         noMatchesForFilters: "No matches for your filters",
@@ -572,7 +572,7 @@ const resources = {
         events: "Eventos",
         news: "Cultura",
         businesses: "Negocios", 
-        localServices: "Servicios Locales"
+        localresources: "Servicios Locales"
       },
       map: {
         loadingTitle: "Cargando Mapbox",
@@ -1004,8 +1004,8 @@ const resources = {
         noBusinessesDesc: "No pudimos encontrar negocios en esta zona. Intente ampliar su búsqueda.",
         noNewsArticles: "No hay artículos de cultura",
         noNewsDesc: "No hay contenido de cultura para mostrar en este momento. ¡Manténgase atento!",
-        noLocalServicesFound: "No se encontraron servicios locales",
-        noLocalServicesDesc: "No pudimos encontrar servicios locales que coincidan con su búsqueda.",
+        nolocalresourcesFound: "No se encontraron servicios locales",
+        nolocalresourcesDesc: "No pudimos encontrar servicios locales que coincidan con su búsqueda.",
         noLocationsToDisplay: "No hay ubicaciones para mostrar",
         noLocationsDesc: "No hay elementos con datos de ubicación para mostrar en el mapa.",
         noMatchesForFilters: "No hay coincidencias con sus filtros",
@@ -1074,7 +1074,7 @@ const resources = {
         events: "Événements",
         news: "Culture",
         businesses: "Entreprises",
-        localServices: "Services Locaux"
+        localresources: "Services Locaux"
       },
       map: {
         loadingTitle: "Chargement de Mapbox",
@@ -1506,8 +1506,8 @@ const resources = {
         noBusinessesDesc: "Nous n'avons trouvé aucune entreprise dans cette zone. Essayez d'élargir votre recherche.",
         noNewsArticles: "Aucun article de culture",
         noNewsDesc: "Aucun contenu culturel à afficher pour le moment. Restez à l'écoute !",
-        noLocalServicesFound: "Aucun service local trouvé",
-        noLocalServicesDesc: "Nous n'avons trouvé aucun service local correspondant à votre recherche.",
+        nolocalresourcesFound: "Aucun service local trouvé",
+        nolocalresourcesDesc: "Nous n'avons trouvé aucun service local correspondant à votre recherche.",
         noLocationsToDisplay: "Aucun emplacement à afficher",
         noLocationsDesc: "Aucun élément avec des données de localisation à afficher sur la carte.",
         noMatchesForFilters: "Aucune correspondance pour vos filtres",
@@ -1576,7 +1576,7 @@ const resources = {
         events: "Sự Kiện",
         news: "Văn Hóa",
         businesses: "Doanh Nghiệp",
-        localServices: "Dịch Vụ Địa Phương"
+        localresources: "Dịch Vụ Địa Phương"
       },
       map: {
         loadingTitle: "Đang tải Mapbox",
@@ -2008,8 +2008,8 @@ const resources = {
         noBusinessesDesc: "Chúng tôi không tìm thấy doanh nghiệp nào trong khu vực này. Thử mở rộng tìm kiếm.",
         noNewsArticles: "Không có bài văn hóa",
         noNewsDesc: "Hiện không có nội dung văn hóa để hiển thị. Hãy chờ cập nhật!",
-        noLocalServicesFound: "Không tìm thấy dịch vụ địa phương",
-        noLocalServicesDesc: "Chúng tôi không tìm thấy dịch vụ địa phương phù hợp với tìm kiếm của bạn.",
+        nolocalresourcesFound: "Không tìm thấy dịch vụ địa phương",
+        nolocalresourcesDesc: "Chúng tôi không tìm thấy dịch vụ địa phương phù hợp với tìm kiếm của bạn.",
         noLocationsToDisplay: "Không có vị trí để hiển thị",
         noLocationsDesc: "Không có mục nào có dữ liệu vị trí để hiển thị trên bản đồ.",
         noMatchesForFilters: "Không có kết quả phù hợp với bộ lọc của bạn",
@@ -2078,7 +2078,7 @@ const resources = {
         events: "Eventos",
         news: "Cultura",
         businesses: "Negócios",
-        localServices: "Serviços Locais"
+        localresources: "Serviços Locais"
       },
       map: {
         loadingTitle: "Carregando Mapbox",
@@ -2510,8 +2510,8 @@ const resources = {
         noBusinessesDesc: "Não encontramos negócios nesta área. Tente expandir sua pesquisa.",
         noNewsArticles: "Nenhum artigo de cultura",
         noNewsDesc: "Não há conteúdo de cultura para exibir no momento. Fique atento às atualizações!",
-        noLocalServicesFound: "Nenhum serviço local encontrado",
-        noLocalServicesDesc: "Não encontramos serviços locais que correspondam à sua pesquisa.",
+        nolocalresourcesFound: "Nenhum serviço local encontrado",
+        nolocalresourcesDesc: "Não encontramos serviços locais que correspondam à sua pesquisa.",
         noLocationsToDisplay: "Nenhuma localização para exibir",
         noLocationsDesc: "Não há itens com dados de localização para mostrar no mapa.",
         noMatchesForFilters: "Nenhuma correspondência para seus filtros",

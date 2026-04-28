@@ -2,15 +2,15 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useGeocoding } from '@/hooks/useGeocoding';
-import { useLocalServices } from '@/hooks/useLocalServices';
-import { geocodeLocalServices } from '@/utils/geocodeLocalServices';
+import { uselocalresources } from '@/hooks/uselocalresources';
+import { geocodelocalresources } from '@/utils/geocodelocalresources';
 import { MapPin, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const GeocodeAllLocalResourcesButton = () => {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const { geocode, isReady } = useGeocoding();
-  const { data: localResources, refetch } = useLocalServices();
+  const { data: localResources, refetch } = uselocalresources();
 
   const handleGeocodeAll = async () => {
     if (!isReady) {
@@ -34,7 +34,7 @@ export const GeocodeAllLocalResourcesButton = () => {
 
     setIsGeocoding(true);
     try {
-      await geocodeLocalServices(resourcesNeedingGeocode, geocode);
+      await geocodelocalresources(resourcesNeedingGeocode, geocode);
       toast.success(`Successfully geocoded ${resourcesNeedingGeocode.length} local resources`);
       refetch();
     } catch (error: any) {

@@ -80,15 +80,15 @@ export const FAQ = () => {
     },
     {
       id: 'local-services',
-      title: t('faq.localServices'),
+      title: t('faq.localresources'),
       icon: <Wrench className="h-5 w-5" />,
-      description: t('faq.localServicesDesc'),
+      description: t('faq.localresourcesDesc'),
       color: 'bg-orange-100 text-orange-700',
       items: [
-        { question: t('faq.questions.localServices.q1'), answer: t('faq.answers.localServices.a1') },
-        { question: t('faq.questions.localServices.q2'), answer: t('faq.answers.localServices.a2') },
-        { question: t('faq.questions.localServices.q3'), answer: t('faq.answers.localServices.a3') },
-        { question: t('faq.questions.localServices.q4'), answer: t('faq.answers.localServices.a4') }
+        { question: t('faq.questions.localresources.q1'), answer: t('faq.answers.localresources.a1') },
+        { question: t('faq.questions.localresources.q2'), answer: t('faq.answers.localresources.a2') },
+        { question: t('faq.questions.localresources.q3'), answer: t('faq.answers.localresources.a3') },
+        { question: t('faq.questions.localresources.q4'), answer: t('faq.answers.localresources.a4') }
       ]
     },
     {

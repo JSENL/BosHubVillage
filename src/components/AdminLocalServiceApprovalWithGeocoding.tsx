@@ -1,20 +1,20 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useLocalServices } from '@/hooks/useLocalServices';
+import { uselocalresources } from '@/hooks/uselocalresources';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { LocalResourceSubmission } from '@/types/localServices';
+import { LocalResourceSubmission } from '@/types/localresources';
 import { Clock, Heart } from 'lucide-react';
-import { GeocodeAllLocalServicesButton } from '@/components/GeocodeAllLocalServicesButton';
+import { GeocodeAlllocalresourcesButton } from '@/components/GeocodeAlllocalresourcesButton';
 import { DeleteAllLocalResourcesButton } from '@/components/admin/DeleteAllLocalResourcesButton';
 import { PublishedLocalResourcesTable } from '@/components/admin/PublishedLocalResourcesTable';
-import LocalServiceSubmissionCard from '@/components/LocalServiceSubmissionCard';
+import localresourcesubmissionCard from '@/components/localresourcesubmissionCard';
 
 const AdminLocalResourceApprovalWithGeocoding = () => {
   const { isAdmin } = useAuth();
-  const { data: localResources, refetch: refetchLocalResources } = useLocalServices();
+  const { data: localResources, refetch: refetchLocalResources } = uselocalresources();
   const [submissions, setSubmissions] = useState<LocalResourceSubmission[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,7 +69,7 @@ const AdminLocalResourceApprovalWithGeocoding = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Local Resources Management</h2>
         <div className="flex space-x-2">
-          <GeocodeAllLocalServicesButton />
+          <GeocodeAlllocalresourcesButton />
           <DeleteAllLocalResourcesButton 
             localResourceCount={localResources?.length || 0}
             onUpdate={refetchLocalResources}
@@ -94,7 +94,7 @@ const AdminLocalResourceApprovalWithGeocoding = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
               {pendingSubmissions.map((submission) => (
-                <LocalServiceSubmissionCard
+                <localresourcesubmissionCard
                   key={submission.id}
                   submission={submission}
                   onUpdate={fetchSubmissions}

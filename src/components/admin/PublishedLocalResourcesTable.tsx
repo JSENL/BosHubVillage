@@ -24,7 +24,7 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Heart, Trash2, MapPin, Building2, Edit } from 'lucide-react';
-import { LocalResource } from '@/types/localServices';
+import { LocalResource } from '@/types/localresources';
 import { EditLocalResourceDialog } from './EditLocalResourceDialog';
 
 interface PublishedLocalResourcesTableProps {

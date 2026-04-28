@@ -353,10 +353,10 @@ export function AnalyticsOverview() {
                 
                 <div className="flex justify-between items-center">
                   <span>Local Services</span>
-                  <span className="font-bold">{analytics.contentStats.totalLocalServices}</span>
+                  <span className="font-bold">{analytics.contentStats.totallocalresources}</span>
                 </div>
                 <Progress 
-                  value={analytics.contentStats.totalLocalServices / 
+                  value={analytics.contentStats.totallocalresources / 
                     Math.max(analytics.contentStats.totalEvents, analytics.contentStats.totalNews, analytics.contentStats.totalBusinesses) * 100} 
                 />
               </CardContent>

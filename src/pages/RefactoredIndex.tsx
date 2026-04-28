@@ -14,8 +14,8 @@ import { useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
-import { useLocalServices } from "@/hooks/useLocalServices";
-import { useLocalServiceSubmissions } from "@/hooks/useLocalServiceSubmissions";
+import { uselocalresources } from "@/hooks/uselocalresources";
+import { uselocalresourcesubmissions } from "@/hooks/uselocalresourcesubmissions";
 import { sortBySponsored } from "@/utils/sponsoredUtils";
 
 const RefactoredIndex = () => {
@@ -24,22 +24,22 @@ const RefactoredIndex = () => {
   const { data: news, isLoading: newsLoading } = useNews();
   const { data: businesses, isLoading: businessLoading } = useBusiness();
   const { submissions: businessSubmissions, loading: businessSubmissionsLoading } = useBusinessSubmissions();
-  const { data: localServices, isLoading: localServicesLoading } = useLocalServices();
-  const { data: localServiceSubmissions, isLoading: localServiceSubmissionsLoading } = useLocalServiceSubmissions();
+  const { data: localresources, isLoading: localresourcesLoading } = uselocalresources();
+  const { data: localresourcesubmissions, isLoading: localresourcesubmissionsLoading } = uselocalresourcesubmissions();
   const { geocode, isReady } = useGeocoding();
   const [hasGeocodedItems, setHasGeocodedItems] = useState(false);
 
   const isLoading = eventsLoading || newsLoading || businessLoading || 
-                   businessSubmissionsLoading || localServicesLoading || 
-                   localServiceSubmissionsLoading;
+                   businessSubmissionsLoading || localresourcesLoading || 
+                   localresourcesubmissionsLoading;
 
   const data = {
     events,
     news,
     businesses,
     businessSubmissions,
-    localServices,
-    localServiceSubmissions
+    localresources,
+    localresourcesubmissions
   };
 
   const loading = { isLoading };
@@ -142,7 +142,7 @@ const RefactoredIndex = () => {
       originalData: business
     })),
     // Local Services
-    ...(data.localServices || []).map((service: any) => ({
+    ...(data.localresources || []).map((service: any) => ({
       id: service.id,
       title: service.name,
       description: service.description,

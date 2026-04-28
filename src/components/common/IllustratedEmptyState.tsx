@@ -111,7 +111,7 @@ const emptyStateKeys: Record<EmptyStateVariant, { title: string; description: st
   events: { title: 'emptyStates.noEventsScheduled', description: 'emptyStates.noEventsDesc' },
   business: { title: 'emptyStates.noBusinessesFound', description: 'emptyStates.noBusinessesDesc' },
   news: { title: 'emptyStates.noNewsArticles', description: 'emptyStates.noNewsDesc' },
-  'local-service': { title: 'emptyStates.noLocalServicesFound', description: 'emptyStates.noLocalServicesDesc' },
+  'local-service': { title: 'emptyStates.nolocalresourcesFound', description: 'emptyStates.nolocalresourcesDesc' },
   map: { title: 'emptyStates.noLocationsToDisplay', description: 'emptyStates.noLocationsDesc' },
   filter: { title: 'emptyStates.noMatchesForFilters', description: 'emptyStates.tryClearingFilters' },
 };

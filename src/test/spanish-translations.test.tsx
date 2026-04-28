@@ -2,9 +2,9 @@ import { describe, it, expect, beforeEach } from "vitest";
 import i18n from "@/i18n/config";
 
 describe("Spanish Translations", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     // Set language to Spanish before each test
-    i18n.changeLanguage("es");
+    await i18n.changeLanguage("es");
   });
 
   describe("Navigation translations", () => {
@@ -76,8 +76,8 @@ describe("Spanish Translations", () => {
       expect(i18n.t("itemTypes.businesses")).toBe("Negocios");
     });
 
-    it("should have Spanish translation for localServices", () => {
-      expect(i18n.t("itemTypes.localServices")).toBe("Servicios Locales");
+    it("should have Spanish translation for localresources", () => {
+      expect(i18n.t("itemTypes.localresources")).toBe("Servicios Locales");
     });
   });
 

@@ -52,7 +52,7 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
       const localServiceIds = activitiesData.filter(a => a.item_type === 'local-service').map(a => a.item_id);
 
       // Fetch related data in parallel
-      const [usersData, eventsData, businessData, newsData, localServicesData] = await Promise.all([
+      const [usersData, eventsData, businessData, newsData, localresourcesData] = await Promise.all([
         userIds.length > 0 
           ? supabase.from('profiles').select('id, full_name').in('id', userIds)
           : { data: [] },
@@ -78,7 +78,7 @@ export const UserActivityFeed = ({ userId }: UserActivityFeedProps) => {
       );
       const businessMap = new Map((businessData.data || []).map(b => [b.id, b.title]));
       const newsMap = new Map((newsData.data || []).map(n => [n.id, n.title]));
-      const localServiceMap = new Map((localServicesData.data || []).map(l => [l.id, l.name]));
+      const localServiceMap = new Map((localresourcesData.data || []).map(l => [l.id, l.name]));
 
       // Enrich activities with item names
       return activitiesData.map((activity): EnrichedActivity => {

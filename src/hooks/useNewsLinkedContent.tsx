@@ -45,7 +45,7 @@ export const useNewsLinkedContent = (newsId: string) => {
       const eventIds = links.filter(l => l.content_type === 'event').map(l => l.content_id);
       const localServiceIds = links.filter(l => l.content_type === 'local_service').map(l => l.content_id);
 
-      const [businesses, events, localServices] = await Promise.all([
+      const [businesses, events, localresources] = await Promise.all([
         businessIds.length > 0 
           ? supabase.from('business').select('id, title, business_type, neighborhood').in('id', businessIds)
           : { data: [] },
@@ -71,7 +71,7 @@ export const useNewsLinkedContent = (newsId: string) => {
         } else if (link.content_type === 'event') {
           result.event = events.data?.find(e => e.id === link.content_id);
         } else if (link.content_type === 'local_service') {
-          result.local_resource = localServices.data?.find(ls => ls.id === link.content_id);
+          result.local_resource = localresources.data?.find(ls => ls.id === link.content_id);
         }
 
         return result;
