@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { LocalResourceSubmission } from '@/types/localresources';
 import { Clock, Heart } from 'lucide-react';
-import { GeocodeAlllocalresourcesButton } from '@/components/GeocodeAlllocalresourcesButton';
+import { GeocodeAlllocalresourcesButton } from '@/components/GeocodeAllLocalResourcesButton';
 import { DeleteAllLocalResourcesButton } from '@/components/admin/DeleteAllLocalResourcesButton';
 import { PublishedLocalResourcesTable } from '@/components/admin/PublishedLocalResourcesTable';
 import localresourcesubmissionCard from '@/components/localresourcesubmissionCard';
