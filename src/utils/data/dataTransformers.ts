@@ -71,7 +71,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
   
   items.push(...businessSubmissionItems);
 
-  // Transform local services
+  // Transform local resources
   items.push(...data.localresources.map(localService => ({
     id: localService.id,
     title: localService.name,
@@ -88,7 +88,7 @@ export const transformDataToUnifiedItems = (data: RawDataSources): UnifiedItem[]
     originalData: localService
   })));
 
-  // Transform local service submissions
+  // Transform local resource submissions
   items.push(...data.localresourcesubmissions.map(localresourcesubmission => ({
     id: localresourcesubmission.id,
     title: localresourcesubmission.name,

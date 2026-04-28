@@ -19,7 +19,7 @@ export const GeocodeAlllocalresourcesButton = () => {
     try {
       await geocodeAlllocalresources(geocode);
     } catch (error) {
-      console.error('Error geocoding all local services:', error);
+      console.error('Error geocoding all local resources:', error);
     } finally {
       setIsGeocoding(false);
     }

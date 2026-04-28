@@ -24,28 +24,28 @@ CREATE TRIGGER update_local_services_nonprofits_updated_at
 ALTER TABLE public.local_services_nonprofits ENABLE ROW LEVEL SECURITY;
 
 -- Create policy to allow public read access (since this is likely public information)
-CREATE POLICY "Allow public read access to local services and nonprofits"
+CREATE POLICY "Allow public read access to local resources and nonprofits"
   ON public.local_services_nonprofits
   FOR SELECT
   TO public
   USING (true);
 
 -- Create policy to allow authenticated users to insert
-CREATE POLICY "Allow authenticated users to insert local services and nonprofits"
+CREATE POLICY "Allow authenticated users to insert local resources and nonprofits"
   ON public.local_services_nonprofits
   FOR INSERT
   TO authenticated
   WITH CHECK (true);
 
 -- Create policy to allow authenticated users to update
-CREATE POLICY "Allow authenticated users to update local services and nonprofits"
+CREATE POLICY "Allow authenticated users to update local resources and nonprofits"
   ON public.local_services_nonprofits
   FOR UPDATE
   TO authenticated
   USING (true);
 
 -- Create policy to allow authenticated users to delete
-CREATE POLICY "Allow authenticated users to delete local services and nonprofits"
+CREATE POLICY "Allow authenticated users to delete local resources and nonprofits"
   ON public.local_services_nonprofits
   FOR DELETE
   TO authenticated

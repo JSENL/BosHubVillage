@@ -8,7 +8,7 @@ export const onboardingTranslationsEn = {
   },
   modal: {
     title: "Welcome to HubVillage! 🎉",
-    subtitle: "Your community hub for events, businesses, culture, and local services in Southern Boston.",
+    subtitle: "Your community hub for events, businesses, culture, and local resources in Southern Boston.",
     generalTitle: "🌟 Show me everything!",
     generalDesc: "Complete tour of all features (recommended)",
     eventsTitle: "Events",
@@ -30,12 +30,12 @@ export const onboardingTranslationsEn = {
   general: {
     welcome: "Welcome to HubVillage! Your community hub for Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain. Discover local events, businesses, culture, and services all in one place.",
     viewToggle: "Switch between Map and List views. The Map shows everything with color-coded markers on an interactive Mapbox map. List view displays items in a scrollable grid.",
-    search: "Search across all content - events, businesses, culture, and local services. Results update in real-time as you type.",
+    search: "Search across all content - events, businesses, culture, and local resources. Results update in real-time as you type.",
     filters: "Filter by type (Events, Businesses, Culture, Services), category, neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), village, and date. Use 'Near Me' to find content close to you!",
     nearMe: "📍 NEAR ME: Enable location to find events, businesses, and services within 1-50km of you. Perfect for discovering what's happening in your immediate area!",
     discovery: "📊 DISCOVERY SIDEBAR: See trending content, your bookmarks, people to follow, activity from users you follow, and your saved searches with notification options.",
     savedSearches: "🔍 SAVED SEARCHES: Save your favorite filter combinations! Enable notifications to get alerts when new content matches - via email or in-app!",
-    submitContent: "✏️ SUBMIT CONTENT: Click 'Submit' in the navigation to add Events, Businesses, Culture, or Local Services. All submissions are reviewed before publishing.",
+    submitContent: "✏️ SUBMIT CONTENT: Click 'Submit' in the navigation to add Events, Businesses, Culture, or local resources. All submissions are reviewed before publishing.",
     socialFeatures: "👥 SOCIAL FEATURES: Bookmark items, leave comments and ratings, message businesses, follow other users, and see trending content. Build your community network!",
     account: "👤 YOUR ACCOUNT: Track your submissions in 'My Submissions', manage conversations in 'My Messages', and edit your profile to personalize your experience.",
     weeklyDigest: "📧 WEEKLY DIGEST: Enable email digests in your profile settings. Choose your preferred day and receive a summary of community highlights.",
@@ -62,13 +62,13 @@ export const onboardingTranslationsEn = {
     ready: "Ready to list your business? Click 'Submit Business' and complete the form. Track approval in 'My Submissions'. Once approved, customers can find and message you!"
   },
   services: {
-    intro: "Find trusted local service providers - plumbers, electricians, tutors, cleaners, and more - serving Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain.",
+    intro: "Find trusted local resource providers - plumbers, electricians, tutors, cleaners, and more - serving Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain.",
     submit: "Submit your service with description, categories, contact info, coverage area, and certifications. Upload photos of your work.",
     views: "Switch between Grid, List, and Map views. Map shows services with orange 'L' markers.",
     filters: "Filter services by category (home, professional, personal services), location, or neighborhood. Find exactly what you need.",
     search: "Search for services like 'plumber', 'tutor', 'electrician', or any professional service. Click for full details and contact info.",
     connect: "View service details, contact providers directly, leave reviews to help others, and bookmark trusted providers for future reference.",
-    ready: "Ready to add your service? Click 'Submit Local Service' and fill out the form. Help your community find the services they need!"
+    ready: "Ready to add your service? Click 'Submit Local Resource' and fill out the form. Help your community find the resources they need!"
   }
 };
 

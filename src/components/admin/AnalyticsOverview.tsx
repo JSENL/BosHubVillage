@@ -352,7 +352,7 @@ export function AnalyticsOverview() {
                 />
                 
                 <div className="flex justify-between items-center">
-                  <span>Local Services</span>
+                  <span>local resources</span>
                   <span className="font-bold">{analytics.contentStats.totallocalresources}</span>
                 </div>
                 <Progress 

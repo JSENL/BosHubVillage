@@ -27,7 +27,7 @@ const resources = {
         submitEvent: "Submit Event",
         submitBusiness: "Submit Business",
         submitNews: "Submit Culture",
-        submitLocalService: "Submit Local Service",
+        submitLocalService: "Submit Local Resource",
         contactAdmin: "Contact Admin",
         myMessages: "My Messages",
         mySubmissions: "My Submissions",
@@ -56,7 +56,7 @@ const resources = {
         events: "Events",
         news: "Culture", 
         businesses: "Businesses",
-        localresources: "Local Services"
+        localresources: "Local Resources"
       },
       // Map (loading & error states)
       map: {
@@ -79,8 +79,8 @@ const resources = {
         business: "Businesses",
         businesses: "Businesses",
         news: "Culture",
-        localService: "Local Services",
-        services: "Local Services"
+        localResource: "Local Resources",
+        services: "Local Resources"
       },
       // Filters
       filters: {
@@ -502,8 +502,8 @@ const resources = {
         noBusinessesDesc: "We couldn't find any businesses in this area. Try expanding your search.",
         noNewsArticles: "No culture articles",
         noNewsDesc: "There's no culture content to display right now. Stay tuned for updates!",
-        nolocalresourcesFound: "No local services found",
-        nolocalresourcesDesc: "We couldn't find any local services matching your search.",
+        nolocalresourcesFound: "No local resources found",
+        nolocalresourcesDesc: "We couldn't find any local resources matching your search.",
         noLocationsToDisplay: "No locations to display",
         noLocationsDesc: "There are no items with location data to show on the map.",
         noMatchesForFilters: "No matches for your filters",

@@ -23,7 +23,7 @@ const initI18n = async (language: string) => {
     resources: {
       en: { 
         translation: {
-          itemTypes: { events: 'Events', news: 'Culture', businesses: 'Businesses', localresources: 'Local Services' }
+          itemTypes: { events: 'Events', news: 'Culture', businesses: 'Businesses', localresources: 'local resources' }
         } 
       },
       es: { 

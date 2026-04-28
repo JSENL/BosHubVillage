@@ -20,7 +20,7 @@ const LocalResourceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
   
-  // For local services, only admins can edit links (no owner concept)
+  // For local resources, only admins can edit links (no owner concept)
   const canEditLinks = isAdmin;
 
   const { data: resource, isLoading } = useQuery({
@@ -60,7 +60,7 @@ const LocalResourceDetails = () => {
         <div className="max-w-4xl mx-auto py-8 px-4">
           <div className="text-center">
             <h3 className="text-xl font-semibold mb-2">Service Not Found</h3>
-            <p className="text-gray-600">The local service you're looking for doesn't exist.</p>
+            <p className="text-gray-600">The local resource you're looking for doesn't exist.</p>
           </div>
         </div>
       </div>

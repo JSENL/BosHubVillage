@@ -43,7 +43,7 @@ export const useFollowingActivity = (filterType: ActivityType = 'all') => {
 
       const activities: FollowingActivity[] = [];
 
-      // Fetch posts (events, news, businesses, local services) if needed
+      // Fetch posts (events, news, businesses, local resources) if needed
       if (filterType === 'post' || filterType === 'all') {
         // Events (no status column - all events in this table are approved)
         const eventsResponse = await (supabase as any)

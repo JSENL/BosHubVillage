@@ -141,7 +141,7 @@ const RefactoredIndex = () => {
       is_sponsored: business.is_sponsored,
       originalData: business
     })),
-    // Local Services
+    // local resources
     ...(data.localresources || []).map((service: any) => ({
       id: service.id,
       title: service.name,

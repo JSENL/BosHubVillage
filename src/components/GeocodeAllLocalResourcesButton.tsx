@@ -61,3 +61,6 @@ export const GeocodeAllLocalResourcesButton = () => {
     </Button>
   );
 };
+
+// Backward-compatible export for legacy import names.
+export const GeocodeAlllocalresourcesButton = GeocodeAllLocalResourcesButton;

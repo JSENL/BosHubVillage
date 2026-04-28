@@ -89,7 +89,7 @@ export const About = () => {
               {t('about.mission.title', 'Our Mission')}
             </h2>
             <p className="text-muted-foreground text-center max-w-3xl mx-auto leading-relaxed">
-              {t('about.mission.description', 'HubVillage was created with a simple vision: to help neighbors connect, local businesses thrive, and communities flourish. In an increasingly digital world, we believe there\'s still immense value in knowing your neighbors, supporting local businesses, and being an active part of your community. Our platform makes it easy to discover what\'s happening nearby, find trusted local services, and stay informed about matters that affect your neighborhood.')}
+              {t('about.mission.description', 'HubVillage was created with a simple vision: to help neighbors connect, local businesses thrive, and communities flourish. In an increasingly digital world, we believe there\'s still immense value in knowing your neighbors, supporting local businesses, and being an active part of your community. Our platform makes it easy to discover what\'s happening nearby, find trusted local resources, and stay informed about matters that affect your neighborhood.')}
             </p>
           </CardContent>
         </Card>

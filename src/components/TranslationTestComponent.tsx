@@ -206,7 +206,7 @@ export const TranslationTestComponent = () => {
             type="news"
           />
           <TranslationTestCard
-            title="Sample Local Service"
+            title="Sample Local Resource"
             type="local-service"
             price={25}
           />

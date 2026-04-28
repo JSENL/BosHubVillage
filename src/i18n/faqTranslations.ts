@@ -13,7 +13,7 @@ export const faqTranslationsEn = {
   eventsDesc: "Discover and share community events in your neighborhood",
   businesses: "Businesses",
   businessesDesc: "Find and connect with local businesses",
-  localresources: "Local Services",
+  localresources: "local resources",
   localresourcesDesc: "Discover service providers and professionals in your area",
   cultureUpdates: "Culture & Updates",
   cultureUpdatesDesc: "Stay informed with local community culture and arts",
@@ -77,10 +77,10 @@ export const faqTranslationsEn = {
       q6: "Can I feature or sponsor my business?"
     },
     localresources: {
-      q1: "What are local services?",
+      q1: "What are local resources?",
       q2: "How do I find service providers?",
       q3: "Can I list my services?",
-      q4: "How are local services different from businesses?"
+      q4: "How are local resources different from businesses?"
     },
     culture: {
       q1: "What kind of culture content is featured?",
@@ -182,9 +182,9 @@ export const faqTranslationsEn = {
   // Answers
   answers: {
     gettingStarted: {
-      a1: "HubVillage is a community platform connecting residents of Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain with local events, businesses, services, and culture. Discover what's happening in your neighborhood, find trusted local services, and stay connected with your community.",
+      a1: "HubVillage is a community platform connecting residents of Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain with local events, businesses, services, and culture. Discover what's happening in your neighborhood, find trusted local resources, and stay connected with your community.",
       a2: "You can browse events, businesses, services, and culture without an account. However, creating a free account lets you submit content, save bookmarks, leave comments and ratings, message businesses, follow other users, save searches, and receive personalized recommendations.",
-      a3: "The homepage shows all content types in a unified view with grid, list, and map layouts. Use the type filter to focus on Events, Businesses, Local Services, or Culture. Filter by neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), category, or date. The map view uses Mapbox to show everything on an interactive map.",
+      a3: "The homepage shows all content types in a unified view with grid, list, and map layouts. Use the type filter to focus on Events, Businesses, local resources, or Culture. Filter by neighborhood (Mattapan, Roxbury, Hyde Park, Dorchester, Jamaica Plain), category, or date. The map view uses Mapbox to show everything on an interactive map.",
       a4: "First-time users see an interactive onboarding tour explaining key features. You can revisit help from your account menu where available, clear site-specific tour data in your browser if you need a fresh start, and use this FAQ (search at the top) anytime."
     },
     events: {
@@ -205,10 +205,10 @@ export const faqTranslationsEn = {
       a6: "Sponsored businesses receive enhanced visibility with a 'Sponsored' badge. Contact the platform administrators through the Contact Admin option to learn about sponsorship."
     },
     localresources: {
-      a1: "Local services include professionals and service providers like plumbers, electricians, tutors, cleaners, repair services, consultants, healthcare providers, and other skilled services available in our neighborhoods.",
-      a2: "Browse the Local Services section, filter by service category, or use the Mapbox map to find services nearby (orange 'L' markers). Each listing includes provider details, description, and contact information.",
-      a3: "Yes! Service providers can submit their services using 'Submit Local Service'. Include your service description, category, contact info, address, and any relevant details.",
-      a4: "Local services typically refer to individual professionals or smaller service providers (freelancers, contractors, consultants), while businesses are established commercial entities with a storefront or office."
+      a1: "local resources include professionals and service providers like plumbers, electricians, tutors, cleaners, repair services, consultants, healthcare providers, and other skilled services available in our neighborhoods.",
+      a2: "Browse the local resources section, filter by service category, or use the Mapbox map to find services nearby (orange 'L' markers). Each listing includes provider details, description, and contact information.",
+      a3: "Yes! Service providers can submit their services using 'Submit Local Resource'. Include your service description, category, contact info, address, and any relevant details.",
+      a4: "local resources typically refer to individual professionals or smaller service providers (freelancers, contractors, consultants), while businesses are established commercial entities with a storefront or office."
     },
     culture: {
       a1: "HubVillage features local community culture content, announcements, updates about local initiatives, community events coverage, arts and cultural activities relevant to Mattapan, Roxbury, Hyde Park, Dorchester, and Jamaica Plain residents.",
@@ -217,9 +217,9 @@ export const faqTranslationsEn = {
       a4: "Yes. The submission form includes media uploads (images and videos) similar to events. Admins can also paste or upload a cover image when editing a published article."
     },
     map: {
-      a1: "The interactive Mapbox map shows all content with color-coded markers: Red 'E' for Events, Blue 'B' for Businesses, Orange 'L' for Local Services, and Purple 'C' for Culture. Click markers for details, use clustering for dense areas, and resize the map panel. The map is centered on Southern Boston covering all five neighborhoods.",
+      a1: "The interactive Mapbox map shows all content with color-coded markers: Red 'E' for Events, Blue 'B' for Businesses, Orange 'L' for local resources, and Purple 'C' for Culture. Click markers for details, use clustering for dense areas, and resize the map panel. The map is centered on Southern Boston covering all five neighborhoods.",
       a2: "Yes! Click any map marker and select 'Get Directions' for turn-by-turn directions with distance and time estimates. You can also open directions in Google Maps, Apple Maps, or other navigation apps.",
-      a3: "Red 'E' = Events, Blue 'B' = Businesses, Orange 'L' = Local Services, Purple 'C' = Culture. Numbered circles indicate clusters - click to zoom in. The map legend helps identify all marker types.",
+      a3: "Red 'E' = Events, Blue 'B' = Businesses, Orange 'L' = local resources, Purple 'C' = Culture. Numbered circles indicate clusters - click to zoom in. The map legend helps identify all marker types.",
       a4: "Yes! Use the map search box to find specific addresses or locations. You can drag and reposition the map for better visibility and use the map legend for reference."
     },
     nearMe: {
@@ -238,7 +238,7 @@ export const faqTranslationsEn = {
     },
     user: {
       a1: "Click 'Sign In' in the navigation and select 'Sign Up' to create a free account using your email. Account creation is quick and unlocks all interactive features.",
-      a2: "With an account you can: submit events, businesses, local services, and culture; leave comments and ratings; bookmark items; message businesses; follow other users; save searches; receive notifications; customize your profile; subscribe to the weekly digest; register for events when offered; and manage cover images and framing on events you created once they are published.",
+      a2: "With an account you can: submit events, businesses, local resources, and culture; leave comments and ratings; bookmark items; message businesses; follow other users; save searches; receive notifications; customize your profile; subscribe to the weekly digest; register for events when offered; and manage cover images and framing on events you created once they are published.",
       a3: "Visit 'My Submissions' from your account menu to see all content you've submitted, track approval status (pending, approved, rejected), and view admin notes.",
       a4: "Yes! Click the bookmark icon on any event, business, service, or culture article to save it. Access your bookmarks through the Discovery sidebar or the Bookmarks section.",
       a5: "The Discovery sidebar shows trending content, your saved searches, bookmarked items, recently viewed items, and suggested people to follow. It helps you discover new content and manage your personalized experience.",

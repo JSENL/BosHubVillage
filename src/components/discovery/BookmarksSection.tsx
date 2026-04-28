@@ -64,7 +64,7 @@ export const BookmarksSection = () => {
         }
       }
 
-      // Fetch local services
+      // Fetch local resources
       if (serviceIds.length > 0) {
         const { data: services } = await supabase
           .from('local_resources')

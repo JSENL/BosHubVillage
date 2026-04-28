@@ -7,7 +7,7 @@ interface LocalResourcesMapProps {
 }
 
 export const LocalResourcesMap = ({ localresources }: LocalResourcesMapProps) => {
-  console.log('🏪 LocalResourcesMap: Starting with', localresources.length, 'local services');
+  console.log('🏪 LocalResourcesMap: Starting with', localresources.length, 'local resources');
   
   // Convert local resources to unified items for map display
   const unifiedItems: UnifiedItem[] = localresources.map(service => {
@@ -26,7 +26,7 @@ export const LocalResourcesMap = ({ localresources }: LocalResourcesMapProps) =>
       originalData: service
     };
     
-    console.log(`🏪 Converting local service "${service.name}" to unified item:`, {
+    console.log(`🏪 Converting local resource "${service.name}" to unified item:`, {
       id: service.id,
       rawLat: service.latitude,
       rawLng: service.longitude,

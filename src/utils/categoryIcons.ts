@@ -85,7 +85,7 @@ const categoryIconMap: Record<string, LucideIcon> = {
   'market': ShoppingBag,
   'farmers market': ShoppingBag,
   
-  // Local Services / Businesses
+  // local resources / Businesses
   'healthcare': Stethoscope,
   'medical': Stethoscope,
   'doctor': Stethoscope,
