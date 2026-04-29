@@ -671,6 +671,53 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          instant_email: boolean
+          instant_in_app: boolean
+          keywords: string[]
+          neighborhoods: string[]
+          recommendations_enabled: boolean
+          subscribed_item_types: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          instant_email?: boolean
+          instant_in_app?: boolean
+          keywords?: string[]
+          neighborhoods?: string[]
+          recommendations_enabled?: boolean
+          subscribed_item_types?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          instant_email?: boolean
+          instant_in_app?: boolean
+          keywords?: string[]
+          neighborhoods?: string[]
+          recommendations_enabled?: boolean
+          subscribed_item_types?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_attendees: {
         Row: {
           event_id: string

@@ -113,6 +113,13 @@ export const useNewsSubmissionOperations = () => {
       // Trigger auto-translation for the new news
       if (status === 'approved' && newNewsId) {
         translateContent('news', newNewsId, false);
+        supabase.functions
+          .invoke('send-content-alerts', {
+            body: { itemType: 'news', itemId: newNewsId },
+          })
+          .catch((notifyError) => {
+            console.error('Culture alert dispatch failed:', notifyError);
+          });
       }
     } catch (error: any) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} news:`, error);

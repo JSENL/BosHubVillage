@@ -2,7 +2,8 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.8";
 import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const resend = new Resend(Deno.env.get("RESEND_API_KEYI") || Deno.env.get("RESEND_API_KEY"));
+const appUrl = Deno.env.get("PUBLIC_APP_URL") || "https://bos-hub-village.vercel.app";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -107,7 +108,7 @@ serve(async (req) => {
     // Get upcoming events
     const { data: upcomingEvents, error: eventsError } = await supabase
       .from('events')
-      .select('id, title, date, location, category')
+      .select('id, slug, title, date, location, category')
       .gte('date', new Date().toISOString().split('T')[0])
       .order('date', { ascending: true })
       .limit(5);
@@ -184,6 +185,7 @@ serve(async (req) => {
         <li style="margin-bottom: 10px;">
           <strong>${e.title}</strong><br>
           <span style="color: #666;">${new Date(e.date).toLocaleDateString()} • ${e.location}</span>
+          <br><a href="${appUrl}/event/${(e as { slug?: string | null }).slug || e.id}" style="color:#2563eb; text-decoration:none;">Learn more →</a>
         </li>
       `).join('')
       : '<li>No upcoming events this week</li>';
@@ -193,6 +195,7 @@ serve(async (req) => {
         <li style="margin-bottom: 10px;">
           <strong>${n.title}</strong><br>
           <span style="color: #666;">${n.location}</span>
+          <br><a href="${appUrl}/news/${n.id}" style="color:#2563eb; text-decoration:none;">Read article →</a>
         </li>
       `).join('')
       : '<li>No recent culture articles</li>';
@@ -215,9 +218,9 @@ serve(async (req) => {
       <body>
         <div class="container">
           ${isTest ? '<div class="test-banner"><strong>🧪 TEST EMAIL</strong> - This is a preview of the weekly digest</div>' : ''}
-          <h1>Your Weekly Community Digest</h1>
+          <h1>What's New in Your Community</h1>
           <p>Hi ${name},</p>
-          <p>Here's what's happening in your community this week:</p>
+          <p>Fresh picks selected to help you discover something worth opening right now:</p>
           
           ${buildFeaturedBusinessHtml(featuredBusiness)}
           
@@ -244,7 +247,7 @@ serve(async (req) => {
         const emailResponse = await resend.emails.send({
           from: "Community Digest <onboarding@resend.dev>",
           to: [testEmail],
-          subject: "[TEST] Your Weekly Community Digest",
+          subject: "[TEST] What's New in Your Community",
           html: buildEmailHtml("Admin", true),
         });
 
@@ -286,7 +289,7 @@ serve(async (req) => {
         const emailResponse = await resend.emails.send({
           from: "Community Digest <onboarding@resend.dev>",
           to: [profile.email],
-          subject: "Your Weekly Community Digest",
+          subject: "What's New in Your Community This Week",
           html: buildEmailHtml(profile.full_name || 'there'),
         });
 

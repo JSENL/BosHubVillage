@@ -84,6 +84,13 @@ export const uselocalresourcesubmissionOperations = () => {
       // Trigger auto-translation for the new local resource
       if (status === 'approved' && newResourceId) {
         translateContent('local_resources', newResourceId, false);
+        supabase.functions
+          .invoke('send-content-alerts', {
+            body: { itemType: 'local-resource', itemId: newResourceId },
+          })
+          .catch((notifyError) => {
+            console.error('Local resource alert dispatch failed:', notifyError);
+          });
       }
     } catch (error: any) {
       console.error(`Error ${status === 'approved' ? 'approving' : 'rejecting'} local resource:`, error);

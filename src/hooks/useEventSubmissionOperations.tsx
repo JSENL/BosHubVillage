@@ -66,6 +66,14 @@ export const useEventSubmissionOperations = () => {
       // Trigger auto-translation for the new event
       if (insertedEvent?.id) {
         translateContent('events', insertedEvent.id, false);
+        // Notify interested users (saved searches, alert preferences, recommendation signals).
+        supabase.functions
+          .invoke('send-content-alerts', {
+            body: { itemType: 'event', itemId: insertedEvent.id },
+          })
+          .catch((notifyError) => {
+            console.error('Event alert dispatch failed:', notifyError);
+          });
       }
     } catch (error: any) {
       console.error('Error approving submission:', error);

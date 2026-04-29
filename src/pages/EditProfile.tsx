@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ProfilePictureUpload } from '@/components/profile/ProfilePictureUpload';
 import { EmailDigestSettings } from '@/components/settings/EmailDigestSettings';
+import { NotificationSettings } from '@/components/settings/NotificationSettings';
 import { X, Plus, Save, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useTranslation } from 'react-i18next';
@@ -293,6 +294,7 @@ export const EditProfile = () => {
 
           {/* Email Digest Settings */}
           <EmailDigestSettings />
+          <NotificationSettings />
 
           {/* Action Buttons */}
           <div className="flex gap-3 mt-6">
