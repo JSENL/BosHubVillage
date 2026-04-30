@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Calendar, MapPin, DollarSign, Users, Star } from 'lucide-react';
+import { Calendar, MapPin, Users, Star, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
+import { ContentListRowLayout } from '@/components/common/ContentListRowLayout';
 
 type TranslationsObject = Record<string, string>;
 
@@ -35,9 +36,16 @@ interface EventCardProps {
   event: Event;
   viewMode: 'grid' | 'list' | 'map';
   isHighlighted?: boolean;
+  /** List row density (optional; defaults to comfortable) */
+  listCompact?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlighted = false }) => {
+export const EventCard: React.FC<EventCardProps> = ({
+  event,
+  viewMode,
+  isHighlighted = false,
+  listCompact = false,
+}) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { getTranslatedText } = useTranslatedField();
@@ -79,82 +87,84 @@ export const EventCard: React.FC<EventCardProps> = ({ event, viewMode, isHighlig
     return t('cards.upToAttendees', { count: maxAttendees });
   };
 
+  if (viewMode === 'map') {
+    return null;
+  }
+
   if (viewMode === 'list') {
+    const desc = getTranslatedText(event.description, event.description_translations);
+    const snippet = desc.replace(/<[^>]*>/g, '').trim() || '\u2014';
+    const loc = getTranslatedText(event.location, event.location_translations);
+    const title = getTranslatedText(event.title, event.title_translations);
+    const category = getTranslatedText(event.category, event.category_translations);
+    const priceLabel = event.price === 0 ? t('cards.free') : `$${event.price}`;
+
+    const meta = (
+      <>
+        <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+          <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+          <span className="truncate">
+            {formatDate(event.date)}
+            {formatTimeRange(event.start_time, event.end_time)
+              ? ` · ${formatTimeRange(event.start_time, event.end_time)}`
+              : ''}
+          </span>
+        </span>
+        {loc ? (
+          <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            <span className="truncate break-all">{loc}</span>
+          </span>
+        ) : null}
+        {event.max_attendees ? (
+          <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+            <Users className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            <span className="truncate">{formatAttendeesText(event.max_attendees)}</span>
+          </span>
+        ) : null}
+      </>
+    );
+
     return (
-      <Card 
+      <ContentListRowLayout
         id={`event-${event.id}`}
-        className={cardClassName}
+        compact={listCompact}
+        ariaLabel={`${t('itemTypes.events')}: ${title}`}
         onClick={handleViewDetails}
-      >
-        <CardContent className="p-0">
-          <div className="flex">
-            {/* Category Hero for list view */}
-            <CategoryHero 
-              category={event.category} 
-              type="event" 
-              height="h-auto"
-              className="w-32 flex-shrink-0"
+        className={isHighlighted ? 'ring-2 ring-destructive/40 ring-offset-1' : undefined}
+        leftVisual={
+          <CategoryHero
+            category={event.category}
+            type="event"
+            height="h-full min-h-full"
+            className="min-h-[inherit] w-full"
+          />
+        }
+        sponsored={event.is_sponsored ? <SponsoredBadge size="sm" /> : undefined}
+        badges={
+          <>
+            <Badge variant="outline" className="text-[10px] font-medium uppercase tracking-wide">
+              {t('itemTypes.events')}
+            </Badge>
+            <Badge variant="secondary" className="max-w-[10rem] truncate text-xs">
+              <CategoryIcon category={event.category} type="event" size="sm" className="mr-1 shrink-0" />
+              <span className="truncate">{category}</span>
+            </Badge>
+          </>
+        }
+        title={title}
+        snippet={snippet}
+        meta={meta}
+        trailing={
+          <div className="flex flex-row items-center gap-2 sm:flex-col sm:items-end">
+            <span className="text-sm font-semibold text-primary whitespace-nowrap">{priceLabel}</span>
+            <ChevronRight
+              className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              aria-hidden
             />
-            
-            <div className="flex-1 p-6">
-              {event.is_sponsored && (
-                <div className="mb-3">
-                  <SponsoredBadge size="md" />
-                </div>
-              )}
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex-1 min-w-0 mr-4">
-                  <h3 className="text-xl font-bold text-foreground hover:text-primary mb-1 line-clamp-2 break-words">
-                    {getTranslatedText(event.title, event.title_translations)}
-                  </h3>
-                  <div className="flex items-center space-x-1 mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className={`h-4 w-4 ${i < rating ? 'text-secondary fill-current' : 'text-muted'}`} 
-                      />
-                    ))}
-                    <span className="text-sm text-muted-foreground ml-2 truncate">{t('cards.reviews', { count: reviewCount })}</span>
-                  </div>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <Badge variant="secondary" className="mb-2">
-                    <CategoryIcon category={event.category} type="event" size="sm" className="mr-1" />
-                    <span className="truncate max-w-20">{getTranslatedText(event.category, event.category_translations)}</span>
-                  </Badge>
-                  <div className="text-lg font-bold text-destructive">
-                    {event.price === 0 ? t('cards.free') : `$${event.price}`}
-                  </div>
-                </div>
-              </div>
-              
-              <p className="text-muted-foreground mb-4 line-clamp-2 break-words">
-                {getTranslatedText(event.description, event.description_translations)}
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center min-w-0">
-                  <Calendar className="h-4 w-4 mr-2 text-primary flex-shrink-0" />
-                  <span className="truncate">{formatDate(event.date)}</span>
-                </div>
-                <div className="flex items-center min-w-0">
-                  <span className="text-xs truncate">{formatTimeRange(event.start_time, event.end_time)}</span>
-                </div>
-                <div className="flex items-center min-w-0">
-                  <MapPin className="h-4 w-4 mr-2 text-primary flex-shrink-0" />
-                  <span className="truncate break-all min-w-0">{getTranslatedText(event.location, event.location_translations)}</span>
-                </div>
-                {event.max_attendees && (
-                  <div className="flex items-center">
-                    <Users className="h-4 w-4 mr-2 text-primary" />
-                    <span>{formatAttendeesText(event.max_attendees)}</span>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
-        </CardContent>
-      </Card>
+        }
+      />
     );
   }
 

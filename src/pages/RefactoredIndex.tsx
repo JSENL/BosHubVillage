@@ -10,12 +10,13 @@ import { geocodeEvents } from "@/utils/geocodeEvents";
 import { geocodeNewsItems } from "@/utils/geocodeNewsItems";
 import { geocodeBusinesses } from "@/utils/geocodeBusinesses";
 import { UnifiedItem } from "@/types/unifiedItem";
+import { transformDataToUnifiedItems } from "@/utils/data/dataTransformers";
 import { useEvents } from "@/hooks/useEvents";
 import { useNews } from "@/hooks/useNews";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
-import { uselocalresources } from "@/hooks/uselocalresources";
-import { uselocalresourcesubmissions } from "@/hooks/uselocalresourcesubmissions";
+import { uselocalresources } from "@/hooks/useLocalServices";
+import { uselocalresourcesubmissions } from "@/hooks/useLocalServiceSubmissions";
 import { sortBySponsored } from "@/utils/sponsoredUtils";
 
 const RefactoredIndex = () => {
@@ -89,74 +90,14 @@ const RefactoredIndex = () => {
     geocodeItemsIfNeeded();
   }, [data.events, data.news, data.businesses, isReady, geocode, hasGeocodedItems, loading.isLoading]);
 
-  // Create unified items - same logic as original
-  const allItems: UnifiedItem[] = [
-    // Events
-    ...(data.events || []).map((event: any) => ({
-      id: event.id,
-      title: event.title,
-      description: event.description,
-      latitude: event.latitude,
-      longitude: event.longitude,
-      type: 'event' as const,
-      location: event.location,
-      category: event.category,
-      date: event.date,
-      start_time: event.start_time,
-      end_time: event.end_time,
-      price: event.price,
-      neighborhoods: event.neighborhoods,
-      villages: event.villages,
-      is_sponsored: event.is_sponsored,
-      originalData: event
-    })),
-    // News
-    ...(data.news || []).map((newsItem: any) => ({
-      id: newsItem.id,
-      title: newsItem.title,
-      description: newsItem.content || newsItem.excerpt,
-      latitude: newsItem.latitude,
-      longitude: newsItem.longitude,
-      type: 'news' as const,
-      location: newsItem.location,
-      category: newsItem.category,
-      neighborhoods: newsItem.neighborhoods,
-      villages: newsItem.villages,
-      is_sponsored: newsItem.is_sponsored,
-      originalData: newsItem
-    })),
-    // Businesses
-    ...(data.businesses || []).map((business: any) => ({
-      id: business.id,
-      title: business.title || business.name,
-      description: business.description,
-      latitude: business.latitude,
-      longitude: business.longitude,
-      type: 'business' as const,
-      address: business.address,
-      category: business.business_type,
-      business_type: business.business_type,
-      neighborhoods: business.neighborhoods,
-      villages: business.villages,
-      is_sponsored: business.is_sponsored,
-      originalData: business
-    })),
-    // local resources
-    ...(data.localresources || []).map((service: any) => ({
-      id: service.id,
-      title: service.name,
-      description: service.description,
-      latitude: service.latitude,
-      longitude: service.longitude,
-      type: 'local-service' as const,
-      location: service.location,
-      category: service.category,
-      neighborhoods: service.neighborhoods,
-      villages: service.villages,
-      is_sponsored: service.is_sponsored,
-      originalData: service
-    }))
-  ];
+  const allItems: UnifiedItem[] = transformDataToUnifiedItems({
+    events: data.events || [],
+    news: data.news || [],
+    businesses: data.businesses || [],
+    businessSubmissions: data.businessSubmissions || [],
+    localresources: data.localresources || [],
+    localresourcesubmissions: data.localresourcesubmissions || [],
+  });
 
   // Filter items - same logic as original
   const filteredItems = allItems.filter(item => {
@@ -227,6 +168,7 @@ const RefactoredIndex = () => {
             onNeighborhoodChange={actions.setSelectedNeighborhood}
             onVillageChange={actions.setSelectedVillage}
             onViewModeChange={actions.setViewMode}
+            onListDensityChange={actions.setListDensity}
             onEventDateRangeChange={actions.setEventDateRange}
             onSelectedEventDatesChange={actions.setSelectedEventDates}
           />

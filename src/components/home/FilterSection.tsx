@@ -1,9 +1,10 @@
 import { UniversalFilters } from "@/components/UniversalFilters";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Map, List } from 'lucide-react';
+import { Search, Map, LayoutGrid, Rows3 } from 'lucide-react';
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
 import { UnifiedItem } from "@/types/unifiedItem";
+import { useTranslation } from "react-i18next";
 
 interface FilterSectionProps {
   filters: HomePageFilters;
@@ -14,7 +15,8 @@ interface FilterSectionProps {
   onCategoryChange: (category: string) => void;
   onNeighborhoodChange: (neighborhood: string) => void;
   onVillageChange: (village: string) => void;
-  onViewModeChange: (mode: 'map' | 'list') => void;
+  onViewModeChange: (mode: HomePageFilters["viewMode"]) => void;
+  onListDensityChange: (density: HomePageFilters["listDensity"]) => void;
   onEventDateRangeChange: (range: any) => void;
   onSelectedEventDatesChange: (dates: Date[]) => void;
 }
@@ -29,9 +31,11 @@ export const FilterSection = ({
   onNeighborhoodChange,
   onVillageChange,
   onViewModeChange,
+  onListDensityChange,
   onEventDateRangeChange,
   onSelectedEventDatesChange
 }: FilterSectionProps) => {
+  const { t } = useTranslation();
   return (
     <div className="mb-6 space-y-4">
       {/* Search Bar */}
@@ -66,24 +70,54 @@ export const FilterSection = ({
         itemType="events"
       />
 
-      {/* View Mode Toggle */}
-      <div className="flex justify-center space-x-2">
-        <Button
-          variant={filters.viewMode === 'map' ? 'default' : 'outline'}
-          onClick={() => onViewModeChange('map')}
-          className="flex items-center gap-2"
-        >
-          <Map className="h-4 w-4" />
-          Map View
-        </Button>
-        <Button
-          variant={filters.viewMode === 'list' ? 'default' : 'outline'}
-          onClick={() => onViewModeChange('list')}
-          className="flex items-center gap-2"
-        >
-          <List className="h-4 w-4" />
-          List View
-        </Button>
+      {/* View mode: grid / list / map */}
+      <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-wrap justify-center gap-2">
+          <Button
+            variant={filters.viewMode === "grid" ? "default" : "outline"}
+            onClick={() => onViewModeChange("grid")}
+            className="flex items-center gap-2"
+          >
+            <LayoutGrid className="h-4 w-4" />
+            {t("listView.gridView", { defaultValue: "Grid" })}
+          </Button>
+          <Button
+            variant={filters.viewMode === "list" ? "default" : "outline"}
+            onClick={() => onViewModeChange("list")}
+            className="flex items-center gap-2"
+          >
+            <Rows3 className="h-4 w-4" />
+            {t("listView.listView", { defaultValue: "List" })}
+          </Button>
+          <Button
+            variant={filters.viewMode === "map" ? "default" : "outline"}
+            onClick={() => onViewModeChange("map")}
+            className="flex items-center gap-2"
+          >
+            <Map className="h-4 w-4" />
+            {t("listView.mapView", { defaultValue: "Map" })}
+          </Button>
+        </div>
+        {filters.viewMode === "list" ? (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant={filters.listDensity === "comfortable" ? "secondary" : "outline"}
+              onClick={() => onListDensityChange("comfortable")}
+            >
+              {t("listView.densityComfortable", { defaultValue: "Comfortable spacing" })}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={filters.listDensity === "compact" ? "secondary" : "outline"}
+              onClick={() => onListDensityChange("compact")}
+            >
+              {t("listView.densityCompact", { defaultValue: "Compact spacing" })}
+            </Button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

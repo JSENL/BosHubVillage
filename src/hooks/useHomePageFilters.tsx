@@ -9,7 +9,9 @@ export interface HomePageFilters {
   searchTerm: string;
   eventDateRange: DateRange | undefined;
   selectedEventDates: Date[];
-  viewMode: 'map' | 'list';
+  viewMode: 'grid' | 'list' | 'map';
+  /** Row density when `viewMode === 'list'` */
+  listDensity: 'comfortable' | 'compact';
 }
 
 export const useHomePageFilters = () => {
@@ -20,7 +22,8 @@ export const useHomePageFilters = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [eventDateRange, setEventDateRange] = useState<DateRange | undefined>();
   const [selectedEventDates, setSelectedEventDates] = useState<Date[]>([]);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
+  const [listDensity, setListDensity] = useState<'comfortable' | 'compact'>('comfortable');
 
   const filters: HomePageFilters = {
     selectedType,
@@ -30,7 +33,8 @@ export const useHomePageFilters = () => {
     searchTerm,
     eventDateRange,
     selectedEventDates,
-    viewMode
+    viewMode,
+    listDensity,
   };
 
   const filterActions = {
@@ -41,7 +45,8 @@ export const useHomePageFilters = () => {
     setSearchTerm,
     setEventDateRange,
     setSelectedEventDates,
-    setViewMode
+    setViewMode,
+    setListDensity,
   };
 
   return {

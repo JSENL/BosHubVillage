@@ -7,7 +7,7 @@ import { IllustratedEmptyState } from '@/components/common/IllustratedEmptyState
 import { EnhancedUniversalMap } from "@/components/EnhancedUniversalMap";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
-import { useAuth } from '@/hooks/useAuth';
+import { UnifiedItemCard } from "@/components/UnifiedItemCard";
 
 interface ContentSectionProps {
   filters: HomePageFilters;
@@ -22,8 +22,6 @@ export const ContentSection = ({
   filteredItems,
   isLoading
 }: ContentSectionProps) => {
-  const { isAdmin } = useAuth();
-  
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -43,6 +41,32 @@ export const ContentSection = ({
           height="600px"
           selectedTypes={['event', 'business', 'local-service', 'news']}
         />
+      </div>
+    );
+  }
+
+  if (filters.viewMode === 'list') {
+    const compact = filters.listDensity === 'compact';
+    return (
+      <div className="space-y-6">
+        <div className="text-center text-muted-foreground">
+          Showing {filteredItems.length} items
+          {filters.selectedType !== 'all' && ` (${filters.selectedType})`}
+        </div>
+        <div
+          className="mx-auto flex w-full max-w-4xl flex-col gap-2"
+          data-list-density={filters.listDensity}
+        >
+          {filteredItems.map((item) => (
+            <UnifiedItemCard
+              key={`${item.type}-${item.id}`}
+              item={item}
+              viewMode="list"
+              listCompact={compact}
+            />
+          ))}
+        </div>
+        {filteredItems.length === 0 && <IllustratedEmptyState variant="filter" />}
       </div>
     );
   }

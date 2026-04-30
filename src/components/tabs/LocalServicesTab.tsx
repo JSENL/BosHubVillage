@@ -3,15 +3,12 @@ import { uselocalresources } from '@/hooks/uselocalresources';
 import LocalServiceCard from '@/components/LocalServiceCard';
 import { ViewToggle } from '@/components/ViewToggle';
 import { LocalResourcesMap } from '@/components/LocalResourcesMap';
+import { UnifiedItemCard } from '@/components/UnifiedItemCard';
+import { transformDataToUnifiedItems } from '@/utils/data/dataTransformers';
 
 export const localresourcesTab = () => {
   const { data: localresources, isLoading } = uselocalresources();
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map' | 'calendar'>('grid');
-
-  console.log('🏪 localresourcesTab: Rendering with', localresources?.length || 0, 'services');
-  console.log('🏪 localresourcesTab: Services with coordinates:', 
-    localresources?.filter(service => service.latitude && service.longitude).length || 0
-  );
 
   if (isLoading) {
     return (
@@ -39,6 +36,19 @@ export const localresourcesTab = () => {
 
       {viewMode === 'map' ? (
         <LocalResourcesMap localresources={localresources} />
+      ) : viewMode === 'list' ? (
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-2">
+          {transformDataToUnifiedItems({
+            events: [],
+            news: [],
+            businesses: [],
+            businessSubmissions: [],
+            localresources,
+            localresourcesubmissions: [],
+          }).map((item) => (
+            <UnifiedItemCard key={item.id} item={item} viewMode="list" listCompact={false} />
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
           {localresources.map((service) => (

@@ -51,6 +51,14 @@ const resources = {
         upToAttendees: "Up to {{count}} attendees",
         reviews: "{{count}} reviews"
       },
+      listView: {
+        densityComfortable: "Comfortable spacing",
+        densityCompact: "Compact spacing",
+        gridView: "Grid",
+        listView: "List",
+        mapView: "Map",
+        itemDetailsHint: "Open full details for this item",
+      },
       // Item types
       itemTypes: {
         events: "Events",

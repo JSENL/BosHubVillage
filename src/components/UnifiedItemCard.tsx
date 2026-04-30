@@ -1,31 +1,40 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Calendar, MapPin, DollarSign, Users, Star, Building, Newspaper, Wrench } from 'lucide-react';
+import { Calendar, MapPin, Star, Building, Newspaper, Wrench, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UnifiedItem } from '@/types/unifiedItem';
 import { BookmarkButton } from '@/components/social/BookmarkButton';
+import type { BookmarkItemType } from '@/hooks/useBookmarks';
 import { useNavigate } from 'react-router-dom';
 import { eventDetailPath } from '@/lib/eventUrl';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
+import { useCardLocale } from '@/hooks/useCardLocale';
+import { ContentListRowLayout } from '@/components/common/ContentListRowLayout';
+import { CategoryHero, CategoryIcon } from '@/components/common/CategoryIcon';
+import SponsoredBadge from '@/components/common/SponsoredBadge';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
   viewMode: 'grid' | 'list';
   isHighlighted?: boolean;
+  /** Row density for list view (from home filters) */
+  listCompact?: boolean;
 }
 
 export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({ 
   item, 
   viewMode, 
-  isHighlighted = false 
+  isHighlighted = false,
+  listCompact = false,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { getTranslatedText } = useTranslatedField();
+  const { formatDate } = useCardLocale();
   
   const handleViewDetails = () => {
-    if (item.type === 'event') {
+    if (item.type === 'event' || item.type === 'past-event') {
       navigate(eventDetailPath({ slug: item.slug, id: item.id }));
       return;
     }
@@ -53,6 +62,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const getTypeIcon = () => {
     switch (item.type) {
       case 'event':
+      case 'past-event':
         return <Calendar className="h-6 w-6 mx-auto mb-1" />;
       case 'news':
         return <Newspaper className="h-6 w-6 mx-auto mb-1" />;
@@ -68,6 +78,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const getTypeColor = () => {
     const colors = {
       event: 'from-red-500 to-red-600',
+      'past-event': 'from-red-500 to-red-600',
       news: 'from-blue-500 to-blue-600',
       business: 'from-green-500 to-green-600',
       'local-service': 'from-logo-coral-orange to-logo-coral-orange/90'
@@ -78,6 +89,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const getTypeLabel = () => {
     const labels = {
       event: t('itemTypes.events'),
+      'past-event': t('itemTypes.events'),
       news: t('itemTypes.news'),
       business: t('itemTypes.businesses'),
       'local-service': t('itemTypes.localresources')
@@ -118,85 +130,147 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
     return getTranslatedText(originalCat, item.category_translations);
   };
 
+  const heroCategory =
+    item.type === 'news'
+      ? item.category?.trim()
+        ? item.category
+        : 'news'
+      : item.category || item.business_type || 'community';
+
+  const heroType =
+    item.type === 'event' || item.type === 'past-event'
+      ? 'event'
+      : item.type === 'news'
+        ? 'news'
+        : item.type === 'business'
+          ? 'business'
+          : 'local-service';
+
+  const listSnippetRaw = getDisplayDescription();
+  const listSnippet =
+    listSnippetRaw.replace(/<[^>]*>/g, '').trim() || '\u2014';
+
+  const neighborhoodLine = () => {
+    const n = item.neighborhoods;
+    const v = item.villages;
+    const parts: string[] = [];
+    if (typeof n === 'string' && n.trim()) parts.push(n.trim());
+    if (v) {
+      if (Array.isArray(v)) parts.push(v.filter(Boolean).join(', '));
+      else if (typeof v === 'string' && v.trim()) parts.push(v.trim());
+    }
+    return parts.join(' · ');
+  };
+
   if (viewMode === 'list') {
+    const loc = getDisplayLocation();
+    const hood = neighborhoodLine();
+
+    const meta = (
+      <>
+        {(item.type === 'event' || item.type === 'past-event') && item.date ? (
+          <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+            <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            <span className="truncate">
+              {formatDate(item.date)}
+              {formatTimeRange(item.start_time, item.end_time)
+                ? ` · ${formatTimeRange(item.start_time, item.end_time)}`
+                : ''}
+            </span>
+          </span>
+        ) : null}
+        {item.type === 'news' && item.date ? (
+          <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+            <Calendar className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            <span className="truncate">{formatDate(item.date)}</span>
+          </span>
+        ) : null}
+        {loc ? (
+          <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+            <span className="truncate">{loc}</span>
+          </span>
+        ) : null}
+        {item.type === 'news' && item.source?.trim() ? (
+          <span className="max-w-full truncate">
+            {t('cards.source')}: {item.source}
+          </span>
+        ) : null}
+        {hood && (item.type === 'business' || item.type === 'local-service') ? (
+          <span className="max-w-full truncate">{hood}</span>
+        ) : null}
+      </>
+    );
+
+    const priceLabel = (() => {
+      if (item.type === 'event' || item.type === 'past-event') {
+        if (item.price === undefined || item.price === null) return null;
+        return Number(item.price) === 0 ? t('cards.free') : `$${item.price}`;
+      }
+      if (item.price !== undefined && item.price !== null && Number(item.price) > 0) {
+        return `$${item.price}`;
+      }
+      return null;
+    })();
+
+    const rowAria = `${getTypeLabel()}: ${getDisplayTitle()}`;
+
     return (
-      <Card 
+      <ContentListRowLayout
         id={`item-${item.id}`}
-        className={cardClassName}
+        compact={listCompact}
+        ariaLabel={rowAria}
         onClick={handleViewDetails}
-      >
-        <CardContent className="p-0">
-          <div className="flex flex-col sm:flex-row">
-            {/* Item Image Placeholder */}
-            <div className={`w-full sm:w-40 h-32 sm:h-auto bg-gradient-to-br ${getTypeColor()} flex items-center justify-center flex-shrink-0`}>
-              <div className="text-white text-center">
-                {getTypeIcon()}
-                <div className="text-xs font-medium">
-                  {item.type === 'event' && item.date 
-                    ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-                    : getTypeLabel()
-                  }
-                </div>
-              </div>
+        className={isHighlighted ? 'ring-2 ring-caribbean-teal ring-offset-1' : undefined}
+        leftVisual={
+          <CategoryHero
+            category={heroCategory}
+            type={heroType}
+            height="h-full min-h-full"
+            className="min-h-[inherit] w-full"
+          />
+        }
+        sponsored={item.is_sponsored ? <SponsoredBadge size="sm" /> : undefined}
+        badges={
+          <>
+            <Badge variant="outline" className="text-[10px] font-medium uppercase tracking-wide">
+              {getTypeLabel()}
+            </Badge>
+            <Badge variant="secondary" className="max-w-[10rem] truncate text-xs">
+              <CategoryIcon category={heroCategory} type={heroType} size="sm" className="mr-1 shrink-0" />
+              <span className="truncate">{getDisplayCategory()}</span>
+            </Badge>
+          </>
+        }
+        title={getDisplayTitle()}
+        snippet={listSnippet}
+        meta={meta}
+        trailing={
+          <div className="flex flex-row items-center gap-2 sm:flex-col sm:items-end">
+            <div onClick={(e) => e.stopPropagation()}>
+              <BookmarkButton
+                itemType={
+                  item.type === 'local-service'
+                    ? 'local_service'
+                    : item.type === 'past-event'
+                      ? 'event'
+                      : (item.type as BookmarkItemType)
+                }
+                itemId={item.id}
+                size="sm"
+                variant="ghost"
+              />
             </div>
-            
-            {/* Item Details */}
-            <div className="flex-1 p-3 min-w-0">
-              <div className="flex flex-col sm:flex-row justify-between items-start mb-2 gap-2">
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm sm:text-base font-bold text-gray-900 hover:text-caribbean-teal mb-1 break-words">
-                    {getDisplayTitle()}
-                  </h3>
-                  <div className="flex items-center space-x-1 mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className={`h-3 w-3 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-                      />
-                    ))}
-                    <span className="text-xs text-gray-600 ml-1">{reviewCount} reviews</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <BookmarkButton 
-                      itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
-                      itemId={item.id}
-                      size="sm"
-                      variant="ghost"
-                    />
-                  </div>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 text-xs whitespace-nowrap">
-                    <span className="truncate max-w-[100px] sm:max-w-[120px]">{getDisplayCategory()}</span>
-                  </Badge>
-                  {item.price !== undefined && item.price > 0 && (
-                    <div className="text-sm font-bold text-caribbean-teal whitespace-nowrap">
-                      ${item.price}
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              <p className="text-gray-600 mb-2 line-clamp-2 text-xs break-words">{getDisplayDescription()}</p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
-                {item.date && (
-                  <div className="flex items-center min-w-0">
-                    <Calendar className="h-3 w-3 mr-1 text-caribbean-teal/70 flex-shrink-0" />
-                    <span className="truncate text-xs">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
-                  </div>
-                )}
-                {getDisplayLocation() && (
-                  <div className="flex items-center min-w-0">
-                    <MapPin className="h-3 w-3 mr-1 text-caribbean-teal/70 flex-shrink-0" />
-                    <span className="truncate min-w-0 text-xs">{getDisplayLocation()}</span>
-                  </div>
-                )}
-              </div>
-            </div>
+            {priceLabel ? (
+              <span className="text-sm font-semibold text-primary whitespace-nowrap">{priceLabel}</span>
+            ) : null}
+            <ChevronRight
+              className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              aria-hidden
+            />
           </div>
-        </CardContent>
-      </Card>
+        }
+      />
     );
   }
 
@@ -211,10 +285,9 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
         <div className="text-white text-center">
           {getTypeIcon()}
           <div className="text-xs font-medium">
-            {item.type === 'event' && item.date 
-              ? new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-              : getTypeLabel()
-            }
+            {(item.type === 'event' || item.type === 'past-event') && item.date
+              ? formatDate(item.date)
+              : getTypeLabel()}
           </div>
         </div>
       </div>
@@ -227,7 +300,13 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
           <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
             <div onClick={(e) => e.stopPropagation()}>
               <BookmarkButton 
-                itemType={item.type === 'local-service' ? 'local_service' : item.type as any}
+                itemType={
+                  item.type === 'local-service'
+                    ? 'local_service'
+                    : item.type === 'past-event'
+                      ? 'event'
+                      : (item.type as BookmarkItemType)
+                }
                 itemId={item.id}
                 size="sm"
                 variant="ghost"
@@ -262,7 +341,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
           {item.date && (
             <div className="flex items-center text-gray-600 min-w-0">
               <Calendar className="h-3 w-3 mr-1 text-caribbean-teal/70 flex-shrink-0" />
-              <span className="truncate text-xs">{item.date} {formatTimeRange(item.start_time, item.end_time)}</span>
+              <span className="truncate text-xs">
+                {formatDate(item.date)}{' '}
+                {formatTimeRange(item.start_time, item.end_time)}
+              </span>
             </div>
           )}
           {getDisplayLocation() && (
