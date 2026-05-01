@@ -20,6 +20,11 @@ export interface ContentListRowLayoutProps {
   meta: React.ReactNode;
   /** Price, bookmark, chevron */
   trailing: React.ReactNode;
+  /**
+   * On large screens, show `meta` in a dedicated column (horizontal scan: title | facts | actions).
+   * On small screens meta stays under the snippet.
+   */
+  splitMeta?: boolean;
   className?: string;
 }
 
@@ -39,6 +44,7 @@ export function ContentListRowLayout({
   snippet,
   meta,
   trailing,
+  splitMeta = true,
   className,
 }: ContentListRowLayoutProps) {
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -77,35 +83,64 @@ export function ContentListRowLayout({
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col sm:flex-row sm:items-stretch">
-        <div className={cn('flex min-w-0 flex-1 flex-col px-3', bodyPy, 'sm:pr-2')}>
-          {sponsored ? <div className="mb-1.5">{sponsored}</div> : null}
-          {badges ? (
-            <div className="mb-1 flex flex-wrap items-center gap-1.5">{badges}</div>
+        <div
+          className={cn(
+            'flex min-w-0 flex-1 flex-col px-3 sm:pr-2',
+            bodyPy,
+            splitMeta && 'lg:flex-row lg:items-start lg:gap-4',
+          )}
+        >
+          <div className="min-w-0 flex-1">
+            {sponsored ? <div className="mb-1.5">{sponsored}</div> : null}
+            {badges ? (
+              <div className="mb-1 flex flex-wrap items-center gap-1.5">{badges}</div>
+            ) : null}
+            <h3
+              className={cn(
+                'min-w-0 font-semibold leading-snug text-foreground group-hover:text-primary',
+                compact ? 'text-sm line-clamp-2' : 'text-base line-clamp-2',
+              )}
+            >
+              {title}
+            </h3>
+            <div
+              className={cn(
+                'mt-1 text-muted-foreground line-clamp-2 break-words',
+                compact ? 'text-xs' : 'text-sm',
+              )}
+            >
+              {snippet}
+            </div>
+            {!splitMeta ? (
+              <div
+                className={cn(
+                  'mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground',
+                  compact ? 'text-[11px]' : 'text-xs',
+                )}
+              >
+                {meta}
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  'mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground lg:hidden',
+                  compact ? 'text-[11px]' : 'text-xs',
+                )}
+              >
+                {meta}
+              </div>
+            )}
+          </div>
+          {splitMeta ? (
+            <div
+              className={cn(
+                'hidden min-h-[2.5rem] flex-col justify-center gap-y-1 border-border/60 text-muted-foreground lg:flex lg:w-52 lg:shrink-0 lg:border-l lg:pl-4',
+                compact ? 'text-[11px]' : 'text-xs',
+              )}
+            >
+              {meta}
+            </div>
           ) : null}
-          <h3
-            className={cn(
-              'min-w-0 font-semibold leading-snug text-foreground group-hover:text-primary',
-              compact ? 'text-sm line-clamp-2' : 'text-base line-clamp-2',
-            )}
-          >
-            {title}
-          </h3>
-          <div
-            className={cn(
-              'mt-1 text-muted-foreground line-clamp-2 break-words',
-              compact ? 'text-xs' : 'text-sm',
-            )}
-          >
-            {snippet}
-          </div>
-          <div
-            className={cn(
-              'mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-muted-foreground',
-              compact ? 'text-[11px]' : 'text-xs',
-            )}
-          >
-            {meta}
-          </div>
         </div>
 
         <div

@@ -47,6 +47,32 @@ export const ContentSection = ({
 
   if (filters.viewMode === 'list') {
     const compact = filters.listDensity === 'compact';
+    const carousel = filters.listPresentation === 'carousel';
+
+    if (carousel) {
+      return (
+        <div className="space-y-6">
+          <div className="text-center text-muted-foreground">
+            Showing {filteredItems.length} items
+            {filters.selectedType !== 'all' && ` (${filters.selectedType})`}
+          </div>
+          <div className="relative w-full" data-list-presentation="carousel">
+            <div className="flex gap-4 overflow-x-auto pb-3 pt-1 scroll-smooth snap-x snap-mandatory px-1 [-webkit-overflow-scrolling:touch]">
+              {filteredItems.map((item) => (
+                <div
+                  key={`${item.type}-${item.id}`}
+                  className="w-[min(100%,18rem)] shrink-0 snap-start sm:w-72"
+                >
+                  <UnifiedItemCard item={item} viewMode="grid" />
+                </div>
+              ))}
+            </div>
+          </div>
+          {filteredItems.length === 0 && <IllustratedEmptyState variant="filter" />}
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-6">
         <div className="text-center text-muted-foreground">
@@ -54,8 +80,9 @@ export const ContentSection = ({
           {filters.selectedType !== 'all' && ` (${filters.selectedType})`}
         </div>
         <div
-          className="mx-auto flex w-full max-w-4xl flex-col gap-2"
+          className="mx-auto flex w-full max-w-5xl flex-col gap-2"
           data-list-density={filters.listDensity}
+          data-list-presentation="rows"
         >
           {filteredItems.map((item) => (
             <UnifiedItemCard
@@ -63,6 +90,7 @@ export const ContentSection = ({
               item={item}
               viewMode="list"
               listCompact={compact}
+              listSplitMeta={!compact}
             />
           ))}
         </div>

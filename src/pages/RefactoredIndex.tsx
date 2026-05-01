@@ -169,6 +169,7 @@ const RefactoredIndex = () => {
             onVillageChange={actions.setSelectedVillage}
             onViewModeChange={actions.setViewMode}
             onListDensityChange={actions.setListDensity}
+            onListPresentationChange={actions.setListPresentation}
             onEventDateRangeChange={actions.setEventDateRange}
             onSelectedEventDatesChange={actions.setSelectedEventDates}
           />

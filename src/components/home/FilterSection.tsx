@@ -1,7 +1,7 @@
 import { UniversalFilters } from "@/components/UniversalFilters";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Map, LayoutGrid, Rows3 } from 'lucide-react';
+import { Search, Map, LayoutGrid, Rows3, GalleryHorizontal, AlignJustify } from 'lucide-react';
 import { HomePageFilters } from "@/hooks/useHomePageFilters";
 import { UnifiedItem } from "@/types/unifiedItem";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,7 @@ interface FilterSectionProps {
   onVillageChange: (village: string) => void;
   onViewModeChange: (mode: HomePageFilters["viewMode"]) => void;
   onListDensityChange: (density: HomePageFilters["listDensity"]) => void;
+  onListPresentationChange: (presentation: HomePageFilters["listPresentation"]) => void;
   onEventDateRangeChange: (range: any) => void;
   onSelectedEventDatesChange: (dates: Date[]) => void;
 }
@@ -32,6 +33,7 @@ export const FilterSection = ({
   onVillageChange,
   onViewModeChange,
   onListDensityChange,
+  onListPresentationChange,
   onEventDateRangeChange,
   onSelectedEventDatesChange
 }: FilterSectionProps) => {
@@ -99,23 +101,49 @@ export const FilterSection = ({
           </Button>
         </div>
         {filters.viewMode === "list" ? (
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <Button
-              type="button"
-              size="sm"
-              variant={filters.listDensity === "comfortable" ? "secondary" : "outline"}
-              onClick={() => onListDensityChange("comfortable")}
-            >
-              {t("listView.densityComfortable", { defaultValue: "Comfortable spacing" })}
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              variant={filters.listDensity === "compact" ? "secondary" : "outline"}
-              onClick={() => onListDensityChange("compact")}
-            >
-              {t("listView.densityCompact", { defaultValue: "Compact spacing" })}
-            </Button>
+          <div className="flex w-full max-w-2xl flex-col items-stretch gap-2 sm:items-center">
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant={filters.listPresentation === "rows" ? "secondary" : "outline"}
+                onClick={() => onListPresentationChange("rows")}
+                className="gap-2"
+              >
+                <AlignJustify className="h-4 w-4" />
+                {t("listView.listPresentationRows", { defaultValue: "Wide rows" })}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={filters.listPresentation === "carousel" ? "secondary" : "outline"}
+                onClick={() => onListPresentationChange("carousel")}
+                className="gap-2"
+              >
+                <GalleryHorizontal className="h-4 w-4" />
+                {t("listView.listPresentationCarousel", { defaultValue: "Horizontal cards" })}
+              </Button>
+            </div>
+            {filters.listPresentation === "rows" ? (
+              <div className="flex flex-wrap justify-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={filters.listDensity === "comfortable" ? "secondary" : "outline"}
+                  onClick={() => onListDensityChange("comfortable")}
+                >
+                  {t("listView.densityComfortable", { defaultValue: "Comfortable spacing" })}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={filters.listDensity === "compact" ? "secondary" : "outline"}
+                  onClick={() => onListDensityChange("compact")}
+                >
+                  {t("listView.densityCompact", { defaultValue: "Compact spacing" })}
+                </Button>
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>

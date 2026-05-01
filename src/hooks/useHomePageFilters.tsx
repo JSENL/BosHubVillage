@@ -10,8 +10,12 @@ export interface HomePageFilters {
   eventDateRange: DateRange | undefined;
   selectedEventDates: Date[];
   viewMode: 'grid' | 'list' | 'map';
-  /** Row density when `viewMode === 'list'` */
+  /** Row density when `viewMode === 'list'` and `listPresentation === 'rows'` */
   listDensity: 'comfortable' | 'compact';
+  /**
+   * When `viewMode === 'list'`: stacked wide rows vs horizontal scrolling mini-cards.
+   */
+  listPresentation: 'rows' | 'carousel';
 }
 
 export const useHomePageFilters = () => {
@@ -24,6 +28,7 @@ export const useHomePageFilters = () => {
   const [selectedEventDates, setSelectedEventDates] = useState<Date[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [listDensity, setListDensity] = useState<'comfortable' | 'compact'>('comfortable');
+  const [listPresentation, setListPresentation] = useState<'rows' | 'carousel'>('rows');
 
   const filters: HomePageFilters = {
     selectedType,
@@ -35,6 +40,7 @@ export const useHomePageFilters = () => {
     selectedEventDates,
     viewMode,
     listDensity,
+    listPresentation,
   };
 
   const filterActions = {
@@ -47,6 +53,7 @@ export const useHomePageFilters = () => {
     setSelectedEventDates,
     setViewMode,
     setListDensity,
+    setListPresentation,
   };
 
   return {

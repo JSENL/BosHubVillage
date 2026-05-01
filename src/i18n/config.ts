@@ -58,6 +58,8 @@ const resources = {
         listView: "List",
         mapView: "Map",
         itemDetailsHint: "Open full details for this item",
+        listPresentationRows: "Wide rows",
+        listPresentationCarousel: "Horizontal cards",
       },
       // Item types
       itemTypes: {

@@ -20,6 +20,8 @@ interface UnifiedItemCardProps {
   isHighlighted?: boolean;
   /** Row density for list view (from home filters) */
   listCompact?: boolean;
+  /** When list rows use split meta column on large screens */
+  listSplitMeta?: boolean;
 }
 
 export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({ 
@@ -27,6 +29,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   viewMode, 
   isHighlighted = false,
   listCompact = false,
+  listSplitMeta = true,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -219,6 +222,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       <ContentListRowLayout
         id={`item-${item.id}`}
         compact={listCompact}
+        splitMeta={listSplitMeta}
         ariaLabel={rowAria}
         onClick={handleViewDetails}
         className={isHighlighted ? 'ring-2 ring-caribbean-teal ring-offset-1' : undefined}
