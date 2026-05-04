@@ -1,0 +1,7 @@
+export interface PutOptions {
+    query?: {
+        [key: string]: any;
+    };
+}
+
+// denoCacheMetadata={"headers":{"age":"911782","cache-control":"public, max-age=31536000, immutable","cf-cache-status":"HIT","access-control-allow-origin":"*","content-length":"81","last-modified":"Tue, 09 Dec 2025 21:27:01 GMT","date":"Mon, 04 May 2026 22:35:43 GMT","content-type":"application/typescript; charset=utf-8","server":"cloudflare","cf-ray":"9f6afaec7f218f70-BOS","accept-ranges":"bytes"},"url":"https://esm.sh/resend@2.0.0/build/src/common/interfaces/put-option.interface.d.ts","time":1777934143}

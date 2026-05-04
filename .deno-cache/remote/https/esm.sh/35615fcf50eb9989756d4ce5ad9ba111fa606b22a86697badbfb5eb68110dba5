@@ -1,0 +1,6 @@
+import GoTrueAdminApi from './GoTrueAdminApi.d.ts';
+declare const AuthAdminApi: typeof GoTrueAdminApi;
+export default AuthAdminApi;
+//# sourceMappingURL=AuthAdminApi.d.ts.map
+
+// denoCacheMetadata={"headers":{"content-length":"175","content-type":"application/typescript; charset=utf-8","last-modified":"Wed, 06 Aug 2025 20:01:29 GMT","cf-cache-status":"HIT","date":"Mon, 04 May 2026 22:35:43 GMT","cf-ray":"9f6afaebee7d8f70-BOS","access-control-allow-origin":"*","age":"4887176","server":"cloudflare","cache-control":"public, max-age=31536000, immutable","accept-ranges":"bytes"},"url":"https://esm.sh/@supabase/auth-js@2.69.1/dist/module/AuthAdminApi.d.ts","time":1777934143}

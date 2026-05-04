@@ -1,0 +1,4 @@
+export { Resend } from './resend.d.ts';
+export { ErrorResponse } from './interfaces.d.ts';
+
+// denoCacheMetadata={"headers":{"content-length":"91","cf-ray":"9f6afaeaad9d8f70-BOS","cache-control":"public, max-age=31536000, immutable","age":"4887223","access-control-allow-origin":"*","last-modified":"Sun, 20 Jul 2025 05:55:57 GMT","server":"cloudflare","cf-cache-status":"HIT","date":"Mon, 04 May 2026 22:35:43 GMT","content-type":"application/typescript; charset=utf-8","accept-ranges":"bytes"},"url":"https://esm.sh/resend@2.0.0/build/src/index.d.ts","time":1777934143}

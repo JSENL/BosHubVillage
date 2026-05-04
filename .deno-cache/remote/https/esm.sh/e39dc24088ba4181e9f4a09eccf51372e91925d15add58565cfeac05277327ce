@@ -1,0 +1,19 @@
+/**
+ * Error format
+ *
+ * {@link https://postgrest.org/en/stable/api.html?highlight=options#errors-and-http-status-codes}
+ */
+export default class PostgrestError extends Error {
+    details: string;
+    hint: string;
+    code: string;
+    constructor(context: {
+        message: string;
+        details: string;
+        hint: string;
+        code: string;
+    });
+}
+//# sourceMappingURL=PostgrestError.d.ts.map
+
+// denoCacheMetadata={"headers":{"age":"4887219","accept-ranges":"bytes","date":"Mon, 04 May 2026 22:35:43 GMT","content-length":"411","server":"cloudflare","content-type":"application/typescript; charset=utf-8","cache-control":"public, max-age=31536000, immutable","cf-cache-status":"HIT","last-modified":"Fri, 18 Jul 2025 08:28:53 GMT","cf-ray":"9f6afaebee8d8f70-BOS","access-control-allow-origin":"*"},"url":"https://esm.sh/@supabase/postgrest-js@1.19.4/dist/cjs/PostgrestError.d.ts","time":1777934143}

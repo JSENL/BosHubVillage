@@ -1,0 +1,9 @@
+import { ErrorResponse } from '../../interfaces.d.ts';
+import { Domain } from './domain.d.ts';
+export type VerifyDomainsResponseSuccess = Domain[];
+export interface VerifyDomainsResponse {
+    data: VerifyDomainsResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"content-type":"application/typescript; charset=utf-8","cf-ray":"9f6afaecaf588f70-BOS","cf-cache-status":"HIT","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","server":"cloudflare","date":"Mon, 04 May 2026 22:35:43 GMT","last-modified":"Tue, 09 Dec 2025 21:27:01 GMT","content-length":"271","accept-ranges":"bytes","age":"4548077"},"url":"https://esm.sh/resend@2.0.0/build/src/domains/interfaces/verify-domain.interface.d.ts","time":1777934143}

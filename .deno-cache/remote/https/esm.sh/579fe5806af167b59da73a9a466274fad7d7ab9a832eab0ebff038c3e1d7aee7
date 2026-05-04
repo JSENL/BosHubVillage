@@ -1,0 +1,6 @@
+export { StorageClient as StorageClient } from './StorageClient.d.ts';
+export * from './lib/types.d.ts';
+export * from './lib/errors.d.ts';
+//# sourceMappingURL=index.d.ts.map
+
+// denoCacheMetadata={"headers":{"date":"Mon, 04 May 2026 22:35:43 GMT","accept-ranges":"bytes","cf-cache-status":"HIT","age":"4887228","cf-ray":"9f6afaebee788f70-BOS","access-control-allow-origin":"*","content-type":"application/typescript; charset=utf-8","content-length":"176","last-modified":"Thu, 17 Jul 2025 19:06:08 GMT","cache-control":"public, max-age=31536000, immutable","server":"cloudflare"},"url":"https://esm.sh/@supabase/storage-js@2.7.1/dist/module/index.d.ts","time":1777934143}

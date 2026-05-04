@@ -1,0 +1,5 @@
+export { FunctionsClient } from './FunctionsClient.d.ts';
+export { type FunctionInvokeOptions, FunctionsError, FunctionsFetchError, FunctionsHttpError, FunctionsRelayError, FunctionRegion, type FunctionsResponse, } from './types.d.ts';
+//# sourceMappingURL=index.d.ts.map
+
+// denoCacheMetadata={"headers":{"cf-cache-status":"HIT","date":"Mon, 04 May 2026 22:35:43 GMT","age":"4887228","content-length":"272","last-modified":"Thu, 17 Jul 2025 19:06:08 GMT","accept-ranges":"bytes","content-type":"application/typescript; charset=utf-8","server":"cloudflare","cf-ray":"9f6afaeb3e168f70-BOS","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*"},"url":"https://esm.sh/@supabase/functions-js@2.4.4/dist/module/index.d.ts","time":1777934143}

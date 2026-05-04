@@ -1,0 +1,9 @@
+import { ErrorResponse } from '../../interfaces.d.ts';
+import { Domain } from './domain.d.ts';
+export type ListDomainsResponseSuccess = Domain[];
+export interface ListDomainsResponse {
+    data: ListDomainsResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"cf-ray":"9f6afaecaf558f70-BOS","access-control-allow-origin":"*","server":"cloudflare","accept-ranges":"bytes","cf-cache-status":"HIT","content-type":"application/typescript; charset=utf-8","last-modified":"Tue, 09 Dec 2025 21:27:00 GMT","content-length":"265","date":"Mon, 04 May 2026 22:35:43 GMT","cache-control":"public, max-age=31536000, immutable","age":"801920"},"url":"https://esm.sh/resend@2.0.0/build/src/domains/interfaces/list-domains.interface.d.ts","time":1777934143}

@@ -1,0 +1,18 @@
+import { PostOptions } from '../../common/interfaces/index.d.ts';
+import { CreateEmailOptions } from '../../emails/interfaces/create-email-options.interface.d.ts';
+import { ErrorResponse } from '../../interfaces.d.ts';
+export type CreateBatchOptions = CreateEmailOptions[];
+export interface CreateBatchRequestOptions extends PostOptions {
+}
+export interface CreateBatchSuccessResponse {
+    data: {
+        /** The ID of the newly created email. */
+        id: string;
+    }[];
+}
+export interface CreateBatchResponse {
+    data: CreateBatchSuccessResponse | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"last-modified":"Tue, 09 Dec 2025 21:26:32 GMT","date":"Mon, 04 May 2026 22:35:43 GMT","content-length":"599","content-type":"application/typescript; charset=utf-8","age":"4548077","cf-cache-status":"HIT","accept-ranges":"bytes","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*","server":"cloudflare","cf-ray":"9f6afaecaf518f70-BOS"},"url":"https://esm.sh/resend@2.0.0/build/src/batch/interfaces/create-batch-options.interface.d.ts","time":1777934143}

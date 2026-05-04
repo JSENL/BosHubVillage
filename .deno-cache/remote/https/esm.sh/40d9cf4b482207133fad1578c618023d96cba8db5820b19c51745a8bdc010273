@@ -1,0 +1,19 @@
+import { PostOptions } from '../../common/interfaces/index.d.ts';
+import { ErrorResponse } from '../../interfaces.d.ts';
+export interface CreateApiKeyOptions {
+    name: string;
+    permission?: 'full_access' | 'sending_access';
+    domain_id?: string;
+}
+export interface CreateApiKeyRequestOptions extends PostOptions {
+}
+export interface CreateApiKeyResponseSuccess {
+    token: string;
+    id: string;
+}
+export interface CreateApiKeyResponse {
+    data: CreateApiKeyResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"cf-ray":"9f6afaecaf4c8f70-BOS","server":"cloudflare","last-modified":"Tue, 09 Dec 2025 21:26:59 GMT","content-type":"application/typescript; charset=utf-8","cache-control":"public, max-age=31536000, immutable","accept-ranges":"bytes","age":"3923128","cf-cache-status":"HIT","access-control-allow-origin":"*","date":"Mon, 04 May 2026 22:35:43 GMT","content-length":"528"},"url":"https://esm.sh/resend@2.0.0/build/src/api-keys/interfaces/create-api-key-options.interface.d.ts","time":1777934143}

@@ -1,0 +1,26 @@
+export declare const RESEND_ERROR_CODES_BY_KEY: {
+    readonly missing_required_field: 422;
+    readonly invalid_access: 422;
+    readonly invalid_parameter: 422;
+    readonly invalid_region: 422;
+    readonly rate_limit_exceeded: 429;
+    readonly missing_api_key: 401;
+    readonly invalid_api_Key: 403;
+    readonly invalid_from_address: 403;
+    readonly validation_error: 403;
+    readonly not_found: 404;
+    readonly method_not_allowed: 405;
+    readonly application_error: 500;
+    readonly internal_server_error: 500;
+};
+export type RESEND_ERROR_CODE_KEY = keyof typeof RESEND_ERROR_CODES_BY_KEY;
+export interface ErrorResponse {
+    message: string;
+    name: RESEND_ERROR_CODE_KEY;
+}
+export type Tag = {
+    name: string;
+    value: string;
+};
+
+// denoCacheMetadata={"headers":{"cache-control":"public, max-age=31536000, immutable","content-type":"application/typescript; charset=utf-8","server":"cloudflare","access-control-allow-origin":"*","accept-ranges":"bytes","last-modified":"Tue, 09 Dec 2025 21:27:01 GMT","content-length":"755","age":"2610138","date":"Mon, 04 May 2026 22:35:43 GMT","cf-cache-status":"HIT","cf-ray":"9f6afaeb3e1a8f70-BOS"},"url":"https://esm.sh/resend@2.0.0/build/src/interfaces.d.ts","time":1777934143}

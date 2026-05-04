@@ -1,0 +1,37 @@
+import { ApiKeys } from './api-keys/api-keys.d.ts';
+import { Batch } from './batch/batch.d.ts';
+import { GetOptions, PostOptions, PutOptions } from './common/interfaces/index.d.ts';
+import { Domains } from './domains/domains.d.ts';
+import { Emails } from './emails/emails.d.ts';
+import { ErrorResponse } from './interfaces.d.ts';
+export declare class Resend {
+    readonly key?: string | undefined;
+    private readonly headers;
+    readonly apiKeys: ApiKeys;
+    readonly domains: Domains;
+    readonly emails: Emails;
+    readonly batch: Batch;
+    constructor(key?: string | undefined);
+    fetchRequest<T>(path: string, options?: {}): Promise<{
+        data: T | null;
+        error: ErrorResponse | null;
+    }>;
+    post<T>(path: string, entity?: unknown, options?: PostOptions): Promise<{
+        data: T | null;
+        error: ErrorResponse | null;
+    }>;
+    get<T>(path: string, options?: GetOptions): Promise<{
+        data: T | null;
+        error: ErrorResponse | null;
+    }>;
+    put<T>(path: string, entity: any, options?: PutOptions): Promise<{
+        data: T | null;
+        error: ErrorResponse | null;
+    }>;
+    delete<T>(path: string, query?: unknown): Promise<{
+        data: T | null;
+        error: ErrorResponse | null;
+    }>;
+}
+
+// denoCacheMetadata={"headers":{"date":"Mon, 04 May 2026 22:35:43 GMT","last-modified":"Tue, 09 Dec 2025 21:27:00 GMT","server":"cloudflare","cf-ray":"9f6afaeb3e188f70-BOS","accept-ranges":"bytes","content-length":"1259","age":"1274281","content-type":"application/typescript; charset=utf-8","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","cf-cache-status":"HIT"},"url":"https://esm.sh/resend@2.0.0/build/src/resend.d.ts","time":1777934143}

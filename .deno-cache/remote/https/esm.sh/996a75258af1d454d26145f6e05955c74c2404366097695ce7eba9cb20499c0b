@@ -1,0 +1,39 @@
+export declare const DEFAULT_HEADERS: {
+    'X-Client-Info': string;
+};
+export declare const VSN: string;
+export declare const DEFAULT_TIMEOUT = 10000;
+export declare const WS_CLOSE_NORMAL = 1000;
+export declare enum SOCKET_STATES {
+    connecting = 0,
+    open = 1,
+    closing = 2,
+    closed = 3
+}
+export declare enum CHANNEL_STATES {
+    closed = "closed",
+    errored = "errored",
+    joined = "joined",
+    joining = "joining",
+    leaving = "leaving"
+}
+export declare enum CHANNEL_EVENTS {
+    close = "phx_close",
+    error = "phx_error",
+    join = "phx_join",
+    reply = "phx_reply",
+    leave = "phx_leave",
+    access_token = "access_token"
+}
+export declare enum TRANSPORTS {
+    websocket = "websocket"
+}
+export declare enum CONNECTION_STATE {
+    Connecting = "connecting",
+    Open = "open",
+    Closing = "closing",
+    Closed = "closed"
+}
+//# sourceMappingURL=constants.d.ts.map
+
+// denoCacheMetadata={"headers":{"server":"cloudflare","accept-ranges":"bytes","content-length":"897","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","last-modified":"Tue, 09 Dec 2025 20:04:56 GMT","cf-cache-status":"HIT","date":"Mon, 04 May 2026 22:35:43 GMT","cf-ray":"9f6afaec7f118f70-BOS","age":"1596159","content-type":"application/typescript; charset=utf-8"},"url":"https://esm.sh/@supabase/realtime-js@2.11.2/dist/module/lib/constants.d.ts","time":1777934143}

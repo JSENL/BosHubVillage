@@ -1,0 +1,7 @@
+export interface PostOptions {
+    query?: {
+        [key: string]: any;
+    };
+}
+
+// denoCacheMetadata={"headers":{"server":"cloudflare","age":"418864","access-control-allow-origin":"*","cf-cache-status":"HIT","accept-ranges":"bytes","cf-ray":"9f6afaec7f208f70-BOS","cache-control":"public, max-age=31536000, immutable","content-type":"application/typescript; charset=utf-8","date":"Mon, 04 May 2026 22:35:43 GMT","content-length":"82","last-modified":"Tue, 09 Dec 2025 21:27:00 GMT"},"url":"https://esm.sh/resend@2.0.0/build/src/common/interfaces/post-option.interface.d.ts","time":1777934143}

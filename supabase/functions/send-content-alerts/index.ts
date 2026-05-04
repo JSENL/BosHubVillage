@@ -1,26 +1,23 @@
+/// <reference path="./edge-env.d.ts" />
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.8";
-import { Resend } from "npm:resend@2.0.0";
+import { createClient, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.8";
+import { Resend } from "https://esm.sh/resend@2.0.0";
+import {
+  itemMatchesKeywordFilters,
+  matchesSavedSearch,
+  normalize as normalizeMatch,
+  type ItemDetails,
+  type ItemType,
+} from "./alertMatching.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type ItemType = "event" | "news" | "local-resource";
-
 interface AlertRequest {
   itemType: ItemType;
   itemId: string;
-}
-
-interface ItemDetails {
-  id: string;
-  title: string;
-  description: string;
-  neighborhood: string | null;
-  link: string;
-  creatorId: string | null;
 }
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEYI") || Deno.env.get("RESEND_API_KEY"));
@@ -28,36 +25,13 @@ const fromEmail = Deno.env.get("ADMIN_MESSAGE_FROM_EMAIL") || "onboarding@resend
 const fromName = Deno.env.get("ADMIN_MESSAGE_FROM_NAME") || "HubVillage Alerts";
 const maxDailyAlerts = Number(Deno.env.get("MAX_DAILY_ALERTS_PER_USER") || "5");
 
-const normalize = (v: string | null | undefined) => (v || "").trim().toLowerCase();
+const normalize = normalizeMatch;
 
 const titleForType = (itemType: ItemType) =>
   itemType === "event" ? "Event" : itemType === "news" ? "Culture" : "Local Resource";
 
-function matchesSavedSearch(searchCriteria: Record<string, unknown> | null, item: ItemDetails, itemType: ItemType) {
-  if (!searchCriteria) return false;
-  const selectedType = normalize(String(searchCriteria.selectedType || searchCriteria.selected_type || ""));
-  if (selectedType && selectedType !== itemType && !(selectedType === "local-service" && itemType === "local-resource")) {
-    return false;
-  }
-
-  const selectedNeighborhood = normalize(
-    String(searchCriteria.selectedNeighborhood || searchCriteria.selected_neighborhood || ""),
-  );
-  if (selectedNeighborhood && normalize(item.neighborhood) !== selectedNeighborhood) {
-    return false;
-  }
-
-  const searchTerm = normalize(String(searchCriteria.searchTerm || searchCriteria.search_term || ""));
-  if (searchTerm) {
-    const haystack = `${item.title} ${item.description}`.toLowerCase();
-    if (!haystack.includes(searchTerm)) return false;
-  }
-
-  return true;
-}
-
 async function getItemDetails(
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient,
   itemType: ItemType,
   itemId: string,
 ): Promise<ItemDetails | null> {
@@ -68,14 +42,22 @@ async function getItemDetails(
       .eq("id", itemId)
       .maybeSingle();
     if (!data) return null;
-    const slug = (data as { slug?: string | null }).slug?.trim();
+    const row = data as {
+      id: string;
+      slug?: string | null;
+      title?: string | null;
+      description?: string | null;
+      neighborhoods?: string | null;
+      created_by?: string | null;
+    };
+    const slug = row.slug?.trim();
     return {
-      id: data.id,
-      title: data.title || "New Event",
-      description: data.description || "",
-      neighborhood: (data as { neighborhoods?: string | null }).neighborhoods || null,
-      link: slug ? `/event/${slug}` : `/event/${data.id}`,
-      creatorId: (data as { created_by?: string | null }).created_by || null,
+      id: row.id,
+      title: row.title || "New Event",
+      description: row.description || "",
+      neighborhood: row.neighborhoods || null,
+      link: slug ? `/event/${slug}` : `/event/${row.id}`,
+      creatorId: row.created_by || null,
     };
   }
 
@@ -86,13 +68,20 @@ async function getItemDetails(
       .eq("id", itemId)
       .maybeSingle();
     if (!data) return null;
+    const row = data as {
+      id: string;
+      title?: string | null;
+      content?: string | null;
+      location?: string | null;
+      created_by?: string | null;
+    };
     return {
-      id: data.id,
-      title: data.title || "New Culture Article",
-      description: (data as { content?: string | null }).content || "",
-      neighborhood: (data as { location?: string | null }).location || null,
-      link: `/news/${data.id}`,
-      creatorId: (data as { created_by?: string | null }).created_by || null,
+      id: row.id,
+      title: row.title || "New Culture Article",
+      description: row.content || "",
+      neighborhood: row.location || null,
+      link: `/news/${row.id}`,
+      creatorId: row.created_by || null,
     };
   }
 
@@ -102,12 +91,18 @@ async function getItemDetails(
     .eq("id", itemId)
     .maybeSingle();
   if (!data) return null;
+  const row = data as {
+    id: string;
+    name?: string | null;
+    description?: string | null;
+    neighborhood?: string | null;
+  };
   return {
-    id: data.id,
-    title: (data as { name?: string | null }).name || "New Local Resource",
-    description: data.description || "",
-    neighborhood: (data as { neighborhood?: string | null }).neighborhood || null,
-    link: `/local-resource/${data.id}`,
+    id: row.id,
+    title: row.name || "New Local Resource",
+    description: row.description || "",
+    neighborhood: row.neighborhood || null,
+    link: `/local-resource/${row.id}`,
     creatorId: null,
   };
 }
@@ -155,7 +150,24 @@ serve(async (req) => {
 
     const prefRows = prefRes.data || [];
     const searchRows = searchesRes.data || [];
-    const recommendationUserIds = new Set((activityRes.data || []).map((r) => r.user_id).filter(Boolean));
+    const recommendationUserIds = new Set(
+      (activityRes.data || [])
+        .map((r) => r.user_id as string | null | undefined)
+        .filter((id): id is string => Boolean(id)),
+    );
+
+    const prefUserIds = [...new Set(prefRows.map((p) => p.user_id).filter(Boolean))];
+    const interestsByUserId = new Map<string, string[]>();
+    if (prefUserIds.length > 0) {
+      const { data: interestProfiles } = await supabase
+        .from("profiles")
+        .select("id, interests")
+        .in("id", prefUserIds);
+      for (const row of interestProfiles || []) {
+        const raw = (row as { interests?: string[] | null }).interests;
+        interestsByUserId.set(row.id, Array.isArray(raw) ? raw : []);
+      }
+    }
 
     const candidate = new Map<
       string,
@@ -174,9 +186,12 @@ serve(async (req) => {
       const neighborhoodMatch = hoods.length === 0 || hoods.includes(normalize(item.neighborhood));
       if (!neighborhoodMatch) continue;
 
-      const keywords = (p.keywords || []).map(normalize).filter(Boolean);
-      const haystack = `${item.title} ${item.description}`.toLowerCase();
-      const keywordMatch = keywords.length === 0 || keywords.some((k) => haystack.includes(k));
+      const keywordMatch = itemMatchesKeywordFilters(
+        p.keywords || [],
+        interestsByUserId.get(p.user_id) || [],
+        item.title,
+        item.description,
+      );
       if (!keywordMatch) continue;
 
       candidate.set(p.user_id, {
@@ -236,7 +251,10 @@ serve(async (req) => {
         .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
     ]);
 
-    const profileByUser = new Map((profilesRes.data || []).map((p) => [p.id, p]));
+    type ProfileRow = { id: string; email: string | null; full_name: string | null };
+    const profileByUser = new Map(
+      (profilesRes.data || []).map((p) => [p.id as string, p as ProfileRow]),
+    );
     const counts = new Map<string, number>();
     for (const n of dailyCountsRes.data || []) {
       counts.set(n.user_id, (counts.get(n.user_id) || 0) + 1);

@@ -1,0 +1,10 @@
+import { ErrorResponse } from '../../interfaces.d.ts';
+export interface RemoveApiKeyResponseSuccess {
+    id: string;
+}
+export interface RemoveApiKeyResponse {
+    data: RemoveApiKeyResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"cache-control":"public, max-age=31536000, immutable","accept-ranges":"bytes","last-modified":"Sun, 20 Jul 2025 05:55:58 GMT","content-type":"application/typescript; charset=utf-8","age":"4887219","date":"Mon, 04 May 2026 22:35:43 GMT","content-length":"241","server":"cloudflare","cf-ray":"9f6afaecaf508f70-BOS","access-control-allow-origin":"*","cf-cache-status":"HIT"},"url":"https://esm.sh/resend@2.0.0/build/src/api-keys/interfaces/remove-api-keys.interface.d.ts","time":1777934143}

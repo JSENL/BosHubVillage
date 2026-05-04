@@ -1,0 +1,5 @@
+export interface GetOptions {
+    query?: Record<string, any>;
+}
+
+// denoCacheMetadata={"headers":{"date":"Mon, 04 May 2026 22:35:43 GMT","last-modified":"Sun, 20 Jul 2025 05:55:58 GMT","content-type":"application/typescript; charset=utf-8","age":"4887223","content-length":"65","accept-ranges":"bytes","server":"cloudflare","cf-cache-status":"HIT","cf-ray":"9f6afaec7f1d8f70-BOS","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*"},"url":"https://esm.sh/resend@2.0.0/build/src/common/interfaces/get-option.interface.d.ts","time":1777934143}

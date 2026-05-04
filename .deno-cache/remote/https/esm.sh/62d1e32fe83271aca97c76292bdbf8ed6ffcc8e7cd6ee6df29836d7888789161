@@ -1,0 +1,24 @@
+export {
+    AddressInfo,
+    CertMeta,
+    ClientOptions,
+    CloseEvent,
+    createWebSocketStream,
+    Data,
+    ErrorEvent,
+    Event,
+    EventListenerOptions,
+    FinishRequestCallback,
+    MessageEvent,
+    PerMessageDeflateOptions,
+    RawData,
+    ServerOptions,
+    VerifyClientCallbackAsync,
+    VerifyClientCallbackSync,
+    WebSocket,
+    WebSocketServer,
+} from "./index.d.mts";
+import WebSocket = require("./index.d.mts");
+export default WebSocket;
+
+// denoCacheMetadata={"headers":{"server":"cloudflare","cf-ray":"9f6afaec7f108f70-BOS","accept-ranges":"bytes","date":"Mon, 04 May 2026 22:35:43 GMT","content-type":"application/typescript; charset=utf-8","age":"1666479","content-length":"464","cf-cache-status":"HIT","last-modified":"Tue, 09 Dec 2025 20:28:05 GMT","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*"},"url":"https://esm.sh/@types/ws@8.5.13/index.d.mts","time":1777934143}

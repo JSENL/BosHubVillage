@@ -1,0 +1,9 @@
+import { ErrorResponse } from '../../interfaces.d.ts';
+import { Domain } from './domain.d.ts';
+export type RemoveDomainsResponseSuccess = Pick<Domain, 'id'>;
+export interface RemoveDomainsResponse {
+    data: RemoveDomainsResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"date":"Mon, 04 May 2026 22:35:43 GMT","content-length":"281","cf-cache-status":"HIT","access-control-allow-origin":"*","server":"cloudflare","age":"864917","cf-ray":"9f6afaecaf578f70-BOS","content-type":"application/typescript; charset=utf-8","cache-control":"public, max-age=31536000, immutable","last-modified":"Tue, 09 Dec 2025 21:27:00 GMT","accept-ranges":"bytes"},"url":"https://esm.sh/resend@2.0.0/build/src/domains/interfaces/remove-domain.interface.d.ts","time":1777934143}

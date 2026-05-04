@@ -1,0 +1,11 @@
+import { Resend } from '../resend.d.ts';
+import { CreateApiKeyOptions, CreateApiKeyRequestOptions, CreateApiKeyResponse, ListApiKeysResponse, RemoveApiKeyResponse } from './interfaces/index.d.ts';
+export declare class ApiKeys {
+    private readonly resend;
+    constructor(resend: Resend);
+    create(payload: CreateApiKeyOptions, options?: CreateApiKeyRequestOptions): Promise<CreateApiKeyResponse>;
+    list(): Promise<ListApiKeysResponse>;
+    remove(id: string): Promise<RemoveApiKeyResponse>;
+}
+
+// denoCacheMetadata={"headers":{"date":"Mon, 04 May 2026 22:35:43 GMT","content-type":"application/typescript; charset=utf-8","content-length":"500","server":"cloudflare","cf-cache-status":"HIT","access-control-allow-origin":"*","accept-ranges":"bytes","cf-ray":"9f6afaebee998f70-BOS","cache-control":"public, max-age=31536000, immutable","age":"1666090","last-modified":"Tue, 09 Dec 2025 21:27:00 GMT"},"url":"https://esm.sh/resend@2.0.0/build/src/api-keys/api-keys.d.ts","time":1777934143}

@@ -1,0 +1,36 @@
+import { AuthResponse, AuthResponsePassword, SSOResponse, GenerateLinkResponse, UserResponse } from './types.d.ts';
+export declare type Fetch = typeof fetch;
+export interface FetchOptions {
+    headers?: {
+        [key: string]: string;
+    };
+    noResolveJson?: boolean;
+}
+export interface FetchParameters {
+    signal?: AbortSignal;
+}
+export declare type RequestMethodType = 'GET' | 'POST' | 'PUT' | 'DELETE';
+export declare function handleError(error: unknown): Promise<void>;
+interface GotrueRequestOptions extends FetchOptions {
+    jwt?: string;
+    redirectTo?: string;
+    body?: object;
+    query?: {
+        [key: string]: string;
+    };
+    /**
+     * Function that transforms api response from gotrue into a desirable / standardised format
+     */
+    xform?: (data: any) => any;
+}
+export declare function _request(fetcher: Fetch, method: RequestMethodType, url: string, options?: GotrueRequestOptions): Promise<any>;
+export declare function _sessionResponse(data: any): AuthResponse;
+export declare function _sessionResponsePassword(data: any): AuthResponsePassword;
+export declare function _userResponse(data: any): UserResponse;
+export declare function _ssoResponse(data: any): SSOResponse;
+export declare function _generateLinkResponse(data: any): GenerateLinkResponse;
+export declare function _noResolveJsonResponse(data: any): Response;
+export {};
+//# sourceMappingURL=fetch.d.ts.map
+
+// denoCacheMetadata={"headers":{"content-length":"1403","age":"1331346","accept-ranges":"bytes","cf-cache-status":"HIT","date":"Mon, 04 May 2026 22:35:43 GMT","access-control-allow-origin":"*","cf-ray":"9f6afaec7f078f70-BOS","cache-control":"public, max-age=31536000, immutable","last-modified":"Tue, 09 Dec 2025 20:05:32 GMT","server":"cloudflare","content-type":"application/typescript; charset=utf-8"},"url":"https://esm.sh/@supabase/auth-js@2.69.1/dist/module/lib/fetch.d.ts","time":1777934143}

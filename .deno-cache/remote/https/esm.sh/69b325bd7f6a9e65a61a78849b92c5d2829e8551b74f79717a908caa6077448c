@@ -1,0 +1,6 @@
+/* esm.sh - resend@2.0.0 */
+import "/@react-email/render@0.0.9/denonext/render.mjs";
+export * from "/resend@2.0.0/denonext/resend.mjs";
+export { default } from "/resend@2.0.0/denonext/resend.mjs";
+
+// denoCacheMetadata={"headers":{"content-type":"application/javascript; charset=utf-8","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*","cf-cache-status":"DYNAMIC","x-esm-path":"/resend@2.0.0/denonext/resend.mjs","cf-ray":"9f6afae7fbae8f70-BOS","x-typescript-types":"https://esm.sh/resend@2.0.0/build/src/index.d.ts","access-control-expose-headers":"X-ESM-Path, X-TypeScript-Types","vary":"User-Agent","server":"cloudflare","date":"Mon, 04 May 2026 22:35:42 GMT"},"url":"https://esm.sh/resend@2.0.0","time":1777934142}

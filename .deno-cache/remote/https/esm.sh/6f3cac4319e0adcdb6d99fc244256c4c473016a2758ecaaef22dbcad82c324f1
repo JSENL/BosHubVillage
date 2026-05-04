@@ -1,0 +1,12 @@
+import { ErrorResponse } from '../../interfaces.d.ts';
+import { Domain, DomainRecords } from './domain.d.ts';
+export interface GetDomainResponseSuccess extends Pick<Domain, 'id' | 'name' | 'created_at' | 'region' | 'status'> {
+    object: 'domain';
+    records: DomainRecords[];
+}
+export interface GetDomainResponse {
+    data: GetDomainResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"access-control-allow-origin":"*","date":"Mon, 04 May 2026 22:35:43 GMT","accept-ranges":"bytes","cf-cache-status":"HIT","cf-ray":"9f6afaecaf568f70-BOS","cache-control":"public, max-age=31536000, immutable","content-type":"application/typescript; charset=utf-8","last-modified":"Sun, 20 Jul 2025 05:55:58 GMT","content-length":"396","server":"cloudflare","age":"4887219"},"url":"https://esm.sh/resend@2.0.0/build/src/domains/interfaces/get-domain.interface.d.ts","time":1777934143}

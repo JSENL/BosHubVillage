@@ -403,7 +403,8 @@ const resources = {
         website: "Website",
         websitePlaceholder: "https://yourwebsite.com",
         interests: "Interests",
-        interestsDesc: "Add your interests to discover people with similar hobbies and passions.",
+        interestsDesc:
+          "Add your interests to discover people with similar hobbies and passions. We also use them to match community events and content to your alerts.",
         yourInterests: "Your Interests",
         addInterest: "Add Interest",
         typeInterest: "Type an interest...",
@@ -905,7 +906,8 @@ const resources = {
         website: "Sitio Web",
         websitePlaceholder: "https://tusitio.com",
         interests: "Intereses",
-        interestsDesc: "Agrega tus intereses para descubrir personas con pasatiempos y pasiones similares.",
+        interestsDesc:
+          "Agrega tus intereses para descubrir personas con pasatiempos y pasiones similares. También los usamos para relacionar eventos y contenido de la comunidad con tus alertas.",
         yourInterests: "Tus Intereses",
         addInterest: "Agregar Interés",
         typeInterest: "Escribe un interés...",
@@ -1407,7 +1409,8 @@ const resources = {
         website: "Site Web",
         websitePlaceholder: "https://votresite.com",
         interests: "Intérêts",
-        interestsDesc: "Ajoutez vos intérêts pour découvrir des personnes avec des loisirs et passions similaires.",
+        interestsDesc:
+          "Ajoutez vos intérêts pour découvrir des personnes avec des loisirs et passions similaires. Nous les utilisons aussi pour faire correspondre événements et contenus communautaires à vos alertes.",
         yourInterests: "Vos Intérêts",
         addInterest: "Ajouter un Intérêt",
         typeInterest: "Tapez un intérêt...",
@@ -1909,7 +1912,8 @@ const resources = {
         website: "Website",
         websitePlaceholder: "https://website-cua-ban.com",
         interests: "Sở Thích",
-        interestsDesc: "Thêm sở thích của bạn để khám phá những người có cùng sở thích và đam mê.",
+        interestsDesc:
+          "Thêm sở thích của bạn để khám phá những người có cùng sở thích và đam mê. Chúng tôi cũng dùng chúng để khớp sự kiện và nội dung cộng đồng với thông báo của bạn.",
         yourInterests: "Sở Thích Của Bạn",
         addInterest: "Thêm Sở Thích",
         typeInterest: "Nhập một sở thích...",
@@ -2411,7 +2415,8 @@ const resources = {
         website: "Site",
         websitePlaceholder: "https://seusite.com",
         interests: "Interesses",
-        interestsDesc: "Adicione seus interesses para descobrir pessoas com hobbies e paixões similares.",
+        interestsDesc:
+          "Adicione seus interesses para descobrir pessoas com hobbies e paixões similares. Também os usamos para combinar eventos e conteúdo da comunidade com seus alertas.",
         yourInterests: "Seus Interesses",
         addInterest: "Adicionar Interesse",
         typeInterest: "Digite um interesse...",

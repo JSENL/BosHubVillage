@@ -56,10 +56,34 @@ export const useProfile = (userId?: string) => {
         .single();
 
       if (error) throw error;
+
+      if (updates.interests !== undefined) {
+        const { data: existingPref } = await supabase
+          .from('notification_preferences')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        if (!existingPref) {
+          const { error: prefError } = await supabase.from('notification_preferences').insert({
+            user_id: user.id,
+            instant_email: true,
+            instant_in_app: true,
+            recommendations_enabled: true,
+            subscribed_item_types: ['event', 'news', 'local-resource'],
+            neighborhoods: [],
+            keywords: [],
+          });
+          if (prefError) throw prefError;
+        }
+      }
+
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
+      if (variables.interests !== undefined) {
+        queryClient.invalidateQueries({ queryKey: ['notification-preferences', user?.id] });
+      }
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",

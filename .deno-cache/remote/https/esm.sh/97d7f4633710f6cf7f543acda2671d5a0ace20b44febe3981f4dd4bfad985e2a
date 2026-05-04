@@ -1,0 +1,21 @@
+import { ErrorResponse } from '../../interfaces.d.ts';
+export interface GetEmailResponseSuccess {
+    bcc: string[] | null;
+    cc: string[] | null;
+    created_at: string;
+    from: string;
+    html: string | null;
+    id: string;
+    last_event: string;
+    reply_to: string[] | null;
+    subject: string;
+    text: string | null;
+    to: string[];
+    object: 'email';
+}
+export interface GetEmailResponse {
+    data: GetEmailResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"content-length":"487","cache-control":"public, max-age=31536000, immutable","last-modified":"Tue, 09 Dec 2025 21:27:00 GMT","server":"cloudflare","accept-ranges":"bytes","cf-cache-status":"HIT","age":"2429705","cf-ray":"9f6afaecaf5a8f70-BOS","access-control-allow-origin":"*","date":"Mon, 04 May 2026 22:35:43 GMT","content-type":"application/typescript; charset=utf-8"},"url":"https://esm.sh/resend@2.0.0/build/src/emails/interfaces/get-email-options.interface.d.ts","time":1777934143}

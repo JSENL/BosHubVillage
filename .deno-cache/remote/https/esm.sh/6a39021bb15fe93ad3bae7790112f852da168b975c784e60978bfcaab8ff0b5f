@@ -1,0 +1,13 @@
+import { Resend } from '../resend.d.ts';
+import { CreateDomainOptions, CreateDomainRequestOptions, CreateDomainResponse, GetDomainResponse, ListDomainsResponse, RemoveDomainsResponse, VerifyDomainsResponse } from './interfaces/index.d.ts';
+export declare class Domains {
+    private readonly resend;
+    constructor(resend: Resend);
+    create(payload: CreateDomainOptions, options?: CreateDomainRequestOptions): Promise<CreateDomainResponse>;
+    list(): Promise<ListDomainsResponse>;
+    get(id: string): Promise<GetDomainResponse>;
+    remove(id: string): Promise<RemoveDomainsResponse>;
+    verify(id: string): Promise<VerifyDomainsResponse>;
+}
+
+// denoCacheMetadata={"headers":{"server":"cloudflare","date":"Mon, 04 May 2026 22:35:43 GMT","last-modified":"Sun, 20 Jul 2025 05:55:58 GMT","cf-ray":"9f6afaebee9c8f70-BOS","age":"4887223","cache-control":"public, max-age=31536000, immutable","content-length":"649","content-type":"application/typescript; charset=utf-8","cf-cache-status":"HIT","accept-ranges":"bytes","access-control-allow-origin":"*"},"url":"https://esm.sh/resend@2.0.0/build/src/domains/domains.d.ts","time":1777934143}

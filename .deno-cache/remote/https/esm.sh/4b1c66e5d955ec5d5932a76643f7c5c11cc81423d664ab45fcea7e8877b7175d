@@ -1,0 +1,12 @@
+import { ErrorResponse } from '../../interfaces.d.ts';
+export interface ListApiKeysResponseSuccess {
+    name: string;
+    id: string;
+    created_at: string;
+}
+export interface ListApiKeysResponse {
+    data: ListApiKeysResponseSuccess[] | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"cf-ray":"9f6afaecaf4e8f70-BOS","access-control-allow-origin":"*","content-length":"282","cache-control":"public, max-age=31536000, immutable","age":"4887219","cf-cache-status":"HIT","server":"cloudflare","content-type":"application/typescript; charset=utf-8","accept-ranges":"bytes","last-modified":"Sun, 20 Jul 2025 05:55:58 GMT","date":"Mon, 04 May 2026 22:35:43 GMT"},"url":"https://esm.sh/resend@2.0.0/build/src/api-keys/interfaces/list-api-keys.interface.d.ts","time":1777934143}

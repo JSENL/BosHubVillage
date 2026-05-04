@@ -1,0 +1,11 @@
+import { Resend } from '../resend.d.ts';
+import { CreateEmailOptions, CreateEmailRequestOptions, CreateEmailResponse, GetEmailResponse } from './interfaces/index.d.ts';
+export declare class Emails {
+    private readonly resend;
+    constructor(resend: Resend);
+    send(payload: CreateEmailOptions, options?: CreateEmailRequestOptions): Promise<CreateEmailResponse>;
+    create(payload: CreateEmailOptions, options?: CreateEmailRequestOptions): Promise<CreateEmailResponse>;
+    get(id: string): Promise<GetEmailResponse>;
+}
+
+// denoCacheMetadata={"headers":{"accept-ranges":"bytes","last-modified":"Tue, 09 Dec 2025 21:27:00 GMT","cf-cache-status":"HIT","cf-ray":"9f6afaebee9d8f70-BOS","access-control-allow-origin":"*","date":"Mon, 04 May 2026 22:35:43 GMT","cache-control":"public, max-age=31536000, immutable","server":"cloudflare","content-type":"application/typescript; charset=utf-8","age":"994320","content-length":"525"},"url":"https://esm.sh/resend@2.0.0/build/src/emails/emails.d.ts","time":1777934143}

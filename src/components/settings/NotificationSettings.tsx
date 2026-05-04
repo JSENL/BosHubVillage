@@ -132,6 +132,9 @@ export const NotificationSettings = () => {
 
         <div className="space-y-2">
           <Label htmlFor="keywords" className="font-medium">Keywords (comma-separated)</Label>
+          <p className="text-sm text-muted-foreground">
+            Interests from your profile are included automatically. Use keywords here for extra phrases.
+          </p>
           <Input
             id="keywords"
             disabled={isLoading || isUpdating}

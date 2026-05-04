@@ -1,0 +1,18 @@
+import { PostOptions } from '../../common/interfaces/index.d.ts';
+import { ErrorResponse } from '../../interfaces.d.ts';
+import { Domain, DomainRecords, DomainRegion } from './domain.d.ts';
+export interface CreateDomainOptions {
+    name: string;
+    region?: DomainRegion;
+}
+export interface CreateDomainRequestOptions extends PostOptions {
+}
+export interface CreateDomainResponseSuccess extends Pick<Domain, 'name' | 'id' | 'status' | 'created_at' | 'region'> {
+    records: DomainRecords[];
+}
+export interface CreateDomainResponse {
+    data: CreateDomainResponseSuccess | null;
+    error: ErrorResponse | null;
+}
+
+// denoCacheMetadata={"headers":{"server":"cloudflare","date":"Mon, 04 May 2026 22:35:43 GMT","cf-ray":"9f6afaecaf548f70-BOS","content-type":"application/typescript; charset=utf-8","last-modified":"Tue, 09 Dec 2025 21:26:25 GMT","accept-ranges":"bytes","access-control-allow-origin":"*","cf-cache-status":"HIT","cache-control":"public, max-age=31536000, immutable","content-length":"617","age":"1418773"},"url":"https://esm.sh/resend@2.0.0/build/src/domains/interfaces/create-domain-options.interface.d.ts","time":1777934143}
