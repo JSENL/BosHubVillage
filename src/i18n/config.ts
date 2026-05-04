@@ -36,7 +36,8 @@ const resources = {
         signOut: "Sign Out",
         signIn: "Sign In",
         donate: "Donate",
-        faq: "FAQ"
+        faq: "FAQ",
+        firstTimeQuestion: "1st Time?"
       },
       // Cards
       cards: {
@@ -565,7 +566,8 @@ const resources = {
         signOut: "Cerrar Sesión",
         signIn: "Iniciar Sesión",
         donate: "Donar",
-        faq: "Preguntas Frecuentes"
+        faq: "Preguntas Frecuentes",
+        firstTimeQuestion: "¿Primera vez?"
       },
       cards: {
         viewDetails: "Ver Detalles",
@@ -1068,7 +1070,8 @@ const resources = {
         signOut: "Se Déconnecter",
         signIn: "Se Connecter",
         donate: "Faire un don",
-        faq: "FAQ"
+        faq: "FAQ",
+        firstTimeQuestion: "1ère visite ?"
       },
       cards: {
         viewDetails: "Voir les Détails",
@@ -1571,7 +1574,8 @@ const resources = {
         signOut: "Đăng Xuất",
         signIn: "Đăng Nhập",
         donate: "Quyên góp",
-        faq: "Câu Hỏi Thường Gặp"
+        faq: "Câu Hỏi Thường Gặp",
+        firstTimeQuestion: "Lần đầu?"
       },
       cards: {
         viewDetails: "Xem Chi Tiết",
@@ -2074,7 +2078,8 @@ const resources = {
         signOut: "Sair",
         signIn: "Entrar",
         donate: "Doar",
-        faq: "Perguntas Frequentes"
+        faq: "Perguntas Frequentes",
+        firstTimeQuestion: "1ª vez?"
       },
       cards: {
         viewDetails: "Ver Detalhes",

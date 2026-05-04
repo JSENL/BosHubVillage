@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -10,7 +10,7 @@ import { TranslationTestModal } from '@/components/pages/TranslationTestModal';
 import { AppStateProvider } from '@/contexts/AppStateProvider';
 import { useAppState } from '@/contexts/AppStateContext';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
-import { OnboardingTour, OnboardingTourRef } from '@/components/onboarding/OnboardingTour';
+import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
 import { Button } from '@/components/ui/button';
 import { HelpCircle, Layers } from 'lucide-react';
 import { FeaturedSection } from '@/components/home/FeaturedSection';
@@ -49,12 +49,11 @@ const MainContent = () => {
   const adminQuickBrowseIds = getQuickBrowseIds(entries);
   const quickBrowseItems = getQuickBrowseItems(filteredItems, 10, adminQuickBrowseIds.length > 0 ? adminQuickBrowseIds : undefined);
   
-  const tourRef = useRef<OnboardingTourRef>(null);
   const [showMobileMap, setShowMobileMap] = useState(false);
   const [showSwipeCards, setShowSwipeCards] = useState(false);
 
   const handleHelpClick = () => {
-    tourRef.current?.openTour();
+    window.dispatchEvent(new Event(OPEN_ONBOARDING_EVENT));
   };
 
   const handleQuickAction = (action: string) => {
@@ -285,8 +284,6 @@ const MainContent = () => {
         </div>
       </PullToRefresh>
 
-      <OnboardingTour ref={tourRef} />
-      
       <TranslationTestModal />
     </>
   );

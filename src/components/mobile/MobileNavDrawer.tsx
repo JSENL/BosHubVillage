@@ -24,8 +24,10 @@ import {
   Heart,
   Info,
   Shield,
-  ScrollText
+  ScrollText,
+  Sparkles
 } from 'lucide-react';
+import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
 
 export const MobileNavDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -102,6 +104,19 @@ export const MobileNavDrawer = () => {
               <HelpCircle className="h-5 w-5 mr-3" />
               FAQ
             </Link>
+
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full justify-start px-3 py-3 h-auto font-normal text-left hover:bg-muted rounded-lg"
+              onClick={() => {
+                window.dispatchEvent(new Event(OPEN_ONBOARDING_EVENT));
+                setOpen(false);
+              }}
+            >
+              <Sparkles className="h-5 w-5 mr-3 shrink-0" />
+              {t('navigation.firstTimeQuestion')}
+            </Button>
 
             <Link
               to="/about"

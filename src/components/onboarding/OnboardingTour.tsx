@@ -1,4 +1,5 @@
-import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { useState, useEffect, useImperativeHandle, forwardRef, useCallback } from 'react';
+import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
 import { useTranslation } from 'react-i18next';
 import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
 import {
@@ -247,21 +248,21 @@ export const OnboardingTour = forwardRef<OnboardingTourRef>((props, ref) => {
   const [runTour, setRunTour] = useState(false);
   const { generalSteps, eventSteps, businessSteps, resourceSteps } = useTranslatedSteps();
 
+  const openWelcomeModal = useCallback(() => {
+    setShowWelcome(true);
+    setModalStep('language');
+    setSelectedLanguage(i18n.language || 'en');
+  }, [i18n.language]);
+
   useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    if (!hasSeenOnboarding) {
-      setShowWelcome(true);
-      setModalStep('language');
-    }
-  }, []);
+    const onOpenRequest = () => openWelcomeModal();
+    window.addEventListener(OPEN_ONBOARDING_EVENT, onOpenRequest);
+    return () => window.removeEventListener(OPEN_ONBOARDING_EVENT, onOpenRequest);
+  }, [openWelcomeModal]);
 
   // Expose method to parent component to open tour manually
   useImperativeHandle(ref, () => ({
-    openTour: () => {
-      setShowWelcome(true);
-      setModalStep('language');
-      setSelectedLanguage(i18n.language || 'en');
-    }
+    openTour: () => openWelcomeModal(),
   }));
 
   const handleLanguageSelect = (langCode: string) => {

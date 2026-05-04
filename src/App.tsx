@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import AdminRoute from "./components/routing/AdminRoute";
 import { supabase } from "@/integrations/supabase/client";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 
 // Route-level code-splitting: lazy load everything except home (Index)
 const Auth = lazy(() => import("./pages/Auth"));
@@ -136,6 +137,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <ErrorBoundary>
+              <OnboardingTour />
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
                   <Route path="/" element={<RecoveryRedirect />} />

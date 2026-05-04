@@ -29,8 +29,10 @@ import {
   ArrowLeft,
   FileText,
   HelpCircle,
-  Mail
+  Mail,
+  Sparkles
 } from 'lucide-react';
+import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
 
 export const Navigation = () => {
   const { user, isAdmin, signOut } = useAuth();
@@ -89,6 +91,16 @@ export const Navigation = () => {
               <HelpCircle className="h-4 w-4 mr-2" />
               {t('navigation.faq')}
             </Link>
+
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center text-gray-700 hover:text-caribbean-teal font-medium h-9 px-2 shrink-0"
+              onClick={() => window.dispatchEvent(new Event(OPEN_ONBOARDING_EVENT))}
+            >
+              <Sparkles className="h-4 w-4 mr-2 shrink-0" />
+              {t('navigation.firstTimeQuestion')}
+            </Button>
           </div>
           
           {/* Right section */}
