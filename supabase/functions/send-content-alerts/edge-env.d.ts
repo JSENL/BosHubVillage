@@ -19,8 +19,3 @@ declare module "https://esm.sh/resend@2.0.0" {
     emails: { send(args: Record<string, unknown>): Promise<unknown> };
   }
 }
-
-/** Minimal Deno.env typing for this file (runtime is full Deno). */
-declare const Deno: {
-  env: { get(key: string): string | undefined };
-};

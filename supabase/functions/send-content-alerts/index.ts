@@ -107,14 +107,82 @@ async function getItemDetails(
   };
 }
 
+/** Only admins may trigger mass notifications (invoked after publish from admin UI). */
+async function requireAdminCaller(
+  req: Request,
+  supabaseService: SupabaseClient,
+): Promise<Response | null> {
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const url = Deno.env.get("SUPABASE_URL") || "";
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY") || "";
+  if (!anonKey) {
+    console.error("send-content-alerts: SUPABASE_ANON_KEY is not set");
+    return new Response(JSON.stringify({ error: "Server misconfiguration" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const supabaseAnon = createClient(url, anonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+
+  const { data: { user }, error: userError } = await supabaseAnon.auth.getUser();
+  if (userError || !user) {
+    return new Response(JSON.stringify({ error: "Invalid or expired session" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  const { data: isAdmin, error: rpcError } = await supabaseService.rpc("has_role", {
+    _user_id: user.id,
+    _role: "admin",
+  });
+
+  if (rpcError) {
+    console.error("has_role RPC failed:", rpcError);
+    return new Response(JSON.stringify({ error: "Could not verify permissions" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  if (!isAdmin) {
+    return new Response(JSON.stringify({ error: "Forbidden: admin only" }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
+  return null;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    if (req.method !== "POST") {
+      return new Response(JSON.stringify({ error: "Method not allowed" }), {
+        status: 405,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") || "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "",
     );
+
+    const authFail = await requireAdminCaller(req, supabase);
+    if (authFail) return authFail;
 
     const body = (await req.json()) as AlertRequest;
     if (!body?.itemId || !body?.itemType) {
