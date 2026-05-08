@@ -3,7 +3,7 @@ import { useDiscoverPeople } from '@/hooks/useDiscoverPeople';
 import { UserDiscoveryCard } from './UserDiscoveryCard';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RefreshCw, TrendingUp, Heart, MapPin, Sparkles } from 'lucide-react';
+import { RefreshCw, TrendingUp, Bird, MapPin, Sparkles } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
@@ -76,7 +76,7 @@ export const DiscoverPeople = () => {
             <span className="xs:hidden">{t('discovery.forYou')}</span>
           </TabsTrigger>
           <TabsTrigger value="categories" className="text-[10px] sm:text-xs px-1 sm:px-3">
-            <Heart className="h-3 w-3 mr-0.5 sm:mr-1" />
+            <Bird className="h-3 w-3 mr-0.5 sm:mr-1" />
             {t('discovery.more')}
           </TabsTrigger>
         </TabsList>
@@ -121,7 +121,7 @@ export const DiscoverPeople = () => {
             {similarInterestUsers && similarInterestUsers.length > 0 && (
               <div>
                 <div className="flex items-center gap-1.5 sm:gap-2 mb-2">
-                  <Heart className="h-3 w-3 flex-shrink-0" />
+                  <Bird className="h-3 w-3 flex-shrink-0" />
                   <span className="text-[10px] sm:text-xs font-medium text-muted-foreground truncate">{t('discovery.similarInterests')}</span>
                 </div>
                 <div className="space-y-2">
@@ -177,7 +177,7 @@ export const DiscoverPeople = () => {
             {!similarInterestUsers?.length && !trendingUsers?.length && !localUsers?.length && (
               <div className="text-center py-4 sm:py-6">
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 sm:p-4 border border-blue-100">
-                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 mx-auto text-blue-500 mb-2" />
+                  <Bird className="h-6 w-6 sm:h-8 sm:w-8 mx-auto text-blue-500 mb-2" />
                   <p className="text-xs sm:text-sm font-medium text-gray-700 mb-1">
                     {t('discovery.noMatchesFound')}
                   </p>

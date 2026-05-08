@@ -22,7 +22,7 @@ import {
   MapPin, 
   Bell, 
   Mail, 
-  Heart, 
+  TrendingUp, 
   UserPlus,
   X,
   ChevronRight
@@ -260,7 +260,7 @@ export const FAQ = () => {
     {
       id: 'trending',
       title: t('faq.trendingDiscovery'),
-      icon: <Heart className="h-5 w-5" />,
+      icon: <TrendingUp className="h-5 w-5" />,
       description: t('faq.trendingDiscoveryDesc'),
       color: 'bg-rose-100 text-rose-700',
       items: [

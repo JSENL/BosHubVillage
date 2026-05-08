@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DonateButton } from './DonateButton';
-import { Heart, Mail, HelpCircle, Newspaper } from 'lucide-react';
+import { Bird, Mail, HelpCircle, Newspaper } from 'lucide-react';
+import { BRAND_LOGO_SRC } from '@/constants/brand';
 
 export const Footer = () => {
   const { t } = useTranslation();
@@ -15,7 +16,7 @@ export const Footer = () => {
           <div className="space-y-4">
             <Link to="/" className="flex items-center">
               <img 
-                src="/lovable-uploads/76a583e0-eef3-4167-a87b-ed0504940bdc.png" 
+                src={BRAND_LOGO_SRC}
                 alt="HubVillage Logo" 
                 className="h-8 w-auto"
               />
@@ -92,7 +93,7 @@ export const Footer = () => {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground flex items-center">
-              {t('footer.madeWith', 'Made with')} <Heart className="h-4 w-4 mx-1 text-logo-coral-orange" /> {t('footer.forCommunity', 'for the community')}
+              {t('footer.madeWith', 'Made with')} <Bird className="h-4 w-4 mx-1 text-logo-coral-orange" /> {t('footer.forCommunity', 'for the community')}
             </span>
           </div>
         </div>

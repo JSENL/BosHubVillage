@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { 
   Calendar, 
   Building, 
-  Heart, 
+  Bird, 
   Newspaper,
   MapPin,
   Clock,
@@ -28,7 +28,7 @@ export const MobileCategoryChips = ({
     { id: 'all', label: 'All', icon: Sparkles },
     { id: 'event', label: 'Events', icon: Calendar },
     { id: 'business', label: 'Business', icon: Building },
-    { id: 'local-service', label: 'Services', icon: Heart },
+    { id: 'local-service', label: 'Services', icon: Bird },
     { id: 'news', label: t('navigation.news'), icon: Newspaper },
   ];
 

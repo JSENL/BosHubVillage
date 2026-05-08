@@ -4,7 +4,7 @@ import {
   Building,
   Newspaper,
   Calendar,
-  Heart
+  Bird
 } from 'lucide-react';
 import { NewsSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
@@ -43,7 +43,7 @@ export const SubmissionsTabs = ({
           Events ({eventSubmissions.length})
         </TabsTrigger>
         <TabsTrigger value="local-resources" className="flex items-center">
-          <Heart className="h-4 w-4 mr-2" />
+          <Bird className="h-4 w-4 mr-2" />
           Local Resources ({localResourceSubmissions.length})
         </TabsTrigger>
         <TabsTrigger value="business" className="flex items-center">
@@ -94,7 +94,7 @@ export const SubmissionsTabs = ({
         <div className="space-y-4">
           {localResourceSubmissions.length === 0 ? (
             <div className="text-center p-8">
-              <Heart className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <Bird className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p className="text-gray-600">No pending local resource submissions.</p>
             </div>
           ) : (

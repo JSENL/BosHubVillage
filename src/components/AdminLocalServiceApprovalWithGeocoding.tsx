@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { LocalResourceSubmission } from '@/types/localresources';
-import { Clock, Heart } from 'lucide-react';
+import { Clock, Bird } from 'lucide-react';
 import { GeocodeAlllocalresourcesButton } from '@/components/GeocodeAllLocalResourcesButton';
 import { DeleteAllLocalResourcesButton } from '@/components/admin/DeleteAllLocalResourcesButton';
 import { PublishedLocalResourcesTable } from '@/components/admin/PublishedLocalResourcesTable';
@@ -80,14 +80,14 @@ const AdminLocalResourceApprovalWithGeocoding = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center text-gray-900">
-            <Heart className="h-5 w-5 mr-2 text-purple-600" />
+            <Bird className="h-5 w-5 mr-2 text-purple-600" />
             Local Resource Submissions ({pendingSubmissions.length} pending)
           </CardTitle>
         </CardHeader>
         <CardContent>
           {pendingSubmissions.length === 0 ? (
             <div className="text-center p-8">
-              <Heart className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+              <Bird className="h-16 w-16 mx-auto mb-4 text-gray-300" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">All Caught Up!</h3>
               <p className="text-gray-600">No pending local resource submissions to review.</p>
             </div>

@@ -22,7 +22,8 @@ import {
   Newspaper,
   FileText,
   ArrowLeft,
-  Heart,
+  Bird,
+  Bookmark,
   MessageCircle,
   Users,
   Tag,
@@ -128,7 +129,7 @@ const AdminDashboard = () => {
                           Events
                         </TabsTrigger>
                         <TabsTrigger value="local-services" className="flex items-center gap-2">
-                          <Heart className="h-4 w-4" />
+                          <Bird className="h-4 w-4" />
                           Local Resources
                         </TabsTrigger>
                         <TabsTrigger value="business" className="flex items-center gap-2">
@@ -324,7 +325,7 @@ const AdminDashboard = () => {
                           Overview
                         </TabsTrigger>
                         <TabsTrigger value="bookmarks" className="flex items-center gap-2">
-                          <Heart className="h-4 w-4" />
+                          <Bookmark className="h-4 w-4" />
                           Bookmarks
                         </TabsTrigger>
                         <TabsTrigger value="network" className="flex items-center gap-2">

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { DonateButton } from '@/components/common/DonateButton';
 import { WeeklyEmailModal } from '@/components/common/WeeklyEmailModal';
 import { Button } from '@/components/ui/button';
-import { Heart, Users, Calendar, Mail } from 'lucide-react';
+import { Gift, Users, Calendar, Mail } from 'lucide-react';
 
 export const DonateSection = () => {
   const { t } = useTranslation();
@@ -12,7 +12,7 @@ export const DonateSection = () => {
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex-1 space-y-4">
           <div className="flex items-center gap-2">
-            <Heart className="h-6 w-6 text-logo-coral-orange" />
+            <Gift className="h-6 w-6 text-logo-coral-orange" />
             <h2 className="text-xl md:text-2xl font-bold">
               {t('donate.title', 'Support Your Community Hub')}
             </h2>

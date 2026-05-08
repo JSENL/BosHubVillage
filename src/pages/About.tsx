@@ -2,7 +2,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Calendar, Building2, Newspaper, Heart, Target, Globe, Shield } from 'lucide-react';
+import { Users, Calendar, Building2, Newspaper, Bird, Target, Globe, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const About = () => {
@@ -17,7 +17,7 @@ export const About = () => {
 
   const values = [
     {
-      icon: Heart,
+      icon: Bird,
       title: t('about.values.community.title', 'Community First'),
       description: t('about.values.community.description', 'Everything we do is designed to strengthen the bonds within our neighborhoods and bring people together.'),
     },

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Bookmark, UserPlus, MessageCircle, Calendar, Heart, Building2, Newspaper, MapPin } from 'lucide-react';
+import { Bookmark, UserPlus, MessageCircle, Calendar, Building2, Newspaper, MapPin } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { eventDetailPath } from '@/lib/eventUrl';

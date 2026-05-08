@@ -21,13 +21,14 @@ import {
   FileText,
   HelpCircle,
   Home,
-  Heart,
+  Bird,
   Info,
   Shield,
   ScrollText,
   Sparkles
 } from 'lucide-react';
 import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
+import { BRAND_LOGO_SRC } from '@/constants/brand';
 
 export const MobileNavDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -61,7 +62,7 @@ export const MobileNavDrawer = () => {
           <SheetTitle className="flex items-center justify-between">
             <Link to="/" onClick={handleLinkClick} className="flex items-center">
               <img 
-                src="/lovable-uploads/76a583e0-eef3-4167-a87b-ed0504940bdc.png" 
+                src={BRAND_LOGO_SRC}
                 alt="HubVillage Logo" 
                 className="h-8 w-auto"
               />
@@ -187,7 +188,7 @@ export const MobileNavDrawer = () => {
                   onClick={handleLinkClick}
                   className="flex items-center px-3 py-2.5 rounded-lg hover:bg-muted transition-colors"
                 >
-                  <Heart className="h-4 w-4 mr-3 text-logo-bright-orange" />
+                  <Bird className="h-4 w-4 mr-3 text-logo-bright-orange" />
                   {t('navigation.submitLocalService')}
                 </Link>
               </div>

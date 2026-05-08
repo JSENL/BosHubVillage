@@ -24,7 +24,7 @@ import {
   User, 
   LogOut, 
   Settings,
-  Heart,
+  Bird,
   MessageCircle,
   ArrowLeft,
   FileText,
@@ -33,6 +33,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
+import { BRAND_LOGO_SRC } from '@/constants/brand';
 
 export const Navigation = () => {
   const { user, isAdmin, signOut } = useAuth();
@@ -53,7 +54,7 @@ export const Navigation = () => {
             
             <Link to="/" className="flex items-center flex-shrink-0">
               <img 
-                src="/lovable-uploads/76a583e0-eef3-4167-a87b-ed0504940bdc.png" 
+                src={BRAND_LOGO_SRC}
                 alt="HubVillage Logo" 
                 className="h-8 sm:h-10 w-auto"
               />
@@ -147,7 +148,7 @@ export const Navigation = () => {
                    </DropdownMenuItem>
                    <DropdownMenuItem asChild data-tour="submit-resource">
                      <Link to="/submit-local-resource" className="cursor-pointer">
-                        <Heart className="h-4 w-4 mr-2" />
+                        <Bird className="h-4 w-4 mr-2" />
                         {t('navigation.submitLocalService')}
                      </Link>
                    </DropdownMenuItem>

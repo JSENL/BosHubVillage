@@ -4,7 +4,7 @@ import {
   Building,
   Newspaper,
   Calendar,
-  Heart,
+  Bird,
 } from 'lucide-react';
 import { NewsSubmission, BusinessSubmission } from '@/types/submissions';
 import { EventSubmission } from '@/hooks/useEventSubmissions';
@@ -61,7 +61,7 @@ export const SubmissionsOverviewCards = ({
       </div>
       <div className="bg-purple-50 p-4 rounded-lg">
         <div className="flex items-center">
-          <Heart className="h-8 w-8 text-purple-600 mr-3" />
+          <Bird className="h-8 w-8 text-purple-600 mr-3" />
           <div>
             <p className="text-2xl font-bold text-purple-600">{localResourceSubmissions.length}</p>
             <p className="text-sm text-gray-600">Local Resource Submissions</p>
