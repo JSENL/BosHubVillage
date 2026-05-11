@@ -1,6 +1,6 @@
 import { UnifiedItem } from '@/types/unifiedItem';
 import { UnifiedItemCard } from '@/components/UnifiedItemCard';
-import { LoadingGrid } from '@/components/common/LoadingState';
+import { LoadingListRows } from '@/components/common/LoadingState';
 import { IllustratedEmptyState } from '@/components/common/IllustratedEmptyState';
 import { usePagination } from '@/hooks/usePagination';
 import { PaginationControls } from '@/components/common/PaginationControls';
@@ -26,7 +26,7 @@ export const ListView = ({ items, isLoading = false, emptyStateVariant = 'filter
   } = usePagination({ items, itemsPerPage: 30 });
 
   if (isLoading) {
-    return <LoadingGrid count={6} />;
+    return <LoadingListRows count={8} />;
   }
 
   if (items.length === 0) {
@@ -34,13 +34,18 @@ export const ListView = ({ items, isLoading = false, emptyStateVariant = 'filter
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 w-full overflow-hidden">
-      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 gap-3 sm:gap-4">
+    <div className="w-full space-y-4 sm:space-y-6">
+      <div
+        className="flex w-full max-w-none flex-col gap-2 sm:gap-3"
+        data-list-presentation="rows"
+      >
         {currentItems.map((item) => (
-          <UnifiedItemCard 
-            key={`${item.type}-${item.id}`} 
-            item={item} 
-            viewMode="grid"
+          <UnifiedItemCard
+            key={`${item.type}-${item.id}`}
+            item={item}
+            viewMode="list"
+            listCompact={false}
+            listSplitMeta
           />
         ))}
       </div>

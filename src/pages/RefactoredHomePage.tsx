@@ -90,9 +90,9 @@ const MainContent = () => {
         ))}
       </div>
       <Skeleton className="h-16 w-full rounded-lg" />
-      <div className="grid grid-cols-2 gap-3">
-        {[1, 2, 3, 4].map(i => (
-          <Skeleton key={i} className="h-40 w-full rounded-lg" />
+      <div className="flex w-full flex-col gap-2">
+        {[1, 2, 3, 4, 5].map(i => (
+          <Skeleton key={i} className="h-[72px] w-full rounded-lg" />
         ))}
       </div>
     </div>

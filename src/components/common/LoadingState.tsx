@@ -33,3 +33,27 @@ export const LoadingGrid = ({ count = 6 }: { count?: number }) => {
     </div>
   );
 };
+
+/** Matches wide `UnifiedItemCard` list rows (ContentListRowLayout rail + body). */
+export const LoadingListRows = ({ count = 8 }: { count?: number }) => {
+  return (
+    <div className="flex w-full flex-col gap-2 sm:gap-3" aria-hidden>
+      {Array.from({ length: count }).map((_, index) => (
+        <div
+          key={index}
+          className="flex w-full min-h-[72px] animate-pulse overflow-hidden rounded-lg border border-border/70 bg-card"
+        >
+          <div className="w-[4.5rem] shrink-0 border-r border-border/50 bg-muted sm:w-24" />
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-2 px-3 py-3 sm:flex-row sm:items-stretch">
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="h-3 w-24 rounded bg-muted" />
+              <div className="h-4 w-[85%] max-w-md rounded bg-muted" />
+              <div className="h-3 w-full rounded bg-muted" />
+            </div>
+            <div className="hidden w-12 shrink-0 sm:block" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
