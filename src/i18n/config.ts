@@ -62,6 +62,16 @@ const resources = {
         listPresentationRows: "Wide rows",
         listPresentationCarousel: "Horizontal cards",
       },
+      cultureSpotlight: {
+        title: "Neighborhood culture",
+        subtitle: "Stories, voices, and local context from your community.",
+        browseAll: "Browse all culture",
+        emptyTitle: "Culture lives here",
+        emptyBody:
+          "Stories and local angles will show up here. Explore the culture hub or share a piece.",
+        exploreHub: "Open culture hub",
+        shareStory: "Submit a story",
+      },
       // Item types
       itemTypes: {
         events: "Events",
