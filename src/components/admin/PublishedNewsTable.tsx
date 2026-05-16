@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,11 +27,13 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface PublishedNewsTableProps {
   news: News[];
-  onUpdate: () => void;
+  /** Refetch / sync after mutations; may be async */
+  onUpdate: () => void | Promise<void>;
 }
 
 export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [editingNews, setEditingNews] = useState<News | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -69,7 +72,13 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
       if (error) throw error;
 
       toast.success('Culture article deleted successfully');
-      onUpdate();
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(newsId);
+        return next;
+      });
+      await queryClient.invalidateQueries({ queryKey: ['news'] });
+      await Promise.resolve(onUpdate());
     } catch (error: any) {
       console.error('Error deleting news:', error);
       toast.error('Failed to delete culture article');
@@ -96,7 +105,8 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
 
       toast.success(`${selectedIds.size} culture article(s) deleted successfully`);
       setSelectedIds(new Set());
-      onUpdate();
+      await queryClient.invalidateQueries({ queryKey: ['news'] });
+      await Promise.resolve(onUpdate());
     } catch (error: any) {
       console.error('Error bulk deleting news:', error);
       toast.error('Failed to delete culture articles');

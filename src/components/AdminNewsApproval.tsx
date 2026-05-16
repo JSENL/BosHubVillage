@@ -136,7 +136,9 @@ const AdminNewsApproval = () => {
               {publishedRequested && !publishedPending && !publishedQueryError && (
                 <PublishedNewsTable
                   news={publishedNews ?? []}
-                  onUpdate={() => void refetchPublished()}
+                  onUpdate={async () => {
+                    await refetchPublished();
+                  }}
                 />
               )}
             </CollapsibleContent>
