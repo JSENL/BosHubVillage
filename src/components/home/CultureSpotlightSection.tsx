@@ -6,8 +6,8 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import NewsCard from '@/components/NewsCard';
 import { getNewsCardData } from '@/utils/cardTranslationData';
 import { Button } from '@/components/ui/button';
-
-const SPOTLIGHT_COUNT = 6;
+import { CULTURE_SPOTLIGHT_MAX_ITEMS } from '@/constants/cultureSpotlight';
+import { getNeighborhoodCultureSpotlightItems } from '@/utils/culture/getNeighborhoodCultureSpotlightItems';
 
 interface CultureSpotlightSectionProps {
   items: UnifiedItem[];
@@ -16,21 +16,17 @@ interface CultureSpotlightSectionProps {
 }
 
 /**
- * Index-page experiment: make Culture (news) visible above the main filter grid.
+ * Home “Neighborhood culture” strip: same published news pool as the admin table (via shared
+ * `['news']` query + cache updates on delete), shown newest-first with a hard cap of
+ * {@link CULTURE_SPOTLIGHT_MAX_ITEMS} cards.
  */
 export function CultureSpotlightSection({ items, isLoading = false }: CultureSpotlightSectionProps) {
   const { t } = useTranslation();
 
-  const cultureItems = useMemo(() => {
-    return items
-      .filter((i): i is UnifiedItem & { type: 'news' } => i.type === 'news')
-      .sort((a, b) => {
-        const ta = a.date ? new Date(a.date).getTime() : 0;
-        const tb = b.date ? new Date(b.date).getTime() : 0;
-        return tb - ta;
-      })
-      .slice(0, SPOTLIGHT_COUNT);
-  }, [items]);
+  const cultureItems = useMemo(
+    () => getNeighborhoodCultureSpotlightItems(items, CULTURE_SPOTLIGHT_MAX_ITEMS),
+    [items],
+  );
 
   const title = t('cultureSpotlight.title', { defaultValue: 'Neighborhood culture' });
   const subtitle = t('cultureSpotlight.subtitle', {
@@ -99,7 +95,11 @@ export function CultureSpotlightSection({ items, isLoading = false }: CultureSpo
         ) : cultureItems.length > 0 ? (
           <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 pt-1 scroll-smooth [-webkit-overflow-scrolling:touch] sm:gap-4">
             {cultureItems.map((item) => (
-              <div key={`culture-spotlight-${item.id}`} className="w-[min(100%,17rem)] shrink-0 sm:w-64">
+              <div
+                key={`culture-spotlight-${item.id}`}
+                data-testid="culture-spotlight-card"
+                className="w-[min(100%,17rem)] shrink-0 sm:w-64"
+              >
                 <NewsCard news={getNewsCardData(item)} />
               </div>
             ))}
