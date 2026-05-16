@@ -24,6 +24,19 @@ import { News } from '@/types/news';
 import { EditNewsDialog } from '@/components/admin/EditNewsDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { NEWS_QUERY_KEY } from '@/hooks/useNews';
+
+function removeNewsRowsFromCache(
+  queryClient: ReturnType<typeof useQueryClient>,
+  ids: string[],
+) {
+  if (ids.length === 0) return;
+  const idSet = new Set(ids);
+  queryClient.setQueryData<News[]>(NEWS_QUERY_KEY, (old) => {
+    if (!old) return old;
+    return old.filter((n) => !idSet.has(n.id));
+  });
+}
 
 interface PublishedNewsTableProps {
   news: News[];
@@ -75,7 +88,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
     setSelectedIds(newSelected);
   };
 
-  const handleDeleteNews = async (newsId: string) => {
+  const handleDeleteNews = async (id: string) => {
     if (!confirm('Are you sure you want to delete this culture article? This action cannot be undone.')) {
       return;
     }
@@ -85,18 +98,19 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
       const { error } = await supabase
         .from('news')
         .delete()
-        .eq('id', newsId);
+        .eq('id', id);
 
       if (error) throw error;
 
       toast.success('Culture article deleted successfully');
-      setLocallyRemovedIds((prev) => new Set(prev).add(newsId));
+      setLocallyRemovedIds((prev) => new Set(prev).add(id));
       setSelectedIds((prev) => {
         const next = new Set(prev);
-        next.delete(newsId);
+        next.delete(id);
         return next;
       });
-      await queryClient.invalidateQueries({ queryKey: ['news'] });
+      removeNewsRowsFromCache(queryClient, [id]);
+      await queryClient.invalidateQueries({ queryKey: NEWS_QUERY_KEY });
       await Promise.resolve(onUpdate());
     } catch (error: any) {
       console.error('Error deleting news:', error);
@@ -130,7 +144,8 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
         return next;
       });
       setSelectedIds(new Set());
-      await queryClient.invalidateQueries({ queryKey: ['news'] });
+      removeNewsRowsFromCache(queryClient, idsToRemove);
+      await queryClient.invalidateQueries({ queryKey: NEWS_QUERY_KEY });
       await Promise.resolve(onUpdate());
     } catch (error: any) {
       console.error('Error bulk deleting news:', error);

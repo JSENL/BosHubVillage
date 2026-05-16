@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PublishedNewsTable } from '@/components/admin/PublishedNewsTable';
 import type { News } from '@/types/news';
+import { NEWS_QUERY_KEY } from '@/hooks/useNews';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -83,7 +84,7 @@ describe('PublishedNewsTable delete', () => {
     expect(eqMock).toHaveBeenCalledWith('id', 'news-1');
 
     await waitFor(() => {
-      expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['news'] });
+      expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: NEWS_QUERY_KEY });
     });
     await waitFor(() => {
       expect(onUpdate).toHaveBeenCalledTimes(1);
@@ -146,5 +147,31 @@ describe('PublishedNewsTable delete', () => {
     });
     expect(screen.getByText(keepTitle)).toBeInTheDocument();
     expect(screen.getByText(/published culture \(1\)/i)).toBeInTheDocument();
+  });
+
+  it('patches the shared news query cache so main page / Neighborhood culture spotlight stay in sync', async () => {
+    const onUpdate = vi.fn().mockResolvedValue(undefined);
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const rows = [
+      baseArticle({ id: 'keep', title: 'Spotlight keep' }),
+      baseArticle({ id: 'gone', title: 'Spotlight remove' }),
+    ];
+    queryClient.setQueryData<News[]>(NEWS_QUERY_KEY, rows);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <PublishedNewsTable news={rows} onUpdate={onUpdate} />
+      </QueryClientProvider>,
+    );
+
+    const deleteButtons = screen.getAllByRole('button', { name: /^delete$/i });
+    fireEvent.click(deleteButtons[1]!);
+
+    await waitFor(() => {
+      const cached = queryClient.getQueryData<News[]>(NEWS_QUERY_KEY);
+      expect(cached?.map((n) => n.id)).toEqual(['keep']);
+    });
   });
 });

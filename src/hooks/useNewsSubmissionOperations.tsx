@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAutoTranslate } from './useAutoTranslate';
+import { NEWS_QUERY_KEY } from '@/hooks/useNews';
 
 export const useNewsSubmissionOperations = () => {
   const queryClient = useQueryClient();
@@ -106,7 +107,7 @@ export const useNewsSubmissionOperations = () => {
 
       // New row is in `news`; invalidate caches so home, Culture tab, and trending refetch
       if (status === 'approved') {
-        await queryClient.invalidateQueries({ queryKey: ['news'] });
+        await queryClient.invalidateQueries({ queryKey: NEWS_QUERY_KEY });
         await queryClient.invalidateQueries({ queryKey: ['trending-news'] });
       }
 

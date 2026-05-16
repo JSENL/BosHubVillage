@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEvents } from "@/hooks/useEvents";
-import { useNews } from "@/hooks/useNews";
+import { useNews, NEWS_QUERY_KEY } from "@/hooks/useNews";
 import { useBusiness } from "@/hooks/useBusiness";
 import { useBusinessSubmissions } from "@/hooks/useBusinessSubmissions";
 import { uselocalresources } from "@/hooks/uselocalresources";
@@ -13,7 +13,7 @@ import { geocodeItemsIfNeeded } from '@/utils/data/geocodingService';
 
 const DATA_QUERY_KEYS = [
   ['events'],
-  ['news'],
+  NEWS_QUERY_KEY,
   ['business'],
   ['business-submissions'],
   ['local-resources'],

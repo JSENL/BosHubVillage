@@ -5,6 +5,9 @@ import { News } from '@/types/news';
 
 const PAGE_SIZE = 100;
 
+/** Shared key for news list — invalidate / setQueryData from admin and hooks stay in sync. */
+export const NEWS_QUERY_KEY = ['news'] as const;
+
 export type UseNewsOptions = {
   /** When false, the query does not run until set to true (e.g. lazy-load in admin). Default true. */
   enabled?: boolean;
@@ -12,7 +15,7 @@ export type UseNewsOptions = {
 
 export const useNews = (options?: UseNewsOptions) => {
   return useQuery({
-    queryKey: ['news'],
+    queryKey: NEWS_QUERY_KEY,
     enabled: options?.enabled ?? true,
     queryFn: async () => {
       const allData: any[] = [];
