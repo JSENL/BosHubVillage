@@ -1,13 +1,18 @@
 /** @vitest-environment jsdom */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PublishedNewsTable } from '@/components/admin/PublishedNewsTable';
 import type { News } from '@/types/news';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (_key: string, opts?: { defaultValue?: string }) => opts?.defaultValue ?? _key,
+    t: (key: string, opts?: { defaultValue?: string }) => {
+      const map: Record<string, string> = {
+        'navigation.news': 'Culture',
+      };
+      return map[key] ?? opts?.defaultValue ?? key;
+    },
   }),
 }));
 
@@ -15,11 +20,12 @@ vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
-const { eqMock, fromMock } = vi.hoisted(() => {
+const { eqMock, inMock, fromMock } = vi.hoisted(() => {
   const eqMock = vi.fn(() => Promise.resolve({ error: null as null }));
-  const deleteMock = vi.fn(() => ({ eq: eqMock }));
+  const inMock = vi.fn(() => Promise.resolve({ error: null as null }));
+  const deleteMock = vi.fn(() => ({ eq: eqMock, in: inMock }));
   const fromMock = vi.fn(() => ({ delete: deleteMock }));
-  return { eqMock, fromMock };
+  return { eqMock, inMock, fromMock };
 });
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -56,6 +62,7 @@ describe('PublishedNewsTable delete', () => {
   beforeEach(() => {
     vi.stubGlobal('confirm', vi.fn(() => true));
     eqMock.mockClear();
+    inMock.mockClear();
     fromMock.mockClear();
   });
 
@@ -93,5 +100,51 @@ describe('PublishedNewsTable delete', () => {
     await new Promise((r) => setTimeout(r, 50));
     expect(eqMock).not.toHaveBeenCalled();
     expect(onUpdate).not.toHaveBeenCalled();
+  });
+
+  it('removes the article row from the table (UI) immediately after delete succeeds, before parent refetch', async () => {
+    let resolveUpdate!: () => void;
+    const onUpdate = () =>
+      new Promise<void>((resolve) => {
+        resolveUpdate = resolve;
+      });
+
+    const title = 'Culture headline unique xyz-123';
+    renderTable([baseArticle({ title })], onUpdate);
+
+    expect(screen.getByText(title)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^delete$/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByText(title)).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/published culture \(0\)/i)).toBeInTheDocument();
+
+    await act(async () => {
+      resolveUpdate();
+    });
+  });
+
+  it('only removes the deleted row when multiple articles are listed', async () => {
+    const onUpdate = vi.fn().mockResolvedValue(undefined);
+    const keepTitle = 'Keep this culture story';
+    renderTable(
+      [
+        baseArticle({ id: 'a', title: 'Delete me' }),
+        baseArticle({ id: 'b', title: keepTitle }),
+      ],
+      onUpdate,
+    );
+
+    const deleteButtons = screen.getAllByRole('button', { name: /^delete$/i });
+    fireEvent.click(deleteButtons[0]!);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Delete me')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText(keepTitle)).toBeInTheDocument();
+    expect(screen.getByText(/published culture \(1\)/i)).toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,10 +38,28 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
   const [actionLoading, setActionLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  /** Rows removed in the UI as soon as delete succeeds (parent list may refetch async). */
+  const [locallyRemovedIds, setLocallyRemovedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    setLocallyRemovedIds((prev) => {
+      if (prev.size === 0) return prev;
+      const next = new Set(prev);
+      for (const id of prev) {
+        if (!news.some((n) => n.id === id)) next.delete(id);
+      }
+      return next;
+    });
+  }, [news]);
+
+  const displayNews = useMemo(
+    () => news.filter((n) => !locallyRemovedIds.has(n.id)),
+    [news, locallyRemovedIds],
+  );
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedIds(new Set(news.map(n => n.id)));
+      setSelectedIds(new Set(displayNews.map((n) => n.id)));
     } else {
       setSelectedIds(new Set());
     }
@@ -72,6 +90,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
       if (error) throw error;
 
       toast.success('Culture article deleted successfully');
+      setLocallyRemovedIds((prev) => new Set(prev).add(newsId));
       setSelectedIds((prev) => {
         const next = new Set(prev);
         next.delete(newsId);
@@ -95,15 +114,21 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
     }
 
     setBulkDeleting(true);
+    const idsToRemove = Array.from(selectedIds);
     try {
       const { error } = await supabase
         .from('news')
         .delete()
-        .in('id', Array.from(selectedIds));
+        .in('id', idsToRemove);
 
       if (error) throw error;
 
-      toast.success(`${selectedIds.size} culture article(s) deleted successfully`);
+      toast.success(`${idsToRemove.length} culture article(s) deleted successfully`);
+      setLocallyRemovedIds((prev) => {
+        const next = new Set(prev);
+        for (const id of idsToRemove) next.add(id);
+        return next;
+      });
       setSelectedIds(new Set());
       await queryClient.invalidateQueries({ queryKey: ['news'] });
       await Promise.resolve(onUpdate());
@@ -115,7 +140,8 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
     }
   };
 
-  const allSelected = news.length > 0 && news.every(n => selectedIds.has(n.id));
+  const allSelected =
+    displayNews.length > 0 && displayNews.every((n) => selectedIds.has(n.id));
   const someSelected = selectedIds.size > 0;
 
   return (
@@ -125,7 +151,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
           <CardTitle className="flex items-center justify-between text-gray-900">
             <div className="flex items-center">
               <Newspaper className="h-5 w-5 mr-2 text-purple-600" />
-              Published {t('navigation.news')} ({news?.length || 0})
+              Published {t('navigation.news')} ({displayNews?.length || 0})
             </div>
             {someSelected && (
               <Button
@@ -141,7 +167,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {!news || news.length === 0 ? (
+          {!displayNews || displayNews.length === 0 ? (
             <div className="text-center p-8">
               <Newspaper className="h-16 w-16 mx-auto mb-4 text-gray-300" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No Published {t('navigation.news')}</h3>
@@ -166,7 +192,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {news.map((article) => (
+                {displayNews.map((article) => (
                   <TableRow key={article.id}>
                     <TableCell>
                       <Checkbox
