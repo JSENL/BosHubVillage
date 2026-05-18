@@ -69,6 +69,13 @@ export const dateOnlySortKey = (value: string): number => {
   return Date.UTC(y, m - 1, d);
 };
 
+/** Stable numeric key for sorting ISO timestamps (e.g. Supabase `updated_at`). */
+export const timestampSortKey = (value?: string | null): number => {
+  if (!value) return 0;
+  const t = new Date(value).getTime();
+  return Number.isNaN(t) ? 0 : t;
+};
+
 export const isEventToday = (date: string): boolean => {
   const eventDate = new Date(date);
   const today = new Date();

@@ -24,7 +24,7 @@ import { Event } from '@/hooks/useEvents';
 import { EditEventDialog } from '@/components/admin/EditEventDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { dateOnlySortKey, formatDateOnly } from '@/utils/common/dateUtils';
+import { dateOnlySortKey, formatDateOnly, timestampSortKey } from '@/utils/common/dateUtils';
 
 interface PublishedEventsTableProps {
   events: Event[];
@@ -70,8 +70,8 @@ export const PublishedEventsTable = ({ events, onUpdate }: PublishedEventsTableP
           bValue = dateOnlySortKey(b.date);
           break;
         case 'updated_at':
-          aValue = dateOnlySortKey(a.date);
-          bValue = dateOnlySortKey(b.date);
+          aValue = timestampSortKey(a.updated_at ?? a.created_at);
+          bValue = timestampSortKey(b.updated_at ?? b.created_at);
           break;
         default:
           return 0;

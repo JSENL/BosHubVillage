@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dateOnlySortKey, formatDateOnly } from '@/utils/common/dateUtils';
+import { dateOnlySortKey, formatDateOnly, timestampSortKey } from '@/utils/common/dateUtils';
 
 describe('date-only accuracy for admin displays', () => {
   it('shows the same calendar day for DATE values regardless of timezone context', () => {
@@ -22,6 +22,22 @@ describe('date-only accuracy for admin displays', () => {
     const dates = ['2026-04-24', '2026-04-23', '2026-05-01'];
     const sorted = [...dates].sort((a, b) => dateOnlySortKey(a) - dateOnlySortKey(b));
     expect(sorted).toEqual(['2026-04-23', '2026-04-24', '2026-05-01']);
+  });
+
+  it('sorts ISO timestamps for last-modified ordering', () => {
+    const stamps = [
+      '2026-04-23T10:00:00.000Z',
+      '2026-04-24T08:00:00.000Z',
+      '2026-04-23T18:00:00.000Z',
+    ];
+    const sorted = [...stamps].sort(
+      (a, b) => timestampSortKey(a) - timestampSortKey(b)
+    );
+    expect(sorted).toEqual([
+      '2026-04-23T10:00:00.000Z',
+      '2026-04-23T18:00:00.000Z',
+      '2026-04-24T08:00:00.000Z',
+    ]);
   });
 });
 

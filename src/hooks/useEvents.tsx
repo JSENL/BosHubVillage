@@ -41,6 +41,8 @@ export interface Event {
   cover_focus_y?: number | null;
   /** URL segment for /event/:slug (human-readable, unique). */
   slug: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const useEvents = () => {
