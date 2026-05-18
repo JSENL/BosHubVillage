@@ -12,6 +12,7 @@ import AdminRoute from "./components/routing/AdminRoute";
 import { supabase } from "@/integrations/supabase/client";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
+import { GuestSubmitHighlight } from "@/components/onboarding/GuestSubmitHighlight";
 
 // Route-level code-splitting: lazy load everything except home (Index)
 const Auth = lazy(() => import("./pages/Auth"));
@@ -138,6 +139,7 @@ const App = () => (
             <Sonner />
             <ErrorBoundary>
               <OnboardingTour />
+              <GuestSubmitHighlight />
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
                   <Route path="/" element={<RecoveryRedirect />} />

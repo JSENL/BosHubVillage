@@ -39,6 +39,12 @@ const resources = {
         faq: "FAQ",
         firstTimeQuestion: "1st Time?"
       },
+      guestSubmitPrompt: {
+        message:
+          "We need your help to learn more about events, businesses, and resources in our areas. Submit one of them for others to see and learn more",
+        signInToSubmit: "Sign in to submit",
+        gotIt: "Got it",
+      },
       // Cards
       cards: {
         viewDetails: "View Details",

@@ -119,7 +119,7 @@ export const Navigation = () => {
               <LanguageSelector />
             </div>
             {user && <NotificationBell />}
-            {user && (
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="bg-logo-bright-orange hover:bg-logo-bright-orange/90 text-white text-xs sm:text-sm px-2 sm:px-3 h-8 sm:h-9">
@@ -154,6 +154,17 @@ export const Navigation = () => {
                    </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            ) : (
+              <Button
+                asChild
+                className="bg-logo-bright-orange hover:bg-logo-bright-orange/90 text-white text-xs sm:text-sm px-2 sm:px-3 h-8 sm:h-9 shadow-md"
+              >
+                <Link to="/auth" data-guest-submit-target="submit">
+                  <Plus className="h-4 w-4 sm:mr-1" />
+                  <span className="hidden sm:inline">{t('navigation.submit')}</span>
+                  <span className="sr-only sm:hidden">{t('navigation.submit')}</span>
+                </Link>
+              </Button>
             )}
             
             {user ? (
