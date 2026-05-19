@@ -7,7 +7,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAdminPendingCounts } from '@/hooks/useAdminPendingCounts';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { AdminPendingBadge } from '@/components/admin/AdminPendingBadge';
-import { LanguageSelector } from '@/components/LanguageSelector';
 import { DonateButton } from '@/components/common/DonateButton';
 import { WeeklyEmailModal } from '@/components/common/WeeklyEmailModal';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
@@ -226,11 +225,6 @@ export const MobileNavDrawer = () => {
         </nav>
 
         <div className="shrink-0 border-t bg-muted/30 p-4 space-y-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm text-muted-foreground">{t('navigation.language', 'Language')}</span>
-            <LanguageSelector />
-          </div>
-
           <WeeklyEmailModal
             trigger={
               <Button variant="outline" className="w-full justify-start min-h-[44px]" type="button">

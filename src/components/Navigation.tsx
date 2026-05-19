@@ -13,7 +13,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAdminPendingCounts } from '@/hooks/useAdminPendingCounts';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { AdminPendingBadge } from '@/components/admin/AdminPendingBadge';
-import { LanguageSelector } from '@/components/LanguageSelector';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { DonateButton } from '@/components/common/DonateButton';
 import { WeeklyEmailModal } from '@/components/common/WeeklyEmailModal';
@@ -114,9 +113,6 @@ export const Navigation = () => {
                 </Button>
               }
             />
-            <div className="hidden lg:block">
-              <LanguageSelector />
-            </div>
             {user && (
               <div className="shrink-0">
                 <NotificationBell />
