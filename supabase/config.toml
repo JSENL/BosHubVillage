@@ -27,3 +27,9 @@ verify_jwt = false
 # Require a valid JWT at the gateway; function also checks admin via has_role().
 [functions.send-content-alerts]
 verify_jwt = true
+
+[functions.notify-admin-submission]
+verify_jwt = false
+
+[functions.test-admin-notification]
+verify_jwt = true

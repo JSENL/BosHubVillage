@@ -45,11 +45,15 @@ import BookmarksManagement from '@/components/admin/BookmarksManagement';
 import SocialNetworkAnalytics from '@/components/admin/SocialNetworkAnalytics';
 import WeeklyDigestManagement from '@/components/admin/WeeklyDigestManagement';
 import { QuickBrowseManagement } from '@/components/admin/QuickBrowseManagement';
+import { useAdminPendingCounts } from '@/hooks/useAdminPendingCounts';
+import { AdminPendingBadge } from '@/components/admin/AdminPendingBadge';
+import { AdminNotificationTest } from '@/components/admin/AdminNotificationTest';
 
 
 const AdminDashboard = () => {
   const { t } = useTranslation();
   const { user, isAdmin } = useAuth();
+  const { counts: pendingCounts } = useAdminPendingCounts();
 
   /* Access is enforced by AdminRoute; this is a fallback if the page is mounted elsewhere. */
   if (!user || !isAdmin) {
@@ -85,14 +89,26 @@ const AdminDashboard = () => {
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
               Admin Dashboard
             </h1>
-            <p className="text-gray-600">Manage submissions and content approval</p>
+            <p className="text-gray-600">
+              Manage submissions and content approval
+              {pendingCounts.total > 0 && (
+                <span className="ml-2 text-amber-700 font-medium">
+                  ({pendingCounts.total} pending)
+                </span>
+              )}
+            </p>
           </div>
+
+          <AdminNotificationTest />
 
           <Tabs defaultValue="content" className="w-full">
             <TabsList className="grid w-full grid-cols-5 mb-8 h-auto">
               <TabsTrigger value="content" className="flex flex-col items-center p-4 h-auto">
                 <Calendar className="h-5 w-5 mb-1" />
-                <span className="text-sm">Content Management</span>
+                <span className="text-sm flex items-center">
+                  Content Management
+                  <AdminPendingBadge count={pendingCounts.total} className="ml-1" />
+                </span>
               </TabsTrigger>
               <TabsTrigger value="submissions" className="flex flex-col items-center p-4 h-auto">
                 <FileText className="h-5 w-5 mb-1" />
@@ -127,18 +143,22 @@ const AdminDashboard = () => {
                         <TabsTrigger value="events" className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
                           Events
+                          <AdminPendingBadge count={pendingCounts.events} />
                         </TabsTrigger>
                         <TabsTrigger value="local-services" className="flex items-center gap-2">
                           <Bird className="h-4 w-4" />
                           Local Resources
+                          <AdminPendingBadge count={pendingCounts.localResources} />
                         </TabsTrigger>
                         <TabsTrigger value="business" className="flex items-center gap-2">
                           <Building className="h-4 w-4" />
                           Business
+                          <AdminPendingBadge count={pendingCounts.businesses} />
                         </TabsTrigger>
                         <TabsTrigger value="news" className="flex items-center gap-2">
                           <Newspaper className="h-4 w-4" />
                           {t('navigation.news')}
+                          <AdminPendingBadge count={pendingCounts.news} />
                         </TabsTrigger>
                       </TabsList>
                       
