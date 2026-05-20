@@ -64,7 +64,7 @@ const MapViewContent = () => {
           {/* Discovery sidebar - only show when user is logged in */}
           {user && (
             <aside className="w-80 space-y-6 hidden lg:block flex-shrink-0" aria-label="Discovery and recommendations">
-              <DiscoverySidebar />
+              <DiscoverySidebar items={allItems} />
             </aside>
           )}
         </div>

@@ -14,7 +14,6 @@ import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
 import { Button } from '@/components/ui/button';
 import { HelpCircle, Layers } from 'lucide-react';
 import { FeaturedSection } from '@/components/home/FeaturedSection';
-import { CultureSpotlightSection } from '@/components/home/CultureSpotlightSection';
 import { DonateSection } from '@/components/home/DonateSection';
 import { Footer } from '@/components/common/Footer';
 import { MobileCategoryChips } from '@/components/mobile/MobileCategoryChips';
@@ -151,8 +150,6 @@ const MainContent = () => {
                 {/* Featured Section - shows sponsored items */}
                 <FeaturedSection items={allItems} />
 
-                <CultureSpotlightSection items={allItems} isLoading={isLoading} />
-
                 {/* Mobile Category Chips */}
                 <MobileCategoryChips
                   selectedType={filters.selectedType}
@@ -269,7 +266,7 @@ const MainContent = () => {
             {/* Discovery sidebar - resizable on desktop only */}
             <ResizablePanel defaultSize={30} minSize={20} maxSize={40} className="hidden lg:block">
               <aside aria-label="Discovery and recommendations">
-                <DiscoverySidebar />
+                <DiscoverySidebar items={allItems} isLoading={isLoading} />
               </aside>
             </ResizablePanel>
           </ResizablePanelGroup>
@@ -278,7 +275,7 @@ const MainContent = () => {
         {/* Mobile/Tablet: Discovery section below main content */}
         <aside className="lg:hidden w-full mt-6" aria-label="Discovery and recommendations">
           <h2 className="text-lg font-semibold mb-3 px-1">Community & Discovery</h2>
-          <DiscoverySidebar />
+          <DiscoverySidebar items={allItems} isLoading={isLoading} />
         </aside>
 
         {/* Donate Section */}
