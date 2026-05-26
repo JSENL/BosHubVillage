@@ -3,9 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { uselocalresourcesubmissions } from '@/hooks/uselocalresourcesubmissions';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
-import { useAuth } from '@/hooks/useAuth';
+import { uselocalresourcesubmissionOperations } from '@/hooks/useLocalServiceSubmissionOperations';
 import { 
   CheckCircle, 
   XCircle, 
@@ -18,64 +16,23 @@ import { LocalResourceSubmission } from '@/types/localresources';
 
 const AdminLocalResourceApproval = () => {
   const { data: submissions, isLoading, refetch } = uselocalresourcesubmissions();
-  const { user } = useAuth();
+  const { updateSubmissionStatus } = uselocalresourcesubmissionOperations();
 
   const handleApprove = async (submission: LocalResourceSubmission) => {
     try {
-      // First, insert into the main local_resources table
-      const { error: insertError } = await supabase
-        .from('local_resources')
-        .insert({
-          name: submission.name,
-          category: submission.category,
-          address: submission.address,
-          neighborhood: submission.neighborhood,
-          village: submission.village,
-          description: submission.description,
-          latitude: submission.latitude,
-          longitude: submission.longitude,
-        });
-
-      if (insertError) throw insertError;
-
-      // Then update the submission status
-      const { error: updateError } = await supabase
-        .from('local_resources_submissions')
-        .update({
-          status: 'approved',
-          reviewed_by: user?.id,
-          reviewed_at: new Date().toISOString(),
-        })
-        .eq('id', submission.id);
-
-      if (updateError) throw updateError;
-
-      toast.success('Local resource approved successfully!');
+      await updateSubmissionStatus(submission.id, 'approved', '');
       refetch();
-    } catch (error: any) {
-      console.error('Error approving local resource:', error);
-      toast.error('Failed to approve local resource: ' + error.message);
+    } catch {
+      // Toast handled in hook
     }
   };
 
   const handleReject = async (submission: LocalResourceSubmission) => {
     try {
-      const { error } = await supabase
-        .from('local_resources_submissions')
-        .update({
-          status: 'rejected',
-          reviewed_by: user?.id,
-          reviewed_at: new Date().toISOString(),
-        })
-        .eq('id', submission.id);
-
-      if (error) throw error;
-
-      toast.success('Local resource rejected successfully!');
+      await updateSubmissionStatus(submission.id, 'rejected', '');
       refetch();
-    } catch (error: any) {
-      console.error('Error rejecting local resource:', error);
-      toast.error('Failed to reject local resource: ' + error.message);
+    } catch {
+      // Toast handled in hook
     }
   };
 

@@ -16,6 +16,7 @@ import {
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDateOnly } from '@/utils/common/dateUtils';
+import { useEventSubmissionOperations } from '@/hooks/useEventSubmissionOperations';
 
 interface PendingEventSubmissionsProps {
   submissions: any[];
@@ -26,6 +27,7 @@ export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventS
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const { updateSubmissionStatus } = useEventSubmissionOperations();
 
   const formatDate = (dateString: string) => {
     return formatDateOnly(dateString, 'en-US', {
@@ -37,54 +39,11 @@ export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventS
 
   const pendingSubmissions = submissions.filter(s => s.status === 'pending');
 
-  const updateSubmissionStatus = async (submissionId: string, status: 'approved' | 'rejected', notes: string) => {
-    const { error } = await supabase
-      .from('event_submissions')
-      .update({
-        status,
-        admin_notes: notes,
-        reviewed_at: new Date().toISOString(),
-      })
-      .eq('id', submissionId);
-
-    if (error) throw error;
-
-    if (status === 'approved') {
-      const submission = submissions.find(s => s.id === submissionId);
-      if (submission) {
-        const { error: insertError } = await supabase
-          .from('events')
-          .insert({
-            title: submission.title,
-            description: submission.description,
-            category: submission.category,
-            location: submission.location,
-            date: submission.date,
-            start_time: submission.start_time,
-            end_time: submission.end_time,
-            price: submission.price || 0,
-            max_attendees: submission.max_attendees,
-            created_by: submission.submitted_by,
-            latitude: submission.latitude,
-            longitude: submission.longitude,
-            neighborhoods: submission.neighborhoods?.[0] || null,
-            is_recurring: submission.is_recurring || false,
-            recurring_pattern: submission.recurring_pattern,
-            event_type: submission.event_type || 'event'
-          });
-
-        if (insertError) throw insertError;
-      }
-    }
-
-    toast.success(`Event submission ${status === 'approved' ? 'approved' : 'rejected'} successfully`);
-    onUpdate();
-  };
-
   const handleApprove = async (submissionId: string) => {
     setActionLoading(true);
     try {
       await updateSubmissionStatus(submissionId, 'approved', adminNotes);
+      onUpdate();
       setSelectedSubmission(null);
       setAdminNotes('');
     } catch (error) {
@@ -97,7 +56,8 @@ export const PendingEventSubmissions = ({ submissions, onUpdate }: PendingEventS
   const handleReject = async (submissionId: string) => {
     setActionLoading(true);
     try {
-      await updateSubmissionStatus(submissionId, 'rejected', adminNotes);
+      await updateSubmissionStatus(submissionId, 'rejected', adminNotes || 'Rejected by admin');
+      onUpdate();
       setSelectedSubmission(null);
       setAdminNotes('');
     } catch (error) {

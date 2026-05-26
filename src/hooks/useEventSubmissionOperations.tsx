@@ -24,24 +24,36 @@ export const useEventSubmissionOperations = () => {
       if (fetchError) throw fetchError;
 
       // Create the event in the events table
+      const neighborhoods =
+        submission.neighborhoods?.length
+          ? submission.neighborhoods.join(',')
+          : null;
+
       const { data: insertedEvent, error: createError } = await supabase
         .from('events')
         .insert({
           title: submission.title,
           description: submission.description,
           category: submission.category,
+          event_type: submission.event_type ?? 'event',
           date: submission.date,
           start_time: submission.start_time,
           end_time: submission.end_time,
           location: submission.location,
+          address: submission.location,
           price: submission.price,
           max_attendees: submission.max_attendees,
           is_recurring: submission.is_recurring,
           recurring_pattern: submission.recurring_pattern,
+          registration_required: submission.registration_required,
           latitude: submission.latitude,
           longitude: submission.longitude,
+          neighborhoods,
+          villages: submission.villages,
+          website_link: submission.website_link,
           created_by: submission.submitted_by,
           image_url: submission.image_url ?? null,
+          is_sponsored: submission.is_sponsored ?? false,
         })
         .select('id')
         .single();

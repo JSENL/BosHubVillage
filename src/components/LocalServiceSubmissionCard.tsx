@@ -8,9 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { MapPin, Building, Check, X, Clock } from 'lucide-react';
 import { LocalResourceSubmission } from '@/types/localresources';
 import { SubmissionStatusBadge } from '@/components/SubmissionStatusBadge';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
+import { uselocalresourcesubmissionOperations } from '@/hooks/useLocalServiceSubmissionOperations';
 
 interface localresourcesubmissionCardProps {
   submission: LocalResourceSubmission;
@@ -19,9 +18,10 @@ interface localresourcesubmissionCardProps {
 
 const localresourcesubmissionCard = ({ submission, onUpdate }: localresourcesubmissionCardProps) => {
   const { t } = useTranslation();
-  const { isAdmin, user } = useAuth();
+  const { isAdmin } = useAuth();
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
+  const { updateSubmissionStatus, actionLoading } = uselocalresourcesubmissionOperations();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -31,65 +31,14 @@ const localresourcesubmissionCard = ({ submission, onUpdate }: localresourcesubm
     });
   };
 
-  const handleApprove = async () => {
+  const handleStatusUpdate = async (status: 'approved' | 'rejected') => {
     try {
-      // First, insert into the main local_resources table
-      const { error: insertError } = await supabase
-        .from('local_resources')
-        .insert({
-          name: submission.name,
-          category: submission.category,
-          address: submission.address,
-          neighborhood: submission.neighborhood,
-          village: submission.village,
-          description: submission.description,
-          latitude: submission.latitude,
-          longitude: submission.longitude,
-        });
-
-      if (insertError) throw insertError;
-
-      // Then update the submission status
-      const { error: updateError } = await supabase
-        .from('local_resources_submissions')
-        .update({
-          status: 'approved',
-          reviewed_by: user?.id,
-          reviewed_at: new Date().toISOString(),
-        })
-        .eq('id', submission.id);
-
-      if (updateError) throw updateError;
-
-      toast.success(t('admin.approveSuccess'));
-      onUpdate();
-    } catch (error: any) {
-      console.error('Error approving local resource:', error);
-      toast.error(t('admin.approveError') + ': ' + error.message);
-    }
-  };
-
-  const handleReject = async () => {
-    try {
-      const { error } = await supabase
-        .from('local_resources_submissions')
-        .update({
-          status: 'rejected',
-          reviewed_by: user?.id,
-          reviewed_at: new Date().toISOString(),
-          admin_notes: adminNotes
-        })
-        .eq('id', submission.id);
-
-      if (error) throw error;
-
-      toast.success(t('admin.rejectSuccess'));
+      await updateSubmissionStatus(submission.id, status, adminNotes);
       setSelectedSubmission(null);
       setAdminNotes('');
       onUpdate();
-    } catch (error: any) {
-      console.error('Error rejecting local resource:', error);
-      toast.error(t('admin.rejectError') + ': ' + error.message);
+    } catch {
+      // Toast handled in hook
     }
   };
 
@@ -153,7 +102,8 @@ const localresourcesubmissionCard = ({ submission, onUpdate }: localresourcesubm
               </div>
               <div className="flex space-x-2">
                 <Button
-                  onClick={handleApprove}
+                  onClick={() => handleStatusUpdate('approved')}
+                  disabled={actionLoading}
                   size="sm"
                   className="flex-1 bg-green-600 hover:bg-green-700"
                 >
@@ -161,7 +111,8 @@ const localresourcesubmissionCard = ({ submission, onUpdate }: localresourcesubm
                   {t('admin.approve')}
                 </Button>
                 <Button
-                  onClick={handleReject}
+                  onClick={() => handleStatusUpdate('rejected')}
+                  disabled={actionLoading}
                   size="sm"
                   variant="destructive"
                   className="flex-1"
