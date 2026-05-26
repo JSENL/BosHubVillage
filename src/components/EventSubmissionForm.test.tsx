@@ -53,6 +53,25 @@ vi.mock('sonner', () => ({
   },
 }));
 
+vi.mock('@/components/ui/rich-text-editor', () => ({
+  RichTextEditor: ({
+    value,
+    onChange,
+    id,
+  }: {
+    value: string;
+    onChange: (html: string) => void;
+    id?: string;
+  }) => (
+    <textarea
+      id={id}
+      aria-label="Description"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  ),
+}));
+
 describe('EventSubmissionForm', () => {
   beforeEach(() => {
     submitEvent.mockClear();

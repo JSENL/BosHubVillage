@@ -10,6 +10,7 @@ import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
 import { ContentListRowLayout } from '@/components/common/ContentListRowLayout';
+import { richTextPlainText } from '@/lib/richText';
 
 type TranslationsObject = Record<string, string>;
 
@@ -92,8 +93,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   }
 
   if (viewMode === 'list') {
-    const desc = getTranslatedText(event.description, event.description_translations);
-    const snippet = desc.replace(/<[^>]*>/g, '').trim() || '\u2014';
+    const snippet = richTextPlainText(getTranslatedText(event.description, event.description_translations)) || '\u2014';
     const loc = getTranslatedText(event.location, event.location_translations);
     const title = getTranslatedText(event.title, event.title_translations);
     const category = getTranslatedText(event.category, event.category_translations);
@@ -208,7 +208,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       
       <CardContent className="pt-2">
         <CardDescription className="mb-2 line-clamp-2 text-muted-foreground text-xs break-words">
-          {getTranslatedText(event.description, event.description_translations)}
+          {richTextPlainText(getTranslatedText(event.description, event.description_translations))}
         </CardDescription>
         <div className="space-y-1 text-xs">
           <div className="flex items-center text-muted-foreground min-w-0">

@@ -22,6 +22,8 @@ import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { EventHeroImageEditor } from '@/components/events/EventHeroImageEditor';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDateOnly, formatTimeRange } from '@/utils/common/dateUtils';
+import { RichTextContent } from '@/components/RichTextContent';
+import { richTextPlainText } from '@/lib/richText';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -175,7 +177,9 @@ const EventDetails = () => {
   }, [event, param, navigate]);
   const displayTitle = event ? getTranslatedText(event.title, event.translations?.title) : undefined;
   const displayDescription = event?.description
-    ? String(getTranslatedText(event.description, event.translations?.description) ?? event.description).replace(/<[^>]*>/g, '').slice(0, 160)
+    ? richTextPlainText(
+        getTranslatedText(event.description, event.translations?.description) ?? event.description
+      ).slice(0, 160)
     : undefined;
   useDocumentHead(displayTitle, displayDescription);
 
@@ -294,18 +298,21 @@ const EventDetails = () => {
                     )}
                   </div>
 
-                  <div className="prose max-w-none">
+                  <div className="max-w-none">
                     <h3 className="text-lg font-semibold mb-2">{t('pages.description')}</h3>
-                    <p className="text-gray-700 whitespace-pre-wrap">
-                      {getTranslatedText(event.description, (event as any).description_translations)}
-                    </p>
+                    <RichTextContent
+                      html={getTranslatedText(
+                        event.description,
+                        (event as any).description_translations
+                      )}
+                    />
                   </div>
 
                   {/* Add to Calendar & Share Section */}
                   <div className="flex flex-wrap gap-3 mt-6 pt-6 border-t">
                     <CalendarShare
                       title={event.title}
-                      description={event.description || ''}
+                      description={richTextPlainText(event.description || '')}
                       startDate={event.date}
                       startTime={event.start_time || undefined}
                       endTime={event.end_time || undefined}
@@ -313,7 +320,7 @@ const EventDetails = () => {
                     />
                     <SocialShare
                       title={event.title}
-                      description={event.description || ''}
+                      description={richTextPlainText(event.description || '')}
                       url={`${window.location.origin}${eventDetailPath({ slug: event.slug, id: event.id })}`}
                     />
                   </div>

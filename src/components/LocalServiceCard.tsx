@@ -8,6 +8,7 @@ import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
+import { richTextPlainText } from '@/lib/richText';
 
 interface LocalServiceCardProps {
   localService: LocalResource;
@@ -78,7 +79,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         
         {localService.description && (
           <p className="text-xs text-muted-foreground line-clamp-2 break-words">
-            {getTranslatedText(localService.description, localService.description_translations)}
+            {richTextPlainText(getTranslatedText(localService.description, localService.description_translations))}
           </p>
         )}
         

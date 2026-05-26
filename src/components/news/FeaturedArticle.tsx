@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, ExternalLink } from 'lucide-react';
 import { News } from '@/types/news';
 import { format } from 'date-fns';
+import { richTextPlainText } from '@/lib/richText';
 
 interface FeaturedArticleProps {
   article: News;
@@ -44,7 +45,7 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
             </div>
           )}
           <p className="text-gray-700 text-lg leading-relaxed line-clamp-4">
-            {article.content}
+            {richTextPlainText(article.content)}
           </p>
           {article.villages && Array.isArray(article.villages) && (
             <div className="flex flex-wrap gap-1 mt-4">

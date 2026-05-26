@@ -15,6 +15,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useBusinessOwnership } from '@/hooks/useBusinessOwnership';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
+import { RichTextContent } from '@/components/RichTextContent';
+import { richTextPlainText } from '@/lib/richText';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -45,7 +47,7 @@ const BusinessDetails = () => {
   });
 
   const metaDescription = business
-    ? String(business.short_description || business.description || '').replace(/<[^>]*>/g, '').slice(0, 160)
+    ? richTextPlainText(business.short_description || business.description || '').slice(0, 160)
     : undefined;
   useDocumentHead(business?.title, metaDescription);
 
@@ -145,7 +147,7 @@ const BusinessDetails = () => {
             <CardContent className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-2">About</h3>
-                <p className="text-gray-700 whitespace-pre-wrap">{business.description}</p>
+                <RichTextContent html={business.description} />
               </div>
 
 

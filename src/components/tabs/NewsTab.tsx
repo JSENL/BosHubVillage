@@ -9,6 +9,7 @@ import { useNews } from "@/hooks/useNews";
 import { useGeocoding } from "@/hooks/useGeocoding";
 import { geocodeNewsItems } from "@/utils/geocodeNewsItems";
 import { News } from "@/types/news";
+import { richTextPlainText } from "@/lib/richText";
 
 
 export const NewsTab = () => {
@@ -36,7 +37,7 @@ export const NewsTab = () => {
   const allNewsItems = allNews.map(newsItem => ({
     id: newsItem.id,
     title: newsItem.title,
-    description: newsItem.content || '',
+    description: richTextPlainText(newsItem.content || ''),
     latitude: newsItem.latitude || null,
     longitude: newsItem.longitude || null,
     type: 'news' as const,

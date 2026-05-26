@@ -11,6 +11,7 @@ import {
   Clock,
   MapPin
 } from 'lucide-react';
+import { richTextPlainText } from '@/lib/richText';
 
 interface BusinessSubmissionCardProps {
   submission: BusinessSubmission;
@@ -97,7 +98,7 @@ export const BusinessSubmissionCard = ({ submission, onUpdate }: BusinessSubmiss
       {submission.short_description && (
         <p className="text-muted-foreground mb-2 font-medium text-xs line-clamp-1">{submission.short_description}</p>
       )}
-      <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{submission.description}</p>
+      <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{richTextPlainText(submission.description)}</p>
 
       {submission.status === 'approved' && submission.is_owner && (
         <Button variant="secondary" disabled className="mt-2">

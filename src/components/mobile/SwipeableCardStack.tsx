@@ -8,6 +8,7 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { useNavigate } from 'react-router-dom';
 import { eventDetailPath } from '@/lib/eventUrl';
 import { format } from 'date-fns';
+import { richTextPlainText } from '@/lib/richText';
 
 interface SwipeableCardStackProps {
   items: UnifiedItem[];
@@ -173,7 +174,7 @@ export const SwipeableCardStack = ({ items, onClose }: SwipeableCardStackProps) 
 
                 {currentItem.description && (
                   <p className="text-sm line-clamp-3 text-muted-foreground">
-                    {currentItem.description}
+                    {richTextPlainText(currentItem.description)}
                   </p>
                 )}
 

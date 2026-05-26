@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
+import { richTextPlainText } from '@/lib/richText';
 
 interface BusinessCardProps {
   business: Business;
@@ -70,7 +71,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
             </p>
           )}
           <p className="text-muted-foreground line-clamp-2 text-xs break-words">
-            {getTranslatedText(business.description, business.description_translations)}
+            {richTextPlainText(getTranslatedText(business.description, business.description_translations))}
           </p>
         </CardContent>
       </Card>

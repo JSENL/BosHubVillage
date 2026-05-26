@@ -1,4 +1,28 @@
 import { z } from 'zod';
+import { isRichTextEmpty, richTextPlainLength, sanitizeRichText } from '@/lib/richText';
+
+const richTextRequired = (label: string, maxPlain: number) =>
+  z
+    .string()
+    .transform((val) => sanitizeRichText(val))
+    .refine((val) => !isRichTextEmpty(val), `${label} is required`)
+    .refine(
+      (val) => richTextPlainLength(val) <= maxPlain,
+      `${label} must be less than ${maxPlain} characters`
+    );
+
+const richTextOptional = (maxPlain: number) =>
+  z
+    .string()
+    .optional()
+    .transform((val) => {
+      const clean = sanitizeRichText(val ?? '');
+      return isRichTextEmpty(clean) ? '' : clean;
+    })
+    .refine(
+      (val) => richTextPlainLength(val) <= maxPlain,
+      `Description must be less than ${maxPlain} characters`
+    );
 
 // Contact Admin form validation schema
 export const contactAdminSchema = z.object({
@@ -24,7 +48,7 @@ export type BusinessMessageFormData = z.infer<typeof businessMessageSchema>;
 // News Submission validation schema
 export const newsSubmissionSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(300, 'Title must be less than 300 characters'),
-  content: z.string().trim().min(1, 'Content is required').max(50000, 'Content must be less than 50000 characters'),
+  content: richTextRequired('Content', 50000),
   location: z.string().trim().min(1, 'Location is required').max(200, 'Location must be less than 200 characters'),
   address: z.string().trim().max(300, 'Address must be less than 300 characters').optional().or(z.literal('')),
   villages: z.string().trim().max(500, 'Villages must be less than 500 characters').optional().or(z.literal('')),
@@ -45,7 +69,7 @@ export const businessSubmissionSchema = z.object({
   neighborhood: z.string().trim().min(1, 'Neighborhood is required').max(100, 'Neighborhood must be less than 100 characters'),
   villages: z.string().trim().max(200, 'Villages must be less than 200 characters').optional().or(z.literal('')),
   website_link: z.string().trim().url('Invalid website URL').max(500, 'Website link must be less than 500 characters').optional().or(z.literal('')),
-  description: z.string().trim().min(1, 'Description is required').max(5000, 'Description must be less than 5000 characters'),
+  description: richTextRequired('Description', 5000),
   short_description: z.string().trim().max(200, 'Short description must be less than 200 characters').optional().or(z.literal('')),
   is_owner: z.boolean().optional()
 });
@@ -55,7 +79,7 @@ export type BusinessSubmissionFormData = z.infer<typeof businessSubmissionSchema
 // Event Submission validation schema
 export const eventSubmissionSchema = z.object({
   title: z.string().trim().min(1, 'Event title is required').max(200, 'Event title must be less than 200 characters'),
-  description: z.string().trim().max(10000, 'Description must be less than 10000 characters').optional().or(z.literal('')),
+  description: richTextOptional(10000),
   category: z.string().trim().min(1, 'Category is required').max(100, 'Category must be less than 100 characters'),
   event_type: z.string().trim().min(1, 'Event type is required').max(50, 'Event type must be less than 50 characters'),
   date: z.string().min(1, 'Date is required').refine(

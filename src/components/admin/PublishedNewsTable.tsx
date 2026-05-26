@@ -21,6 +21,7 @@ import {
   Edit
 } from 'lucide-react';
 import { News } from '@/types/news';
+import { richTextPlainText } from '@/lib/richText';
 import { EditNewsDialog } from '@/components/admin/EditNewsDialog';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -220,7 +221,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
                       <div>
                         <div className="font-medium">{article.title}</div>
                         <div className="text-sm text-gray-500 max-w-xs truncate">
-                          {article.content}
+                          {richTextPlainText(article.content)}
                         </div>
                       </div>
                     </TableCell>

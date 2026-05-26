@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, MapPin } from 'lucide-react';
 import { News } from '@/types/news';
 import { format } from 'date-fns';
+import { richTextPlainText } from '@/lib/richText';
 
 interface NewsGridProps {
   articles: News[];
@@ -49,7 +50,7 @@ const NewsGrid = ({ articles }: NewsGridProps) => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-700 line-clamp-3 text-sm">
-                    {article.content}
+                    {richTextPlainText(article.content)}
                   </p>
                   <div className="mt-3 text-xs text-gray-500">
                     Source: {article.source}

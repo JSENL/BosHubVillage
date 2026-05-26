@@ -15,6 +15,7 @@ import {
   DollarSign,
   Users
 } from 'lucide-react';
+import { richTextPlainText } from '@/lib/richText';
 
 interface EventSubmissionCardProps {
   submission: EventSubmission;
@@ -113,7 +114,7 @@ export const EventSubmissionCard = ({ submission, onUpdate }: EventSubmissionCar
       </div>
       
       {submission.description && (
-        <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{submission.description}</p>
+        <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{richTextPlainText(submission.description)}</p>
       )}
       
       {selectedSubmission === submission.id ? (

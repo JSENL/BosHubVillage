@@ -4,6 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* TipTap rich text editor placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
 /* Mapbox popup styles for multi-item locations */
 .multi-item-popup .mapboxgl-popup-content {
   padding: 0 !important;

@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { normalizeRichTextForStorage } from '@/lib/richText';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -93,7 +94,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
       await submitEvent(
         {
           title: formData.title,
-          description: formData.description,
+          description: normalizeRichTextForStorage(formData.description),
           category: formData.category,
           event_type: formData.event_type,
           date: formData.date,
@@ -200,14 +201,17 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               <Label htmlFor="description" className="text-sm font-medium text-gray-700">
                 Description
               </Label>
-              <Textarea
+              <RichTextEditor
                 id="description"
                 placeholder="Describe your event"
                 value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                className="mt-1 border-caribbean-teal/30 focus:border-caribbean-teal focus:ring-caribbean-teal"
-                rows={3}
+                onChange={(html) => handleInputChange('description', html)}
+                className="mt-1 border-caribbean-teal/30"
+                minHeight="140px"
               />
+              <p className="text-xs text-gray-500 mt-1.5">
+                Use the toolbar for bold, underline, lists, links, and more.
+              </p>
             </div>
 
             <div

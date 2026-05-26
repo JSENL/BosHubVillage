@@ -13,6 +13,7 @@ import { useCardLocale } from '@/hooks/useCardLocale';
 import { ContentListRowLayout } from '@/components/common/ContentListRowLayout';
 import { CategoryHero, CategoryIcon } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
+import { richTextPlainText } from '@/lib/richText';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
@@ -149,9 +150,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
           ? 'business'
           : 'local-service';
 
-  const listSnippetRaw = getDisplayDescription();
-  const listSnippet =
-    listSnippetRaw.replace(/<[^>]*>/g, '').trim() || '\u2014';
+  const listSnippet = richTextPlainText(getDisplayDescription()) || '\u2014';
 
   const neighborhoodLine = () => {
     const n = item.neighborhoods;
@@ -339,7 +338,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
       
       <CardContent className="pt-1 px-3 pb-3">
         <CardDescription className="mb-2 line-clamp-2 text-gray-600 break-words text-xs leading-tight">
-          {getDisplayDescription()}
+          {richTextPlainText(getDisplayDescription())}
         </CardDescription>
         <div className="space-y-1 text-xs">
           {item.date && (

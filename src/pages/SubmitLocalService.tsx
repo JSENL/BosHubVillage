@@ -8,7 +8,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { normalizeRichTextForStorage, richTextPlainLength } from '@/lib/richText';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
@@ -34,7 +35,14 @@ const formSchema = z.object({
   }),
   village: z.string().optional(),
   website_link: z.string().optional(),
-  description: z.string().optional(),
+  description: z
+    .string()
+    .optional()
+    .transform((val) => normalizeRichTextForStorage(val))
+    .refine(
+      (val) => richTextPlainLength(val) <= 10000,
+      'Description must be less than 10000 characters'
+    ),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -276,10 +284,11 @@ const SubmitLocalService = () => {
               <FormItem>
                 <FormLabel>{t('pages.descriptionOptional')}</FormLabel>
                 <FormControl>
-                  <Textarea
+                  <RichTextEditor
+                    id="local-resource-description"
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
                     placeholder={t('pages.descriptionPlaceholder')}
-                    className="resize-none"
-                    {...field}
                   />
                 </FormControl>
                 <FormDescription>

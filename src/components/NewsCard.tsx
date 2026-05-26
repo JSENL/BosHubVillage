@@ -8,6 +8,7 @@ import { useTranslatedField } from '@/hooks/useTranslatedField';
 import { useCardLocale } from '@/hooks/useCardLocale';
 import { CategoryIcon, CategoryHero } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
+import { richTextPlainText } from '@/lib/richText';
 
 interface NewsCardProps {
   news: News;
@@ -66,7 +67,7 @@ const NewsCard = ({ news }: NewsCardProps) => {
         </CardHeader>
         <CardContent className="pt-1 px-3 pb-3">
           <p className="text-muted-foreground line-clamp-2 text-xs break-words">
-            {getTranslatedText(news.content, news.content_translations)}
+            {richTextPlainText(getTranslatedText(news.content, news.content_translations))}
           </p>
         </CardContent>
       </Card>

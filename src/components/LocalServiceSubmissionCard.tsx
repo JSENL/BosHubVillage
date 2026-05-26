@@ -10,6 +10,7 @@ import { LocalResourceSubmission } from '@/types/localresources';
 import { SubmissionStatusBadge } from '@/components/SubmissionStatusBadge';
 import { useAuth } from '@/hooks/useAuth';
 import { uselocalresourcesubmissionOperations } from '@/hooks/useLocalServiceSubmissionOperations';
+import { richTextPlainText } from '@/lib/richText';
 
 interface localresourcesubmissionCardProps {
   submission: LocalResourceSubmission;
@@ -72,7 +73,7 @@ const localresourcesubmissionCard = ({ submission, onUpdate }: localresourcesubm
         
         {submission.description && (
           <p className="text-xs text-gray-600 line-clamp-2">
-            {submission.description}
+            {richTextPlainText(submission.description)}
           </p>
         )}
         

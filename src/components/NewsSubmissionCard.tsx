@@ -14,6 +14,7 @@ import {
   MapPin,
   Building2
 } from 'lucide-react';
+import { richTextPlainText } from '@/lib/richText';
 
 interface NewsSubmissionCardProps {
   submission: NewsSubmission;
@@ -95,7 +96,7 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
         </div>
       </div>
       
-      <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{submission.content}</p>
+      <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">{richTextPlainText(submission.content)}</p>
       
       {selectedSubmission === submission.id ? (
         <div className="space-y-3 bg-muted/50 p-3 md:p-4 rounded-lg">

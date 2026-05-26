@@ -15,6 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { LinkedContentSection } from '@/components/content/LinkedContentSection';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
+import { RichTextContent } from '@/components/RichTextContent';
+import { richTextPlainText } from '@/lib/richText';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -37,7 +39,7 @@ const NewsDetails = () => {
   });
 
   const metaDescription = news
-    ? String(news.content || news.title || '').replace(/<[^>]*>/g, '').slice(0, 160)
+    ? richTextPlainText(news.content || news.title || '').slice(0, 160)
     : undefined;
   useDocumentHead(news?.title, metaDescription);
 
@@ -122,11 +124,7 @@ const NewsDetails = () => {
                 />
               </div>
             )}
-            <div className="prose max-w-none">
-              <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                {news.content}
-              </p>
-            </div>
+            <RichTextContent html={news.content} className="leading-relaxed" />
           </CardContent>
         </Card>
 

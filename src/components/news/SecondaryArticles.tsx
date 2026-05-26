@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, MapPin } from 'lucide-react';
 import { News } from '@/types/news';
 import { format } from 'date-fns';
+import { richTextPlainText } from '@/lib/richText';
 
 interface SecondaryArticlesProps {
   articles: News[];
@@ -43,7 +44,7 @@ const SecondaryArticles = ({ articles }: SecondaryArticlesProps) => {
                 </CardHeader>
                 <CardContent className="pt-0">
                   <p className="text-gray-600 text-sm line-clamp-3">
-                    {article.content}
+                    {richTextPlainText(article.content)}
                   </p>
                 </CardContent>
               </div>

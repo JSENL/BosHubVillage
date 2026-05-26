@@ -5,7 +5,7 @@ import { useNewsCategories } from '@/hooks/useCategories';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
@@ -360,15 +360,17 @@ const SubmitNews = () => {
 
                 <div>
                   <Label htmlFor="content">{t('pages.articleContent')} *</Label>
-                  <Textarea
+                  <RichTextEditor
                     id="content"
                     value={formData.content}
-                    onChange={(e) => handleInputChange('content', e.target.value)}
+                    onChange={(html) => handleInputChange('content', html)}
                     placeholder={t('pages.articleContentPlaceholder')}
-                    rows={8}
-                    required
-                    className={validationErrors.includes('Article Content') ? 'border-red-300 bg-red-50' : ''}
+                    minHeight="220px"
+                    className={validationErrors.includes('Article Content') ? 'border-red-300' : ''}
                   />
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    Use the toolbar for bold, underline, lists, links, and more.
+                  </p>
                 </div>
 
                 <NewsMediaUpload

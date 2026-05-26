@@ -15,6 +15,8 @@ import { BookmarkButton } from '@/components/social/BookmarkButton';
 import { LinkedNewsSection } from '@/components/content/LinkedNewsSection';
 import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
+import { RichTextContent } from '@/components/RichTextContent';
+import { richTextPlainText } from '@/lib/richText';
 
 const LocalResourceDetails = () => {
   const { serviceId } = useParams();
@@ -39,7 +41,7 @@ const LocalResourceDetails = () => {
   });
 
   const metaDescription = resource
-    ? String(resource.description || resource.name || '').replace(/<[^>]*>/g, '').slice(0, 160)
+    ? richTextPlainText(resource.description || resource.name || '').slice(0, 160)
     : undefined;
   useDocumentHead(resource?.name, metaDescription);
 
@@ -112,7 +114,7 @@ const LocalResourceDetails = () => {
             {resource.description && (
               <div>
                 <h3 className="text-lg font-semibold mb-2">About</h3>
-                <p className="text-gray-700">{resource.description}</p>
+                <RichTextContent html={resource.description} />
               </div>
             )}
 
