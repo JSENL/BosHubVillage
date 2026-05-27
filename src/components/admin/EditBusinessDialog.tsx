@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { Business } from '@/types/business';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
+import { AdminDialogHeroEditor } from '@/components/admin/AdminDialogHeroEditor';
 
 interface EditBusinessDialogProps {
   business: any; // Extended Business with owner info
@@ -26,6 +27,9 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
   const [loading, setLoading] = useState(false);
   const [ownerLoading, setOwnerLoading] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string>('');
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(
+    business.image_url ?? null
+  );
   
   const [formData, setFormData] = useState({
     title: business.title,
@@ -64,6 +68,12 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
     }
   }, [business]);
 
+  useEffect(() => {
+    if (open) {
+      setCoverImageUrl(business.image_url ?? null);
+    }
+  }, [open, business.id, business.image_url]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const description = normalizeRichTextForStorage(formData.description);
@@ -82,6 +92,7 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
         description,
         short_description: formData.short_description,
         villages: formData.villages,
+        image_url: coverImageUrl || null,
       };
 
       // Handle coordinates - only include if they have values
@@ -197,6 +208,15 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
               required
             />
           </div>
+
+          <AdminDialogHeroEditor
+            table="business"
+            recordId={business.id}
+            title={formData.title || business.title}
+            imageUrl={coverImageUrl}
+            onImageUrlChange={setCoverImageUrl}
+            onPersisted={onUpdate}
+          />
 
           <div>
             <Label htmlFor="description">Description</Label>

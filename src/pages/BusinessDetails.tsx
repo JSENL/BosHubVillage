@@ -17,6 +17,7 @@ import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
+import { ContentHeroImageEditor } from '@/components/content/ContentHeroImageEditor';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -26,6 +27,7 @@ const BusinessDetails = () => {
   
   // Check if user owns this business
   const isOwner = ownedBusinesses?.some(b => b.id === businessId) || false;
+  const canEditCover = isOwner || isAdmin;
 
   const { data: business, isLoading, error } = useQuery({
     queryKey: ['business', businessId],
@@ -90,6 +92,16 @@ const BusinessDetails = () => {
               </Button>
             </div>
           )}
+
+          <ContentHeroImageEditor
+            table="business"
+            recordId={business.id}
+            title={business.title}
+            imageUrl={business.image_url}
+            canEdit={canEditCover}
+            invalidateQueryKeys={[['business', businessId]]}
+            emptyStateHint="Business owners and admins can upload a hero image for this listing."
+          />
 
           <Card>
             <CardHeader>

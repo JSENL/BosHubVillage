@@ -17,6 +17,7 @@ import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
+import { ContentHeroImageEditor } from '@/components/content/ContentHeroImageEditor';
 
 const LocalResourceDetails = () => {
   const { serviceId } = useParams();
@@ -83,6 +84,16 @@ const LocalResourceDetails = () => {
             </Button>
           </div>
         )}
+
+        <ContentHeroImageEditor
+          table="local_resources"
+          recordId={resource.id}
+          title={resource.name}
+          imageUrl={resource.image_url}
+          canEdit={!!isAdmin}
+          invalidateQueryKeys={[['local-resource-details', serviceId], ['local-resources']]}
+          emptyStateHint="Admins can upload a hero image for this local resource."
+        />
         
         <Card>
           <CardHeader>

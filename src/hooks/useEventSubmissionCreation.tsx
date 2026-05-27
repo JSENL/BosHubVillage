@@ -5,6 +5,7 @@ import { useAuth } from './useAuth';
 import { useGeocoding } from './useGeocoding';
 import { eventSubmissionSchema, validateFormData } from '@/utils/validation/formSchemas';
 import { uploadMediaFiles } from '@/services/mediaUploadService';
+import { uploadCoverImage } from '@/lib/coverImageUpload';
 
 interface CreateEventSubmissionData {
   title: string;
@@ -33,7 +34,8 @@ export const useEventSubmissionCreation = () => {
 
   const submitEvent = async (
     eventData: CreateEventSubmissionData,
-    mediaFiles?: File[]
+    mediaFiles?: File[],
+    coverFile?: File | null
   ) => {
     try {
       if (!user) {
@@ -81,6 +83,16 @@ export const useEventSubmissionCreation = () => {
         longitude
       });
 
+      let coverImageUrl: string | null = null;
+      if (coverFile) {
+        try {
+          coverImageUrl = await uploadCoverImage(coverFile, user.id);
+        } catch (coverErr) {
+          console.error('Cover image upload failed:', coverErr);
+          toast.warning('Cover image could not be uploaded; you can add one after approval.');
+        }
+      }
+
       const { data, error } = await supabase
         .from('event_submissions')
         .insert({
@@ -102,6 +114,7 @@ export const useEventSubmissionCreation = () => {
           villages: validatedData.villages || null,
           latitude,
           longitude,
+          image_url: coverImageUrl,
           submitted_by: user.id
         })
         .select()
@@ -131,24 +144,26 @@ export const useEventSubmissionCreation = () => {
               'Media files failed to upload, but your event submission was saved.'
             );
           } else {
-            const firstImage = uploadedFiles.find((f) =>
-              f.type.startsWith('image/')
-            );
-            if (firstImage) {
-              const { data: urlData } = supabase.storage
-                .from('comment-media')
-                .getPublicUrl(firstImage.path);
-              const publicUrl = urlData?.publicUrl ?? null;
-              if (publicUrl) {
-                const { error: imageUrlError } = await supabase
-                  .from('event_submissions')
-                  .update({ image_url: publicUrl })
-                  .eq('id', data.id);
-                if (imageUrlError) {
-                  console.error(
-                    'Failed to set event submission image_url:',
-                    imageUrlError
-                  );
+            if (!coverImageUrl) {
+              const firstImage = uploadedFiles.find((f) =>
+                f.type.startsWith('image/')
+              );
+              if (firstImage) {
+                const { data: urlData } = supabase.storage
+                  .from('comment-media')
+                  .getPublicUrl(firstImage.path);
+                const publicUrl = urlData?.publicUrl ?? null;
+                if (publicUrl) {
+                  const { error: imageUrlError } = await supabase
+                    .from('event_submissions')
+                    .update({ image_url: publicUrl })
+                    .eq('id', data.id);
+                  if (imageUrlError) {
+                    console.error(
+                      'Failed to set event submission image_url:',
+                      imageUrlError
+                    );
+                  }
                 }
               }
             }

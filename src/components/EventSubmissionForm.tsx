@@ -15,6 +15,7 @@ import { useEventSubmissions } from '@/hooks/useEventSubmissions';
 import { useGeocoding } from '@/hooks/useGeocoding';
 import { useEventCategories } from '@/hooks/useCategories';
 import NewsMediaUpload from '@/components/forms/NewsMediaUpload';
+import { SubmissionCoverImageField } from '@/components/forms/SubmissionCoverImageField';
 
 interface EventSubmissionFormProps {
   onClose?: () => void;
@@ -44,6 +45,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
   const { geocode, isGeocoding, isReady } = useGeocoding();
   const { data: eventCategories = [] } = useEventCategories();
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
 
   // Event categories now come from the database
 
@@ -112,7 +114,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
           latitude: coordinates?.latitude || null,
           longitude: coordinates?.longitude || null,
         },
-        mediaFiles.length > 0 ? mediaFiles : undefined
+        mediaFiles.length > 0 ? mediaFiles : undefined,
+        coverFile
       );
       
       // Reset form
@@ -135,6 +138,7 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
         villages: '',
       });
       setMediaFiles([]);
+      setCoverFile(null);
 
       if (onClose) onClose();
     } catch (error) {
@@ -197,6 +201,13 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               />
             </div>
 
+            <SubmissionCoverImageField
+              type="event"
+              category={formData.category || 'community'}
+              coverFile={coverFile}
+              onCoverFileChange={setCoverFile}
+            />
+
             <div>
               <Label htmlFor="description" className="text-sm font-medium text-gray-700">
                 Description
@@ -219,9 +230,8 @@ const EventSubmissionForm = ({ onClose }: EventSubmissionFormProps) => {
               className="space-y-2"
             >
               <p className="text-sm text-gray-500">
-                Optional: add images or video. The first image is saved as your
-                submission cover (<span className="font-mono text-xs">image_url</span>)
-                for reviewers.
+                Optional: add extra images or video. If you did not add a cover above, the
+                first image here is used as the cover for reviewers.
               </p>
               <NewsMediaUpload
                 mediaFiles={mediaFiles}

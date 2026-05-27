@@ -53,6 +53,10 @@ vi.mock('sonner', () => ({
   },
 }));
 
+vi.mock('@/components/forms/SubmissionCoverImageField', () => ({
+  SubmissionCoverImageField: () => <div data-testid="submission-cover-image-field" />,
+}));
+
 vi.mock('@/components/ui/rich-text-editor', () => ({
   RichTextEditor: ({
     value,
@@ -82,7 +86,7 @@ describe('EventSubmissionForm', () => {
 
     const section = screen.getByTestId('event-submission-media-section');
     expect(section).toBeInTheDocument();
-    expect(within(section).getByText(/image_url/i)).toBeInTheDocument();
+    expect(within(section).getByText(/first image here/i)).toBeInTheDocument();
     expect(
       within(section).getByText('Media Files (Images & Videos)')
     ).toBeInTheDocument();

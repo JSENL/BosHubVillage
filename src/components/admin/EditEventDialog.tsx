@@ -17,7 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Event, type EventContactType } from '@/hooks/useEvents';
 import { useTranslation } from 'react-i18next';
-import { AdminContentCoverImageSection } from '@/components/admin/AdminContentCoverImageSection';
+import { AdminDialogHeroEditor } from '@/components/admin/AdminDialogHeroEditor';
 
 interface EditEventDialogProps {
   event: Event;
@@ -163,7 +163,7 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Event</DialogTitle>
         </DialogHeader>
@@ -177,6 +177,18 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
               required
             />
           </div>
+
+          <AdminDialogHeroEditor
+            table="events"
+            recordId={event.id}
+            title={formData.title || event.title}
+            imageUrl={coverImageUrl}
+            onImageUrlChange={setCoverImageUrl}
+            onPersisted={onUpdate}
+            coverZoom={event.cover_zoom}
+            coverFocusX={event.cover_focus_x}
+            coverFocusY={event.cover_focus_y}
+          />
           
           <div>
             <Label htmlFor="description">Description</Label>
@@ -352,14 +364,6 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
               />
             )}
           </div>
-
-          <AdminContentCoverImageSection
-            table="events"
-            recordId={event.id}
-            imageUrl={coverImageUrl}
-            onImageUrlChange={setCoverImageUrl}
-            onPersisted={onUpdate}
-          />
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

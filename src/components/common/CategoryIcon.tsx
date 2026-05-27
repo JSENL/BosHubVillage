@@ -61,6 +61,8 @@ interface CategoryHeroProps {
   type?: 'event' | 'business' | 'local-service' | 'news';
   height?: string;
   className?: string;
+  /** When set, fills the hero behind the gradient overlay (e.g. submission preview or card cover). */
+  imageUrl?: string | null;
 }
 
 export const CategoryHero = ({
@@ -68,6 +70,7 @@ export const CategoryHero = ({
   type,
   height = 'h-24',
   className,
+  imageUrl,
 }: CategoryHeroProps) => {
   const Icon = getCategoryIcon(category, type);
   
@@ -78,10 +81,24 @@ export const CategoryHero = ({
         height,
         className
       )}
-      style={{ background: getCategoryGradient(category, type) }}
+      style={imageUrl ? undefined : { background: getCategoryGradient(category, type) }}
     >
+      {imageUrl ? (
+        <>
+          <div
+            className="absolute inset-0"
+            style={{ background: getCategoryGradient(category, type) }}
+            aria-hidden
+          />
+          <img
+            src={imageUrl}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </>
+      ) : null}
       {/* Decorative pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className={cn('absolute inset-0', imageUrl ? 'opacity-20' : 'opacity-10')}>
         <div className="absolute top-2 left-4 w-12 h-12 rounded-full border-2 border-white/50" />
         <div className="absolute bottom-2 right-8 w-8 h-8 rounded-full border-2 border-white/30" />
         <div className="absolute top-1/2 right-1/4 w-6 h-6 rounded-full bg-white/20" />

@@ -56,7 +56,9 @@ export const uselocalresourcesubmissionOperations = () => {
             village: submission.village,
             description: submission.description,
             latitude,
-            longitude
+            longitude,
+            website_link: submission.website_link ?? null,
+            image_url: submission.image_url ?? null,
           })
           .select('id')
           .single();

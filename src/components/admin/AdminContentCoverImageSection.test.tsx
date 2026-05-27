@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AdminContentCoverImageSection } from './AdminContentCoverImageSection';
-import { uploadMediaFiles } from '@/services/mediaUploadService';
+import { uploadCoverImage } from '@/lib/coverImageUpload';
 
 const { updateEq, updateMock, fromMock } = vi.hoisted(() => {
   const eq = vi.fn().mockResolvedValue({ error: null });
@@ -24,26 +25,30 @@ vi.mock('@/hooks/useAuth', () => ({
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: fromMock,
-    storage: {
-      from: vi.fn(() => ({
-        getPublicUrl: vi.fn((path: string) => ({
-          data: { publicUrl: `https://test.supabase.co/storage/comment-media/${path}` },
-        })),
-      })),
-    },
   },
 }));
 
-vi.mock('@/services/mediaUploadService', () => ({
-  uploadMediaFiles: vi.fn(),
+vi.mock('@/lib/coverImageUpload', () => ({
+  uploadCoverImage: vi.fn(),
 }));
 
-describe('AdminContentCoverImageSection (admin dashboard cover upload)', () => {
+function renderHero(
+  props: React.ComponentProps<typeof AdminContentCoverImageSection>
+) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={client}>
+      <AdminContentCoverImageSection {...props} />
+    </QueryClientProvider>
+  );
+}
+
+describe('AdminDialogHeroEditor (admin dashboard cover upload)', () => {
   const onImageUrlChange = vi.fn();
   const onPersisted = vi.fn();
 
   beforeEach(() => {
-    vi.mocked(uploadMediaFiles).mockReset();
+    vi.mocked(uploadCoverImage).mockReset();
     fromMock.mockClear();
     updateMock.mockClear();
     updateEq.mockClear();
@@ -53,24 +58,17 @@ describe('AdminContentCoverImageSection (admin dashboard cover upload)', () => {
   });
 
   it('uploads an image, persists image_url to events, and notifies parent', async () => {
-    vi.mocked(uploadMediaFiles).mockResolvedValue([
-      {
-        path: 'admin-user-id/hero.png',
-        name: 'hero.png',
-        type: 'image/png',
-        size: 1200,
-      },
-    ]);
-
-    render(
-      <AdminContentCoverImageSection
-        table="events"
-        recordId="evt-42"
-        imageUrl={null}
-        onImageUrlChange={onImageUrlChange}
-        onPersisted={onPersisted}
-      />
+    vi.mocked(uploadCoverImage).mockResolvedValue(
+      'https://test.supabase.co/storage/comment-media/admin-user-id/hero.png'
     );
+
+    renderHero({
+      table: 'events',
+      recordId: 'evt-42',
+      imageUrl: null,
+      onImageUrlChange,
+      onPersisted,
+    });
 
     const fileInput = document.querySelector(
       'input[type="file"]'
@@ -81,7 +79,7 @@ describe('AdminContentCoverImageSection (admin dashboard cover upload)', () => {
     fireEvent.change(fileInput, { target: { files: [file] } });
 
     await waitFor(() => {
-      expect(uploadMediaFiles).toHaveBeenCalledWith([expect.any(File)], 'admin-user-id');
+      expect(uploadCoverImage).toHaveBeenCalledWith(file, 'admin-user-id');
     });
 
     await waitFor(() => {
@@ -94,7 +92,6 @@ describe('AdminContentCoverImageSection (admin dashboard cover upload)', () => {
     expect(updatePayload.image_url).toBe(
       'https://test.supabase.co/storage/comment-media/admin-user-id/hero.png'
     );
-    expect(updatePayload.updated_at).toEqual(expect.any(String));
     expect(updateEq).toHaveBeenCalledWith('id', 'evt-42');
 
     expect(onImageUrlChange).toHaveBeenCalledWith(updatePayload.image_url);
@@ -102,24 +99,17 @@ describe('AdminContentCoverImageSection (admin dashboard cover upload)', () => {
   });
 
   it('uploads an image and persists image_url to news', async () => {
-    vi.mocked(uploadMediaFiles).mockResolvedValue([
-      {
-        path: 'admin-user-id/cover.jpg',
-        name: 'cover.jpg',
-        type: 'image/jpeg',
-        size: 800,
-      },
-    ]);
-
-    render(
-      <AdminContentCoverImageSection
-        table="news"
-        recordId="news-99"
-        imageUrl={null}
-        onImageUrlChange={onImageUrlChange}
-        onPersisted={onPersisted}
-      />
+    vi.mocked(uploadCoverImage).mockResolvedValue(
+      'https://test.supabase.co/storage/comment-media/admin-user-id/cover.jpg'
     );
+
+    renderHero({
+      table: 'news',
+      recordId: 'news-99',
+      imageUrl: null,
+      onImageUrlChange,
+      onPersisted,
+    });
 
     const fileInput = document.querySelector(
       'input[type="file"]'

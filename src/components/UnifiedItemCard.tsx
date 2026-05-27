@@ -231,6 +231,7 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
             type={heroType}
             height="h-full min-h-full"
             className="min-h-[inherit] w-full"
+            imageUrl={item.image_url}
           />
         }
         sponsored={item.is_sponsored ? <SponsoredBadge size="sm" /> : undefined}

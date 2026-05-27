@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { LocalResource } from '@/types/localresources';
 import { useQueryClient } from '@tanstack/react-query';
+import { AdminDialogHeroEditor } from '@/components/admin/AdminDialogHeroEditor';
 
 interface EditLocalResourceDialogProps {
   localResource: LocalResource;
@@ -21,6 +22,9 @@ interface EditLocalResourceDialogProps {
 export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onUpdate }: EditLocalResourceDialogProps) => {
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(
+    localResource.image_url ?? null
+  );
   
   const [formData, setFormData] = useState({
     name: localResource.name,
@@ -36,6 +40,7 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
 
   useEffect(() => {
     if (open) {
+      setCoverImageUrl(localResource.image_url ?? null);
       setFormData({
         name: localResource.name,
         category: localResource.category,
@@ -60,6 +65,7 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
     localResource.website_link,
     localResource.latitude,
     localResource.longitude,
+    localResource.image_url,
   ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +81,7 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
         village: formData.village || null,
         description: normalizeRichTextForStorage(formData.description),
         website_link: formData.website_link || null,
+        image_url: coverImageUrl || null,
       };
 
       // Handle coordinates - only include if they have values
@@ -125,7 +132,7 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Local Resource</DialogTitle>
         </DialogHeader>
@@ -149,6 +156,15 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
               required
             />
           </div>
+
+          <AdminDialogHeroEditor
+            table="local_resources"
+            recordId={localResource.id}
+            title={formData.name || localResource.name}
+            imageUrl={coverImageUrl}
+            onImageUrlChange={setCoverImageUrl}
+            onPersisted={onUpdate}
+          />
 
           <div>
             <Label htmlFor="description">Description</Label>

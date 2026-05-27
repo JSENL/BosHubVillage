@@ -15,6 +15,7 @@ export interface LocalResource {
   created_at: string;
   updated_at: string;
   is_sponsored?: boolean;
+  image_url?: string | null;
   name_translations?: TranslationsObject;
   description_translations?: TranslationsObject;
   address_translations?: TranslationsObject;
@@ -29,6 +30,7 @@ export interface LocalResourceSubmission {
   neighborhood: string;
   village?: string;
   description?: string;
+  image_url?: string | null;
   latitude?: number;
   longitude?: number;
   status: 'pending' | 'approved' | 'rejected';

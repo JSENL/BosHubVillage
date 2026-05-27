@@ -19,6 +19,8 @@ import { useGeocoding } from '@/hooks/useGeocoding';
 import LocationFields from '@/components/forms/LocationFields';
 import { businessSubmissionSchema, validateFormData } from '@/utils/validation/formSchemas';
 import { useTranslation } from 'react-i18next';
+import { SubmissionCoverImageField } from '@/components/forms/SubmissionCoverImageField';
+import { uploadCoverImage } from '@/lib/coverImageUpload';
 
 const SubmitBusiness = () => {
   const { user } = useAuth();
@@ -27,6 +29,7 @@ const SubmitBusiness = () => {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { geocode, isGeocoding } = useGeocoding();
   const { t } = useTranslation();
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     business_type: '',
@@ -92,6 +95,16 @@ const SubmitBusiness = () => {
         }
       }
 
+      let imageUrl: string | null = null;
+      if (coverFile) {
+        try {
+          imageUrl = await uploadCoverImage(coverFile, user.id);
+        } catch (coverErr) {
+          console.error('Cover image upload failed:', coverErr);
+          toast.warning('Cover image could not be uploaded; your business was still saved.');
+        }
+      }
+
       // Submit to Supabase business_submissions table with validated data
       const businessData = {
         title: validatedData.title,
@@ -104,6 +117,7 @@ const SubmitBusiness = () => {
         short_description: validatedData.short_description || null,
         latitude,
         longitude,
+        image_url: imageUrl,
         submitted_by: user.id,
         status: 'pending',
         is_owner: validatedData.is_owner || false
@@ -143,6 +157,7 @@ const SubmitBusiness = () => {
       short_description: '',
       is_owner: false
     });
+    setCoverFile(null);
     
     setShowSuccessDialog(false);
     toast.success('Form cleared. You can now submit another business.');
@@ -220,6 +235,13 @@ const SubmitBusiness = () => {
                     </SelectContent>
                   </Select>
                 </div>
+
+                <SubmissionCoverImageField
+                  type="business"
+                  category={formData.business_type || 'business'}
+                  coverFile={coverFile}
+                  onCoverFileChange={setCoverFile}
+                />
 
                 <LocationFields
                   formData={{ location: formData.address }}

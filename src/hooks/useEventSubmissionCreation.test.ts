@@ -62,6 +62,12 @@ vi.mock('@/services/mediaUploadService', () => ({
   uploadMediaFiles: vi.fn(),
 }));
 
+vi.mock('@/lib/coverImageUpload', () => ({
+  uploadCoverImage: vi.fn(),
+}));
+
+import { uploadCoverImage } from '@/lib/coverImageUpload';
+
 const baseEventPayload = {
   title: 'Jazz Night',
   description: 'Live music',
@@ -86,6 +92,7 @@ const baseEventPayload = {
 describe('useEventSubmissionCreation', () => {
   beforeEach(() => {
     vi.mocked(uploadMediaFiles).mockReset();
+    vi.mocked(uploadCoverImage).mockReset();
     submissionUpdate.mockClear();
     submissionUpdate.mockImplementation(() => ({
       eq: vi.fn().mockResolvedValue({ error: null }),
@@ -114,6 +121,27 @@ describe('useEventSubmissionCreation', () => {
     expect(submissionUpdate).toHaveBeenCalledWith({
       image_url: 'https://example.test/object/comment-media/user-1/abc123.png',
     });
+  });
+
+  it('uses dedicated cover file and skips gallery image for image_url', async () => {
+    vi.mocked(uploadCoverImage).mockResolvedValue('https://cover.test/hero.png');
+    vi.mocked(uploadMediaFiles).mockResolvedValue([
+      {
+        path: 'user-1/gallery.png',
+        name: 'gallery.png',
+        type: 'image/png',
+        size: 1024,
+      },
+    ]);
+
+    const { result } = renderHook(() => useEventSubmissionCreation());
+    const cover = new File(['c'], 'cover.png', { type: 'image/png' });
+    const gallery = new File(['g'], 'gallery.png', { type: 'image/png' });
+
+    await result.current.submitEvent(baseEventPayload, [gallery], cover);
+
+    expect(uploadCoverImage).toHaveBeenCalledWith(cover, 'user-1');
+    expect(submissionUpdate).not.toHaveBeenCalled();
   });
 
   it('does not set image_url when only video files are uploaded', async () => {

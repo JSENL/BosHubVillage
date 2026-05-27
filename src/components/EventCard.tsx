@@ -27,6 +27,7 @@ interface Event {
   price: number;
   max_attendees?: number;
   is_sponsored?: boolean;
+  image_url?: string | null;
   title_translations?: TranslationsObject;
   description_translations?: TranslationsObject;
   location_translations?: TranslationsObject;
@@ -138,6 +139,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             type="event"
             height="h-full min-h-full"
             className="min-h-[inherit] w-full"
+            imageUrl={event.image_url}
           />
         }
         sponsored={event.is_sponsored ? <SponsoredBadge size="sm" /> : undefined}
@@ -175,7 +177,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       onClick={handleViewDetails}
     >
       {/* Category Hero */}
-      <CategoryHero category={event.category} type="event" />
+      <CategoryHero category={event.category} type="event" imageUrl={event.image_url} />
       
       <CardHeader className="pb-2 pt-3">
         {event.is_sponsored && (

@@ -38,6 +38,7 @@ const LocalServiceCard = ({ localService }: LocalServiceCardProps) => {
         category={localService.category} 
         type="local-service"
         height="h-20"
+        imageUrl={localService.image_url}
       />
       
       <CardHeader className="pb-1 pt-3 px-3">

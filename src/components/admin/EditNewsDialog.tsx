@@ -9,7 +9,7 @@ import { isRichTextEmpty, normalizeRichTextForStorage } from '@/lib/richText';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { News } from '@/types/news';
-import { AdminContentCoverImageSection } from '@/components/admin/AdminContentCoverImageSection';
+import { AdminDialogHeroEditor } from '@/components/admin/AdminDialogHeroEditor';
 
 interface EditNewsDialogProps {
   news: News;
@@ -81,7 +81,7 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Culture Article</DialogTitle>
         </DialogHeader>
@@ -95,6 +95,15 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
               required
             />
           </div>
+
+          <AdminDialogHeroEditor
+            table="news"
+            recordId={news.id}
+            title={formData.title || news.title}
+            imageUrl={coverImageUrl}
+            onImageUrlChange={setCoverImageUrl}
+            onPersisted={onUpdate}
+          />
           
           <div>
             <Label htmlFor="content">Content</Label>
@@ -142,14 +151,6 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
               required
             />
           </div>
-
-          <AdminContentCoverImageSection
-            table="news"
-            recordId={news.id}
-            imageUrl={coverImageUrl}
-            onImageUrlChange={setCoverImageUrl}
-            onPersisted={onUpdate}
-          />
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>

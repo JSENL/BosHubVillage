@@ -29,6 +29,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
           category={business.business_type} 
           type="business"
           height="h-20"
+          imageUrl={business.image_url}
         />
         
         <CardHeader className="pb-1 pt-3 px-3">

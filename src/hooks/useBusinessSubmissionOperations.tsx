@@ -47,7 +47,8 @@ export const useBusinessSubmissionOperations = () => {
             longitude: submission.longitude,
             website_link: submission.website_link,
             villages: submission.villages,
-            created_by: submission.submitted_by
+            created_by: submission.submitted_by,
+            image_url: submission.image_url ?? null,
           })
           .select('id')
           .single();

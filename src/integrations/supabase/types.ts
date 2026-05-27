@@ -117,6 +117,7 @@ export type Database = {
           description: string
           description_translations: Json
           id: string
+          image_url: string | null
           is_sponsored: boolean | null
           latitude: number | null
           longitude: number | null
@@ -138,6 +139,7 @@ export type Database = {
           description: string
           description_translations?: Json
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -159,6 +161,7 @@ export type Database = {
           description?: string
           description_translations?: Json
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -356,6 +359,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_url: string | null
           is_owner: boolean | null
           is_sponsored: boolean | null
           latitude: number | null
@@ -378,6 +382,7 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          image_url?: string | null
           is_owner?: boolean | null
           is_sponsored?: boolean | null
           latitude?: number | null
@@ -400,6 +405,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_url?: string | null
           is_owner?: boolean | null
           is_sponsored?: boolean | null
           latitude?: number | null
@@ -1201,6 +1207,7 @@ export type Database = {
           description: string | null
           description_translations: Json
           id: string
+          image_url: string | null
           is_sponsored: boolean | null
           latitude: number | null
           longitude: number | null
@@ -1220,6 +1227,7 @@ export type Database = {
           description?: string | null
           description_translations?: Json
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -1239,6 +1247,7 @@ export type Database = {
           description?: string | null
           description_translations?: Json
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -1315,6 +1324,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          image_url: string | null
           is_sponsored: boolean | null
           latitude: number | null
           longitude: number | null
@@ -1335,6 +1345,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -1355,6 +1366,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           is_sponsored?: boolean | null
           latitude?: number | null
           longitude?: number | null

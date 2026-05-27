@@ -16,6 +16,7 @@ export interface Business {
   updated_at: string;
   created_by?: string;
   is_sponsored?: boolean;
+  image_url?: string | null;
   title_translations?: TranslationsObject;
   description_translations?: TranslationsObject;
   short_description_translations?: TranslationsObject;

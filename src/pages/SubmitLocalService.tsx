@@ -19,6 +19,8 @@ import { useLocalServiceCategories } from '@/hooks/useCategories';
 import { Building2, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTranslation } from 'react-i18next';
+import { SubmissionCoverImageField } from '@/components/forms/SubmissionCoverImageField';
+import { uploadCoverImage } from '@/lib/coverImageUpload';
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -50,6 +52,7 @@ type FormData = z.infer<typeof formSchema>;
 const SubmitLocalService = () => {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { geocode, isReady } = useGeocoding();
   const { data: localServiceCategories = [] } = useLocalServiceCategories();
@@ -67,6 +70,8 @@ const SubmitLocalService = () => {
       description: '',
     },
   });
+
+  const watchedCategory = form.watch('category');
 
   const onSubmit = async (data: FormData) => {
     if (!user) {
@@ -91,6 +96,16 @@ const SubmitLocalService = () => {
         }
       }
 
+      let imageUrl: string | null = null;
+      if (coverFile) {
+        try {
+          imageUrl = await uploadCoverImage(coverFile, user.id);
+        } catch (coverErr) {
+          console.error('Cover image upload failed:', coverErr);
+          toast.warning('Cover image could not be uploaded; your submission was still saved.');
+        }
+      }
+
       const { error } = await supabase
         .from('local_resources_submissions')
         .insert({
@@ -103,6 +118,7 @@ const SubmitLocalService = () => {
           description: data.description || null,
           latitude,
           longitude,
+          image_url: imageUrl,
           submitted_by: user.id,
           status: 'pending',
         });
@@ -121,6 +137,7 @@ const SubmitLocalService = () => {
 
   const handleAddAnother = () => {
     form.reset();
+    setCoverFile(null);
     setShowSuccessDialog(false);
     toast.success('Form cleared. You can now submit another local resource.');
   };
@@ -197,6 +214,12 @@ const SubmitLocalService = () => {
                 <FormMessage />
               </FormItem>
             )}
+          />
+          <SubmissionCoverImageField
+            type="local-service"
+            category={watchedCategory || 'community'}
+            coverFile={coverFile}
+            onCoverFileChange={setCoverFile}
           />
           <FormField
             control={form.control}
