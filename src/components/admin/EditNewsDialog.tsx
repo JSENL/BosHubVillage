@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { isRichTextEmpty, normalizeRichTextForStorage } from '@/lib/richText';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { News } from '@/types/news';
@@ -45,6 +46,11 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const content = normalizeRichTextForStorage(formData.content);
+    if (isRichTextEmpty(content)) {
+      toast.error('Content is required');
+      return;
+    }
     setLoading(true);
 
     try {
@@ -52,7 +58,7 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
         .from('news')
         .update({
           title: formData.title,
-          content: formData.content,
+          content,
           source: formData.source,
           location: formData.location,
           date_posted: formData.date_posted,
@@ -92,13 +98,17 @@ export const EditNewsDialog = ({ news, open, onOpenChange, onUpdate }: EditNewsD
           
           <div>
             <Label htmlFor="content">Content</Label>
-            <Textarea
+            <RichTextEditor
               id="content"
+              placeholder="Article body shown on the culture detail page"
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              rows={6}
-              required
+              onChange={(html) => setFormData({ ...formData, content: html })}
+              className="mt-1"
+              minHeight="200px"
             />
+            <p className="text-xs text-muted-foreground mt-1.5">
+              Rich text formatting appears on the public culture article page.
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

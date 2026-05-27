@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { isRichTextEmpty, normalizeRichTextForStorage } from '@/lib/richText';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
@@ -65,6 +66,11 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const description = normalizeRichTextForStorage(formData.description);
+    if (isRichTextEmpty(description)) {
+      toast.error('Description is required');
+      return;
+    }
     setLoading(true);
 
     try {
@@ -73,7 +79,7 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
         business_type: formData.business_type,
         address: formData.address,
         neighborhood: formData.neighborhood,
-        description: formData.description,
+        description,
         short_description: formData.short_description,
         villages: formData.villages,
       };
@@ -194,13 +200,17 @@ export const EditBusinessDialog = ({ business, open, onOpenChange, onUpdate }: E
 
           <div>
             <Label htmlFor="description">Description</Label>
-            <Textarea
+            <RichTextEditor
               id="description"
+              placeholder="Full business description on the detail page"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={4}
-              required
+              onChange={(html) => setFormData({ ...formData, description: html })}
+              className="mt-1"
+              minHeight="160px"
             />
+            <p className="text-xs text-muted-foreground mt-1.5">
+              Rich text formatting appears on the public business page. Short description above stays plain text.
+            </p>
           </div>
 
           <div>

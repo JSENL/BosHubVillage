@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { normalizeRichTextForStorage } from '@/lib/richText';
 import {
   Select,
   SelectContent,
@@ -92,7 +93,7 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
     try {
       const updateData: any = {
         title: formData.title,
-        description: formData.description,
+        description: normalizeRichTextForStorage(formData.description),
         category: formData.category,
         location: formData.location,
         address: formData.address,
@@ -179,12 +180,17 @@ export const EditEventDialog = ({ event, open, onOpenChange, onUpdate }: EditEve
           
           <div>
             <Label htmlFor="description">Description</Label>
-            <Textarea
+            <RichTextEditor
               id="description"
+              placeholder="Event description shown on the detail page"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
+              onChange={(html) => setFormData({ ...formData, description: html })}
+              className="mt-1"
+              minHeight="160px"
             />
+            <p className="text-xs text-muted-foreground mt-1.5">
+              Rich text formatting (bold, underline, lists, links) appears on the public event page.
+            </p>
           </div>
 
           <div>

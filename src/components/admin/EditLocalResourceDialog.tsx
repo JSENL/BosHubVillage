@@ -1,10 +1,11 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import { normalizeRichTextForStorage } from '@/lib/richText';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { LocalResource } from '@/types/localresources';
@@ -33,6 +34,34 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
     longitude: localResource.longitude?.toString() || '',
   });
 
+  useEffect(() => {
+    if (open) {
+      setFormData({
+        name: localResource.name,
+        category: localResource.category,
+        address: localResource.address,
+        neighborhood: localResource.neighborhood,
+        village: localResource.village || '',
+        description: localResource.description || '',
+        website_link: localResource.website_link || '',
+        latitude: localResource.latitude?.toString() || '',
+        longitude: localResource.longitude?.toString() || '',
+      });
+    }
+  }, [
+    open,
+    localResource.id,
+    localResource.name,
+    localResource.category,
+    localResource.address,
+    localResource.neighborhood,
+    localResource.village,
+    localResource.description,
+    localResource.website_link,
+    localResource.latitude,
+    localResource.longitude,
+  ]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -44,7 +73,7 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
         address: formData.address,
         neighborhood: formData.neighborhood,
         village: formData.village || null,
-        description: formData.description,
+        description: normalizeRichTextForStorage(formData.description),
         website_link: formData.website_link || null,
       };
 
@@ -123,12 +152,17 @@ export const EditLocalResourceDialog = ({ localResource, open, onOpenChange, onU
 
           <div>
             <Label htmlFor="description">Description</Label>
-            <Textarea
+            <RichTextEditor
               id="description"
+              placeholder="Description shown on the local resource detail page"
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
+              onChange={(html) => setFormData({ ...formData, description: html })}
+              className="mt-1"
+              minHeight="160px"
             />
+            <p className="text-xs text-muted-foreground mt-1.5">
+              Rich text formatting appears on the public local resource page.
+            </p>
           </div>
 
           <div>
