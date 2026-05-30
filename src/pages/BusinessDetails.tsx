@@ -18,6 +18,7 @@ import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
 import { ContentHeroImageEditor } from '@/components/content/ContentHeroImageEditor';
+import { BusinessStructuredData } from '@/components/seo/StructuredData';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -51,7 +52,10 @@ const BusinessDetails = () => {
   const metaDescription = business
     ? richTextPlainText(business.short_description || business.description || '').slice(0, 160)
     : undefined;
-  useDocumentHead(business?.title, metaDescription);
+  useDocumentHead(business?.title, metaDescription, {
+    path: businessId ? `/business/${businessId}` : undefined,
+    imageUrl: business?.image_url,
+  });
 
   if (isLoading) {
     return <DetailPageLoading />;
@@ -79,6 +83,18 @@ const BusinessDetails = () => {
 
   return (
     <>
+      <BusinessStructuredData
+        business={{
+          id: business.id,
+          title: business.title,
+          description: business.description,
+          address: business.address,
+          neighborhood: business.neighborhood,
+          business_type: business.business_type,
+          website_link: business.website_link,
+          image_url: business.image_url,
+        }}
+      />
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-4xl mx-auto px-4">

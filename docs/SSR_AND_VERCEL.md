@@ -2,6 +2,8 @@
 
 The app uses **build-time prerendering** so the home page (`/`) is full HTML when deployed. That helps Google (and other crawlers) see your content without running JavaScript.
 
+**AI / SEO assets:** `public/robots.txt`, `public/sitemap.xml`, and `public/llms.txt` use the canonical host `https://hubvillage.app`. Detail pages set JSON-LD (`Event`, `LocalBusiness`) and Open Graph tags client-side after load.
+
 ## How it works
 
 1. **Client build:** `vite build` produces `dist/` (index.html, assets).

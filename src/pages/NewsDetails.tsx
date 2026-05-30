@@ -41,7 +41,10 @@ const NewsDetails = () => {
   const metaDescription = news
     ? richTextPlainText(news.content || news.title || '').slice(0, 160)
     : undefined;
-  useDocumentHead(news?.title, metaDescription);
+  useDocumentHead(news?.title, metaDescription, {
+    path: newsId ? `/news/${newsId}` : undefined,
+    imageUrl: news?.image_url,
+  });
 
   if (isLoading) {
     return <DetailPageLoading />;

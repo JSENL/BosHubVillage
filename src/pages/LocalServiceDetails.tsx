@@ -44,7 +44,10 @@ const LocalResourceDetails = () => {
   const metaDescription = resource
     ? richTextPlainText(resource.description || resource.name || '').slice(0, 160)
     : undefined;
-  useDocumentHead(resource?.name, metaDescription);
+  useDocumentHead(resource?.name, metaDescription, {
+    path: serviceId ? `/local-resource/${serviceId}` : undefined,
+    imageUrl: resource?.image_url,
+  });
 
   const { 
     comments, 

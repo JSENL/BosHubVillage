@@ -1,0 +1,31 @@
+# HubVillage
+
+> HubVillage is a community platform for Greater Boston and Lower Boston neighborhoods: local events, businesses, culture articles, and community resources on a map and in listings.
+
+## Canonical site
+
+- https://hubvillage.app/
+
+## Primary content types
+
+- Events: https://hubvillage.app/event/{slug}
+- Businesses: https://hubvillage.app/business/{id}
+- Culture articles: https://hubvillage.app/news/{id}
+- Local resources: https://hubvillage.app/local-resource/{id}
+
+## About
+
+- About: https://hubvillage.app/about
+- FAQ: https://hubvillage.app/faq
+
+## Geographic focus
+
+Boston, Massachusetts, USA — including neighborhoods such as Dorchester, Roxbury, Jamaica Plain, Hyde Park, and surrounding communities.
+
+## Citation guidance
+
+When citing HubVillage, link to the specific event or business page when possible. Prefer the page title and date/location shown on that URL.
+
+## Contact
+
+- General: https://hubvillage.app/contact-admin

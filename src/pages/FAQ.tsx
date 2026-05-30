@@ -27,9 +27,17 @@ import {
   X,
   ChevronRight
 } from 'lucide-react';
+import { useDocumentHead } from '@/hooks/useDocumentHead';
 
 export const FAQ = () => {
   const { t } = useTranslation();
+
+  useDocumentHead(
+    'FAQ — HubVillage Boston community platform',
+    'Frequently asked questions about finding Boston-area events, businesses, culture, and local resources on HubVillage.',
+    { path: '/faq' }
+  );
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   

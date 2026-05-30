@@ -4,9 +4,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Calendar, Building2, Newspaper, Bird, Target, Globe, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useDocumentHead } from '@/hooks/useDocumentHead';
 
 export const About = () => {
   const { t } = useTranslation();
+
+  useDocumentHead(
+    'About HubVillage — Greater Boston community',
+    'HubVillage connects neighbors across Greater Boston and Lower Boston through local events, businesses, and community resources.',
+    { path: '/about' }
+  );
 
   const stats = [
     { icon: Users, value: '1,000+', label: t('about.stats.members', 'Community Members') },
@@ -62,10 +69,10 @@ export const About = () => {
         {/* Hero Section */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-foreground">
-            {t('about.title', 'About HubVillage')}
+            {t('about.title', 'About HubVillage — Greater Boston community')}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t('about.subtitle', 'Connecting communities, one neighborhood at a time. We believe strong communities start with informed, engaged neighbors.')}
+            {t('about.subtitle', 'HubVillage connects neighbors across Greater Boston and Lower Boston — Dorchester, Roxbury, Jamaica Plain, Hyde Park, and beyond — through local events, businesses, and community resources.')}
           </p>
         </div>
 

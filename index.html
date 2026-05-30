@@ -6,9 +6,9 @@
     <meta name="google-site-verification" content="google56e96eb7635f8bda" />
     
     <!-- SEO Meta Tags -->
-    <title>HubVillage - Connect with Your Community</title>
-    <meta name="description" content="HubVillage connects neighbors through local events, businesses, culture, and community resources. Discover what's happening in your neighborhood." />
-    <meta name="keywords" content="local events, community, businesses, services, neighborhood, discover, HubVillage" />
+    <title>HubVillage - Boston community events, businesses &amp; culture</title>
+    <meta name="description" content="HubVillage maps local events, businesses, culture articles, and community resources across Greater Boston and Lower Boston neighborhoods." />
+    <meta name="keywords" content="Boston events, Lower Boston, Dorchester, Roxbury, Jamaica Plain, local businesses, community resources, HubVillage" />
     <meta name="author" content="HubVillage" />
     
     <!-- Mobile Web App Capable -->
@@ -21,21 +21,21 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://hubvillage.app/" />
-    <meta property="og:title" content="Local Community Hub - Discover Events, Businesses & Services" />
-    <meta property="og:description" content="Discover local events, businesses, and community services in your area. Connect with your neighborhood and explore what's happening around you." />
-    <meta property="og:image" content="/lovable-uploads/cormorant.png" />
+    <meta property="og:title" content="HubVillage - Boston community events, businesses &amp; culture" />
+    <meta property="og:description" content="Discover local events, businesses, and community resources across Greater Boston and Lower Boston neighborhoods." />
+    <meta property="og:image" content="https://hubvillage.app/lovable-uploads/cormorant.png" />
     <meta property="og:image:alt" content="HubVillage logo" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:site_name" content="Local Community Hub" />
+    <meta property="og:site_name" content="HubVillage" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://your-domain.com/" />
-    <meta name="twitter:title" content="Local Community Hub - Discover Events, Businesses & Services" />
-    <meta name="twitter:description" content="Discover local events, businesses, and community services in your area. Connect with your neighborhood and explore what's happening around you." />
-    <meta name="twitter:image" content="/lovable-uploads/cormorant.png" />
+    <meta name="twitter:url" content="https://hubvillage.app/" />
+    <meta name="twitter:title" content="HubVillage - Boston community events, businesses &amp; culture" />
+    <meta name="twitter:description" content="Discover local events, businesses, and community resources across Greater Boston and Lower Boston neighborhoods." />
+    <meta name="twitter:image" content="https://hubvillage.app/lovable-uploads/cormorant.png" />
     
     <!-- Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,18 +55,31 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Local Community Hub",
-      "description": "Discover local events, businesses, and community services in your area",
-      "url": "https://hubvillage.app",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://hubvillage.app/search?q={search_term_string}"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "HubVillage",
+          "alternateName": "Hub Village",
+          "description": "Local events, businesses, culture, and community resources for Greater Boston and Lower Boston",
+          "url": "https://hubvillage.app",
+          "inLanguage": "en-US"
         },
-        "query-input": "required name=search_term_string"
-      }
+        {
+          "@type": "Organization",
+          "name": "HubVillage",
+          "url": "https://hubvillage.app",
+          "logo": "https://hubvillage.app/lovable-uploads/cormorant.png",
+          "description": "Community platform for Boston-area events, businesses, and neighborhood resources",
+          "areaServed": {
+            "@type": "City",
+            "name": "Boston",
+            "containedInPlace": {
+              "@type": "State",
+              "name": "Massachusetts"
+            }
+          }
+        }
+      ]
     }
     </script>
   </head>

@@ -24,6 +24,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { formatDateOnly, formatTimeRange } from '@/utils/common/dateUtils';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
+import { EventStructuredData } from '@/components/seo/StructuredData';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -181,7 +182,10 @@ const EventDetails = () => {
         getTranslatedText(event.description, event.translations?.description) ?? event.description
       ).slice(0, 160)
     : undefined;
-  useDocumentHead(displayTitle, displayDescription);
+  useDocumentHead(displayTitle, displayDescription, {
+    path: event ? eventDetailPath({ slug: event.slug, id: event.id }) : undefined,
+    imageUrl: event?.image_url,
+  });
 
   const isEventCreator = user && event && event.created_by === user.id;
   const canEditLinks = isEventCreator || isAdmin;
@@ -209,6 +213,21 @@ const EventDetails = () => {
 
   return (
     <>
+      <EventStructuredData
+        event={{
+          id: event.id,
+          slug: event.slug,
+          title: displayTitle || event.title,
+          description: event.description,
+          date: event.date,
+          start_time: event.start_time,
+          end_time: event.end_time,
+          location: event.location,
+          address: event.address,
+          price: event.price,
+          image_url: event.image_url,
+        }}
+      />
       <Navigation />
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
