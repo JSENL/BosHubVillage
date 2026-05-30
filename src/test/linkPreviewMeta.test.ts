@@ -14,7 +14,7 @@ describe("link preview metadata", () => {
     expect(source).toContain('content="HubVillage"');
     expect(source).toContain("Greater Boston");
     expect(source).not.toContain("your-domain.com");
-    expect(source).not.toContain("/search?q=");
+    expect(source).toContain('hubvillage.app/search?q={search_term_string}');
     expect(source).not.toContain("og-image.jpg");
   });
 });

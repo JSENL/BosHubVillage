@@ -6,6 +6,10 @@ The app uses **build-time prerendering** so the home page (`/`) is full HTML whe
 
 **Sitemap:** `https://hubvillage.app/sitemap.xml` is generated from Supabase on each request (`api/sitemap.js`, cached 1h) and refreshed at build time (`npm run generate-sitemap` → `dist/sitemap.xml`). Includes static pages plus all public events, businesses, culture articles, and local resources.
 
+**Search:** `/search?q=` uses Postgres `ilike` search with SSR HTML results. Submit sitemaps in Google/Bing — see `docs/SEARCH_ENGINE_SETUP.md`.
+
+**Home / FAQ / About:** SSR prefetches upcoming events on `/` and injects per-route `<head>` on `/faq` and `/about`. FAQ and About are eagerly loaded (no lazy spinner in SSR HTML).
+
 ## How it works
 
 1. **Client build:** `vite build` produces `dist/` (index.html, assets).

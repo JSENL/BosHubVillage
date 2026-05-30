@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { buildBusinessJsonLd, buildEventJsonLd } from '@/lib/seo/jsonLd';
+import { hasSsrJsonLd } from '@/lib/seo/ssrJsonLd';
 
 interface EventStructuredDataProps {
   event: {
@@ -46,6 +47,7 @@ function injectJsonLd(id: string, data: Record<string, unknown>) {
 
 export const EventStructuredData = ({ event }: EventStructuredDataProps) => {
   useEffect(() => {
+    if (hasSsrJsonLd()) return;
     return injectJsonLd(`event-structured-data-${event.id}`, buildEventJsonLd(event));
   }, [event]);
 
@@ -54,6 +56,7 @@ export const EventStructuredData = ({ event }: EventStructuredDataProps) => {
 
 export const BusinessStructuredData = ({ business }: BusinessStructuredDataProps) => {
   useEffect(() => {
+    if (hasSsrJsonLd()) return;
     return injectJsonLd(`business-structured-data-${business.id}`, buildBusinessJsonLd(business));
   }, [business]);
 

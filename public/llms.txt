@@ -13,6 +13,10 @@
 - Culture articles: https://hubvillage.app/news/{id}
 - Local resources: https://hubvillage.app/local-resource/{id}
 
+## Search
+
+- Search: https://hubvillage.app/search?q={keywords}
+
 ## About
 
 - About: https://hubvillage.app/about

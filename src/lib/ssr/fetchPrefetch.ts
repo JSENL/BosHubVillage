@@ -11,31 +11,28 @@ import {
 import type { Event } from '@/hooks/useEvents';
 import type { Business } from '@/types/business';
 import { normalizeEventRow, slugifyTitle, UUID_RE } from '@/lib/ssr/eventNormalize';
+import { searchPublicContent } from '@/lib/ssr/searchPublicContent';
+import type {
+  SsrHeadPayload,
+  SsrPrefetchPayload,
+  SsrPrefetchResult,
+  SsrUpcomingEventPreview,
+} from '@/lib/ssr/prefetchTypes';
+import { SSR_JSON_LD_SCRIPT_ID } from '@/lib/seo/ssrJsonLd';
 
-export type SsrPrefetchPayload =
-  | { type: 'event'; data: Event }
-  | { type: 'business'; data: Business }
-  | { type: 'news'; data: Record<string, unknown> }
-  | { type: 'local_resource'; data: Record<string, unknown> };
+export type {
+  SsrHeadPayload,
+  SsrPrefetchPayload,
+  SsrPrefetchResult,
+  SsrUpcomingEventPreview,
+} from '@/lib/ssr/prefetchTypes';
 
-export interface SsrHeadPayload {
-  title: string;
-  description: string;
-  canonicalPath: string;
-  imageUrl?: string | null;
-  jsonLd?: Record<string, unknown>;
-}
-
-export interface SsrPrefetchResult {
-  payload: SsrPrefetchPayload | null;
-  head: SsrHeadPayload | null;
-}
-
-function parsePathname(url: string): string {
+function parseRequestUrl(url: string) {
   try {
-    return new URL(url, 'http://ssr.local').pathname;
+    return new URL(url, 'http://ssr.local');
   } catch {
-    return url.split('?')[0] || '/';
+    const [path, search = ''] = url.split('?');
+    return new URL(`${path || '/'}?${search}`, 'http://ssr.local');
   }
 }
 
@@ -99,8 +96,89 @@ function buildHead(
   };
 }
 
+async function fetchUpcomingEvents(limit = 12): Promise<SsrUpcomingEventPreview[]> {
+  const supabase = createServerSupabase();
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await supabase
+    .from('events')
+    .select('id, slug, title, date, location, description')
+    .eq('is_private', false)
+    .gte('date', today)
+    .order('date', { ascending: true })
+    .limit(limit);
+
+  return (data ?? []).map((row) => ({
+    id: String(row.id),
+    slug: String(row.slug ?? row.id),
+    title: String(row.title ?? ''),
+    date: String(row.date ?? ''),
+    location: String(row.location ?? ''),
+    snippet: richTextPlainText(String(row.description ?? '')).slice(0, 120),
+  }));
+}
+
 export async function fetchPrefetchForUrl(url: string): Promise<SsrPrefetchResult> {
-  const pathname = parsePathname(url);
+  const parsed = parseRequestUrl(url);
+  const pathname = parsed.pathname;
+
+  if (pathname === '/' || pathname === '') {
+    const upcomingEvents = await fetchUpcomingEvents();
+    return {
+      payload: { type: 'home', data: { upcomingEvents } },
+      head: buildHead(
+        'HubVillage - Boston community events, businesses & culture',
+        'Discover upcoming Boston-area events, local businesses, culture, and community resources across Greater Boston and Lower Boston.',
+        '/'
+      ),
+    };
+  }
+
+  if (pathname === '/faq') {
+    return {
+      payload: null,
+      head: buildHead(
+        'FAQ — HubVillage Boston community platform',
+        'Frequently asked questions about finding Boston-area events, businesses, culture, and local resources on HubVillage.',
+        '/faq'
+      ),
+    };
+  }
+
+  if (pathname === '/about') {
+    return {
+      payload: null,
+      head: buildHead(
+        'About HubVillage — Greater Boston community',
+        'HubVillage connects neighbors across Greater Boston and Lower Boston through local events, businesses, and community resources.',
+        '/about'
+      ),
+    };
+  }
+
+  if (pathname === '/search') {
+    const q = parsed.searchParams.get('q')?.trim() ?? '';
+    const canonicalPath = q ? `/search?q=${encodeURIComponent(q)}` : '/search';
+    if (!q) {
+      return {
+        payload: { type: 'search', data: { query: '', results: [] } },
+        head: buildHead(
+          'Search Boston events & community | HubVillage',
+          'Search HubVillage for Boston-area events, businesses, culture articles, and community resources.',
+          '/search'
+        ),
+      };
+    }
+    const supabase = createServerSupabase();
+    const results = await searchPublicContent(supabase, q);
+    return {
+      payload: { type: 'search', data: { query: q, results } },
+      head: buildHead(
+        `Search: ${q}`,
+        `Search results for "${q}" on HubVillage — Boston events, businesses, culture, and local resources.`,
+        canonicalPath
+      ),
+    };
+  }
 
   const eventMatch = pathname.match(/^\/event\/([^/]+)\/?$/);
   if (eventMatch) {
@@ -220,7 +298,7 @@ export function buildSsrHeadHtml(head: SsrHeadPayload | null): string {
   const image = head.imageUrl ? absoluteUrl(head.imageUrl) : absoluteUrl('/lovable-uploads/cormorant.png');
 
   const jsonLdScript = head.jsonLd
-    ? `<script type="application/ld+json">${JSON.stringify(head.jsonLd).replace(/</g, '\\u003c')}</script>`
+    ? `<script id="${SSR_JSON_LD_SCRIPT_ID}" type="application/ld+json">${JSON.stringify(head.jsonLd).replace(/</g, '\\u003c')}</script>`
     : '';
 
   return [

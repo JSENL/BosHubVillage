@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { SsrPrefetchPayload } from '@/lib/ssr/fetchPrefetch';
+import type { SsrPrefetchPayload } from '@/lib/ssr/prefetchTypes';
 
 const SsrPrefetchContext = createContext<SsrPrefetchPayload | null>(null);
 

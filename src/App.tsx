@@ -34,10 +34,11 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const EditProfile = lazy(() => import("./pages/EditProfile").then(m => ({ default: m.EditProfile })));
 const MapboxTest = lazy(() => import("./components/MapboxTest").then(m => ({ default: m.MapboxTest })));
-const FAQ = lazy(() => import("./pages/FAQ").then(m => ({ default: m.FAQ })));
+import { FAQ } from "./pages/FAQ";
+import About from "./pages/About";
+import SearchPage from "./pages/SearchPage";
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const About = lazy(() => import("./pages/About"));
 
 const RouteFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background" role="status" aria-label="Loading page">
@@ -162,6 +163,7 @@ const App = () => (
                   <Route path="/user/:userId" element={<UserProfile />} />
                   <Route path="/edit-profile" element={<EditProfile />} />
                   <Route path="/mapbox-test" element={<MapboxTest />} />
+                  <Route path="/search" element={<SearchPage />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/terms" element={<TermsOfService />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />

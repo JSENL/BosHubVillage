@@ -24,6 +24,7 @@ import { getQuickBrowseItems } from '@/utils/quickBrowseUtils';
 import { useQuickBrowse, getQuickBrowseIds } from '@/hooks/useQuickBrowse';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ErrorState } from '@/components/common/ErrorState';
+import { SeoUpcomingEventsSection } from '@/components/seo/SeoUpcomingEventsSection';
 
 const MainContent = () => {
   const location = useLocation();
@@ -146,6 +147,8 @@ const MainContent = () => {
                     </button>
                   </div>
                 </div>
+
+                <SeoUpcomingEventsSection />
 
                 {/* Featured Section - shows sponsored items */}
                 <FeaturedSection items={allItems} />
