@@ -2,7 +2,9 @@
 
 The app uses **build-time prerendering** so the home page (`/`) is full HTML when deployed. That helps Google (and other crawlers) see your content without running JavaScript.
 
-**AI / SEO assets:** `public/robots.txt`, `public/sitemap.xml`, and `public/llms.txt` use the canonical host `https://hubvillage.app`. Detail pages set JSON-LD (`Event`, `LocalBusiness`) and Open Graph tags client-side after load.
+**AI / SEO assets:** `public/robots.txt` and `public/llms.txt` use the canonical host `https://hubvillage.app`.
+
+**Sitemap:** `https://hubvillage.app/sitemap.xml` is generated from Supabase on each request (`api/sitemap.js`, cached 1h) and refreshed at build time (`npm run generate-sitemap` → `dist/sitemap.xml`). Includes static pages plus all public events, businesses, culture articles, and local resources.
 
 ## How it works
 
