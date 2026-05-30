@@ -148,10 +148,10 @@ const MainContent = () => {
                   </div>
                 </div>
 
-                <SeoUpcomingEventsSection />
-
                 {/* Featured Section - shows sponsored items */}
                 <FeaturedSection items={allItems} />
+
+                <SeoUpcomingEventsSection />
 
                 {/* Mobile Category Chips */}
                 <MobileCategoryChips
