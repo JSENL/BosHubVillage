@@ -30,6 +30,10 @@ vi.mock("@/hooks/useDocumentHead", () => ({
   useDocumentHead: () => undefined,
 }));
 
+vi.mock("@/contexts/SsrPrefetchContext", () => ({
+  useSsrPrefetch: () => null,
+}));
+
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string, arg?: string | Record<string, unknown>) =>

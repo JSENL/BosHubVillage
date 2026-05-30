@@ -26,12 +26,20 @@ Deployed on Vercel, the site is still **static** (no serverless SSR). Only the h
 
 If you see real headings, links, and text in the source of `/`, Google can index that content.
 
-## Other routes
+## Detail pages (events, businesses, news, local resources)
 
-Only `/` is prerendered. Other routes (e.g. `/about`, `/events`) are still client-rendered. To make more routes indexable you can:
+On Vercel, `api/ssr.js` runs **`render(url)`** per request:
 
-- Add more URLs to the prerender script (e.g. render `/about` and write to `dist/about/index.html`), or
-- Move to full SSR (e.g. Vercel serverless that runs the SSR render per request) or a framework like Next.js.
+1. **Prefetch** — loads the record from Supabase by URL (`fetchPrefetchForUrl`).
+2. **Head** — injects `<title>`, meta description, Open Graph, Twitter, canonical, and JSON-LD into `<!--ssr-head-start-->` … `<!--ssr-head-end-->`.
+3. **Body** — React SSR renders the detail page with `SsrPrefetchProvider` so the first HTML includes the event/business title and description (not only a loading spinner).
+4. **Hydration** — `window.__SSR_PREFETCH__` seeds the client so React Query does not refetch immediately.
+
+Home (`/`) is still **build-time prerendered** via `scripts/prerender.mjs` (no Supabase prefetch on build).
+
+## Other static routes
+
+Routes like `/about` and `/faq` use the default head from `index.html` plus client `useDocumentHead` after navigation.
 
 ## Build issues
 

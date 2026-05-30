@@ -18,10 +18,14 @@ import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
 import { ContentHeroImageEditor } from '@/components/content/ContentHeroImageEditor';
+import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
 
 const LocalResourceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
+  const ssrPrefetch = useSsrPrefetch();
+  const ssrResource =
+    ssrPrefetch?.type === 'local_resource' ? ssrPrefetch.data : null;
   
   // For local resources, only admins can edit links (no owner concept)
   const canEditLinks = isAdmin;
@@ -38,16 +42,25 @@ const LocalResourceDetails = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!serviceId
+    enabled: !!serviceId,
+    initialData: ssrResource ?? undefined,
   });
 
-  const metaDescription = resource
-    ? richTextPlainText(resource.description || resource.name || '').slice(0, 160)
+  const resolvedResource = resource ?? ssrResource;
+
+  const metaDescription = resolvedResource
+    ? richTextPlainText(
+        String(resolvedResource.description || resolvedResource.name || '')
+      ).slice(0, 160)
     : undefined;
-  useDocumentHead(resource?.name, metaDescription, {
-    path: serviceId ? `/local-resource/${serviceId}` : undefined,
-    imageUrl: resource?.image_url,
-  });
+  useDocumentHead(
+    resolvedResource ? String(resolvedResource.name) : undefined,
+    metaDescription,
+    {
+      path: serviceId ? `/local-resource/${serviceId}` : undefined,
+      imageUrl: (resolvedResource?.image_url as string | null) ?? null,
+    }
+  );
 
   const { 
     comments, 
@@ -55,11 +68,11 @@ const LocalResourceDetails = () => {
     addComment 
   } = useLocalResourceComments(serviceId as string);
 
-  if (isLoading) {
+  if (isLoading && !resolvedResource) {
     return <DetailPageLoading />;
   }
 
-  if (!resource) {
+  if (!resolvedResource) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
         <Navigation />
@@ -90,9 +103,9 @@ const LocalResourceDetails = () => {
 
         <ContentHeroImageEditor
           table="local_resources"
-          recordId={resource.id}
-          title={resource.name}
-          imageUrl={resource.image_url}
+          recordId={String(resolvedResource.id)}
+          title={String(resolvedResource.name)}
+          imageUrl={(resolvedResource.image_url as string | null) ?? null}
           canEdit={!!isAdmin}
           invalidateQueryKeys={[['local-resource-details', serviceId], ['local-resources']]}
           emptyStateHint="Admins can upload a hero image for this local resource."
@@ -103,17 +116,17 @@ const LocalResourceDetails = () => {
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <CardTitle className="text-2xl">{resource.name}</CardTitle>
+                  <CardTitle className="text-2xl">{String(resolvedResource.name)}</CardTitle>
                   <BookmarkButton 
                     itemType="local_service" 
-                    itemId={resource.id} 
+                    itemId={String(resolvedResource.id)} 
                     size="lg"
                     showText={true}
                   />
                 </div>
                 <Badge variant="secondary">
                   <Building className="h-3 w-3 mr-1" />
-                  {resource.category}
+                  {String(resolvedResource.category)}
                 </Badge>
               </div>
             </div>
@@ -122,20 +135,20 @@ const LocalResourceDetails = () => {
           <CardContent className="space-y-6">
             <div className="flex items-center text-gray-600">
               <MapPin className="h-4 w-4 mr-2" />
-              <span>{resource.address}</span>
+              <span>{String(resolvedResource.address)}</span>
             </div>
 
-            {resource.description && (
+            {resolvedResource.description && (
               <div>
                 <h3 className="text-lg font-semibold mb-2">About</h3>
-                <RichTextContent html={resource.description} />
+                <RichTextContent html={String(resolvedResource.description)} />
               </div>
             )}
 
-            {resource.website_link && (
+            {resolvedResource.website_link && (
               <div>
                 <a
-                  href={resource.website_link.startsWith('http') ? resource.website_link : `https://${resource.website_link}`}
+                  href={String(resolvedResource.website_link).startsWith('http') ? String(resolvedResource.website_link) : `https://${resolvedResource.website_link}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"

@@ -4,16 +4,23 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import './i18n/config';
+import {
+  readSsrPrefetchScript,
+  SsrPrefetchProvider,
+} from '@/contexts/SsrPrefetchContext';
 
 const container = document.getElementById('root')!;
+const ssrPrefetch = readSsrPrefetchScript();
+
 const app = (
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <SsrPrefetchProvider value={ssrPrefetch}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </SsrPrefetchProvider>
 );
 
-// Hydrate when server-rendered content exists (first child is not a comment), otherwise render (SPA)
-const hasSSRContent = container.firstChild && container.firstChild.nodeType !== 8; // 8 = COMMENT_NODE
+const hasSSRContent = container.firstChild && container.firstChild.nodeType !== 8;
 if (hasSSRContent) {
   hydrateRoot(container, app);
 } else {

@@ -26,9 +26,9 @@ async function createServer() {
       template = await vite.transformIndexHtml(url, template);
 
       const { render } = await vite.ssrLoadModule('/src/entry-server.tsx');
-      const appHtml = render(url);
-
-      const html = template.replace('<!--ssr-outlet-->', appHtml);
+      const { applySsrTemplate } = await import('../scripts/applySsrTemplate.mjs');
+      const result = await render(url);
+      const html = applySsrTemplate(template, result);
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (e) {
       vite.ssrFixStacktrace(e);

@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { applySsrTemplate } from "../scripts/applySsrTemplate.mjs";
 
 let templateCache = null;
 let renderModuleCache = null;
@@ -26,15 +27,13 @@ export default async function handler(req, res) {
     const { render } = await getRenderModule();
 
     const url = req.url || "/";
-    const appHtml = render(url);
-    const html = template.replace("<!--ssr-outlet-->", appHtml);
+    const result = await render(url);
+    const html = applySsrTemplate(template, result);
 
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.status(200).send(html);
   } catch (error) {
     console.error("SSR handler error:", error);
-    res
-      .status(500)
-      .send("Server error while rendering page.");
+    res.status(500).send("Server error while rendering page.");
   }
 }

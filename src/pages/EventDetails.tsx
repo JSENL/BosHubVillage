@@ -25,59 +25,20 @@ import { formatDateOnly, formatTimeRange } from '@/utils/common/dateUtils';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
 import { EventStructuredData } from '@/components/seo/StructuredData';
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-const slugifyTitle = (raw: string): string =>
-  raw
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 120);
-
-const normalizeEventRow = (row: Record<string, any>, slugFallback?: string): Event => ({
-  id: String(row.id),
-  title: String(row.title ?? ''),
-  description: String(row.description ?? ''),
-  category: String(row.category ?? ''),
-  event_type: String(row.event_type ?? 'event'),
-  date: String(row.date ?? ''),
-  start_time: String(row.start_time ?? '00:00:00'),
-  end_time: String(row.end_time ?? '00:00:00'),
-  location: String(row.location ?? ''),
-  address: row.address ? String(row.address) : '',
-  website_link: row.website_link ? String(row.website_link) : undefined,
-  price: Number(row.price ?? 0),
-  max_attendees: row.max_attendees ?? null,
-  is_recurring: Boolean(row.is_recurring ?? false),
-  recurring_pattern: row.recurring_pattern ?? null,
-  registration_required: Boolean(row.registration_required ?? false),
-  created_by: String(row.created_by ?? ''),
-  latitude: row.latitude != null ? Number(row.latitude) : null,
-  longitude: row.longitude != null ? Number(row.longitude) : null,
-  neighborhoods: row.neighborhoods ?? null,
-  villages: row.villages ?? null,
-  attendees_count: typeof row.attendees_count === 'number' ? row.attendees_count : 0,
-  is_sponsored: Boolean(row.is_sponsored ?? false),
-  contact_type: row.contact_type ?? null,
-  contact_value: row.contact_value ?? null,
-  image_url: row.image_url ?? null,
-  cover_zoom: Number(row.cover_zoom ?? 1),
-  cover_focus_x: Number(row.cover_focus_x ?? 50),
-  cover_focus_y: Number(row.cover_focus_y ?? 50),
-  slug: String(row.slug ?? slugFallback ?? row.id),
-});
+import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
+import { normalizeEventRow, slugifyTitle, UUID_RE } from '@/lib/ssr/eventNormalize';
 
 const EventDetails = () => {
   const { eventSlug } = useParams<{ eventSlug: string }>();
   const navigate = useNavigate();
-  const { events, loading } = useEvents();
+  const ssrPrefetch = useSsrPrefetch();
+  const ssrEvent = ssrPrefetch?.type === 'event' ? ssrPrefetch.data : null;
+  const { events, loading: eventsLoading } = useEvents();
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const { t } = useTranslation();
   const { user, isAdmin } = useAuth();
   const { getTranslatedText } = useTranslatedField();
-  const [resolvedEvent, setResolvedEvent] = useState<Event | null>(null);
+  const [resolvedEvent, setResolvedEvent] = useState<Event | null>(ssrEvent);
   const [resolvingDirect, setResolvingDirect] = useState(false);
 
   const param = eventSlug ?? '';
@@ -90,7 +51,8 @@ const EventDetails = () => {
   );
 
   useEffect(() => {
-    if (!param || loading) return;
+    if (!param || eventsLoading) return;
+    if (ssrEvent) return;
     if (listEvent) {
       setResolvedEvent(listEvent);
       return;
@@ -166,7 +128,7 @@ const EventDetails = () => {
     return () => {
       cancelled = true;
     };
-  }, [listEvent, loading, param]);
+  }, [listEvent, eventsLoading, param, ssrEvent]);
 
   const event = listEvent ?? resolvedEvent ?? undefined;
 
@@ -190,7 +152,10 @@ const EventDetails = () => {
   const isEventCreator = user && event && event.created_by === user.id;
   const canEditLinks = isEventCreator || isAdmin;
 
-  if (loading || resolvingDirect) {
+  const waitingForEvent =
+    !event && ((eventsLoading && !ssrEvent) || resolvingDirect);
+
+  if (waitingForEvent) {
     return <DetailPageLoading />;
   }
 

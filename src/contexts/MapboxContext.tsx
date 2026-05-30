@@ -10,6 +10,7 @@ interface CachedToken {
 }
 
 const getCachedToken = (): string | null => {
+  if (typeof window === 'undefined') return null;
   try {
     const cached = localStorage.getItem(MAPBOX_TOKEN_CACHE_KEY);
     if (!cached) return null;
@@ -25,6 +26,7 @@ const getCachedToken = (): string | null => {
 };
 
 const setCachedToken = (token: string) => {
+  if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(MAPBOX_TOKEN_CACHE_KEY, JSON.stringify({ token, timestamp: Date.now() }));
   } catch {
@@ -42,7 +44,9 @@ const MapboxContext = createContext<MapboxContextType | undefined>(undefined);
 
 export const MapboxProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mapboxToken, setMapboxToken] = useState<string | null>(() => getCachedToken());
-  const [isLoadingApiKey, setIsLoadingApiKey] = useState(() => !getCachedToken());
+  const [isLoadingApiKey, setIsLoadingApiKey] = useState(
+    () => typeof window !== 'undefined' && !getCachedToken()
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

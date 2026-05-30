@@ -19,10 +19,13 @@ import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
 import { ContentHeroImageEditor } from '@/components/content/ContentHeroImageEditor';
 import { BusinessStructuredData } from '@/components/seo/StructuredData';
+import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
   const navigate = useNavigate();
+  const ssrPrefetch = useSsrPrefetch();
+  const ssrBusiness = ssrPrefetch?.type === 'business' ? ssrPrefetch.data : null;
   const { user, isAdmin } = useAuth();
   const { ownedBusinesses } = useBusinessOwnership();
   
@@ -47,21 +50,26 @@ const BusinessDetails = () => {
       return data as Business;
     },
     enabled: !!businessId,
+    initialData: ssrBusiness ?? undefined,
   });
 
-  const metaDescription = business
-    ? richTextPlainText(business.short_description || business.description || '').slice(0, 160)
+  const resolvedBusiness = business ?? ssrBusiness;
+
+  const metaDescription = resolvedBusiness
+    ? richTextPlainText(
+        resolvedBusiness.short_description || resolvedBusiness.description || ''
+      ).slice(0, 160)
     : undefined;
-  useDocumentHead(business?.title, metaDescription, {
+  useDocumentHead(resolvedBusiness?.title, metaDescription, {
     path: businessId ? `/business/${businessId}` : undefined,
-    imageUrl: business?.image_url,
+    imageUrl: resolvedBusiness?.image_url,
   });
 
-  if (isLoading) {
+  if (isLoading && !resolvedBusiness) {
     return <DetailPageLoading />;
   }
 
-  if (error || !business) {
+  if (error || !resolvedBusiness) {
     return (
       <>
         <Navigation />
@@ -85,14 +93,14 @@ const BusinessDetails = () => {
     <>
       <BusinessStructuredData
         business={{
-          id: business.id,
-          title: business.title,
-          description: business.description,
-          address: business.address,
-          neighborhood: business.neighborhood,
-          business_type: business.business_type,
-          website_link: business.website_link,
-          image_url: business.image_url,
+          id: resolvedBusiness.id,
+          title: resolvedBusiness.title,
+          description: resolvedBusiness.description,
+          address: resolvedBusiness.address,
+          neighborhood: resolvedBusiness.neighborhood,
+          business_type: resolvedBusiness.business_type,
+          website_link: resolvedBusiness.website_link,
+          image_url: resolvedBusiness.image_url,
         }}
       />
       <Navigation />
@@ -111,9 +119,9 @@ const BusinessDetails = () => {
 
           <ContentHeroImageEditor
             table="business"
-            recordId={business.id}
-            title={business.title}
-            imageUrl={business.image_url}
+            recordId={resolvedBusiness.id}
+            title={resolvedBusiness.title}
+            imageUrl={resolvedBusiness.image_url}
             canEdit={canEditCover}
             invalidateQueryKeys={[['business', businessId]]}
             emptyStateHint="Business owners and admins can upload a hero image for this listing."
@@ -124,10 +132,10 @@ const BusinessDetails = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <CardTitle className="text-3xl">{business.title}</CardTitle>
+                    <CardTitle className="text-3xl">{resolvedBusiness.title}</CardTitle>
                     <BookmarkButton 
                       itemType="business" 
-                      itemId={business.id} 
+                      itemId={resolvedBusiness.id} 
                       size="lg"
                       showText={true}
                     />
@@ -135,11 +143,11 @@ const BusinessDetails = () => {
                   <div className="flex items-center space-x-4 mb-4">
                     <Badge variant="secondary">
                       <Building className="h-3 w-3 mr-1" />
-                      {business.business_type}
+                      {resolvedBusiness.business_type}
                     </Badge>
                     <div className="flex items-center text-gray-600">
                       <MapPin className="h-4 w-4 mr-1" />
-                      {business.neighborhood}
+                      {resolvedBusiness.neighborhood}
                     </div>
                   </div>
                 </div>
@@ -147,20 +155,20 @@ const BusinessDetails = () => {
               
               <div className="flex items-center text-gray-600 mb-4">
                 <MapPin className="h-4 w-4 mr-2" />
-                <span>{business.address}</span>
+                <span>{resolvedBusiness.address}</span>
               </div>
 
-              {business.short_description && (
+              {resolvedBusiness.short_description && (
                 <p className="text-lg text-gray-700 font-medium">
-                  {business.short_description}
+                  {resolvedBusiness.short_description}
                 </p>
               )}
 
               {/* Website Link */}
-              {business.website_link && (
+              {resolvedBusiness.website_link && (
                 <div className="mb-4">
                   <a
-                    href={business.website_link.startsWith('http') ? business.website_link : `https://${business.website_link}`}
+                    href={resolvedBusiness.website_link.startsWith('http') ? resolvedBusiness.website_link : `https://${resolvedBusiness.website_link}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-4 py-2 bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
@@ -175,13 +183,13 @@ const BusinessDetails = () => {
             <CardContent className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-2">About</h3>
-                <RichTextContent html={business.description} />
+                <RichTextContent html={resolvedBusiness.description} />
               </div>
 
 
               <div className="flex items-center text-sm text-gray-500">
                 <Clock className="h-4 w-4 mr-1" />
-                <span>Added on {new Date(business.created_at).toLocaleDateString('en-US')}</span>
+                <span>Added on {new Date(resolvedBusiness.created_at).toLocaleDateString('en-US')}</span>
               </div>
 
               <div className="mt-4">

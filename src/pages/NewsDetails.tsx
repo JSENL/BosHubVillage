@@ -17,11 +17,15 @@ import { useDocumentHead } from '@/hooks/useDocumentHead';
 import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
+import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
   const { user, isAdmin } = useAuth();
   const { t } = useTranslation();
+  const ssrPrefetch = useSsrPrefetch();
+  const ssrNews =
+    ssrPrefetch?.type === 'news' ? (ssrPrefetch.data as News) : null;
 
   const { data: news, isLoading, error } = useQuery({
     queryKey: ['news', newsId],
@@ -35,22 +39,25 @@ const NewsDetails = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !!newsId
+    enabled: !!newsId,
+    initialData: ssrNews ?? undefined,
   });
 
-  const metaDescription = news
-    ? richTextPlainText(news.content || news.title || '').slice(0, 160)
+  const resolvedNews = news ?? ssrNews;
+
+  const metaDescription = resolvedNews
+    ? richTextPlainText(resolvedNews.content || resolvedNews.title || '').slice(0, 160)
     : undefined;
-  useDocumentHead(news?.title, metaDescription, {
+  useDocumentHead(resolvedNews?.title, metaDescription, {
     path: newsId ? `/news/${newsId}` : undefined,
-    imageUrl: news?.image_url,
+    imageUrl: resolvedNews?.image_url,
   });
 
-  if (isLoading) {
+  if (isLoading && !resolvedNews) {
     return <DetailPageLoading />;
   }
 
-  if (error || !news) {
+  if (error || !resolvedNews) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
@@ -90,10 +97,10 @@ const NewsDetails = () => {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between mb-4">
-              <CardTitle className="text-3xl">{news.title}</CardTitle>
+              <CardTitle className="text-3xl">{resolvedNews.title}</CardTitle>
               <BookmarkButton 
                 itemType="news" 
-                itemId={news.id} 
+                itemId={resolvedNews.id} 
                 size="lg"
                 showText={true}
               />
@@ -102,41 +109,41 @@ const NewsDetails = () => {
             <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
-                <span>{new Date(news.date_posted).toLocaleDateString('en-US')}</span>
+                <span>{new Date(resolvedNews.date_posted).toLocaleDateString('en-US')}</span>
               </div>
               
               <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-1" />
-                <span>{news.location}</span>
+                <span>{resolvedNews.location}</span>
               </div>
               
               <div className="flex items-center">
                 <ExternalLink className="h-4 w-4 mr-1" />
-                <span>{news.source}</span>
+                <span>{resolvedNews.source}</span>
               </div>
             </div>
           </CardHeader>
           
           <CardContent>
-            {news.image_url && (
+            {resolvedNews.image_url && (
               <div className="mb-6">
                 <img 
-                  src={news.image_url} 
-                  alt={news.title} 
+                  src={resolvedNews.image_url} 
+                  alt={resolvedNews.title} 
                   className="w-full max-h-96 object-cover rounded-lg"
                 />
               </div>
             )}
-            <RichTextContent html={news.content} className="leading-relaxed" />
+            <RichTextContent html={resolvedNews.content} className="leading-relaxed" />
           </CardContent>
         </Card>
 
         <div className="mt-8">
-          <LinkedContentSection newsId={news.id} />
+          <LinkedContentSection newsId={resolvedNews.id} />
         </div>
 
         <div className="mt-8">
-          <NewsComments newsId={news.id} />
+          <NewsComments newsId={resolvedNews.id} />
         </div>
       </div>
     </div>
