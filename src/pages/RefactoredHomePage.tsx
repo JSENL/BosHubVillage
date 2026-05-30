@@ -151,8 +151,6 @@ const MainContent = () => {
                 {/* Featured Section - shows sponsored items */}
                 <FeaturedSection items={allItems} />
 
-                <SeoUpcomingEventsSection />
-
                 {/* Mobile Category Chips */}
                 <MobileCategoryChips
                   selectedType={filters.selectedType}
@@ -298,6 +296,7 @@ export const RefactoredHomePage = () => {
       <AppLayout>
         <MainContent />
       </AppLayout>
+      <SeoUpcomingEventsSection />
       <Footer />
     </AppStateProvider>
   );
