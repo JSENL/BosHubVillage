@@ -12,7 +12,8 @@ import {
   Clock, 
   Calendar, 
   MapPin,
-  Building2
+  Building2,
+  Mail
 } from 'lucide-react';
 import { richTextPlainText } from '@/lib/richText';
 
@@ -87,6 +88,19 @@ export const NewsSubmissionCard = ({ submission, onUpdate }: NewsSubmissionCardP
           )}
           
           <p className="text-xs text-muted-foreground">{t('cards.source')}: {submission.source}</p>
+
+          {submission.submitter_email && (
+            <div className="flex items-center text-xs text-muted-foreground">
+              <Mail className="h-3 w-3 mr-1 flex-shrink-0" />
+              <span className="font-medium">{t('admin.submitterEmail', 'Submitted by')}:</span>
+              <a
+                href={`mailto:${submission.submitter_email}`}
+                className="ml-1 text-purple-700 hover:underline break-all"
+              >
+                {submission.submitter_email}
+              </a>
+            </div>
+          )}
           
           {submission.latitude && submission.longitude && (
             <p className="text-xs text-green-600">

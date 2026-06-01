@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNewsCategories } from '@/hooks/useCategories';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,6 +33,7 @@ const SubmitNews = () => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     title: '',
+    submitter_email: '',
     content: '',
     location: '',
     address: '',
@@ -40,6 +41,12 @@ const SubmitNews = () => {
     source: '',
     date_posted: new Date().toISOString().split('T')[0] // Today's date
   });
+
+  useEffect(() => {
+    if (user?.email && !formData.submitter_email) {
+      setFormData((prev) => ({ ...prev, submitter_email: user.email! }));
+    }
+  }, [user?.email]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -137,6 +144,7 @@ const SubmitNews = () => {
           latitude: latitude,
           longitude: longitude,
           submitted_by: user.id,
+          submitter_email: validatedData.submitter_email,
           status: 'pending'
         })
         .select()
@@ -185,6 +193,7 @@ const SubmitNews = () => {
   const handleAddAnother = () => {
     setFormData({
       title: '',
+      submitter_email: user?.email ?? '',
       content: '',
       location: '',
       address: '',
@@ -273,6 +282,27 @@ const SubmitNews = () => {
                     required
                     className={validationErrors.includes('Article Title') ? 'border-red-300 bg-red-50' : ''}
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="submitter_email">
+                    {t('pages.submitterEmail', 'Your contact email')} *
+                  </Label>
+                  <Input
+                    id="submitter_email"
+                    type="email"
+                    autoComplete="email"
+                    value={formData.submitter_email}
+                    onChange={(e) => handleInputChange('submitter_email', e.target.value)}
+                    placeholder={t('pages.submitterEmailPlaceholder', 'you@example.com')}
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {t(
+                      'pages.submitterEmailHelp',
+                      'Admins use this email if they need to follow up about your submission.'
+                    )}
+                  </p>
                 </div>
 
                 <div>

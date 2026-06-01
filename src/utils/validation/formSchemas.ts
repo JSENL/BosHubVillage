@@ -48,6 +48,12 @@ export type BusinessMessageFormData = z.infer<typeof businessMessageSchema>;
 // News Submission validation schema
 export const newsSubmissionSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(300, 'Title must be less than 300 characters'),
+  submitter_email: z
+    .string()
+    .trim()
+    .min(1, 'Contact email is required')
+    .email('Invalid email address')
+    .max(255, 'Email must be less than 255 characters'),
   content: richTextRequired('Content', 50000),
   location: z.string().trim().min(1, 'Location is required').max(200, 'Location must be less than 200 characters'),
   address: z.string().trim().max(300, 'Address must be less than 300 characters').optional().or(z.literal('')),

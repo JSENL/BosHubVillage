@@ -35,6 +35,7 @@ export interface NewsSubmission {
   link?: string;
   status: 'pending' | 'approved' | 'rejected';
   submitted_by: string;
+  submitter_email: string;
   reviewed_by?: string;
   reviewed_at?: string;
   admin_notes?: string;

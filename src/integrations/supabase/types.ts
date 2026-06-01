@@ -1572,6 +1572,7 @@ export type Database = {
           source: string
           status: string
           submitted_by: string
+          submitter_email: string
           title: string
           updated_at: string
           villages: string[] | null
@@ -1594,6 +1595,7 @@ export type Database = {
           source: string
           status?: string
           submitted_by: string
+          submitter_email: string
           title: string
           updated_at?: string
           villages?: string[] | null
@@ -1616,6 +1618,7 @@ export type Database = {
           source?: string
           status?: string
           submitted_by?: string
+          submitter_email?: string
           title?: string
           updated_at?: string
           villages?: string[] | null
