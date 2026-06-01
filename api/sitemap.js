@@ -1,13 +1,14 @@
 import {
   buildSitemapXml,
   fetchSitemapEntries,
-  SITE_URL,
   STATIC_PAGES,
 } from '../lib/sitemap.mjs';
+import { resolveSiteUrl } from '../lib/siteUrl.mjs';
 
 export default async function handler(req, res) {
+  const siteUrl = resolveSiteUrl();
   try {
-    const urls = await fetchSitemapEntries();
+    const urls = await fetchSitemapEntries(undefined, siteUrl);
     const xml = buildSitemapXml(urls);
 
     res.setHeader('Content-Type', 'application/xml; charset=utf-8');
@@ -18,7 +19,7 @@ export default async function handler(req, res) {
 
     const fallback = buildSitemapXml(
       STATIC_PAGES.map((page) => ({
-        loc: `${SITE_URL}${page.path}`,
+        loc: `${siteUrl}${page.path}`,
         changefreq: page.changefreq,
         priority: page.priority,
       }))

@@ -23,7 +23,7 @@ describe('SSR prefetch helpers', () => {
     });
     expect(html).toContain('&lt;script&gt;');
     expect(html).not.toContain('<script>alert');
-    expect(html).toContain('https://hubvillage.app/event/test');
+    expect(html).toContain('https://bos-hub-village.vercel.app/event/test');
     expect(html).toContain('application/ld+json');
   });
 

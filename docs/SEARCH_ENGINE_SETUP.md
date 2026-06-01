@@ -6,10 +6,12 @@ HubVillage ships technical SEO assets in the repo. **Submitting** sitemaps and m
 
 | Asset | URL |
 |--------|-----|
-| Sitemap (dynamic + build) | https://hubvillage.app/sitemap.xml |
-| robots.txt | https://hubvillage.app/robots.txt |
-| llms.txt (AI crawlers) | https://hubvillage.app/llms.txt |
-| Public search (SSR) | https://hubvillage.app/search?q=your+query |
+| Sitemap (dynamic + build) | https://bos-hub-village.vercel.app/sitemap.xml |
+| robots.txt | https://bos-hub-village.vercel.app/robots.txt |
+| llms.txt (AI crawlers) | https://bos-hub-village.vercel.app/llms.txt |
+| Public search (SSR) | https://bos-hub-village.vercel.app/search?q=your+query |
+
+Set `PUBLIC_SITE_URL=https://bos-hub-village.vercel.app` (or your custom domain) in Vercel env so sitemap, canonical URLs, and SSR JSON-LD stay consistent.
 | Google verification meta | In `index.html` (`google-site-verification`) |
 
 After each production deploy, the sitemap is regenerated at build time and refreshed hourly via `api/sitemap.js`.

@@ -9,8 +9,8 @@ describe('search SEO infrastructure', () => {
 
   it('buildSitemapXml still valid after search route added', () => {
     const xml = buildSitemapXml([
-      { loc: 'https://hubvillage.app/search', changefreq: 'weekly', priority: '0.6' },
+      { loc: 'https://bos-hub-village.vercel.app/search', changefreq: 'weekly', priority: '0.6' },
     ]);
-    expect(xml).toContain('<loc>https://hubvillage.app/search</loc>');
+    expect(xml).toContain('<loc>https://bos-hub-village.vercel.app/search</loc>');
   });
 });
