@@ -17,8 +17,10 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { DonateButton } from '@/components/common/DonateButton';
 import { WeeklyEmailModal } from '@/components/common/WeeklyEmailModal';
 import { MobileNavDrawer } from '@/components/mobile/MobileNavDrawer';
+import { HeaderSearchButton } from '@/components/navigation/HeaderSearchButton';
 import {
   Plus,
+  Search,
   Calendar,
   Building,
   Newspaper,
@@ -83,6 +85,14 @@ export const Navigation = () => {
               </Link>
 
               <Link
+                to="/search"
+                className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium text-sm whitespace-nowrap px-2 py-1"
+              >
+                <Search className="h-4 w-4 mr-1.5 shrink-0" />
+                {t('navigation.search', 'Search')}
+              </Link>
+
+              <Link
                 to="/faq"
                 className="flex items-center text-gray-700 hover:text-caribbean-teal transition-colors font-medium text-sm whitespace-nowrap px-2 py-1"
               >
@@ -104,6 +114,7 @@ export const Navigation = () => {
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <HeaderSearchButton className="lg:hidden" />
             <DonateButton size="sm" className="hidden lg:flex" />
             <WeeklyEmailModal
               trigger={

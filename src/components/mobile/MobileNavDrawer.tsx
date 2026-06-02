@@ -30,6 +30,7 @@ import {
   Sparkles,
   Mail,
   ArrowLeft,
+  Search,
 } from 'lucide-react';
 import { OPEN_ONBOARDING_EVENT } from '@/constants/appEvents';
 import { BRAND_LOGO_SRC } from '@/constants/brand';
@@ -58,7 +59,8 @@ export const MobileNavDrawer = () => {
     setOpen(false);
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) =>
+    path === '/search' ? location.pathname.startsWith('/search') : location.pathname === path;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -108,6 +110,11 @@ export const MobileNavDrawer = () => {
           <Link to="/news-page" onClick={handleLinkClick} className={linkClass(isActive('/news-page'))}>
             <Newspaper className="h-5 w-5 mr-3 shrink-0" />
             {t('navigation.news', 'Culture')}
+          </Link>
+
+          <Link to="/search" onClick={handleLinkClick} className={linkClass(isActive('/search'))}>
+            <Search className="h-5 w-5 mr-3 shrink-0" />
+            {t('navigation.search', 'Search')}
           </Link>
 
           <Link to="/faq" onClick={handleLinkClick} className={linkClass(isActive('/faq'))}>

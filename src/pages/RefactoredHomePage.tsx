@@ -17,6 +17,7 @@ import { FeaturedSection } from '@/components/home/FeaturedSection';
 import { DonateSection } from '@/components/home/DonateSection';
 import { Footer } from '@/components/common/Footer';
 import { MobileCategoryChips } from '@/components/mobile/MobileCategoryChips';
+import { MobileHomeSearchBar } from '@/components/mobile/MobileHomeSearchBar';
 import { MobileMapPreview } from '@/components/mobile/MobileMapPreview';
 import { SwipeableCardStack } from '@/components/mobile/SwipeableCardStack';
 import { PullToRefresh } from '@/components/mobile/PullToRefresh';
@@ -36,7 +37,8 @@ const MainContent = () => {
     refetch,
     filters,
     updateFilter,
-    filteredItems
+    filteredItems,
+    requestLocation,
   } = useAppState();
   const { entries } = useQuickBrowse();
 
@@ -57,17 +59,24 @@ const MainContent = () => {
     window.dispatchEvent(new Event(OPEN_ONBOARDING_EVENT));
   };
 
-  const handleQuickAction = (action: string) => {
+  const handleQuickAction = async (action: string) => {
     switch (action) {
-      case 'near-me':
-        // Could trigger geolocation filter
+      case 'near-me': {
+        const location = await requestLocation();
+        if (location) {
+          updateFilter('maxDistance', 10);
+          toast.success('Showing items within 10 km');
+        } else {
+          toast.error('Location access is needed for Near Me');
+        }
         break;
+      }
       case 'today':
-        // Set to today's events by filtering
         updateFilter('selectedType', 'event');
+        updateFilter('selectedEventDates', [new Date()]);
         break;
       case 'popular':
-        // Could sort by popularity
+        toast.info('Browse featured items at the top of the page');
         break;
     }
   };
@@ -158,8 +167,13 @@ const MainContent = () => {
                   onQuickAction={handleQuickAction}
                 />
 
-                {/* Filter Bar - hidden on smallest mobile */}
-                <div className="hidden sm:block">
+                <MobileHomeSearchBar
+                  allItems={allItems}
+                  filteredItemsCount={filteredItems.length}
+                />
+
+                {/* Desktop filter bar */}
+                <div className="hidden lg:block">
                   <FilterBar
                     allItems={allItems}
                     filteredItemsCount={filteredItems.length}

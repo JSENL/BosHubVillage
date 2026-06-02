@@ -34,6 +34,7 @@ interface UniversalFiltersProps {
   onLocationRequest?: () => Promise<{ latitude: number; longitude: number } | null>;
   onClearLocation?: () => void;
   isLoadingLocation?: boolean;
+  layout?: 'inline' | 'stacked';
 }
 
 export const UniversalFilters = ({
@@ -58,7 +59,8 @@ export const UniversalFilters = ({
   userLocation,
   onLocationRequest,
   onClearLocation,
-  isLoadingLocation
+  isLoadingLocation,
+  layout = 'inline',
 }: UniversalFiltersProps) => {
   const { t } = useTranslation();
   // Use dynamic filter options based on current filters
@@ -79,15 +81,27 @@ export const UniversalFilters = ({
     { value: 'local-service', label: t('types.localService') }
   ];
 
+  const isStacked = layout === 'stacked';
+
   return (
-    <div className="flex flex-wrap items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-lg shadow-sm border w-full overflow-hidden">
-      <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+    <div
+      className={
+        isStacked
+          ? 'flex flex-col gap-3 w-full'
+          : 'flex flex-wrap items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-lg shadow-sm border w-full overflow-hidden'
+      }
+    >
+      <div className={`flex items-center space-x-1 sm:space-x-2 flex-shrink-0 ${isStacked ? '' : ''}`}>
         <Filter className="h-4 w-4 text-gray-600" />
         <span className="text-xs font-medium text-gray-600">{t('filters.filters')}:</span>
       </div>
 
       <Select value={selectedType} onValueChange={onTypeChange}>
-        <SelectTrigger className="w-28 sm:w-36 md:w-44 h-8 text-xs flex-shrink-0">
+        <SelectTrigger
+          className={
+            isStacked ? 'w-full h-10 text-sm' : 'w-28 sm:w-36 md:w-44 h-8 text-xs flex-shrink-0'
+          }
+        >
           <SelectValue placeholder={t('filters.type')} />
         </SelectTrigger>
         <SelectContent>
@@ -100,43 +114,53 @@ export const UniversalFilters = ({
       </Select>
 
       {(selectedType === 'event' || selectedType === 'past-event' || selectedType === 'all') && (
-        <EventDateFilter
-          eventDateRange={eventDateRange}
-          onEventDateRangeChange={onEventDateRangeChange}
-          selectedEventDates={selectedEventDates}
-          onSelectedEventDatesChange={onSelectedEventDatesChange}
-        />
+        <div className={isStacked ? 'w-full' : undefined}>
+          <EventDateFilter
+            eventDateRange={eventDateRange}
+            onEventDateRangeChange={onEventDateRangeChange}
+            selectedEventDates={selectedEventDates}
+            onSelectedEventDatesChange={onSelectedEventDatesChange}
+          />
+        </div>
       )}
-      
-      <CategoryFilter
-        selectedCategory={selectedCategory}
-        onCategoryChange={onCategoryChange}
-        availableCategories={availableCategories}
-      />
 
-      <LocationFilter
-        selectedNeighborhood={selectedNeighborhood}
-        onNeighborhoodChange={onNeighborhoodChange}
-        selectedVillage={selectedVillage}
-        onVillageChange={onVillageChange}
-        availableNeighborhoods={availableNeighborhoods}
-        availableVillages={availableVillages}
-      />
+      <div className={isStacked ? 'w-full [&_button]:w-full' : undefined}>
+        <CategoryFilter
+          selectedCategory={selectedCategory}
+          onCategoryChange={onCategoryChange}
+          availableCategories={availableCategories}
+        />
+      </div>
+
+      <div className={isStacked ? 'w-full space-y-2 [&_button]:w-full' : undefined}>
+        <LocationFilter
+          selectedNeighborhood={selectedNeighborhood}
+          onNeighborhoodChange={onNeighborhoodChange}
+          selectedVillage={selectedVillage}
+          onVillageChange={onVillageChange}
+          availableNeighborhoods={availableNeighborhoods}
+          availableVillages={availableVillages}
+        />
+      </div>
 
       {onMaxDistanceChange && onLocationRequest && onClearLocation && (
-        <NearMeFilter
-          maxDistance={maxDistance ?? null}
-          onMaxDistanceChange={onMaxDistanceChange}
-          userLocation={userLocation ?? null}
-          onLocationRequest={onLocationRequest}
-          onClearLocation={onClearLocation}
-          isLoading={isLoadingLocation ?? false}
-        />
+        <div className={isStacked ? 'w-full' : undefined}>
+          <NearMeFilter
+            maxDistance={maxDistance ?? null}
+            onMaxDistanceChange={onMaxDistanceChange}
+            userLocation={userLocation ?? null}
+            onLocationRequest={onLocationRequest}
+            onClearLocation={onClearLocation}
+            isLoading={isLoadingLocation ?? false}
+          />
+        </div>
       )}
 
-      <div className="text-xs text-gray-600 flex-shrink-0 ml-auto">
-        {t('filters.resultsCount', { count: filteredItemsCount })}
-      </div>
+      {!isStacked ? (
+        <div className="text-xs text-gray-600 flex-shrink-0 ml-auto">
+          {t('filters.resultsCount', { count: filteredItemsCount })}
+        </div>
+      ) : null}
     </div>
   );
 };

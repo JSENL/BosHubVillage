@@ -15,7 +15,7 @@ import {
 interface MobileCategoryChipsProps {
   selectedType: string;
   onTypeChange: (type: string) => void;
-  onQuickAction?: (action: string) => void;
+  onQuickAction?: (action: string) => void | Promise<void>;
 }
 
 export const MobileCategoryChips = ({ 
