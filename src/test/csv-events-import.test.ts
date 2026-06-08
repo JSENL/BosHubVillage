@@ -2,15 +2,23 @@
  * Test event CSV import with the real CSV format (Free/$ price, N/A max_attendees, Yes/No registration).
  * Verifies parsing, validation, and transform produce DB-ready event rows.
  */
+import { readFileSync } from 'fs';
 import { describe, it, expect } from 'vitest';
 import {
   parseCSV,
   filterCSVData,
   validateRow,
   transformRowForDatabase,
-  type CSVRow,
+  isPackedEventCSV,
 } from '@/utils/csv';
 import type { DataType } from '@/utils/csv';
+
+const OPTION_1_CSV = `title,category,location,address,description,price,max_attendees,registration_required,neighborhoods,villages,website_link,date,start_time,end_time
+"Family Story Time,Family,Hyde Park Branch Library,35 Harvard Ave Boston MA 02136,Weekly inclusive reading group and interactive songs for kids.,Free,30,No,Hyde Park,,https://www.bpl.org,2026-06-01,10:30,11:15",,,,,,,,,,,,,
+"Juneteenth Community Celebration,Festival,Nightingale Community Garden,512 Park St Dorchester MA 02124,An evening honoring Black freedom and history with music food and local garden activities.,Free,150,No,Dorchester,,https://thetrustees.org,2026-06-04,17:30,19:30",,,,,,,,,,,,,`;
+
+const OPTION_2_PATH =
+  '/Users/jasenlambright/Downloads/Boston Neighborhood Events June-July 2026 (Single Column Option 2) - Boston Neighborhood Events June-July 2026 (Single Column Option 2).csv';
 
 const SAMPLE_CSV = `title,category,location,address,description,price,max_attendees,registration_required,neighborhoods,villages,website_link,date,start_time,end_time
 "50th Annual Gardeners' Gathering",Conference,Northeastern University Curry Student Center,360 Huntington Ave Boston MA,A free gardening conference bringing together growers for workshops and community building.,Free,500,No,Roxbury;Fenway,Mission Hill,https://thetrustees.org/event_roundup/boston-events/,2026-03-21,10:00,17:00
@@ -88,6 +96,31 @@ describe('Event CSV import', () => {
     expect(row10.price).toBe(20);
     expect(row10.max_attendees).toBe(15);
     expect(row10.registration_required).toBe(true);
+  });
+
+  it('detects and parses Single Column Option 1 (one blob per row)', () => {
+    expect(isPackedEventCSV(OPTION_1_CSV)).toBe(true);
+    const rows = parseCSV(OPTION_1_CSV).map(filterCSVData);
+    expect(rows).toHaveLength(2);
+    expect(rows[0].title).toBe('Family Story Time');
+    expect(rows[0].category).toBe('Family');
+    expect(rows[0].date).toBe('2026-06-01');
+    expect(rows[1].title).toBe('Juneteenth Community Celebration');
+    for (const row of rows) {
+      expect(validateRow(row, DATA_TYPE)).toBeNull();
+    }
+  });
+
+  it('detects and parses Single Column Option 2 (entire file on one line)', () => {
+    const option2 = readFileSync(OPTION_2_PATH, 'utf8');
+    expect(isPackedEventCSV(option2)).toBe(true);
+    const rows = parseCSV(option2).map(filterCSVData);
+    expect(rows.length).toBeGreaterThanOrEqual(8);
+    expect(rows[0].title).toBe('Family Story Time');
+    expect(rows.find((r) => r.title === 'Puerto Rican Festival Parade')?.date).toBe('2026-07-26');
+    for (const row of rows) {
+      expect(validateRow(row, DATA_TYPE)).toBeNull();
+    }
   });
 
   it('transforms all 11 rows without throwing', async () => {

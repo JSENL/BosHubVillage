@@ -16,6 +16,7 @@ import {
   filterCSVData,
   validateRow,
   transformRowForDatabase,
+  isPackedEventCSV,
 } from '@/utils/csv';
 
 export interface ImportResult {
@@ -82,7 +83,12 @@ export const useCSVImport = () => {
   );
 
   const handleFileSelect = useCallback(async (file: File | null) => {
-    if (!file || file.type !== 'text/csv') {
+    const isCsv =
+      file &&
+      (file.type === 'text/csv' ||
+        file.type === 'application/vnd.ms-excel' ||
+        file.name.toLowerCase().endsWith('.csv'));
+    if (!isCsv) {
       toast.error('Please select a valid CSV file');
       return;
     }
@@ -90,6 +96,9 @@ export const useCSVImport = () => {
     setSelectedFile(file);
     try {
       const text = await file.text();
+      if (isPackedEventCSV(text)) {
+        toast.info('Detected packed CSV layout — converted to standard columns for import.');
+      }
       const preview = parseCSVPreview(text, 5);
       setPreviewData(preview);
       setShowPreview(true);

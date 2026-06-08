@@ -3,6 +3,8 @@
  * Handles delimiter detection, line parsing, and CSV text processing
  */
 
+import { normalizeEventCSV } from './csvPackedEvents';
+
 export interface CSVRow {
   [key: string]: string;
 }
@@ -66,10 +68,10 @@ const stripBOM = (text: string): string =>
  * Parse full CSV text into array of row objects
  */
 export const parseCSV = (text: string): CSVRow[] => {
-  const cleaned = stripBOM(text.trim());
+  const cleaned = stripBOM(normalizeEventCSV(text).trim());
   const lines = cleaned.split(/\r?\n/).filter(line => line.trim());
 
-if (lines.length === 0) {
+  if (lines.length === 0) {
     throw new Error('CSV file is empty');
   }
 
@@ -92,7 +94,7 @@ if (lines.length === 0) {
  * Parse CSV for preview (first N rows with original headers)
  */
 export const parseCSVPreview = (text: string, maxRows: number = 5): CSVRow[] => {
-  const cleaned = stripBOM(text.trim());
+  const cleaned = stripBOM(normalizeEventCSV(text).trim());
   const lines = cleaned.split(/\r?\n/).filter(line => line.trim());
 
   if (lines.length === 0) {
