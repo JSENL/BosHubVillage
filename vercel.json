@@ -5,6 +5,7 @@
   "outputDirectory": "dist",
   "routes": [
     { "src": "/sitemap\\.xml", "dest": "/api/sitemap" },
+    { "src": "/robots\\.txt", "dest": "/robots.txt" },
     { "handle": "filesystem" },
     { "src": "/.*", "dest": "/api/ssr" }
   ]

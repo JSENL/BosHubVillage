@@ -11,7 +11,11 @@ HubVillage ships technical SEO assets in the repo. **Submitting** sitemaps and m
 | llms.txt (AI crawlers) | https://bos-hub-village.vercel.app/llms.txt |
 | Public search (SSR) | https://bos-hub-village.vercel.app/search?q=your+query |
 
-Set `PUBLIC_SITE_URL=https://bos-hub-village.vercel.app` (or your custom domain) in Vercel env so sitemap, canonical URLs, and SSR JSON-LD stay consistent.
+**Required on Vercel (Production):** set environment variable  
+`PUBLIC_SITE_URL=https://bos-hub-village.vercel.app`  
+Without this, the sitemap may list per-deployment URLs (`project-abc123-user.vercel.app`) that return **401** to Google — Search Console will report **“Couldn’t fetch”** or URL errors.
+
+After setting the variable, redeploy, then resubmit `https://bos-hub-village.vercel.app/sitemap.xml` in [Google Search Console](https://search.google.com/search-console/sitemaps).
 | Google verification meta | In `index.html` (`google-site-verification`) |
 
 After each production deploy, the sitemap is regenerated at build time and refreshed hourly via `api/sitemap.js`.

@@ -6,7 +6,8 @@ import {
 import { resolveSiteUrl } from '../lib/siteUrl.mjs';
 
 export default async function handler(req, res) {
-  const siteUrl = resolveSiteUrl();
+  const requestHost = req.headers['x-forwarded-host'] || req.headers.host;
+  const siteUrl = resolveSiteUrl(requestHost);
   try {
     const urls = await fetchSitemapEntries(undefined, siteUrl);
     const xml = buildSitemapXml(urls);
