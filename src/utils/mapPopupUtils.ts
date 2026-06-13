@@ -1,5 +1,6 @@
 import { Event } from '@/hooks/useEvents';
 import { eventDetailPath } from '@/lib/eventUrl';
+import { formatDateOnly } from '@/utils/common/dateUtils';
 
 /**
  * Escapes HTML to prevent XSS attacks in popup content
@@ -40,7 +41,7 @@ export const createEventPopupContent = (event: Event): string => {
       <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: bold; color: #374151;">${safeTitle}</h3>
       <p style="margin: 0 0 8px 0; font-size: 14px; color: #6B7280;">${safeDescription}...</p>
       <div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;">
-        <strong>📅 ${new Date(event.date).toLocaleDateString()}</strong>
+        <strong>📅 ${formatDateOnly(event.date)}</strong>
       </div>
       <div style="margin: 4px 0; font-size: 12px; color: #8B5CF6;">
         <strong>🕒 ${formatTimeRange(event.start_time, event.end_time)}</strong>

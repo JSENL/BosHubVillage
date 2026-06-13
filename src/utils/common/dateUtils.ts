@@ -2,20 +2,29 @@
  * Utility functions for date handling
  */
 
+/** Parse a calendar date as local midnight (no UTC shift for `YYYY-MM-DD`). */
+export const parseDateOnlyLocal = (value: string): Date | null => {
+  const dateOnly = extractDateOnly(value);
+  if (!dateOnly) return null;
+  const [y, m, d] = dateOnly.split('-').map(Number);
+  return new Date(y, m - 1, d);
+};
+
 export const formatEventDate = (date: string): string => {
-  const eventDate = new Date(date);
+  const eventDateOnly = parseDateOnlyLocal(date);
+  if (!eventDateOnly) return date;
+
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
-  const eventDateOnly = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
 
   if (eventDateOnly.getTime() === today.getTime()) {
     return 'Today';
-  } else if (eventDateOnly.getTime() === tomorrow.getTime()) {
-    return 'Tomorrow';
-  } else {
-    return eventDate.toLocaleDateString();
   }
+  if (eventDateOnly.getTime() === tomorrow.getTime()) {
+    return 'Tomorrow';
+  }
+  return formatDateOnly(date);
 };
 
 const DATE_ONLY_RE = /^(\d{4})-(\d{2})-(\d{2})$/;

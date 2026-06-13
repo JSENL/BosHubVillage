@@ -1,6 +1,7 @@
 import { UnifiedItem } from '@/types/unifiedItem';
 import { getMarkerColor } from '@/utils/mapMarkerUtils';
 import { escapeHtml, formatTimeRange as formatTimeRangePopup } from '@/utils/mapPopupUtils';
+import { formatDateOnly } from '@/utils/common/dateUtils';
 
 /**
  * Creates popup content for multiple items at the same location
@@ -31,7 +32,7 @@ export const createMultiItemPopupContent = (items: UnifiedItem[]): string => {
     const itemsList = typeItems.map(item => {
       let timeInfo = '';
       if (item.type === 'event') {
-        const dateStr = item.date ? new Date(item.date).toLocaleDateString() : '';
+        const dateStr = item.date ? formatDateOnly(item.date) : '';
         const timeStr = item.start_time ? formatTimeRangePopup(item.start_time, item.end_time || '') : '';
         timeInfo = `<div style="font-size: 11px; color: #6b7280; margin-top: 2px;">
           ${dateStr ? `📅 ${dateStr}` : ''} ${timeStr ? `⏰ ${timeStr}` : ''}
@@ -122,7 +123,7 @@ const createSingleItemPopupContent = (item: UnifiedItem): string => {
   
   if (item.type === 'event') {
     specificContent = `
-      ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${new Date(item.date).toLocaleDateString()}</p>` : ''}
+      ${item.date ? `<p style="margin: 4px 0;"><strong>📅 Date:</strong> ${formatDateOnly(item.date)}</p>` : ''}
       ${item.start_time ? `<p style="margin: 4px 0;"><strong>⏰ Time:</strong> ${formatTimeRangePopup(item.start_time, item.end_time || '')}</p>` : ''}
       ${item.price && item.price > 0 ? `<p style="margin: 4px 0;"><strong>💰 Price:</strong> $${escapeHtml(String(item.price))}</p>` : ''}
     `;

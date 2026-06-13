@@ -3,6 +3,7 @@ import { UnifiedItem } from '@/types/unifiedItem';
 import { DateRange } from 'react-day-picker';
 import { calculateDistance } from '@/hooks/useGeolocation';
 import { sortBySponsored } from '@/utils/sponsoredUtils';
+import { parseDateOnlyLocal } from '@/utils/common/dateUtils';
 
 interface FilterOptions {
   selectedType: string;
@@ -32,10 +33,11 @@ export const useItemFiltering = (
     const filtered = items.filter(item => {
       // Exclude past events
       if (item.type === 'event' && item.date) {
-        const eventDate = new Date(item.date);
+        const eventDate = parseDateOnlyLocal(item.date);
+        if (!eventDate) return false;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         if (eventDate < today) {
           return false;
         }
@@ -83,27 +85,28 @@ export const useItemFiltering = (
       // Event date filter (only for events)
       const matchesEventDate = item.type !== 'event' || (() => {
         if (!item.date) return false;
-        
-        const itemDate = new Date(item.date);
-        
+
+        const itemDate = parseDateOnlyLocal(item.date);
+        if (!itemDate) return false;
+
         // Check individual dates
         if (filters.selectedEventDates.length > 0) {
-          return filters.selectedEventDates.some(selectedDate => 
+          return filters.selectedEventDates.some(selectedDate =>
             selectedDate.toDateString() === itemDate.toDateString()
           );
         }
-        
+
         // Check date range
         if (filters.eventDateRange?.from) {
           const fromDate = new Date(filters.eventDateRange.from);
           const toDate = filters.eventDateRange.to ? new Date(filters.eventDateRange.to) : fromDate;
-          
+
           fromDate.setHours(0, 0, 0, 0);
           toDate.setHours(23, 59, 59, 999);
-          
+
           return itemDate >= fromDate && itemDate <= toDate;
         }
-        
+
         return true;
       })();
 

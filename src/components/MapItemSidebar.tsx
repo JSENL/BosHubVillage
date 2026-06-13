@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { X, MapPin, Calendar, Clock, DollarSign, Building, Tag, ChevronUp, ChevronDown, Move } from 'lucide-react';
 import { DirectionsModal } from './map/DirectionsModal';
 import { useNavigate } from 'react-router-dom';
-import { formatTimeRange } from '@/utils/common/dateUtils';
+import { formatDateOnly, formatTimeRange } from '@/utils/common/dateUtils';
 
 interface MapItemSidebarProps {
   selectedItem: UnifiedItem | null;
@@ -179,7 +179,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
                   <Calendar className="h-3 w-3 text-gray-500 flex-shrink-0" />
                   <span className="font-medium">Date:</span>
                   <span className="text-gray-600 truncate">
-                    {new Date(selectedItem.date).toLocaleDateString()}
+                    {formatDateOnly(selectedItem.date)}
                   </span>
                 </div>
               )}
@@ -311,7 +311,7 @@ export const MapItemSidebar = ({ selectedItem, onClose, onGetDirections }: MapIt
                     <Calendar className="h-3 w-3 text-gray-500" />
                     <span className="font-medium">Date:</span>
                     <span className="text-gray-600">
-                      {new Date(selectedItem.date).toLocaleDateString()}
+                      {formatDateOnly(selectedItem.date)}
                     </span>
                   </div>
                 )}

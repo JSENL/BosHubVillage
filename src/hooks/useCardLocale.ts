@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
+import { formatDateOnly } from '@/utils/common/dateUtils';
 
 const LOCALE_MAP: Record<string, string> = {
   en: 'en-US',
@@ -20,7 +21,7 @@ export function useCardLocale() {
 
   const formatDate = useMemo(() => {
     return (dateString: string) =>
-      new Date(dateString).toLocaleDateString(locale, {
+      formatDateOnly(dateString, locale, {
         month: '2-digit',
         day: '2-digit',
         year: '2-digit',
