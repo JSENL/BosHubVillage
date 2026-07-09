@@ -18,6 +18,7 @@ import { DetailPageLoading } from '@/components/common/DetailPageLoading';
 import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
 import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
+import { NewsSubmitterLine } from '@/components/news/NewsSubmitterLine';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
@@ -122,6 +123,8 @@ const NewsDetails = () => {
                 <span>{resolvedNews.source}</span>
               </div>
             </div>
+
+            <NewsSubmitterLine article={resolvedNews} className="text-sm" />
           </CardHeader>
           
           <CardContent>

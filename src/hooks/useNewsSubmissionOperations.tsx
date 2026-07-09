@@ -48,6 +48,16 @@ export const useNewsSubmissionOperations = () => {
           imageUrl = urlData?.publicUrl || null;
         }
 
+        let submitterName: string | null = null;
+        if (submission.submitted_by) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('id', submission.submitted_by)
+            .maybeSingle();
+          submitterName = profile?.full_name ?? null;
+        }
+
         // Create the news in the news table with all the new fields
         const { data: insertedNews, error: createError } = await supabase
           .from('news')
@@ -62,6 +72,8 @@ export const useNewsSubmissionOperations = () => {
             date_posted: submission.date_posted,
             source: submission.source,
             created_by: submission.submitted_by,
+            submitter_email: submission.submitter_email,
+            submitter_name: submitterName,
             image_url: imageUrl
           })
           .select('id')

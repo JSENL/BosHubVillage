@@ -1413,6 +1413,8 @@ export type Database = {
           location_translations: Json
           longitude: number | null
           source: string
+          submitter_email: string | null
+          submitter_name: string | null
           title: string
           title_translations: Json
           updated_at: string
@@ -1433,6 +1435,8 @@ export type Database = {
           location_translations?: Json
           longitude?: number | null
           source: string
+          submitter_email?: string | null
+          submitter_name?: string | null
           title: string
           title_translations?: Json
           updated_at?: string
@@ -1453,6 +1457,8 @@ export type Database = {
           location_translations?: Json
           longitude?: number | null
           source?: string
+          submitter_email?: string | null
+          submitter_name?: string | null
           title?: string
           title_translations?: Json
           updated_at?: string

@@ -6,6 +6,7 @@ import { Calendar, MapPin, ExternalLink } from 'lucide-react';
 import { News } from '@/types/news';
 import { format } from 'date-fns';
 import { richTextPlainText } from '@/lib/richText';
+import { NewsSubmitterLine } from '@/components/news/NewsSubmitterLine';
 
 interface FeaturedArticleProps {
   article: News;
@@ -30,6 +31,7 @@ const FeaturedArticle = ({ article }: FeaturedArticleProps) => {
               {article.source}
             </div>
           </div>
+          <NewsSubmitterLine article={article} className="mb-2" />
           <CardTitle className="text-3xl md:text-4xl font-serif font-bold leading-tight hover:text-red-600 transition-colors">
             {article.title}
           </CardTitle>

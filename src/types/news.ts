@@ -15,6 +15,8 @@ export interface News {
   created_at: string;
   updated_at: string;
   created_by?: string;
+  submitter_email?: string | null;
+  submitter_name?: string | null;
   is_sponsored?: boolean;
   image_url?: string | null;
   title_translations?: TranslationsObject;

@@ -23,6 +23,7 @@ import {
 import { News } from '@/types/news';
 import { richTextPlainText } from '@/lib/richText';
 import { EditNewsDialog } from '@/components/admin/EditNewsDialog';
+import { NewsSubmitterLine } from '@/components/news/NewsSubmitterLine';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { NEWS_QUERY_KEY } from '@/hooks/useNews';
@@ -201,6 +202,7 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
                     />
                   </TableHead>
                   <TableHead>Article</TableHead>
+                  <TableHead>Submitted by</TableHead>
                   <TableHead>Source</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Date</TableHead>
@@ -224,6 +226,12 @@ export const PublishedNewsTable = ({ news, onUpdate }: PublishedNewsTableProps) 
                           {richTextPlainText(article.content)}
                         </div>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <NewsSubmitterLine article={article} showEmail className="text-sm" />
+                      {!article.submitter_name && !article.submitter_email && (
+                        <span className="text-sm text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{article.source}</Badge>

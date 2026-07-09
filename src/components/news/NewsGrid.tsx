@@ -5,6 +5,7 @@ import { Calendar, MapPin } from 'lucide-react';
 import { News } from '@/types/news';
 import { format } from 'date-fns';
 import { richTextPlainText } from '@/lib/richText';
+import { NewsSubmitterLine } from '@/components/news/NewsSubmitterLine';
 
 interface NewsGridProps {
   articles: News[];
@@ -55,6 +56,7 @@ const NewsGrid = ({ articles }: NewsGridProps) => {
                   <div className="mt-3 text-xs text-gray-500">
                     Source: {article.source}
                   </div>
+                  <NewsSubmitterLine article={article} className="mt-2" />
                 </CardContent>
               </Card>
             </Link>

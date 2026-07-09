@@ -5,6 +5,7 @@ import { Calendar, MapPin } from 'lucide-react';
 import { News } from '@/types/news';
 import { format } from 'date-fns';
 import { richTextPlainText } from '@/lib/richText';
+import { NewsSubmitterLine } from '@/components/news/NewsSubmitterLine';
 
 interface SecondaryArticlesProps {
   articles: News[];
@@ -38,6 +39,7 @@ const SecondaryArticles = ({ articles }: SecondaryArticlesProps) => {
                       {article.location}
                     </div>
                   </div>
+                  <NewsSubmitterLine article={article} className="mb-1" />
                   <CardTitle className="text-lg font-semibold leading-tight hover:text-red-600 transition-colors line-clamp-3">
                     {article.title}
                   </CardTitle>
