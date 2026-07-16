@@ -27,6 +27,7 @@ import { richTextPlainText } from '@/lib/richText';
 import { EventStructuredData } from '@/components/seo/StructuredData';
 import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
 import { normalizeEventRow, slugifyTitle, UUID_RE } from '@/lib/ssr/eventNormalize';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 
 const EventDetails = () => {
   const { eventSlug } = useParams<{ eventSlug: string }>();
@@ -38,6 +39,7 @@ const EventDetails = () => {
   const { t } = useTranslation();
   const { user, isAdmin } = useAuth();
   const { getTranslatedText } = useTranslatedField();
+  const { addToRecentlyViewed } = useRecentlyViewed();
   const [resolvedEvent, setResolvedEvent] = useState<Event | null>(ssrEvent);
   const [resolvingDirect, setResolvingDirect] = useState(false);
 
@@ -131,6 +133,12 @@ const EventDetails = () => {
   }, [listEvent, eventsLoading, param, ssrEvent]);
 
   const event = listEvent ?? resolvedEvent ?? undefined;
+
+  useEffect(() => {
+    if (event?.id) {
+      addToRecentlyViewed({ itemType: 'event', itemId: event.id });
+    }
+  }, [addToRecentlyViewed, event?.id]);
 
   useEffect(() => {
     if (!event?.slug || !param) return;

@@ -6,6 +6,7 @@ import { UserProfile } from '@/hooks/useProfile';
 import { useFollowers } from '@/hooks/useFollowers';
 import { useAuth } from '@/hooks/useAuth';
 import { MapPin, Globe, Check, UserPlus, UserMinus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface UserProfileCardProps {
   profile: UserProfile;
@@ -133,6 +134,15 @@ export const UserProfileCard = ({ profile, showFollowButton = true }: UserProfil
         </div>
 
         {/* Follow Button */}
+        {showFollowButton && !isOwnProfile && !user && (
+          <Button asChild className="w-full">
+            <Link to="/auth">
+              <UserPlus className="h-4 w-4 mr-2" />
+              Sign in to follow
+            </Link>
+          </Button>
+        )}
+
         {showFollowButton && !isOwnProfile && user && (
           <Button 
             onClick={handleFollowClick}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Calendar, MapPin, Star, Building, Newspaper, Wrench, ChevronRight } from 'lucide-react';
+import { Calendar, MapPin, Star, Building, Newspaper, Wrench, ChevronRight, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { UnifiedItem } from '@/types/unifiedItem';
@@ -14,6 +14,7 @@ import { ContentListRowLayout } from '@/components/common/ContentListRowLayout';
 import { CategoryHero, CategoryIcon } from '@/components/common/CategoryIcon';
 import SponsoredBadge from '@/components/common/SponsoredBadge';
 import { richTextPlainText } from '@/lib/richText';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 
 interface UnifiedItemCardProps {
   item: UnifiedItem;
@@ -36,8 +37,19 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
   const { t } = useTranslation();
   const { getTranslatedText } = useTranslatedField();
   const { formatDate } = useCardLocale();
+  const { addToRecentlyViewed } = useRecentlyViewed();
   
   const handleViewDetails = () => {
+    addToRecentlyViewed({
+      itemType:
+        item.type === 'local-service'
+          ? 'local_service'
+          : item.type === 'past-event'
+            ? 'event'
+            : (item.type as BookmarkItemType),
+      itemId: item.id,
+    });
+
     if (item.type === 'event' || item.type === 'past-event') {
       navigate(eventDetailPath({ slug: item.slug, id: item.id }));
       return;
@@ -201,6 +213,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
         {hood && (item.type === 'business' || item.type === 'local-service') ? (
           <span className="max-w-full truncate">{hood}</span>
         ) : null}
+        <span className="inline-flex min-w-0 max-w-full items-center gap-1 text-primary">
+          <MessageCircle className="h-3.5 w-3.5 shrink-0" aria-hidden />
+          <span className="truncate">Open to comment</span>
+        </span>
       </>
     );
 
@@ -357,6 +373,10 @@ export const UnifiedItemCard: React.FC<UnifiedItemCardProps> = ({
               <span className="truncate min-w-0 text-xs">{getDisplayLocation()}</span>
             </div>
           )}
+          <div className="flex items-center text-primary min-w-0">
+            <MessageCircle className="h-3 w-3 mr-1 flex-shrink-0" />
+            <span className="truncate min-w-0 text-xs">Open to comment</span>
+          </div>
         </div>
       </CardContent>
     </Card>

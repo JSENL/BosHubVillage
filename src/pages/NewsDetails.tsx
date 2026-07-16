@@ -19,12 +19,15 @@ import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
 import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
 import { NewsSubmitterLine } from '@/components/news/NewsSubmitterLine';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
+import { useEffect } from 'react';
 
 const NewsDetails = () => {
   const { newsId } = useParams();
   const { user, isAdmin } = useAuth();
   const { t } = useTranslation();
   const ssrPrefetch = useSsrPrefetch();
+  const { addToRecentlyViewed } = useRecentlyViewed();
   const ssrNews =
     ssrPrefetch?.type === 'news' ? (ssrPrefetch.data as News) : null;
 
@@ -45,6 +48,12 @@ const NewsDetails = () => {
   });
 
   const resolvedNews = news ?? ssrNews;
+
+  useEffect(() => {
+    if (resolvedNews?.id) {
+      addToRecentlyViewed({ itemType: 'news', itemId: resolvedNews.id });
+    }
+  }, [addToRecentlyViewed, resolvedNews?.id]);
 
   const metaDescription = resolvedNews
     ? richTextPlainText(resolvedNews.content || resolvedNews.title || '').slice(0, 160)

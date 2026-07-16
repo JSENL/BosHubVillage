@@ -26,6 +26,9 @@ import { useQuickBrowse, getQuickBrowseIds } from '@/hooks/useQuickBrowse';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ErrorState } from '@/components/common/ErrorState';
 import { SeoUpcomingEventsSection } from '@/components/seo/SeoUpcomingEventsSection';
+import { EngagementOnboardingStrip } from '@/components/home/EngagementOnboardingStrip';
+import { WeeklyDigestPreview } from '@/components/home/WeeklyDigestPreview';
+import { CommunityContributionPrompt } from '@/components/home/CommunityContributionPrompt';
 
 const MainContent = () => {
   const location = useLocation();
@@ -160,6 +163,10 @@ const MainContent = () => {
                 {/* Featured Section - shows sponsored items */}
                 <FeaturedSection items={allItems} />
 
+                <EngagementOnboardingStrip />
+
+                <WeeklyDigestPreview />
+
                 {/* Mobile Category Chips */}
                 <MobileCategoryChips
                   selectedType={filters.selectedType}
@@ -273,6 +280,8 @@ const MainContent = () => {
                     />
                   )}
                 </div>
+
+                {!isLoading && <CommunityContributionPrompt />}
               </section>
             </ResizablePanel>
 

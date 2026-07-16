@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,11 +20,13 @@ import { RichTextContent } from '@/components/RichTextContent';
 import { richTextPlainText } from '@/lib/richText';
 import { ContentHeroImageEditor } from '@/components/content/ContentHeroImageEditor';
 import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 
 const LocalResourceDetails = () => {
   const { serviceId } = useParams();
   const { user, isAdmin } = useAuth();
   const ssrPrefetch = useSsrPrefetch();
+  const { addToRecentlyViewed } = useRecentlyViewed();
   const ssrResource =
     ssrPrefetch?.type === 'local_resource' ? ssrPrefetch.data : null;
   
@@ -47,6 +50,15 @@ const LocalResourceDetails = () => {
   });
 
   const resolvedResource = resource ?? ssrResource;
+
+  useEffect(() => {
+    if (resolvedResource?.id) {
+      addToRecentlyViewed({
+        itemType: 'local_service',
+        itemId: String(resolvedResource.id),
+      });
+    }
+  }, [addToRecentlyViewed, resolvedResource?.id]);
 
   const metaDescription = resolvedResource
     ? richTextPlainText(

@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Navigation } from '@/components/Navigation';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ import { richTextPlainText } from '@/lib/richText';
 import { ContentHeroImageEditor } from '@/components/content/ContentHeroImageEditor';
 import { BusinessStructuredData } from '@/components/seo/StructuredData';
 import { useSsrPrefetch } from '@/contexts/SsrPrefetchContext';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 
 const BusinessDetails = () => {
   const { businessId } = useParams();
@@ -27,6 +29,7 @@ const BusinessDetails = () => {
   const ssrPrefetch = useSsrPrefetch();
   const ssrBusiness = ssrPrefetch?.type === 'business' ? ssrPrefetch.data : null;
   const { user, isAdmin } = useAuth();
+  const { addToRecentlyViewed } = useRecentlyViewed();
   const { ownedBusinesses } = useBusinessOwnership();
   
   // Check if user owns this business
@@ -54,6 +57,12 @@ const BusinessDetails = () => {
   });
 
   const resolvedBusiness = business ?? ssrBusiness;
+
+  useEffect(() => {
+    if (resolvedBusiness?.id) {
+      addToRecentlyViewed({ itemType: 'business', itemId: resolvedBusiness.id });
+    }
+  }, [addToRecentlyViewed, resolvedBusiness?.id]);
 
   const metaDescription = resolvedBusiness
     ? richTextPlainText(

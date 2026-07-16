@@ -3,6 +3,7 @@ import { useBookmarks, BookmarkItemType } from '@/hooks/useBookmarks';
 import { useAuth } from '@/hooks/useAuth';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface BookmarkButtonProps {
   itemType: BookmarkItemType;
@@ -25,8 +26,6 @@ export const BookmarkButton = ({
   const { useIsBookmarked, addBookmark, removeBookmark, isAddingBookmark, isRemovingBookmark } = useBookmarks();
   const { data: isBookmarked } = useIsBookmarked(itemType, itemId);
 
-  if (!user) return null;
-
   const handleBookmarkClick = () => {
     if (isBookmarked) {
       removeBookmark({ itemType, itemId });
@@ -48,6 +47,22 @@ export const BookmarkButton = ({
     md: 'h-4 w-4',
     lg: 'h-5 w-5',
   };
+
+  if (!user) {
+    return (
+      <Button
+        asChild
+        variant={variant}
+        size={showText ? 'sm' : 'icon'}
+        className={cn(!showText && sizeClasses[size], className)}
+      >
+        <Link to="/auth" aria-label="Sign in to save this item">
+          <Bookmark className={iconSizes[size]} />
+          {showText && <span className="ml-2">Save this</span>}
+        </Link>
+      </Button>
+    );
+  }
 
   return (
     <Button

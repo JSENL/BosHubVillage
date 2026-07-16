@@ -115,7 +115,17 @@ export const useNewsSubmissionOperations = () => {
       }
 
       console.log(`Culture submission ${status} successfully!`);
-      toast.success(`Culture submission ${status} successfully!`);
+      if (status === 'approved' && newNewsId) {
+        toast.success('Culture article is live!', {
+          description: 'Open the published article to share it with the submitter.',
+          action: {
+            label: 'View',
+            onClick: () => window.open(`/news/${newNewsId}`, '_blank', 'noopener,noreferrer'),
+          },
+        });
+      } else {
+        toast.success(`Culture submission ${status} successfully!`);
+      }
 
       // New row is in `news`; invalidate caches so home, Culture tab, and trending refetch
       if (status === 'approved') {

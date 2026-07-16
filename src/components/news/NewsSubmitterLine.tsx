@@ -1,13 +1,10 @@
 import { Mail, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { News } from '@/types/news';
 import { cn } from '@/lib/utils';
 
-type NewsSubmitterFields = Pick<News, 'submitter_name' | 'submitter_email'>;
-
-export function hasNewsSubmitter(article: NewsSubmitterFields): boolean {
-  return Boolean(article.submitter_name || article.submitter_email);
-}
+type NewsSubmitterFields = Pick<News, 'created_by' | 'submitter_name' | 'submitter_email'>;
 
 interface NewsSubmitterLineProps {
   article: NewsSubmitterFields;
@@ -22,7 +19,7 @@ export const NewsSubmitterLine = ({
   className,
 }: NewsSubmitterLineProps) => {
   const { t } = useTranslation();
-  const { submitter_name, submitter_email } = article;
+  const { created_by, submitter_name, submitter_email } = article;
 
   if (!submitter_name && !submitter_email) {
     return null;
@@ -44,7 +41,16 @@ export const NewsSubmitterLine = ({
           {submitter_email}
         </a>
       ) : (
-        <span className="break-words">{displayName}</span>
+        created_by ? (
+          <Link
+            to={`/user/${created_by}`}
+            className="break-words text-purple-700 hover:underline"
+          >
+            {displayName}
+          </Link>
+        ) : (
+          <span className="break-words">{displayName}</span>
+        )
       )}
       {showEmail && submitter_name && submitter_email && (
         <a

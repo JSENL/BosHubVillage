@@ -2,6 +2,7 @@ import { TrendingSection } from './TrendingSection';
 import { BookmarksSection } from './BookmarksSection';
 import { DiscoverPeople } from './DiscoverPeople';
 import { FollowingActivityFeed } from './FollowingActivityFeed';
+import { RecentlyViewedSection } from './RecentlyViewedSection';
 import { SavedSearchesList } from '@/components/search/SavedSearchesList';
 import { CultureSpotlightSection } from '@/components/home/CultureSpotlightSection';
 import { UnifiedItem } from '@/types/unifiedItem';
@@ -30,6 +31,7 @@ export const DiscoverySidebar = ({ items = [], isLoading = false }: DiscoverySid
   const desktopView = (
     <div className="hidden lg:block space-y-4 w-full max-w-md mx-auto overflow-hidden">
       {user && <FollowingActivityFeed />}
+      {user && <RecentlyViewedSection items={items} />}
       <TrendingSection />
       {user && <SavedSearchesList />}
       {user && <BookmarksSection />}
@@ -69,6 +71,20 @@ export const DiscoverySidebar = ({ items = [], isLoading = false }: DiscoverySid
             <TrendingSection />
           </AccordionContent>
         </AccordionItem>
+
+        {user && (
+          <AccordionItem value="recent" className="border rounded-lg bg-card overflow-hidden">
+            <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-2">
+                <Activity className="h-4 w-4 text-primary" />
+                <span className="font-medium text-sm">Continue Browsing</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              <RecentlyViewedSection items={items} />
+            </AccordionContent>
+          </AccordionItem>
+        )}
 
         {user && (
           <AccordionItem value="saved" className="border rounded-lg bg-card overflow-hidden">

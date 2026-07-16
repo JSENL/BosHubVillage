@@ -158,6 +158,11 @@ export const UserContributions = ({ userId }: UserContributionsProps) => {
   }
 
   const totalCount = contributions?.length || 0;
+  const contributionCounts = {
+    event: contributions?.filter((item) => item.type === 'event').length || 0,
+    business: contributions?.filter((item) => item.type === 'business').length || 0,
+    news: contributions?.filter((item) => item.type === 'news').length || 0,
+  };
   const hasMoreThanInitial = totalCount > INITIAL_DISPLAY_COUNT;
   const needsPagination = totalCount > ITEMS_PER_PAGE;
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
@@ -196,6 +201,21 @@ export const UserContributions = ({ userId }: UserContributionsProps) => {
           </p>
         ) : (
           <>
+            <div className="mb-4 grid grid-cols-3 gap-2">
+              <div className="rounded-lg bg-purple-50 p-3 text-center">
+                <p className="text-lg font-semibold text-purple-700">{contributionCounts.event}</p>
+                <p className="text-[11px] text-muted-foreground">{t('contributions.events', 'Events')}</p>
+              </div>
+              <div className="rounded-lg bg-amber-50 p-3 text-center">
+                <p className="text-lg font-semibold text-amber-700">{contributionCounts.business}</p>
+                <p className="text-[11px] text-muted-foreground">{t('contributions.businesses', 'Businesses')}</p>
+              </div>
+              <div className="rounded-lg bg-green-50 p-3 text-center">
+                <p className="text-lg font-semibold text-green-700">{contributionCounts.news}</p>
+                <p className="text-[11px] text-muted-foreground">{t('contributions.culture', 'Culture')}</p>
+              </div>
+            </div>
+
             <div className="space-y-2">
               {displayedContributions.map((contribution) => (
                 <Link
